@@ -1,18 +1,8 @@
 import placas from "../../assets/img/placas.png";
 import bio from "../../assets/img/bio.png";
+import guia from "../../assets/img/guia.jpg";
+import etica from "../../assets/img/etica.png";
 export const projects = [
-  
-  {
-    title: "Guia Alimentar BR",
-    link: "https://www.youtube.com/embed/8VxPXpS-qHg?compact=1",
-    demo: "https://play.google.com/store/apps/details?id=com.guiaalimentar.guiaalimentarbr",
-    description: `Aplicativo do Guia Alimentar Brasileiro, desenvolvido pra o TCC da aluna de Nutrição Rafaela Soares Souza Kobi,
-     o aplicativo foi desenvolvido em React Native pelo FrameWork Expo e foi Publicado na PlayStore do Google para dispositivos Android.
-     \n Aplicativo do Guia Alimentar Brasileiro, trabalho que pude participar exposto no XXVII Congresso Brasileiro de Nutrição, o maior congresso na América Latina de Alimentação e Nutrição, na feira nutri saber.,
-     `,
-    tags: ["#REACT NATIVE", "#EXPO", "#ANDROID", "#NUTRIÇÃO"],
-    code: "https://github.com/brunokobi/guiaalimentarBR",
-  },
   {
     title: "Presence Now",
     link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6772979792737296384?compact=1",
@@ -22,10 +12,25 @@ export const projects = [
     tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
     code: "https://github.com/brunokobi/tccreconhecimento",
   },
+  
+  {
+    title: "Guia Alimentar BR",
+    link: "",
+    img:guia,
+    demo: "https://www.youtube.com/embed/8VxPXpS-qHg",
+    description: `Aplicativo do Guia Alimentar Brasileiro, desenvolvido pra o TCC da aluna de Nutrição Rafaela Soares Souza Kobi,
+     o aplicativo foi desenvolvido em React Native pelo FrameWork Expo e foi Publicado na PlayStore do Google para dispositivos Android.
+     \n Aplicativo do Guia Alimentar Brasileiro, trabalho que pude participar exposto no XXVII Congresso Brasileiro de Nutrição, o maior congresso na América Latina de Alimentação e Nutrição, na feira nutri saber.,
+     `,
+    tags: ["#REACT NATIVE", "#EXPO", "#ANDROID", "#NUTRIÇÃO"],
+    code: "https://play.google.com/store/apps/details?id=com.guiaalimentar.guiaalimentarbr",
+  },
+  
 
   {
     title: "Quiz da Etica - Aplicativo",
-    link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6737201843161616384?compact=1",
+    link: "",
+    img:etica,
     demo: "https://www.youtube.com/watch?v=euJuoEGtpnU&ab_channel=BrunoKobi",
     description: `Projeto Integrador desenvolvido no ultimo periodo da graduação e conjunto
      com Lucas Barbosa da Silva , utilizando java pelo Android Studio`,
