@@ -1,3 +1,10 @@
+# Projeto Home Page Bruno Kobi 
+
+<a href="https://brunokobi.netlify.app/">`Visite o Site `</a>
+<br>
+
+<img src="portifolio.png" alt="Bruno Kobi" >
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
