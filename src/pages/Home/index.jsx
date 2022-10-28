@@ -3,13 +3,18 @@ import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Typewriter from "typewriter-effect";
 import profile from "../../assets/img/home-animation-removed.gif";
+
+
 import IconsBackground from "../../components/IconsBackground";
+import {useIntl} from 'react-intl'
+
 
 
 const Home = () => {
+ const intl = useIntl();
 
   return (
-    <AnimatePresence>     
+    <AnimatePresence>        
       <Flex
         minH="100vh"
         w="100%"
@@ -22,6 +27,7 @@ const Home = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
+         
         <Stack
           direction={{ base: "column", md: "row" }}
           spacing={5}
@@ -47,8 +53,10 @@ const Home = () => {
                   fontSize={{ base: "xl", md: "5xl" }}
                   fontWeight={300}
                   mb={{ md: -1, lg: -2 }}
-                >
-                  Olá Mundo,&nbsp;
+                >                
+                  {/* tradução texto */}
+                  {intl.formatMessage({id: 'ola_mundo'})},&nbsp;
+
                 </Heading>
                 <Heading
                   fontSize={{ base: "md", md: "xl" }}
@@ -57,7 +65,8 @@ const Home = () => {
                   position="relative"
                   zIndex="999"
                 >
-                  eu sou o
+                   {/* tradução texto */}
+                  {intl.formatMessage({id: 'eu_sou'})}                
                 </Heading>
               </StackItem>
 
@@ -102,12 +111,12 @@ const Home = () => {
                   fontWeight={300}
                   position="relative"
                   zIndex="999"
-                >
+                >                 
                   <Typewriter
                     options={{
                       strings: [                        
-                        "Mestrando em Computação Aplicada em Inteligência Artificial",
-                        "Desenvolvedor Full Stack",
+                        intl.formatMessage({id: 'frase_1'}),
+                        intl.formatMessage({id: 'frase_2'}),
                       ],
                       autoStart: true,
                       loop: true,
@@ -117,9 +126,10 @@ const Home = () => {
               </StackItem>
             </Stack>
           </StackItem>
-        </Stack>
+        </Stack>       
       </Flex>
     </AnimatePresence>
+   
   );
 };
 

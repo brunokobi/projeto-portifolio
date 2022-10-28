@@ -1,10 +1,21 @@
 import { Breadcrumb, Flex } from "@chakra-ui/react";
 import { sections } from "./sections";
 import { AnimatePresence } from "framer-motion";
+import usa from "../../assets/img/usa.png";
+import brazil from "../../assets/img/brazil.png";
+import spain from "../../assets/img/spain.png";
+import france from "../../assets/img/france.png";
+import germany from "../../assets/img/germany.png";
+import china from "../../assets/img/china.png";
+import { Image } from "@chakra-ui/react";
+import {useIntl} from 'react-intl'
+
 
 import Item from "./Item";
 
+
 const Nav = () => {
+  const intl = useIntl();
   return (
     <AnimatePresence>
       <Flex
@@ -29,6 +40,38 @@ const Nav = () => {
             <Item {...{ label, url, icon }} key={i} />
           ))}
         </Breadcrumb>
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
+          window.location.reload();}}>
+          <Image src={brazil} w={{ base: 25, md:25}} margin={'1'} title= {intl.formatMessage({id: 'pt'})}/>
+        </button> 
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'en' }));
+          window.location.reload();}}>
+          <Image src={usa} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'en'})}/>
+        </button> 
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'es' }));
+          window.location.reload();}}>
+          <Image src={spain} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'es'})}/>
+        </button> 
+
+        <button  onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'fr' }));
+          window.location.reload();}}>
+          <Image src={france} w={{ base: 25, md: 25 }} margin={'1'}title= {intl.formatMessage({id: 'fr'})}/>
+        </button>
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'de' }));
+          window.location.reload();}}>
+          <Image src={germany} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'de'})}/>
+          </button> 
+
+          <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'zh' }));
+          window.location.reload();}}>
+          <Image src={china} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'zh'})}/>
+        </button> 
+           
+
       </Flex>
     </AnimatePresence>
   );
