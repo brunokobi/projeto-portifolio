@@ -1,0 +1,24 @@
+{ 
+  "ola_mundo":"Hello World",
+  "eu_sou":"I am the ",
+  "frase_1":"Master's in Applied Computing in Artificial Intelligence",
+  "frase_2": "FullStack Developer",
+  "sobre":"About",
+
+  "pt":"Portuguese",
+   "en":"English",
+   "es":"Spanish",
+   "fr":"French",
+   "de":"German",
+   "zh":"Chinese",
+
+   "sobre_mim":"About me",
+   "sobre1":"Passionate about programming, technology and innovation.",
+   "sobre2":"Always looking for new knowledge and challenges.",
+   "sobre3":"Entering the world of artificial intelligence.",
+
+   "experiencia":"Experience",
+
+   "educacao":"Education",
+    "educacao1":"I am currently a master's student at IFES in applied computing in the field of Artificial Intelligence. I graduated in 2004 as a computer technician at IFES, but I ended up not following in the area. Since 2018, I decided to focus entirely on the area of software development, leaving a 14-year role in the administrative area. I graduated in 2020 with a Bachelor of Information Systems at Unisales."
+}

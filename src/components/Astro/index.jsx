@@ -9,14 +9,16 @@ const Astro = ({ wrapper }) => {
   to { transform: rotate(360deg); }
 `;
 
-  const animation = `${spin} infinite 30s linear`;
+  const animation = `${spin} infinite 10s linear`;
 
   return (
     <Box
       as={motion.div}
       drag
       dragConstraints={wrapper}
-      p={12}
+      p={1}
+      marginX="500px"
+      marginY="500px"
       position="fixed"
       zIndex={99999}
     >

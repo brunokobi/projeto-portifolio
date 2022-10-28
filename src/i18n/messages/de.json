@@ -1,0 +1,26 @@
+{ 
+  "ola_mundo":"Hallo Welt",
+  "eu_sou":"Ich bin der",
+  "frase_1":"Master in Angewandter Informatik in Künstlicher Intelligenz",
+  "frase_2": "Full-Stack-Entwickler",
+  "sobre":"Um",
+
+  "pt":"Portugiesisch",
+  "en":"Englisch",
+  "es" : "Spanier",
+  "fr": "Französisch",
+  "de": "Deutsch",
+  "zh": "Chinesisch",
+
+  "sobre_mim":"Über mich",
+  "sobre1":"Leidenschaft für Programmierung, Technologie und Innovation.",
+  "sobre2":"Immer auf der Suche nach neuen Erkenntnissen und Herausforderungen.",
+  "sobre3":"Einstieg in die Welt der künstlichen Intelligenz.",
+
+  "experiencia":"Erfahrung",
+
+  "educacao":"Bildung",
+  "educacao1":"Ich bin derzeit Masterstudent am IFES in Angewandter Informatik im Bereich Künstliche Intelligenz.Ich habe 2004 meinen Abschluss als Computertechniker am IFES gemacht, bin aber in dem Bereich nicht weitergekommen. Seit 2018 habe ich mich entschieden, mich ganz auf den Bereich Softwareentwicklung zu konzentrieren und eine 14-jährige Rolle im administrativen Bereich zu verlassen. Ich habe 2020 meinen Bachelor of Information Systems bei Unisales abgeschlossen."
+
+
+}

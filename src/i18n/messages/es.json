@@ -1,0 +1,25 @@
+{
+"ola_mundo":"Hola Mundo",
+"eu_sou":"yo soy el ",
+"frase_1":"Máster Universitario en Computación Aplicada en Inteligencia Artificial",
+"frase_2": "Desarrollador FullStack",
+"sobre":"Sobre",
+
+  "pt":"portugués",
+   "en":"inglés",
+   "es":"español",
+   "fr":"francés",
+   "de":"alemán",
+   "zh":"chino",
+
+   "sobre_mim":"Sobre mi",
+   "sobre1":"Apasionado por la programación, la tecnología y la innovación.",
+   "sobre2":"Siempre en busca de nuevos conocimientos y retos.",
+   "sobre3":"Entrando en el mundo de la inteligencia artificial.",
+
+
+"experiencia":"Experiencia",
+   "educacao":"Educación",
+    "educacao1":"Actualmente soy estudiante de maestría en IFES en computación aplicada en el campo de la Inteligencia Artificial, me gradué en 2004 como técnico en computación en IFES, pero terminé sin seguir en el área. A partir del 2018 decidí enfocarme por completo en el área de desarrollo de software, dejando un rol de 14 años en el área administrativa. Me gradué en 2020 con una Licenciatura en Sistemas de Información en Unisales."
+
+}

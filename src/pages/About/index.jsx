@@ -40,8 +40,10 @@ import certf_7 from "../../assets/img/certificado_7.png";
 import { useObserver } from "./observers";
 import AnimatedStars from "../../components/AnimatedStars";
 import Astro from "../../components/Astro";
+import { useIntl } from "react-intl";
 
 const About = () => {
+  const intl = useIntl();
   const skillsRef = useRef(null);
   const aboutRef = useRef(null);
   const hobbiesRef = useRef(null);
@@ -135,17 +137,19 @@ const About = () => {
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
               >
-                Sobre mim
+                {intl.formatMessage({ id: "sobre_mim" })}
               </Text>
               <Heading fontSize={{ base: "3xl", lg: "4xl" }}>
                 Bruno Kobi
               </Heading>
               <Text mb={2} fontSize={{ base: "sm", md: "md" }}>
-                Apaixonado por programação, tecnologia e inovação.               
+              {intl.formatMessage({ id: "sobre1" })}                            
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }}>
-               Sempre buscando novos conhecimentos e desafios.<br/>
-               Entrando de cabeça no mundo da inteligência artificial.  <br/> 
+              {intl.formatMessage({ id: "sobre2" })}
+               <br/>
+               {intl.formatMessage({ id: "sobre3" })}
+               <br/> 
               </Text>
             </StackItem>
           </Stack>
@@ -186,12 +190,10 @@ const About = () => {
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
               >
-                Educação
+                 {intl.formatMessage({ id: "educacao" })}
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>
-              Atualmente sou aluno de mestrado no IFES em computação aplicada na linha de Inteligência Artificial.
-               Me formei 2004 como técnico em informática no IFES , mais acabei não seguindo na área. Desde 2018, decidi focar totalmente na área de desenvolvimento de software,
-              deixando um cargo de 14 anos na área administrativa. Me formei em 2020, como Bacharel de Sistemas de Informação na Unisales.
+              {intl.formatMessage({ id: "educacao1" })}
               </Text>             
             </StackItem>
 
@@ -253,7 +255,7 @@ const About = () => {
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 3, md: -24 }}
               >
-               Experiência
+                {intl.formatMessage({ id: "experiencia" })}
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>
               <b>Assistente de Programação II </b><br/>
