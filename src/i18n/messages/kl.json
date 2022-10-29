@@ -1,0 +1,66 @@
+{ 
+  "meunome" : "choraQ joH." ,  
+  "ola_mundo":"qo' vIvan",
+  "eu_sou":"vIta'laH",
+  "frase_1":"Dej 'oSwI' DamojqangtaHvIS.",
+  "frase_2": "Sab",
+
+  "sobre":"nav qatwI'",
+  "home":"juH",
+  "projetos":"Qovpatlh",
+  "linkedin":"Hol",
+  "github":"Humbaba",
+  "facebook":"DawI'",
+
+  "pt":"QI'tu'",
+  "en":"Te ra'",
+  "es":"qaryoQ",
+  "fr":"baH",
+  "de":"DoyIchlan", 
+  "zh":"QungwI'",
+  "ru":"raSya'",
+  "kl":"tlhIngan",
+
+  "sobre_mim":"HIHIv",
+  "sobre1":"chaq tlhInganpu'.",
+  "sobre2":"chuS'ughHom woH vetlh chuTwI' je.",
+  "sobre3":"pay' tlhInganpu' 'e' vIchaw'.",
+ 
+  "educacao":"maQmIgh",  
+  "educacao1":"Sajchugh Human teSDu'wIjDaq jIleghlaHbe' vIQamlaHbe'. Artificial.Me tlhoS QongDaqvetlh vIlaDtaHvIS, ja'chuqtaHvIS 'otlh bong joq Huj. 'ach jImon 'e' vIqaSmoH.",
+
+  "experiencia":"po'qu'",
+  "experiencia1t":"Assistente de Programação II",
+  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
+  "experiencia1d":"set de 2021 - o momento",
+
+  "experiencia2t":"Analista de desenvolvimento de software",
+  "experiencia2e":"Directy",
+  "experiencia2d":"nov de 2020 - set de 2021",
+
+  "experiencia3t":"Estagiário de sistemas da informação",
+  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d":"ago de 2019 - jan de 2020",
+
+  "competencias":"Qel",
+  "skills":"Qel",
+  "quali":"'ut",
+
+  "project1t":"Presence Now",
+  "project1d":"Presence Now ghu'qa' lutoy'lu'DI', 'ej chalvo' QongmeH chaw'DI' yo' chenmoHlu'.js.js, 'oHmo' yuQmey vIlo' 'ej mISlaHbe' je 'ej not chuQun ghaH, 'ej Dochmeyvam puS. tlhoy chemvaH poHlu' 'e' luqatbe'mo' chenmoHlu'",
+
+  "project2t":"Guia Alimentar BR",
+  "project2d":"jonta' tlhIngan SuvwI' yo' qIj HoD, tlhIngan sep voDleH. qaStaHvIS tup law' tlhIngan SuvwI' je. 'ej veSDuj vIraDtaHvIS, choHtaHvIS. qaStaHvIS poH bIQ'a' jonpIn, De' chutmey, 'ej chenmoHlu'pa'. ",
+  
+  "project3t":"Quiz da Etica - Aplicativo",
+  "project3d":"pay' jIyevtaH 'e' maq. nobta' ghaH.",
+
+  "project4t":"Jogo das Placas ",
+  "project4d":"tangqa' targh wIpoSmoH qorDu'ghotpu' lo'taHvIS voDleH, 'ej choHchu' 'e' wInIDchu'.",
+
+  "project5t":"Quiz Web Biomedicina Unisales",
+  "project5d":"QamchoH latlh wamwI'ghom ra'wI' je."
+
+
+
+}

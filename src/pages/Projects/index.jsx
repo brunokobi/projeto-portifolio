@@ -1,17 +1,76 @@
 import { Box } from "@chakra-ui/react";
 import ProjectCard from "../../components/ProjectCard";
-import Astro from "../../components/Astro";
+import {useIntl} from 'react-intl';
 
 import { BsChevronDoubleUp } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
 import { Link } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { useRef } from "react";
-import { projects } from "./projects";
+// import { projects } from "./projects";
 import { motion, AnimatePresence } from "framer-motion";
+import placas from "../../assets/img/placas.png";
+import bio from "../../assets/img/bio.png";
+import guia from "../../assets/img/guia.png";
+import etica from "../../assets/img/etica.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
+  const intl = useIntl();
+
+  const projects = [
+    {
+      title: intl.formatMessage({id: 'project1t'}),
+      link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6772979792737296384?compact=1",
+      demo: "https://presencenowreconhecimento.netlify.app/",
+      description: intl.formatMessage({id: 'project1d'}),     
+      tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
+      code: "https://github.com/brunokobi/tccreconhecimento",
+    },
+    
+    {
+      title: intl.formatMessage({id: 'project2t'}),
+      link: "",
+      img:guia,
+      demo: "https://www.youtube.com/embed/8VxPXpS-qHg",
+      description: intl.formatMessage({id: 'project2d'}),
+      tags: ["#REACT NATIVE", "#EXPO", "#ANDROID", "#NUTRIÇÃO"],
+      code: "https://play.google.com/store/apps/details?id=com.guiaalimentar.guiaalimentarbr",
+    },
+    
+  
+    {
+      title: intl.formatMessage({id: 'project3t'}),
+      link: "",
+      img:etica,
+      demo: "https://www.youtube.com/watch?v=euJuoEGtpnU&ab_channel=BrunoKobi",
+      description: intl.formatMessage({id: 'project3d'}),
+      tags: ["#JAVA", "#ANDROID", "#ÉTICA"],
+      code: "https://github.com/brunokobi/QuizdaEtica",
+    },
+  
+    {
+      title: intl.formatMessage({id: 'project4t'}),
+      link: "",
+      img: placas,
+      demo: "https://jogodasplacas.netlify.app/",
+      description: intl.formatMessage({id: 'project4d'}),
+      tags: ["#HTML5", "#CSS3", "#JAVASCRIPT"],
+      code: "https://github.com/brunokobi/JogoMemoriaPlacas",
+    },
+  
+    {
+      title: intl.formatMessage({id: 'project5t'}),
+      link: "",
+      img: bio,
+      demo: "https://biomedicina.netlify.app/",
+      description: intl.formatMessage({id: 'project5d'}),
+      tags: ["#REACT"],
+      code: "https://github.com/brunokobi/biomedicina",
+    },
+  
+   
+  ];
 
   return (
     <AnimatePresence>
@@ -61,7 +120,7 @@ const Projects = () => {
             initial="hidden"
             animate="visible"
           >
-            <Astro wrapper={constraintsRef} />
+           
             {projects.map(
               ({ link, title, description, tags, demo, code, img }, i) => (
                 <ProjectCard

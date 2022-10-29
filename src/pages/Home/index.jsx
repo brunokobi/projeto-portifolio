@@ -82,7 +82,7 @@ const Home = () => {
                   }}
                   fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
                 >
-                  Bruno Kobi Valadares de Amorim
+                   {intl.formatMessage({id: 'meunome'})}      
                   <Typewriter
                     options={{
                       strings: [""],

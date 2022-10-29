@@ -15,7 +15,7 @@ const IconsBackground = () => {
       top={{ base: "-10%", md: 0 }}
     >
       <Box position="relative" top="-50%">
-        {Array(20)
+        {Array(30)
           .fill(<IconsLine />)
           .map((item, i) => (
             <Flex key={i}>{item}</Flex>
