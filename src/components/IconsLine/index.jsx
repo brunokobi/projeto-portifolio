@@ -88,14 +88,14 @@ const IconsLine = () => {
       w="100%"
       position="relative"
       fontSize={"6xl"}
-      transform="rotate(-30deg)"
+      transform="rotate(-30deg)"     
       ml={-10}
       overflow="hidden"
     >
       <Flex>
         {icons.map((icon, i) => (
           <AnimatedIcon
-            reactIcon={icons[Math.floor(Math.random() * 20)]}
+            reactIcon={icons[Math.floor(Math.random() * 20)]}          
             // reactIcon={icon}
             key={i}
           />

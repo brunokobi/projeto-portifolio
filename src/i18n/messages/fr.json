@@ -1,9 +1,16 @@
 {
+  "meunome" : "Bruno Kobi Valadares de Amorim" ,  
   "ola_mundo":"Bonjour le monde",
   "eu_sou":"je suis le",
   "frase_1":"Master en informatique appliquée à l'intelligence artificielle",
   "frase_2": "Développeur Full Stack",
-  "sobre":"À propos de",
+
+  "sobre":"À propos de",  
+  "home":"Home",
+  "projetos":"Projets",
+  "linkedin":"Linkedin",
+  "github":"Github",
+  "facebook":"Facebook",
 
   "pt":"Portugais",
    "en":"Anglais",
@@ -11,6 +18,8 @@
    "fr":"Français",
    "de":"Allemand",
    "zh":"Chinois",
+   "ru":"Russe",
+   "kl":"Klingon",
 
    "sobre_mim":"À propos de moi",
   "sobre1":"Passionné de programmation, de technologie et d'innovation.",
@@ -20,7 +29,40 @@
   "experiencia":"Expérience",
 
   "educacao":"Éducation",
-  "educacao1":"Je suis actuellement étudiant en master à l'IFES en informatique appliquée dans le domaine de l'Intelligence Artificielle.J'ai obtenu mon diplôme de technicien en informatique à l'IFES en 2004, mais j'ai fini par ne pas suivre dans le domaine. Depuis 2018, j'ai décidé de me concentrer entièrement sur le domaine du développement de logiciels, laissant un rôle de 14 ans dans le domaine administratif. J'ai obtenu en 2020 un Bachelor en Systèmes d'Information à Unisales."
+  "educacao1":"Je suis actuellement étudiant en master à l'IFES en informatique appliquée dans le domaine de l'Intelligence Artificielle.J'ai obtenu mon diplôme de technicien en informatique à l'IFES en 2004, mais j'ai fini par ne pas suivre dans le domaine. Depuis 2018, j'ai décidé de me concentrer entièrement sur le domaine du développement de logiciels, laissant un rôle de 14 ans dans le domaine administratif. J'ai obtenu en 2020 un Bachelor en Systèmes d'Information à Unisales.",
+  
+  "experiencia1t":"Assistant de programmation II",
+  "experiencia1e":"Réponse Ambipar Orbitgeo Ltda",
+  "experiencia1d":"Septembre 2021 - le moment",
+
+  "experiencia2t":"Analyste en développement logiciel",
+  "experience2e":"Directy",
+  "experiencia2d":"novembre 2020 - septembre 2021",
+
+  "experiencia3t":"Stagiaire Systèmes d'Information",
+  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d": "Août 2019 - Jan 2020",
+
+  
+  "skills":"Compétences",
+  "quali":"Qualifications",
+  "competencias":"Compétences",
+
+  "project1t":"Présence maintenant",
+  "project1d":"Presence Now est un logiciel de reconnaissance faciale en temps réel pour la présence des étudiants, FrontEnd a été développé en réaction à l'aide de tapuscrit, BackEnd utilise les mêmes langages et a été implémenté sous la forme d'API Rest, le module de reconnaissance faciale utilise uniquement Javascript , HTML et CSS, mais utilise faceapi.js qui utilise l'API tensorflow.js et implémente une série de réseaux de neurones convulsifs (CNN). Le système enregistrera essentiellement la présence de l'élève grâce à la reconnaissance faciale en temps réel.",
+
+  "project2t":"Guide alimentaire BR",
+  "project2d":"Application du guide alimentaire brésilien, développée pour l'étudiante du TCC en nutrition Rafaela Soares Souza Kobi, l'application a été développée en React Native par FrameWork Expo et a été publiée sur Google PlayStore pour les appareils Android. \n Application Guia Alimentar Brasileiro, travail auquel j'ai pu participer exposé au XXVII Congrès brésilien de la nutrition, le plus grand congrès d'Amérique latine sur l'alimentation et la nutrition, au salon nutri sabre.",
+  
+  "project3t":"Quiz d'éthique - Application",
+  "project3d":"Projet d'intégration développé au cours de la dernière période d'obtention du diplôme et avec Lucas Barbosa da Silva, en utilisant java par Android Studio.(Clone Show do Milhão).",
+
+  "project4t":"Jeu d'assiettes",
+  "project4d":"Un jeu éducatif lié à l'éducation routière en ce qui concerne les panneaux de signalisation, a été développé comme un travail du sujet multimédia, étant réalisé tout le montage d'images et d'audios, langages utilisés Javascript, HTML et CSS." ,
+
+  "project5t":"Quiz Web Biomedicina Unisales",
+  "project5d":"Site de quiz en ligne développé pour les étudiants du cours de biomédecine Unisales."
+
 
 
 }

@@ -1,9 +1,15 @@
-{ 
+{ "meunome" : "布魯諾·科比·瓦拉達雷斯·德·阿莫林" ,
   "ola_mundo":"你好世界",
   "eu_sou":"我是",
   "frase_1":"人工智能應用計算碩士",
   "frase_2": "全棧開發人員",
-  "sobre":"關於",
+
+  "sobre":"關於", 
+  "home":"Home",
+  "projetos":"項目",
+  "linkedin":"Linkedin",
+  "github":"Github",
+  "facebook":"Facebook",
 
   "pt":"葡萄牙語",
   "en":"英語",
@@ -11,6 +17,8 @@
   "fr":"法語",
   "de":"德語",
   "zh":"中國人",
+  "ru":"俄語",
+   "kl":"克林貢語",
 
   "sobre_mim":"關於我",
   "sobre1":"對編程、技術和創新充滿熱情。",
@@ -20,7 +28,37 @@
   "experiencia":"經驗",
   "educacao":"教育",  
 
-  "educacao1":"我目前在IFES攻讀人工智能領域應用計算的碩士研究生，2004年畢業於IFES，擔任計算機技術員，但最終沒有進入該領域。 從 2018 年開始，我決定完全專注於軟件開發領域，在行政領域留下了 14 年的角色。 我於 2020 年畢業於 Unisales，獲得了信息系統學士學位。"
+  "educacao1":"我目前在IFES攻讀人工智能領域應用計算的碩士研究生，2004年畢業於IFES，擔任計算機技術員，但最終沒有進入該領域。 從 2018 年開始，我決定完全專注於軟件開發領域，在行政領域留下了 14 年的角色。 我於 2020 年畢業於 Unisales，獲得了信息系統學士學位。",
+  "經驗":"經驗",
+  "experiencia1t":"編程助手 II",
+  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
+  "experiencia1d":"2021 年 9 月——那一刻",
+
+  "experiencia2t":"軟件開發分析師",
+  "experience2e":"Directy",
+  "experiencia2d":"2020 年 11 月 - 2021 年 9 月",
+
+  "experiencia3t":"信息系統實習生",
+  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d":"2019 年 8 月 - 2020 年 1 月",
+
+ 
+  "quali":"資質",
+
+  "project1t":"現在存在",
+  "project1d":"Presence Now是一款學生考勤實時人臉識別軟件，FrontEnd使用typescript在react中開發，BackEnd使用相同語言，以Rest API的形式實現，模塊人臉識別僅使用Javascript 、HTML 和 CSS，但使用了 faceapi.js，它使用了 tensorflow.js API 並實現了一系列驚厥神經網絡（CNN）。系統基本上會通過實時面部識別來記錄學生的存在。",
+
+  "project2t":"食品指南 BR",
+  "project2d":"巴西美食指南應用程序，為營養專業學生 Rafaela Soares Souza Kobi 的 TCC 開發，該應用程序由 FrameWork Expo 在 React Native 中開發，並發佈在適用於 Android 設備的 Google PlayStore 上。\n Guia Application Alimentar Brasileiro，工作我能夠參加第二十七屆巴西營養大會，這是拉丁美洲最大的食品和營養大會，在營養軍刀博覽會上。",
+  
+  "project3t":"道德測驗 - 應用程序",
+  "project3d":"在畢業最後一個時期和Lucas Barbosa da Silva一起開發的項目，使用Android Studio的java。(Clone Show do Milhão)。",
+
+  "project4t":"平板遊戲",
+  "project4d":"關於交通標誌的交通教育教育遊戲，是作為多媒體學科的作品開發的，所有圖像和音頻的編輯，語言使用Javascript，HTML和CSS",
+
+  "project5t":"Quiz Web Biomedicina Unisales",
+  "project5d" : "為 Unisales 生物醫學課程的學生開發的在線測驗網站。"
 
 
 }

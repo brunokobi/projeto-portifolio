@@ -1,14 +1,23 @@
 import { Breadcrumb, Flex } from "@chakra-ui/react";
-import { sections } from "./sections";
 import { AnimatePresence } from "framer-motion";
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
 import spain from "../../assets/img/spain.png";
 import france from "../../assets/img/france.png";
 import germany from "../../assets/img/germany.png";
+import russia from "../../assets/img/russia.png";
+import klingon from "../../assets/img/klingo.png";
+import { FaReact } from "react-icons/fa";
+import { AiOutlineLinkedin } from "react-icons/ai";
+import { AiOutlineGithub } from "react-icons/ai";
+import { AiOutlineInstagram } from "react-icons/ai";
+import { AiOutlineFacebook } from "react-icons/ai";
+import { RiAliensFill } from "react-icons/ri";
+import { IoMdRocket } from "react-icons/io";
 import china from "../../assets/img/china.png";
 import { Image } from "@chakra-ui/react";
-import {useIntl} from 'react-intl'
+import {useIntl} from 'react-intl';
+import {useNavigate} from 'react-router-dom'
 
 
 import Item from "./Item";
@@ -16,6 +25,48 @@ import Item from "./Item";
 
 const Nav = () => {
   const intl = useIntl();
+  const navigate = useNavigate();
+  const sections = [
+    {
+      label: intl.formatMessage({ id: "home" }),
+      url: "/",
+      icon: IoMdRocket,
+    },
+    {
+      label: intl.formatMessage({id: 'sobre'}),
+      url: "/about",
+      icon: RiAliensFill,
+    },
+  
+    {
+      label: intl.formatMessage({id: 'projetos'}),
+      url: "/projects",
+      icon: FaReact,
+    },   
+    {
+      label: intl.formatMessage({id: 'linkedin'}),
+      url: "https://www.linkedin.com/in/brunokobi/",
+      icon: AiOutlineLinkedin,
+    },
+    {
+      label: intl.formatMessage({id: 'github'}),
+      url: "https://github.com/brunokobi",
+      icon: AiOutlineGithub,
+    }, 
+    {
+      label: intl.formatMessage({id: 'instagram'}),
+      url: "https://www.instagram.com/brunokobi/",
+      icon: AiOutlineInstagram,
+    },
+    {
+      label: intl.formatMessage({id: 'facebook'}),
+      url: "https://www.facebook.com/bruno.kobi/",
+      icon: AiOutlineFacebook,
+    },
+        
+  
+  ];
+
   return (
     <AnimatePresence>
       <Flex
@@ -42,33 +93,108 @@ const Nav = () => {
         </Breadcrumb>
 
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
+          navigate('/')
           window.location.reload();}}>
-          <Image src={brazil} w={{ base: 25, md:25}} margin={'1'} title= {intl.formatMessage({id: 'pt'})}/>
+          <Image src={brazil} w={{ base: 25, md:25}} margin={'1'} title= {intl.formatMessage({id: 'pt'})} 
+           _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
         </button> 
 
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'en' }));
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'en' }));        
+           navigate('/')
           window.location.reload();}}>
-          <Image src={usa} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'en'})}/>
+          <Image src={usa} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'en'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
         </button> 
 
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'es' }));
+           navigate('/')
           window.location.reload();}}>
-          <Image src={spain} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'es'})}/>
+          <Image src={spain} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'es'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
         </button> 
 
         <button  onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'fr' }));
+           navigate('/')
           window.location.reload();}}>
-          <Image src={france} w={{ base: 25, md: 25 }} margin={'1'}title= {intl.formatMessage({id: 'fr'})}/>
+          <Image src={france} w={{ base: 25, md: 25 }} margin={'1'}title= {intl.formatMessage({id: 'fr'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
         </button>
 
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'de' }));
+           navigate('/')
           window.location.reload();}}>
-          <Image src={germany} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'de'})}/>
+          <Image src={germany} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'de'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
           </button> 
 
           <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'zh' }));
+           navigate('/')
           window.location.reload();}}>
-          <Image src={china} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'zh'})}/>
+          <Image src={china} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'zh'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
+        </button> 
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ru' }));
+           navigate('/')
+          window.location.reload();}}>
+          <Image src={russia} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'ru'})}
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          />
+        </button> 
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'kl' }));
+           navigate('/')
+          window.location.reload();}}>
+          <Image src={klingon} w={{ base: 35, md: 35 }} margin={'1'} title= {intl.formatMessage({id: 'kl'})}
+          borderRadius="full"
+            _hover={{
+            color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.5rem",                     
+          }}
+          />
         </button> 
            
 

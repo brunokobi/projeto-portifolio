@@ -1,9 +1,16 @@
 { 
+  "meunome" : "Bruno Kobi Valadares de Amorim" ,  
   "ola_mundo":"Olá Mundo",
   "eu_sou":"eu sou o",
   "frase_1":"Mestrando em Computação Aplicada em Inteligência Artificial",
   "frase_2": "Desenvolvedor FullStack",
+
   "sobre":"Sobre",
+  "home":"Home",
+  "projetos":"Projetos",
+  "linkedin":"Linkedin",
+  "github":"Github",
+  "facebook":"Facebook",
 
   "pt":"Português",
   "en":"Inglês",
@@ -11,17 +18,49 @@
   "fr":"Francês",
   "de":"Alemão", 
   "zh":"Chinês",
+  "ru":"Russo",
+  "kl":"Klingon",
 
   "sobre_mim":"Sobre mim",
   "sobre1":"Apaixonado por programação, tecnologia e inovação.",
   "sobre2":"Sempre buscando novos conhecimentos e desafios.",
   "sobre3":"Entrando de cabeça no mundo da inteligência artificial.",
+ 
+  "educacao":"Educação",  
+  "educacao1":"Atualmente sou aluno de mestrado no IFES em computação aplicada na linha de Inteligência Artificial.Me formei 2004 como técnico em informática no IFES , mais acabei não seguindo na área. Desde 2018, decidi focar totalmente na área de desenvolvimento de software, deixando um cargo de 14 anos na área administrativa. Me formei em 2020, como Bacharel de Sistemas de Informação na Unisales.",
 
   "experiencia":"Experiência",
-  "educacao":"Educação",  
-  "educacao1":"Atualmente sou aluno de mestrado no IFES em computação aplicada na linha de Inteligência Artificial.Me formei 2004 como técnico em informática no IFES , mais acabei não seguindo na área. Desde 2018, decidi focar totalmente na área de desenvolvimento de software, deixando um cargo de 14 anos na área administrativa. Me formei em 2020, como Bacharel de Sistemas de Informação na Unisales."
+  "experiencia1t":"Assistente de Programação II",
+  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
+  "experiencia1d":"set de 2021 - o momento",
 
+  "experiencia2t":"Analista de desenvolvimento de software",
+  "experiencia2e":"Directy",
+  "experiencia2d":"nov de 2020 - set de 2021",
+
+  "experiencia3t":"Estagiário de sistemas da informação",
+  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d":"ago de 2019 - jan de 2020",
+
+  "competencias":"Competências",
+  "skills":"Skills",
+  "quali":"Qualificações",
+
+  "project1t":"Presence Now",
+  "project1d":"Presence Now é um software de aferição de assiduidade estudantil por reconhecimento facial em real-time , o FrontEnd foi desenvolvido em react utilizando typescript , o BackEnd utiliza as mesmas linguagens, e foi implementado em formado de Rest API, o módulo de reconhecimento facial utiliza apenas Javascript, HTML e CSS , mas faz uso da faceapi.js que utiliza a API do tensorflow.js e implementa uma série de redes neurais convulsionais (CNNs).  O sistema basicamente vai fazer o registro da presença do aluno através do reconhecimento facial em tempo real.",
+
+  "project2t":"Guia Alimentar BR",
+  "project2d":"Aplicativo do Guia Alimentar Brasileiro, desenvolvido pra o TCC da aluna de Nutrição Rafaela Soares Souza Kobi, o aplicativo foi desenvolvido em React Native pelo FrameWork Expo e foi Publicado na PlayStore do Google para dispositivos Android.  \n Aplicativo do Guia Alimentar Brasileiro, trabalho que pude participar exposto no XXVII Congresso Brasileiro de Nutrição, o maior congresso na América Latina de Alimentação e Nutrição, na feira nutri saber.",
   
+  "project3t":"Quiz da Etica - Aplicativo",
+  "project3d":"Projeto Integrador desenvolvido no ultimo periodo da graduação e conjunto  com Lucas Barbosa da Silva , utilizando java pelo Android Studio.(Clone Show do Milhão).",
+
+  "project4t":"Jogo das Placas ",
+  "project4d":"Um jogo educacional relacionado à educação no trânsito no que se refere as placas de trânsito, foi desenvolvido como trabalho da matéria de multimídia,  sendo feita toda da edição de imagens e áudios, linguagens utilizadas Javascript,HTML e CSS.",
+
+  "project5t":"Quiz Web Biomedicina Unisales",
+  "project5d":"Site de Quiz Online desenvolvido para os alunos do Curso de Biomedicina da Unisales."
+
 
 
 }

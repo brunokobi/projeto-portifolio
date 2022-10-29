@@ -39,14 +39,13 @@ import certf_7 from "../../assets/img/certificado_7.png";
 
 import { useObserver } from "./observers";
 import AnimatedStars from "../../components/AnimatedStars";
-import Astro from "../../components/Astro";
 import { useIntl } from "react-intl";
 
 const About = () => {
   const intl = useIntl();
   const skillsRef = useRef(null);
   const aboutRef = useRef(null);
-  const hobbiesRef = useRef(null);
+  const experienciaRef = useRef(null);
   const presentationRef = useRef(null);
 
   const certifications = useMemo(() => {
@@ -64,7 +63,7 @@ const About = () => {
 
   const { inViewport: presentationViewPort } = useObserver(presentationRef);
   const { inViewport: aboutViewPort } = useObserver(aboutRef);
-  const { inViewport: hobbiesViewPort } = useObserver(hobbiesRef);
+  const { inViewport: experienciaViewPort } = useObserver(experienciaRef);
   const { inViewport: skillsViewPort } = useObserver(skillsRef);
   const wrapperRef = useRef(null);
 
@@ -101,8 +100,7 @@ const About = () => {
               borderRadius: "24px",
             },
           }}
-        >
-          <Astro wrapper={wrapperRef} p />
+        >          
           <Stack
             id="top"
             direction={{ base: "column", md: "row" }}
@@ -216,7 +214,7 @@ const About = () => {
               borderRadius: "100%",
             }}
           >
-            <Link href="#hobbies">
+            <Link href="#experiencia">
               <Icon
                 as={BsChevronDoubleDown}
                 fontSize={24}
@@ -226,7 +224,7 @@ const About = () => {
             </Link>
           </Box>
           <Stack
-            id="hobbies"
+            id="experiencia"
             direction={{ base: "column", md: "row" }}
             justify="space-between"
             alignItems="center"
@@ -236,17 +234,17 @@ const About = () => {
             <StackItem
               textAlign="center"
               as={SlideFade}
-              in={hobbiesViewPort}
+              in={experienciaViewPort}
               offsetX="-50%"
               transition="all 1s"
             >
              
-              <Image src={rock} w={300} ref={hobbiesRef} />
+              <Image src={rock} w={300} ref={experienciaRef} />
             </StackItem>
             <StackItem
               maxW="350px"
               as={SlideFade}
-              in={hobbiesViewPort}
+              in={experienciaViewPort}
               offsetX="50%"
               transition="all 1s"
             >
@@ -258,23 +256,23 @@ const About = () => {
                 {intl.formatMessage({ id: "experiencia" })}
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>
-              <b>Assistente de Programação II </b><br/>
-              Ambipar Response Orbitgeo Ltda <br/>              
-              set de 2021 - o momento · 1 ano 2 meses  <br/>              
-              Competências: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
+              <b> {intl.formatMessage({ id: "experiencia1t" })} </b><br/>
+              {intl.formatMessage({ id: "experiencia1e" })}<br/>              
+              {intl.formatMessage({ id: "experiencia1d" })} <br/>              
+              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
               Metodologias Agile · MySQL · PHP · React.js · TypeScript · JavaScript · PostgreSQL
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>         
-              <b>Analista de desenvolvimento de software</b><br/>
-              Directy · Tempo integral <br/>
-              nov de 2020 - set de 2021 · 11 meses <br/>
-              Competências: Desenvolvimento de front-end · HTML · CSS · API REST · Node.js · Git · Metodologias Agile · MySQL · React.js · react native · TypeScript · JavaScript · expo
+              <b>{intl.formatMessage({ id: "experiencia2t" })}</b><br/>
+              {intl.formatMessage({ id: "experiencia2e" })}<br/>
+              {intl.formatMessage({ id: "experiencia2d" })}<br/>
+              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Node.js · Git · Metodologias Agile · MySQL · React.js · react native · TypeScript · JavaScript · expo
                             </Text>
               <Text fontSize={{ base: "xs", md: "sm" }}>               
-              <b>Estagiário de sistemas da informação </b><br/>
-              Ecosoft Consultoria E Softwares Ambientais Ltda <br/>
-              ago de 2019 - jan de 2020 · 6 meses <br/>
-              Competências: Desenvolvimento de front-end · HTML · CSS · API REST · JavaScript · PostgreSQL · AngularJS
+              <b>{intl.formatMessage({ id: "experiencia3t" })} </b><br/>
+              {intl.formatMessage({ id: "experiencia3e" })}<br/>
+              {intl.formatMessage({ id: "experiencia3d" })}<br/>
+              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · JavaScript · PostgreSQL · AngularJS
               </Text>
             </StackItem>
           </Stack>
@@ -311,7 +309,7 @@ const About = () => {
                 textShadow="0px 0px 10px #42c920"
                 textAlign="center"
               >
-                Skills
+               {intl.formatMessage({ id: "skills" })}
               </Heading>
             </StackItem>
             <StackItem>
@@ -390,7 +388,7 @@ const About = () => {
                 textShadow="0px 0px 10px #42c920"
                 textAlign="center"
               >
-                Qualificações
+                 {intl.formatMessage({ id: "quali" })}
               </Heading>
             </StackItem>
             <StackItem maxW={{ base: "350px", md: "700px" }} zIndex="999">

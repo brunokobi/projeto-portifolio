@@ -10,6 +10,8 @@ import "@formatjs/intl-relativetimeformat/locale-data/pt";
 import "@formatjs/intl-relativetimeformat/locale-data/fr";
 import "@formatjs/intl-relativetimeformat/locale-data/de";
 import "@formatjs/intl-relativetimeformat/locale-data/zh";
+import "@formatjs/intl-relativetimeformat/locale-data/ru";
+import "@formatjs/intl-relativetimeformat/locale-data/kl";
 
 import enMessages from "../src/i18n/messages/en.json";
 import esMessages from "../src/i18n/messages/es.json";
@@ -17,6 +19,9 @@ import ptMessages from "../src/i18n/messages/pt.json";
 import frMessages from "../src/i18n/messages/fr.json";
 import deMessages from "../src/i18n/messages/de.json";
 import zhMessages from "../src/i18n/messages/zh.json";
+import ruMessages from "../src/i18n/messages/ru.json";
+import klMessages from "../src/i18n/messages/kl.json";
+
 
 const allMessages = {
   en: enMessages,
@@ -25,6 +30,8 @@ const allMessages = {
   fr: frMessages,
   de: deMessages,
   zh: zhMessages,
+  ru: ruMessages,
+  kl: klMessages,
 };
 
 const I18N_CONFIG_KEY = process.env.REACT_APP_I18N_CONFIG_KEY || "i18nConfig";
