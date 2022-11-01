@@ -88,9 +88,6 @@ const Projects = () => {
       tags: ["#JAVA","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
       code: "https://github.com/brunokobi",
     },
-
-  
-
   
    
   ];
