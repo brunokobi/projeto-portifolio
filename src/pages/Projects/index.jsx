@@ -13,6 +13,7 @@ import placas from "../../assets/img/placas.png";
 import bio from "../../assets/img/bio.png";
 import guia from "../../assets/img/guia.png";
 import etica from "../../assets/img/etica.png";
+import mestrado from "../../assets/img/mestrado.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -26,6 +27,25 @@ const Projects = () => {
       description: intl.formatMessage({id: 'project1d'}),     
       tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
       code: "https://github.com/brunokobi/tccreconhecimento",
+    },
+
+    {
+      title: intl.formatMessage({id: 'project6t'}),
+      link: "",
+      img: mestrado,
+      demo: "https://humane-neon-20a.notion.site/Mestrado-Computa-o-Aplicada-IFES-64a075f439f740c4be96345c615f97c9",
+      description: intl.formatMessage({id: 'project6d'}),
+      tags: ["#PYTHON","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
+      code: "https://github.com/brunokobi",
+    },
+
+    {
+      title: intl.formatMessage({id: 'project7t'}),
+      link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6961453558051291136?compact=1",
+      demo: "",
+      description: intl.formatMessage({id: 'project7d'}),     
+      tags: ["#JAVA","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
+      code: "https://github.com/brunokobi",
     },
     
     {
@@ -68,6 +88,9 @@ const Projects = () => {
       tags: ["#REACT"],
       code: "https://github.com/brunokobi/biomedicina",
     },
+
+  
+
   
    
   ];
