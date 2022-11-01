@@ -61,5 +61,11 @@
   "project4d":"An educational game related to traffic education with regard to traffic signs, was developed as a multimedia subject work, all of which were image and audio editing, languages ​​used Javascript, HTML and CSS." ,
 
   "project5t":"Quiz Web Biomedicina Unisales",
-  "project5d":"Online Quiz Site developed for students of the Unisales Biomedicine Course."
+  "project5d":"Online Quiz Site developed for students of the Unisales Biomedicine Course.",
+
+  "project6t":"Mestrado em Inteligência Artificial",
+  "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
+
+  "project7t":"Algoritmos de Busca",
+  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES ."
 }

@@ -60,7 +60,12 @@
   "project4d":"Se desarrolló un juego educativo relacionado con la educación vial en lo que respecta a las señales de tránsito, como trabajo de la asignatura multimedia, realizándose toda la edición de imágenes y audios, se utilizaron los lenguajes Javascript, HTML y CSS." ,
 
   "project5t":"Cuestionario Web Biomedicina Unisales",
-  "project5d":"Sitio de cuestionarios en línea desarrollado para estudiantes del Curso de Biomedicina de Unisales."
+  "project5d":"Sitio de cuestionarios en línea desarrollado para estudiantes del Curso de Biomedicina de Unisales.",
+  "project6t":"Mestrado em Inteligência Artificial",
+  "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
+
+  "project7t":"Algoritmos de Busca",
+  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES ."
 
 
 
