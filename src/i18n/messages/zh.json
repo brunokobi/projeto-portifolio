@@ -59,12 +59,11 @@
 
   "project5t":"Quiz Web Biomedicina Unisales",
   "project5d" : "為 Unisales 生物醫學課程的學生開發的在線測驗網站。",
-  "project6t":"Mestrado em Inteligência Artificial",
-  
-  "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
 
-  "project7t":"Algoritmos de Busca",
-  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES ."
+  "project6t":"人工智能碩士",
+   "project6d":"在 IFES - Instituto Federal do Espírito Santo 的人工智能碩士學位中開發的課堂筆記和工作。",
 
+   "project7t":"搜索算法",
+   "project7d":"用 Python 開發的搜索算法，用於 IFES 碩士學位的人工智能學科。"
 
 }
