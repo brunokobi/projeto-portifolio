@@ -20,6 +20,7 @@
   "zh":"中國人",
   "ru":"俄語",
    "kl":"克林貢語",
+   "ar":"阿拉伯語",
 
   "sobre_mim":"關於我",
   "sobre1":"對編程、技術和創新充滿熱情。",
@@ -65,6 +66,9 @@
    "project6d":"在 IFES - Instituto Federal do Espírito Santo 的人工智能碩士學位中開發的課堂筆記和工作。",
 
    "project7t":"搜索算法",
-   "project7d":"用 Python 開發的搜索算法，用於 IFES 碩士學位的人工智能學科。"
+   "project7d":"用 Python 開發的搜索算法，用於 IFES 碩士學位的人工智能學科。",
+   
+   "project8t":"FaceApi Test.js",
+   "project8d":"FaceApi.js 测试站点，使用 tensorflow.js API 并实现一系列惊厥神经网络 (CNN)。"
 
 }

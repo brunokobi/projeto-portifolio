@@ -21,6 +21,7 @@
   "zh": "Chinesisch",
   "ru": "Russisch",
   "kl": "Klingone",
+  "ar": "Arabisch",
 
   "sobre_mim":"Über mich",
   "sobre1":"Leidenschaft für Programmierung, Technologie und Innovation.",
@@ -67,6 +68,9 @@
   "project6d":"Unterrichtsnotizen und Arbeiten, die im Masterstudiengang Künstliche Intelligenz am IFES - Instituto Federal do Espírito Santo entwickelt wurden.",
 
   "project7t":"Suchalgorithmen",
-  "project7d":"In Python entwickelte Suchalgorithmen für die Disziplin Künstliche Intelligenz des Masterstudiengangs am IFES ."
+  "project7d":"In Python entwickelte Suchalgorithmen für die Disziplin Künstliche Intelligenz des Masterstudiengangs am IFES .",
+
+  "project8t":"FaceApi Test.js",
+  "project8d":"FaceApi.js-Testseite, die die tensorflow.js-API verwendet und eine Reihe konvulsiver neuronaler Netze (CNNs) implementiert."
 
 }

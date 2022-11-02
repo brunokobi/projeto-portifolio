@@ -6,6 +6,7 @@ import spain from "../../assets/img/spain.png";
 import france from "../../assets/img/france.png";
 import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
+import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
 import { FaReact } from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
@@ -108,6 +109,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='pt' ? {  color: "#42c920",
+            border: "groove 3px #42c920",
+            borderRadius: "25px",        
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
@@ -127,6 +130,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='en' ? {  color: "#42c920",
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
@@ -146,7 +151,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='es' ? {  color: "#42c920",
-            transition: "0.2s",         
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
@@ -165,7 +171,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='fr' ? {  color: "#42c920",
-            transition: "0.2s",         
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
@@ -184,7 +191,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='de' ? {  color: "#42c920",
-            transition: "0.2s",         
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
@@ -203,7 +211,8 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='zh' ? {  color: "#42c920",
-            transition: "0.2s",         
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
@@ -222,7 +231,28 @@ const Nav = () => {
           }}
           style={{
             ...(idioma==='ru' ? {  color: "#42c920",
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
+          }}
+          />
+        </button> 
+
+        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ar' }));
+           navigate('/')
+          window.location.reload();}}>
+          <Image src={arabe} w={{ base: 25, md: 25 }} margin={'1'} title= {intl.formatMessage({id: 'ar'})}
+            _hover={{
+            color: "#42c920",
             transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",                     
+          }}
+          style={{
+            ...(idioma==='ar' ? {  color: "#42c920",
+             border: "groove 3px #42c920",
+            borderRadius: "25px",             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
@@ -241,7 +271,10 @@ const Nav = () => {
             width:"2.5rem",                     
           }}
           style={{
-            ...(idioma==='kl' ? {  color: "#42c920",
+            ...(idioma==='kl' ? {  
+            color: "#42c920",
+            border: "groove 3px #42c920",
+            borderRadius: "25px",          
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.5rem"  } : ""),

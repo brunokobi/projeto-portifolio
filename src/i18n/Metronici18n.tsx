@@ -4,7 +4,7 @@ import { WithChildren } from "../helpers/react18MigrationHelpers";
 const I18N_CONFIG_KEY = process.env.REACT_APP_I18N_CONFIG_KEY || "i18nConfig";
 
 type Props = {
-  selectedLang: "en" | "es" | "pt";
+  selectedLang: "en" | "es" | "pt" | "fr" | "de" | "ru" | "zh" | "ar" | "kl";
 };
 const initialState: Props = {
   selectedLang: "pt",

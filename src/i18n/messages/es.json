@@ -21,6 +21,7 @@
    "zh":"chino",
    "ru":"Russo",
    "kl":"Klingon",
+   "ar":"árabe",
 
    "sobre_mim":"Sobre mi",
    "sobre1":"Apasionado por la programación, la tecnología y la innovación.",
@@ -67,7 +68,11 @@
   "project6d":"Apuntes de clase y trabajo desarrollado en la maestría en Inteligencia Artificial de IFES - Instituto Federal do Espírito Santo.",
 
   "project7t":"Algoritmos de búsqueda",
-  "project7d":"Algoritmos de búsqueda desarrollados en Python para la disciplina de Inteligencia Artificial de la maestría en IFES ."
+  "project7d":"Algoritmos de búsqueda desarrollados en Python para la disciplina de Inteligencia Artificial de la maestría en IFES .",
+
+  "project8t":"Prueba FaceApi.js",
+   "project8d":"Sitio de prueba FaceApi.js, usando la API tensorflow.js e implementando una serie de redes neuronales convulsivas (CNN)."
+
 
 
 }

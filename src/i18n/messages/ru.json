@@ -21,6 +21,7 @@
   "zh":"Китайский",
   "ru": "Русский",
   "kl": "Клингон",
+  "ar": "Арабский",
 
   "sobre_mim":"Обо мне",
   "sobre1":"Увлечен программированием, технологиями и инновациями.",
@@ -66,7 +67,13 @@
   "project6d":"Заметки о занятиях и работа, разработанная для получения степени магистра в области искусственного интеллекта в IFES - Instituto Federal do Espírito Santo.",
 
   "project7t":"Алгоритмы поиска",
-  "project7d":"Алгоритмы поиска, разработанные на Python для дисциплины 'Искусственный интеллект' для получения степени магистра в IFES ."
+  "project7d":"Алгоритмы поиска, разработанные на Python для дисциплины 'Искусственный интеллект' для получения степени магистра в IFES .",
+
+  "project8t":"FaceApi Test.js",
+   "project8d":"Site de test FaceApi.js, utilisant l'API tensorflow.js et implémentant une série de réseaux de neurones convulsifs (CNN).",
+
+   "project8t":"FaceApi Test.js",
+   "project8d":"Тестовый сайт FaceApi.js, использующий API tensorflow.js и реализующий серию конвульсивных нейронных сетей (CNN)"
 
 
 }

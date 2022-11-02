@@ -14,6 +14,7 @@ import bio from "../../assets/img/bio.png";
 import guia from "../../assets/img/guia.png";
 import etica from "../../assets/img/etica.png";
 import mestrado from "../../assets/img/mestrado.png";
+import face from "../../assets/img/face.jpg";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -49,6 +50,16 @@ const Projects = () => {
       tags: ["#JAVA", "#ANDROID", "#ÉTICA"],
       code: "https://github.com/brunokobi/QuizdaEtica",
     },
+
+    {
+      title: intl.formatMessage({id: 'project8t'}),
+      link: "",
+      img:face,
+      demo: "https://testerfbrunokobi.netlify.app/",
+      description: intl.formatMessage({id: 'project8d'}),     
+      tags: ["#HTML", "#CSS","#JAVASCRIPT", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
+      code: "https://github.com/brunokobi/TesteFaceApiJS",
+    },   
   
     {
       title: intl.formatMessage({id: 'project4t'}),
