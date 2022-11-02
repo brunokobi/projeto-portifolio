@@ -66,6 +66,10 @@ const Nav = () => {
         
   
   ];
+  let ls = localStorage.getItem("i18nConfig")
+  let lang = JSON.parse(ls)
+  let idioma =lang.selectedLang
+  
 
   return (
     <AnimatePresence>
@@ -102,6 +106,12 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
           }}
+          style={{
+            ...(idioma==='pt' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
+          }}
           />
         </button> 
 
@@ -114,6 +124,12 @@ const Nav = () => {
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
+          }}
+          style={{
+            ...(idioma==='en' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
           }}
           />
         </button> 
@@ -128,6 +144,12 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
           }}
+          style={{
+            ...(idioma==='es' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
+          }}
           />
         </button> 
 
@@ -140,6 +162,12 @@ const Nav = () => {
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
+          }}
+          style={{
+            ...(idioma==='fr' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
           }}
           />
         </button>
@@ -154,6 +182,12 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
           }}
+          style={{
+            ...(idioma==='de' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
+          }}
           />
           </button> 
 
@@ -166,6 +200,12 @@ const Nav = () => {
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
+          }}
+          style={{
+            ...(idioma==='zh' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
           }}
           />
         </button> 
@@ -180,6 +220,12 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",                     
           }}
+          style={{
+            ...(idioma==='ru' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.0rem",  } : ""),
+          }}
           />
         </button> 
 
@@ -193,6 +239,12 @@ const Nav = () => {
             transition: "0.2s",         
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.5rem",                     
+          }}
+          style={{
+            ...(idioma==='kl' ? {  color: "#42c920",
+            transition: "0.2s",         
+            filter: "drop-shadow(-3px -3px 20px #42c920)",           
+            width:"2.5rem"  } : ""),
           }}
           />
         </button> 
