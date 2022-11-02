@@ -21,6 +21,7 @@
    "zh":"Chinese",
    "ru":"Russian",
    "kl":"Klingon",
+   "ar":"Arabic",
 
    "sobre_mim":"About me",
    "sobre1":"Passionate about programming, technology and innovation.",
@@ -68,6 +69,9 @@
   "project6d":"Class notes and work developed in the master's degree in Artificial Intelligence at IFES - Instituto Federal do Espírito Santo.",
 
   "project7t":"Search Algorithms",
-  "project7d":"Search Algorithms developed in Python for the Artificial Intelligence discipline of the master's degree at IFES ."
+  "project7d":"Search Algorithms developed in Python for the Artificial Intelligence discipline of the master's degree at IFES .",
+
+  "project8t":"FaceApi.js Test",
+  "project8d":"FaceApi.js Test Site, using the tensorflow.js API and implementing a series of convulsive neural networks (CNNs)."
 
 }

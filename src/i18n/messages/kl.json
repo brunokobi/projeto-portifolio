@@ -66,7 +66,12 @@
   "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
 
   "project7t":"Algoritmos de Busca",
-  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES ."
+  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES .",
+
+  "project8t":"Teste da FaceApi.js",
+  "project8d":"Site de Teste da FaceApi.js, utilizando a API do tensorflow.js e implementa uma série de redes neurais convulsionais (CNNs)."
+
+  
 
 
 

@@ -1,0 +1,75 @@
+{ 
+  "meunome" : "برونو كوبي فالاداريس دي أموريم ," ,  
+  "ola_mundo":"مرحبا بالعالم",
+  "eu_sou":"أنا ال",
+  "frase_1":"ماجستير في الحوسبة التطبيقية في الذكاء الاصطناعي",
+  "frase_2": "مطور FullStack",
+
+  "sobre":"حول",
+  "home":"الصفحة الرئيسية",
+  "projetos":"المشاريع",
+  "linkedin":"ينكدين",
+  "github":"جيثب",
+  "facebook":"فيسبوك",
+  "instagram":"انستغرام",
+
+  "pt":"البرتغالية",
+  "en":"الإنجليزية",
+  "es":"الإسبانية",
+  "fr":"الفرنسية",
+  "de":"الألمانية", 
+  "zh":"الصينية",
+  "ru":"الروسية",
+  "kl":"الكلمات الدلالية",
+  "ar":"العربية",
+
+  "sobre_mim":"حولي",
+  "sobre1":"شغوف بالبرمجة والتكنولوجيا والابتكار",
+  "sobre2":"دائما تبحث عن المعرفة والتحديات الجديدة",
+  "sobre3":"دخول عالم الذكاء الاصطناعي",
+ 
+  "educacao":"التعليم",  
+  "educacao1":"أنا حاليًا طالب ماجستير في IFES في الحوسبة التطبيقية في مجال الذكاء الاصطناعي. تخرجت في عام 2004 كفني كمبيوتر في IFES ، لكن انتهى بي الأمر بعدم المتابعة في المنطقة. منذ عام 2018 ، قررت التركيز بالكامل على مجال تطوير البرمجيات ، تاركًا دورًا لمدة 14 عامًا في المجال الإداري. لقد تخرجت في عام 2020 بدرجة البكالوريوس في نظم المعلومات في Unisales.",
+
+  "experiencia":"الخبرة",
+  "experiencia1t":"Assistente de Programação II",
+  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
+  "experiencia1d":"set de 2021 - o momento",
+
+  "experiencia2t":"Analista de desenvolvimento de software",
+  "experiencia2e":"Directy",
+  "experiencia2d":"nov de 2020 - set de 2021",
+
+  "experiencia3t":"Estagiário de sistemas da informação",
+  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d":"ago de 2019 - jan de 2020",
+
+  "competencias":"المهارات",
+  "skills":"المهارات",
+  "quali":"المؤهلات",
+
+  "project1t":"Presence Now",
+  "project1d":"Presence Now هو برنامج التعرف على الوجه في الوقت الفعلي لحضور الطلاب ، وقد تم تطوير FrontEnd في التفاعل باستخدام الكتابة المطبوعة ، ويستخدم BackEnd نفس اللغات ، وتم تنفيذه في شكل Rest API ، يستخدم التعرف على الوجه الوحدة النمطية Javascript فقط و HTML و CSS ، ولكنه يستخدم faceapi.js الذي يستخدم واجهة برمجة تطبيقات tensorflow.js وينفذ سلسلة من الشبكات العصبية المتشنجة (CNNs) ، وسيسجل النظام أساسًا وجود الطالب من خلال التعرف على الوجه في الوقت الفعلي. ",
+
+  "project2t":"Guia Alimentar BR",
+  "project2d":"تطبيق دليل الغذاء البرازيلي ، الذي تم تطويره من أجل TCC للطالبة Rafaela Soares Souza Kobi ، تم تطوير التطبيق في React Native بواسطة FrameWork Expo وتم نشره على Google PlayStore لأجهزة Android. \n تطبيق Guia Alimentar Brasileiro ، العمل أنني تمكنت من المشاركة في معرض في المؤتمر السابع والعشرين البرازيلي للتغذية ، وهو أكبر مؤتمر في أمريكا اللاتينية حول الغذاء والتغذية ، في معرض صابر للمغذيات.",
+  
+  "project3t": "اختبار الأخلاق - التطبيق",
+  "project3d": "مشروع متكامل تم تطويره في فترة التخرج الأخيرة بالاشتراك مع Lucas Barbosa da Silva ، باستخدام java بواسطة Android Studio. (Clone Show do Milhão).",
+
+ "project4t": "Plate Game",
+  "project4d": "لعبة تعليمية تتعلق بالتثقيف المروري فيما يتعلق بإشارات المرور , تم تطويرها كعمل لموضوع الوسائط المتعددة , حيث يتم إجراء جميع عمليات تحرير الصور والتسجيلات الصوتية , واللغات المستخدمة Javascript و HTML و CSS.",
+
+  "project5t": "Quiz Web Biomedicina Unisales" ,
+  "project5d": "موقع مسابقة عبر الإنترنت تم تطويره لطلاب دورة Unisales Biomedicine Course.",
+
+  "project6t": "ماجستير في الذكاء الاصطناعي",
+  "project6d": "ملاحظات الفصل والعمل الذي تم تطويره في درجة الماجستير في الذكاء الاصطناعي في IFES - Instituto Federal do Espírito Santo.",
+
+  "project7t": "خوارزميات البحث",
+  "project7d": "خوارزميات البحث المطورة بلغة Python لتخصص الذكاء الاصطناعي لدرجة الماجستير في IFES.",
+
+  "project8t": "FaceApi Test.js",
+  "project8d": "موقع اختبار FaceApi.js ، باستخدام واجهة برمجة تطبيقات tensorflow.js وتنفيذ سلسلة من الشبكات العصبية المتشنجة (CNNs)."
+ 
+}

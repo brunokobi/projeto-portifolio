@@ -12,6 +12,7 @@ import "@formatjs/intl-relativetimeformat/locale-data/de";
 import "@formatjs/intl-relativetimeformat/locale-data/zh";
 import "@formatjs/intl-relativetimeformat/locale-data/ru";
 import "@formatjs/intl-relativetimeformat/locale-data/kl";
+import "@formatjs/intl-relativetimeformat/locale-data/ar";
 
 import enMessages from "../src/i18n/messages/en.json";
 import esMessages from "../src/i18n/messages/es.json";
@@ -21,6 +22,7 @@ import deMessages from "../src/i18n/messages/de.json";
 import zhMessages from "../src/i18n/messages/zh.json";
 import ruMessages from "../src/i18n/messages/ru.json";
 import klMessages from "../src/i18n/messages/kl.json";
+import arMessages from "../src/i18n/messages/ar.json";
 
 
 const allMessages = {
@@ -32,6 +34,7 @@ const allMessages = {
   zh: zhMessages,
   ru: ruMessages,
   kl: klMessages,
+  ar: arMessages,
 };
 
 const I18N_CONFIG_KEY = process.env.REACT_APP_I18N_CONFIG_KEY || "i18nConfig";
