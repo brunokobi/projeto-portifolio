@@ -69,7 +69,10 @@ const Nav = () => {
   ];
   let ls = localStorage.getItem("i18nConfig")
   let lang = JSON.parse(ls)
-  let idioma =lang.selectedLang
+  let idioma = 'pt'
+  if(lang){
+  idioma =lang.selectedLang
+  }
   
 
   return (

@@ -66,12 +66,13 @@ export function setLanguage(lang) {
 
 
 function App() {
-  const lang = getConfig(); 
-  let locale='pt'
-  if(lang.selectedLang){ 
-  locale = lang.selectedLang;
-}
+  const lang = getConfig();
+  let locale = 'pt';
+  if(lang) { 
+    locale = lang.selectedLang;
+  }
   const messages = allMessages[locale];
+
   return (
     <> 
      <IntlProvider locale={locale} messages={messages}>   
