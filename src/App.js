@@ -66,8 +66,11 @@ export function setLanguage(lang) {
 
 
 function App() {
-  const lang = getConfig();  
-  const locale = lang.selectedLang;
+  const lang = getConfig(); 
+  let locale='pt'
+  if(lang.selectedLang){ 
+  locale = lang.selectedLang;
+}
   const messages = allMessages[locale];
   return (
     <> 
