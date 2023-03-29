@@ -8,7 +8,7 @@ import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
 import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
-import { FaReact } from "react-icons/fa";
+import { FaReact,FaRobot } from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { AiOutlineGithub } from "react-icons/ai";
 import { AiOutlineInstagram } from "react-icons/ai";
@@ -43,7 +43,13 @@ const Nav = () => {
       label: intl.formatMessage({id: 'projetos'}),
       url: "/projects",
       icon: FaReact,
-    },   
+    }, 
+    {
+      label: "ChatGPT",
+      // label: intl.formatMessage({id: 'projetos'}),
+      url: "/chat",
+      icon: FaRobot,
+    },    
     {
       label: intl.formatMessage({id: 'linkedin'}),
       url: "https://www.linkedin.com/in/brunokobi/",
