@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import About from "../pages/About";
 import Projects from "../pages/Projects";
 import Nav from "../components/Nav";
+import InputComChat from "../pages//ChatGPT//index";
 
 const Router = () => {
   return (
@@ -11,7 +12,8 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/projects" element={<Projects />} />       
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/chat" element={<InputComChat />} />           
       </Routes>
       <Nav />
     </Box>
