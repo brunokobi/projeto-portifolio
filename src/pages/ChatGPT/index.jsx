@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Image } from "@chakra-ui/react";
+import { Alert, Box, Image } from "@chakra-ui/react";
 import AnimatedStars from "../../components/AnimatedStars";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
@@ -14,7 +14,8 @@ function InputComChat() {
   const { Configuration, OpenAIApi } = require("openai"); 
 
 const configuration = new Configuration({  
-  apiKey:'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',
+  organization: "org-Kjg0Be7TJDFMtKnUBnrIVaK8",
+  apiKey:'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',
   // apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
@@ -30,7 +31,13 @@ const openai = new OpenAIApi(configuration);
           n: 1,
           stop: '\n'
     });
-    console.log(completion.data.choices[0].text);   
+    try {
+      console.log(completion.data.choices[0].text);
+      setTexto(completion.data.choices[0].text);   
+    } catch (error) {
+      Alert.alert('Erro ao enviar mensagem'+ error);
+      console.log(error);
+    }     
   };
 
   return (
