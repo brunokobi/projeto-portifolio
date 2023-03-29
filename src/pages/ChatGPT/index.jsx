@@ -15,7 +15,7 @@ function InputComChat() {
 
 const configuration = new Configuration({  
   organization: "org-Kjg0Be7TJDFMtKnUBnrIVaK8",
-  apiKey:'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',
+  apiKey:'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',
   // apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
