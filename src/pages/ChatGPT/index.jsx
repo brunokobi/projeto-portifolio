@@ -28,12 +28,13 @@ const openai = new OpenAIApi(configuration);
           n: 1,
           stop: '\n'
     });
-    try {
+    if(completion.data){
       console.log(completion.data.choices[0].text);
       setTexto(completion.data.choices[0].text);   
-    } catch (error) {
-      Alert.alert('Erro ao enviar mensagem'+ error);
-      console.log(error);
+    }  
+    if(completion.data.error){
+      Alert.alert('Erro ao enviar mensagem'+ completion.data.error);
+      console.log(completion.data);
     }     
   };
 
