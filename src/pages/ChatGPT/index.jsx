@@ -19,8 +19,6 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-
-
   const enviarMensagem = async () => {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
