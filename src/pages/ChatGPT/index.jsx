@@ -14,7 +14,8 @@ function InputComChat() {
   const { Configuration, OpenAIApi } = require("openai"); 
 
 const configuration = new Configuration({  
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey:'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',
+  // apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
