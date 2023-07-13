@@ -35,7 +35,7 @@ const openai = new OpenAIApi(configuration);
      console.log(error);
     });
 
-    //console.log("reposta",completion);
+    console.log("reposta",completion);
     // if(completion.data){
     //   console.log(completion.data.choices[0].text);
     //   setTexto(completion.data.choices[0].text);   
