@@ -66,11 +66,15 @@
   "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
 
   "project7t":"Algoritmos de Busca",
-  "project7d":"Algoritmos de Busca desenvolvidos em Python para a disciplina de Inteligência Artificial do mestrado no IFES .",
+  
+"project7d": "PythonDa' qIvoq chaw' 'e' DaH jatlh chenmoHmeH roj cha'logh la'lu'chugh IFES maH. 'oH 'e' vIneHbe'lu'chu'be' jatlh Hol yItlhutlh.",
 
-  "project8t":"Teste da FaceApi.js",
-  "project8d":"Site de Teste da FaceApi.js, utilizando a API do tensorflow.js e implementa uma série de redes neurais convulsionais (CNNs)."
+  "project8t":"Teste da FaceApi.js", 
+  "project8d": "FaceApi.js pe'vIl jatlh test laH API tensorflow.js je CNNs rur neH neural networks cha'logh.",
 
+
+"project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
+"project9d": "QInlIj - Bruno Kobi Valadares De' Amorim. React Duy vIparHa' Dajatlh vItlhutlh. Holmey Dach 'oH maH, Klingon(Star Trek), Português, Inglês, Español, Français, Deutsch, 中文, Русский, عربى. Theme jatlh: @matheus rocha"
   
 
 

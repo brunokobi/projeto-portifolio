@@ -14,11 +14,13 @@ import { AiOutlineGithub } from "react-icons/ai";
 import { AiOutlineInstagram } from "react-icons/ai";
 import { AiOutlineFacebook } from "react-icons/ai";
 import { RiAliensFill } from "react-icons/ri";
+import {SiTensorflow} from "react-icons/si";
 import { IoMdRocket } from "react-icons/io";
 import china from "../../assets/img/china.png";
 import { Image } from "@chakra-ui/react";
 import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
+
 
 
 import Item from "./Item";
@@ -49,7 +51,13 @@ const Nav = () => {
       // label: intl.formatMessage({id: 'projetos'}),
       url: "/chat",
       icon: FaRobot,
-    },    
+    },
+    {
+      label: "TensorFlow",
+      // label: intl.formatMessage({id: 'projetos'}),
+      url: "/tensorflow",
+      icon: SiTensorflow,
+    },        
     {
       label: intl.formatMessage({id: 'linkedin'}),
       url: "https://www.linkedin.com/in/brunokobi/",

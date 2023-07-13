@@ -69,6 +69,11 @@
    "project7d":"用 Python 開發的搜索算法，用於 IFES 碩士學位的人工智能學科。",
    
    "project8t":"FaceApi Test.js",
-   "project8d":"FaceApi.js 测试站点，使用 tensorflow.js API 并实现一系列惊厥神经网络 (CNN)。"
+   "project8d":"FaceApi.js 测试站点，使用 tensorflow.js API 并实现一系列惊厥神经网络 (CNN)。",
+
+   "project9t": "布鲁诺·科比·瓦拉达雷斯·德·阿莫林的作品集",
+"project9d": "基于React开发的作品展示网站。可用语言：克林贡语（星际迷航），葡萄牙语，英语，西班牙语，法语，德语，中文，俄语，阿拉伯语。主题制作：@matheus rocha"
+
+
 
 }
