@@ -73,7 +73,10 @@
    "project8d":"Site de test FaceApi.js, utilisant l'API tensorflow.js et implémentant une série de réseaux de neurones convulsifs (CNN).",
 
    "project8t":"FaceApi Test.js",
-   "project8d":"Тестовый сайт FaceApi.js, использующий API tensorflow.js и реализующий серию конвульсивных нейронных сетей (CNN)"
+   "project8d":"Тестовый сайт FaceApi.js, использующий API tensorflow.js и реализующий серию конвульсивных нейронных сетей (CNN)",
+
+   "project9t": "Портфолио - Бруно Коби Валадарес де Аморим",
+"project9d": "Сайт, разработанный на React, для представления портфолио. Доступные языки: Клингонский (Звездный путь), Португальский, Английский, Испанский, Французский, Немецкий, Китайский, Русский, Арабский. Автор темы: @matheus rocha"
 
 
 }

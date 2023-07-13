@@ -15,7 +15,7 @@ import guia from "../../assets/img/guia.png";
 import etica from "../../assets/img/etica.png";
 import mestrado from "../../assets/img/mestrado.png";
 import face from "../../assets/img/face.jpg";
-import portifolio from "../../assets/img/portifolio.jpg";
+import portifolio from "../../assets/img/portifolio.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
