@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Box, Image } from "@chakra-ui/react";
+import {Box, Image } from "@chakra-ui/react";
 import AnimatedStars from "../../components/AnimatedStars";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
@@ -27,15 +27,23 @@ const openai = new OpenAIApi(configuration);
           temperature: 0.5,
           n: 1,
           stop: '\n'
+    }).then((data) => {
+      console.log(data.data.choices[0].text);
+      setTexto(data.data.choices[0].text);
+    }).catch((error) => {
+     alert(error);
+     console.log(error);
     });
-    if(completion.data){
-      console.log(completion.data.choices[0].text);
-      setTexto(completion.data.choices[0].text);   
-    }  
-    if(completion.data.error){
-      Alert.alert('Erro ao enviar mensagem'+ completion.data.error);
-      console.log(completion.data);
-    }     
+
+    //console.log("reposta",completion);
+    // if(completion.data){
+    //   console.log(completion.data.choices[0].text);
+    //   setTexto(completion.data.choices[0].text);   
+    // }  
+    // if(completion.data.error){
+    //   Alert.alert('Erro ao enviar mensagem'+ completion.data.error);
+    //   console.log(completion.data);
+    // }     
   };
 
   return (

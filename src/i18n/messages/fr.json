@@ -72,7 +72,10 @@
   "project7d":"Algorithmes de recherche développés en Python pour la discipline Intelligence Artificielle du master à l'IFES.",
 
   "project8t":"FaceApi Test.js",
-   "project8d":"Site de test FaceApi.js, utilisant l'API tensorflow.js et implémentant une série de réseaux de neurones convulsifs (CNN)."
+   "project8d":"Site de test FaceApi.js, utilisant l'API tensorflow.js et implémentant une série de réseaux de neurones convulsifs (CNN).",
+
+   "project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
+"project9d": "Site développé en React pour la présentation du portfolio. Langues disponibles: Klingon (Star Trek), Portugais, Anglais, Espagnol, Français, Allemand, Chinois, Russe, Arabe. Crédits du thème: @matheus rocha"
 
 
 }

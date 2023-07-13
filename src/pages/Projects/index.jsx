@@ -15,6 +15,7 @@ import guia from "../../assets/img/guia.png";
 import etica from "../../assets/img/etica.png";
 import mestrado from "../../assets/img/mestrado.png";
 import face from "../../assets/img/face.jpg";
+import portifolio from "../../assets/img/portifolio.jpg";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -28,7 +29,17 @@ const Projects = () => {
       description: intl.formatMessage({id: 'project1d'}),     
       tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
       code: "https://github.com/brunokobi/tccreconhecimento",
-    },   
+    },
+    
+    {
+      title: intl.formatMessage({id: 'project9t'}),
+      link: "",
+      img:portifolio,
+      demo: "https://brunokobi.netlify.app",
+      description: intl.formatMessage({id: 'project9d'}),
+      tags: ["#REACT","#JAVASCRIPT","MULTILINGUAGEM", "#PORTIFÓLIO"],
+      code: "https://github.com/brunokobi/projeto-portifolio",
+    },
     
     {
       title: intl.formatMessage({id: 'project2t'}),
