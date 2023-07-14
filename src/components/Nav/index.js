@@ -46,18 +46,18 @@ const Nav = () => {
       url: "/projects",
       icon: FaReact,
     }, 
-    {
-      label: "ChatGPT",
-      // label: intl.formatMessage({id: 'projetos'}),
-      url: "/chat",
-      icon: FaRobot,
-    },
-    {
-      label: "TensorFlow",
-      // label: intl.formatMessage({id: 'projetos'}),
-      url: "/tensorflow",
-      icon: SiTensorflow,
-    },        
+    // {
+    //   label: "ChatGPT",
+    //   // label: intl.formatMessage({id: 'projetos'}),
+    //   url: "/chat",
+    //   icon: FaRobot,
+    // },
+    // {
+    //   label: "TensorFlow",
+    //   // label: intl.formatMessage({id: 'projetos'}),
+    //   url: "/tensorflow",
+    //   icon: SiTensorflow,
+    // },        
     {
       label: intl.formatMessage({id: 'linkedin'}),
       url: "https://www.linkedin.com/in/brunokobi/",
