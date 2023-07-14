@@ -30,7 +30,7 @@ const Item = ({ label, url, icon }) => {
       initial="rest"
       whileHover="hover"
       animate="rest"
-      mx={{ base: 3, md: 6 }}
+      mx={{ base: 2, md: 4 }}
       variants={linkMotion}
     >
       {url.includes("http") ? (

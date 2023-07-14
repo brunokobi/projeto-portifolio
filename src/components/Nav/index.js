@@ -20,9 +20,9 @@ import { Image } from "@chakra-ui/react";
 import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
 
-
-
 import Item from "./Item";
+
+const baseURL = process.env.REACT_APP_API_URL;
 
 
 const Nav = () => {
@@ -31,18 +31,18 @@ const Nav = () => {
   const sections = [
     {
       label: intl.formatMessage({ id: "home" }),
-      url: "/",
+      url: `${baseURL}/`,
       icon: IoMdRocket,
     },
     {
       label: intl.formatMessage({id: 'sobre'}),
-      url: "/about",
+      url:  `${baseURL}/about`,
       icon: RiAliensFill,
     },
   
     {
       label: intl.formatMessage({id: 'projetos'}),
-      url: "/projects",
+      url:  `${baseURL}/projects`,
       icon: FaReact,
     }, 
     // {
@@ -105,13 +105,15 @@ const Nav = () => {
         <Breadcrumb
           fontWeight="medium"
           fontSize="sm"
-          spacing={{ base: 4, md: 8 }}
+          spacing={{ base:0, md: 0}}
           separator=""
+
         >
           {sections.map(({ label, url, icon }, i) => (
             <Item {...{ label, url, icon }} key={i} />
           ))}
         </Breadcrumb>
+       
 
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
           navigate('/')
@@ -297,6 +299,7 @@ const Nav = () => {
           }}
           />
         </button> 
+      
            
 
       </Flex>
