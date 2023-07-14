@@ -19,10 +19,8 @@ import china from "../../assets/img/china.png";
 import { Image } from "@chakra-ui/react";
 import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
-
 import Item from "./Item";
 
-const baseURL = process.env.REACT_APP_API_URL;
 
 
 const Nav = () => {
@@ -31,18 +29,18 @@ const Nav = () => {
   const sections = [
     {
       label: intl.formatMessage({ id: "home" }),
-      url: `${baseURL}/`,
+      url: `/`,
       icon: IoMdRocket,
     },
     {
       label: intl.formatMessage({id: 'sobre'}),
-      url:  `${baseURL}/about`,
+      url:  `/about`,
       icon: RiAliensFill,
     },
   
     {
       label: intl.formatMessage({id: 'projetos'}),
-      url:  `${baseURL}/projects`,
+      url:  `/projects`,
       icon: FaReact,
     }, 
     // {
