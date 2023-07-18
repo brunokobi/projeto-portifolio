@@ -1,0 +1,66 @@
+.button {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  text-decoration: none;
+  background: linear-gradient(to bottom, #42c920, #389d18);
+  box-shadow: 0 5px 0 #2f8e14, 0 8px 0 #2a7b12, 0 15px 0 #256a10, 0 8px 0 #20590e;
+  border-radius: 4px;
+}
+
+.button:hover {
+  background: linear-gradient(to bottom, #389d18, #42c920);
+  box-shadow: 0 5px 0 #2a7b12, 0 10px 0 #256a10, 0 15px 0 #20590e, 0 20px 0 #1c4d0c;
+}
+
+.input-text {
+  color: #42c920;
+  padding: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px; 
+  border: none;
+  
+}
+
+.input-text:focus {
+  outline: none;
+  color: #42c920;
+}
+
+.input-border {  
+  position: absolute;
+  width: 98%;
+  margin-left:1%;
+  height: 20px;
+  bottom: 0;
+  left: 0;
+  border-radius: 25px;
+  background-color: #42c920;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.input-text:focus + .input-border {
+  transform: scaleX(1);  
+}
+
+.input-text::placeholder {
+  color: #42c920;
+  padding: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  padding-left: 5px;
+
+}
+
+h1 {
+  color: #42c920;
+  padding: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 30px;
+  padding-left: 15px;
+}
