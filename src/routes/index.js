@@ -5,7 +5,8 @@ import About from "../pages/About";
 import Projects from "../pages/Projects";
 import Nav from "../components/Nav";
 import InputComChat from "../pages/ChatGPT/index";
-import QnA from "../pages/TensorFlow//index";
+import Mapa from "../pages/Map/index";
+
 
 const Router = () => {
   return (
@@ -14,8 +15,8 @@ const Router = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/chat" element={<InputComChat />} />
-        <Route path="/tensorflow" element={<QnA />} />         
+        <Route path="/chat" element={<InputComChat />} /> 
+        <Route path="/map" element={<Mapa />} />                  
       </Routes>
       <Nav />
     </Box>

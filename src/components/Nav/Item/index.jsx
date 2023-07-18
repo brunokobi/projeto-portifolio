@@ -1,12 +1,5 @@
-import {
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Stack,
-  StackItem,
-  Text,
-} from "@chakra-ui/react";
+import { BreadcrumbItem, BreadcrumbLink, Stack, StackItem, Text, Icon } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { linkMotion, iconMotion } from "../animationsConfig";
 import { Link, useLocation } from "react-router-dom";
@@ -17,7 +10,7 @@ const Item = ({ label, url, icon }) => {
 
   const [isActive, setIsActive] = useState(false);
 
-  useEffect(() => {  
+  useEffect(() => {
     if (location.pathname === url) {
       return setIsActive(true);
     }
@@ -34,58 +27,59 @@ const Item = ({ label, url, icon }) => {
       variants={linkMotion}
     >
       {url.includes("http") ? (
-      <BreadcrumbLink 
-        href={url}
-        target="_blank"
-        state={{ prevPath: location.pathname }}
-        ref={navLink}
-        rounded="md"
-        _hover={{ color: "#42c920" }}
-        style={{
-          ...(isActive ? { color: "#42c920" } : ""),
-        }}
-      >
-        <Stack
-          align="center"
-          direction={{ base: "column", md: "row" }}
-          px={{ base: 1, md: 5 }}
+        <BreadcrumbLink
+          href={url}
+          target="_blank"
+          state={{ prevPath: location.pathname }}
+          ref={navLink}
+          rounded="md"
+          _hover={{ color: "#42c920" }}
+          style={{
+            ...(isActive ? { color: "#42c920" } : ""),
+          }}
         >
-          <StackItem as={motion.div} variants={iconMotion}>
-            <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
-          </StackItem>
-          <StackItem>
-            <Text fontFamily={"heading"} fontSize={{ base: "sm" }}>
-              {label}{" "}
-            </Text>
-          </StackItem>
-        </Stack>
-      </BreadcrumbLink>) : (
-         <BreadcrumbLink       
-         as={Link}
-         to={url}
-         state={{ prevPath: location.pathname }}
-         ref={navLink}
-         rounded="md"
-         _hover={{ color: "#42c920" }}
-         style={{
-           ...(isActive ? { color: "#42c920" } : ""),
-         }}
-       >
-         <Stack
-           align="center"
-           direction={{ base: "column", md: "row" }}
-           px={{ base: 1, md: 5 }}
-         >
-           <StackItem as={motion.div} variants={iconMotion}>
-             <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
-           </StackItem>
-           <StackItem>
-             <Text fontFamily={"heading"} fontSize={{ base: "sm" }}>
-               {label}{" "}
-             </Text>
-           </StackItem>
-         </Stack>
-       </BreadcrumbLink>
+          <Stack
+            align="center"
+            direction={{ base: "column", md: "row" }}
+            px={{ base: 1, md: 5 }}
+          >
+            <StackItem as={motion.div} variants={iconMotion}>
+              <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
+            </StackItem>
+            <StackItem>
+              <Text fontFamily="heading" fontSize={{ base: "sm" }}>
+                {label}
+              </Text>
+            </StackItem>
+          </Stack>
+        </BreadcrumbLink>
+      ) : (
+        <BreadcrumbLink
+          as={Link}
+          to={url}
+          state={{ prevPath: location.pathname }}
+          ref={navLink}
+          rounded="md"
+          _hover={{ color: "#42c920" }}
+          style={{
+            ...(isActive ? { color: "#42c920" } : ""),
+          }}
+        >
+          <Stack
+            align="center"
+            direction={{ base: "column", md: "row" }}
+            px={{ base: 1, md: 5 }}
+          >
+            <StackItem as={motion.div} variants={iconMotion}>
+              <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
+            </StackItem>
+            <StackItem>
+              <Text fontFamily="heading" fontSize={{ base: "sm" }}>
+                {label}
+              </Text>
+            </StackItem>
+          </Stack>
+        </BreadcrumbLink>
       )}
     </BreadcrumbItem>
   );

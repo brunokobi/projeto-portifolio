@@ -8,11 +8,11 @@ import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
 import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
-import { FaReact} from "react-icons/fa";
+import { FaGlobe, FaReact} from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { AiOutlineGithub } from "react-icons/ai";
-import { AiOutlineInstagram } from "react-icons/ai";
-import { AiOutlineFacebook } from "react-icons/ai";
+// import { AiOutlineInstagram } from "react-icons/ai";
+// import { AiOutlineFacebook } from "react-icons/ai";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import china from "../../assets/img/china.png";
@@ -49,12 +49,12 @@ const Nav = () => {
     //   url: "/chat",
     //   icon: FaRobot,
     // },
-    // {
-    //   label: "TensorFlow",
-    //   // label: intl.formatMessage({id: 'projetos'}),
-    //   url: "/tensorflow",
-    //   icon: SiTensorflow,
-    // },        
+    {
+      label: "Mapa Esri",
+      // label: intl.formatMessage({id: 'projetos'}),
+      url: "/Map",
+      icon: FaGlobe,
+    },        
     {
       label: intl.formatMessage({id: 'linkedin'}),
       url: "https://www.linkedin.com/in/brunokobi/",
@@ -65,16 +65,16 @@ const Nav = () => {
       url: "https://github.com/brunokobi",
       icon: AiOutlineGithub,
     }, 
-    {
-      label: intl.formatMessage({id: 'instagram'}),
-      url: "https://www.instagram.com/brunokobi/",
-      icon: AiOutlineInstagram,
-    },
-    {
-      label: intl.formatMessage({id: 'facebook'}),
-      url: "https://www.facebook.com/bruno.kobi/",
-      icon: AiOutlineFacebook,
-    },
+    // {
+    //   label: intl.formatMessage({id: 'instagram'}),
+    //   url: "https://www.instagram.com/brunokobi/",
+    //   icon: AiOutlineInstagram,
+    // },
+    // {
+    //   label: intl.formatMessage({id: 'facebook'}),
+    //   url: "https://www.facebook.com/bruno.kobi/",
+    //   icon: AiOutlineFacebook,
+    // },
         
   
   ];

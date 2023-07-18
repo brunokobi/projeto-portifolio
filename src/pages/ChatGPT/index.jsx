@@ -8,6 +8,7 @@ import questions from "../../assets/img/questions.png";
 import robot from "../../assets/img/robot.png";
 
 
+
 function InputComChat() {
   const [texto, setTexto] = useState('');
   const constraintsRef = useRef(null);
@@ -133,12 +134,17 @@ const openai = new OpenAIApi(configuration);
              borderRadius: "100%",
            }}
          >  
-          <Image src={robot}  width="10%" />        
+          <Image src={robot}  width="10%" /> 
+         
+            
          </Box>
          <AnimatedStars />
        </Box>
      </Box>
+
+    
    </AnimatePresence>
+ 
   );
 }
 
