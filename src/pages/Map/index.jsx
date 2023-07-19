@@ -1,6 +1,20 @@
 import React, { useState,useEffect } from 'react';
 import { PointAdd } from '../../components/Map/pointAdd';
-import './InputTextArea.css'
+import {
+  FormControl,
+  Stack,
+  Input,
+  Button,
+  Heading,
+  Box,
+  Image,
+} from '@chakra-ui/react'
+import AnimatedStars from "../../components/AnimatedStars";
+import esri from "../../assets/img/esri.png";
+
+
+
+
 
 
 function Mapa() {
@@ -15,15 +29,6 @@ function Mapa() {
     e.preventDefault();
    setLatitude(latitudei);
     setLongitude(longitudei);
-    
-
-    // Lógica de manipulação dos dados do formulário
-    // Aqui você pode realizar ações com os valores de latitude e longitude, como enviar para um servidor ou realizar cálculos
-
-    // Exemplo de exibição dos valores no console
-    console.log('Latitude:', latitude);
-    console.log('Longitude:', longitude);
-  
   };
 
   useEffect(() => { 
@@ -48,32 +53,54 @@ function Mapa() {
   }, [])
 
   return (
-    <>  
+    <>
+    <Box maxW='lg' borderWidth='1px' borderRadius='lg' m={4}  borderColor = {'#42c920'} overflow='hidden' mt={2}>
 <form onSubmit={handleSubmit} className="flex flex-col items-center">
-<h1>
-  Mapa React ESRI</h1>
-  <label  className="input-text">
-    Latitude:
-    <input
-    style={{marginLeft: 10, border: '1px solid #42c920',borderRadius: '10px',padding: '5px',borderColor: '#42c920',borderWidth: '2'}}    
-      type="text"
-      value={latitudei }
-      onChange={(e) => setLatitudei(e.target.value)}
+
+  <FormControl>
+   
+    <Stack  direction='row'm={2}>
+    <Heading color={'#42c920'} as='h2' size='lg' my={2} marginLeft={'10%'}>  
+      Mapa React ESRI   
+      </Heading>   
+      <Image src={esri} w={10} margin={'1'} />
+      </Stack>
+   
+  <Stack spacing={4} direction='row'm={4}>
+ 
+  <Input htmlSize={20} width='auto' 
+   type="text"
+   value={latitudei }
+   onChange={(e) => setLatitudei(e.target.value)}
+   color={'#42c920'}  
+    placeholder='Latitude'
+    _placeholder={{ color: 'inherit' }}
+    borderColor = {'#42c920'}
     />
-  </label>
-  <label  className="input-text">
-    Longitude:
-    <input
-     style={{marginLeft: 10, border: '1px solid #42c920',borderRadius: '10px',padding: '5px',borderColor: '#42c920',borderWidth: '2'}}   
-      type="text"
-      value={longitudei}
-      onChange={(e) => setLongitudei(e.target.value)}
-    />
-  </label>
-  <button className="button"  type="submit">Enviar</button>
+  
+  <Input htmlSize={20} width='auto'
+  type="text"
+  value={longitudei}
+  onChange={(e) => setLongitudei(e.target.value)}
+  color={'#42c920'} 
+  placeholder='Longitude'
+  _placeholder={{ color: 'inherit' }} 
+  borderColor = {'#42c920'}
+  />
+  <Button  width='auto' color={'#000'} backgroundColor={'#42c920'} type="submit"
+ 
+  >Localizar</Button>
+  </Stack>
+ 
+</FormControl>
+  
+ 
 </form>
-    <br />
-    <br />    
+</Box>  
+<Box maxW='100%' borderWidth='1px'  borderRadius='lg' m={2}
+backgroundColor={'#42c920'}
+borderColor = {'#42c920'} 
+overflow='hidden'>  
       <PointAdd
         name={'Local'}
         description={'teste de local mapa js '}
@@ -82,7 +109,10 @@ function Mapa() {
         zoom={18}
         duration={1500}
       />
-    </>
+    </Box>
+        <AnimatedStars />
+        </>
+ 
   );
 }
 
