@@ -1,5 +1,7 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
+import { PointAddNew } from '../../components/Map/pointAddNew.jsx';
 import { PointAdd } from '../../components/Map/pointAdd';
+
 import {
   FormControl,
   Stack,
@@ -31,26 +33,26 @@ function Mapa() {
     setLongitude(longitudei);
   };
 
-  useEffect(() => { 
-    let X = Math.floor(Math.random() * 5)
-    if (X <= 1) {
-      //Roma coliseu
-      setLatitude(41.8902);
-      setLongitude(12.4922);
-    } else if (X <= 2) {
-      //India Taj Mahal
-      setLatitude(27.1751);
-      setLongitude(78.0421);
-    } else if (X <= 3) {
-     // Grande Pirâmide de Gizé (Egito)
-      setLatitude(29.9792);
-      setLongitude(31.1342);
-    } else if (X <= 4) {   
-      //Paris torre eiffel
-      setLatitude(48.8584);
-      setLongitude(2.2945);
-    }
-  }, [])
+  // useEffect(() => { 
+  //   let X = Math.floor(Math.random() * 5)
+  //   if (X <= 1) {
+  //     //Roma coliseu
+  //     setLatitude(41.8902);
+  //     setLongitude(12.4922);
+  //   } else if (X <= 2) {
+  //     //India Taj Mahal
+  //     setLatitude(27.1751);
+  //     setLongitude(78.0421);
+  //   } else if (X <= 3) {
+  //    // Grande Pirâmide de Gizé (Egito)
+  //     setLatitude(29.9792);
+  //     setLongitude(31.1342);
+  //   } else if (X <= 4) {   
+  //     //Paris torre eiffel
+  //     setLatitude(48.8584);
+  //     setLongitude(2.2945);
+  //   }
+  // }, [])
 
   return (
     <>
@@ -63,7 +65,7 @@ function Mapa() {
     <Heading color={'#42c920'} as='h2' size='lg' my={2} marginLeft={'10%'}>  
       Mapa React ESRI   
       </Heading>   
-      <Image src={esri} w={10} margin={'1'} />
+      <Image src={esri} w={12} margin={'1'} />
       </Stack>
    
   <Stack spacing={4} direction='row'm={4}>
@@ -97,19 +99,26 @@ function Mapa() {
  
 </form>
 </Box>  
-<Box maxW='100%' borderWidth='1px'  borderRadius='lg' m={2}
+{/* <Box maxW='100%' borderWidth='1px'  borderRadius='lg' m={2}
 backgroundColor={'#42c920'}
 borderColor = {'#42c920'} 
-overflow='hidden'>  
-      <PointAdd
-        name={'Local'}
-        description={'teste de local mapa js '}
-        latitude={latitude}
-        longitude={longitude}
-        zoom={18}
-        duration={1500}
-      />
-    </Box>
+overflow='hidden'>   */}
+
+{latitude !== '' && longitude !== '' ? (
+  <PointAdd
+    name={'Local'}
+    description={'teste de local mapa js'}
+    latitude={latitude}
+    longitude={longitude}
+    zoom={18}
+    duration={3000}
+  />
+) : (
+  <PointAddNew />
+)}
+
+     
+    {/* </Box> */}
         <AnimatedStars />
         </>
  
