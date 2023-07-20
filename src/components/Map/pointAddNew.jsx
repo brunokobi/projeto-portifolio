@@ -5,16 +5,20 @@ import {loadModules, setDefaultOptions} from 'esri-loader'
 const PointAddNew = (props) => { 
   setDefaultOptions({css: true})
   const styles = {
-    container: {
-      height: '70vh',
-    },
-    mapDiv: {      
-      margin: '10px',
-      height: '69vh',     
-      // background: 'radial-gradient(#91c7e3, #3d93bf)',     
-      borderRadius: '10px',
-    },
-  }
+  container: {
+    height: '70vh',
+    display: 'flex',
+    justifyContent: 'center', // Alinhar horizontalmente no centro
+    alignItems: 'center', // Alinhar verticalmente no centro
+  },
+  mapDiv: {
+    marginTop: '10px',
+    height: '78vh',
+    width: '80vh', // Alterado para 100% da largura do container
+    // background: 'radial-gradient(#91c7e3, #3d93bf)',
+    borderRadius: '10px',
+  },
+};
 
   useEffect(() => {
     loadModules([

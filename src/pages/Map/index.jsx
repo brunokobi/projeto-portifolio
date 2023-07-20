@@ -55,14 +55,23 @@ function Mapa() {
   // }, [])
 
   return (
-    <>
-    <Box maxW='lg' borderWidth='1px' borderRadius='lg' m={4}  borderColor = {'#42c920'} overflow='hidden' mt={2}>
+      <>
+        <Stack
+      spacing={4} // Espaçamento entre os elementos dentro do Stack
+      align="center" // Centraliza horizontalmente os elementos no Stack
+      justify="center" // Centraliza verticalmente os elementos no Stack
+      direction="column" // Alinha os elementos em uma coluna (verticalmente)
+    >
+    <Box maxW='lg' borderWidth='1px' borderRadius='lg' m={4}  borderColor = {'#42c920'} overflow='hidden' mt={2}
+       >
 <form onSubmit={handleSubmit} className="flex flex-col items-center">
 
   <FormControl>
    
-    <Stack  direction='row'm={2}>
-    <Heading color={'#42c920'} as='h2' size='lg' my={2} marginLeft={'10%'}>  
+    <Stack  direction='row'm={2}  align="center" // Centraliza horizontalmente os elementos no Stack
+      justify="center" // Centraliza verticalmente os elementos no Stack>
+      >
+    <Heading color={'#42c920'} as='h2' size='lg' my={2} >  
       Mapa React ESRI   
       </Heading>   
       <Image src={esri} w={12} margin={'1'} />
@@ -104,23 +113,30 @@ backgroundColor={'#42c920'}
 borderColor = {'#42c920'} 
 overflow='hidden'>   */}
 
-{latitude !== '' && longitude !== '' ? (
-  <PointAdd
-    name={'Local'}
-    description={'teste de local mapa js'}
-    latitude={latitude}
-    longitude={longitude}
-    zoom={18}
-    duration={3000}
-  />
-) : (
-  <PointAddNew />
-)}
+
 
      
     {/* </Box> */}
+   
         <AnimatedStars />
-        </>
+       
+
+        <Box w={'80%'} h={'70%'} mt={5}>
+        {latitude !== '' && longitude !== '' ? (
+            <PointAdd
+              name={'Local'}
+              description={'teste de local mapa js'}
+              latitude={latitude}
+              longitude={longitude}
+              zoom={18}
+              duration={3000}
+            />
+          ) : (
+            <PointAddNew />
+        )}
+        </Box>
+</Stack>
+</>
  
   );
 }
