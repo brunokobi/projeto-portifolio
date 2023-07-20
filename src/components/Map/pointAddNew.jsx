@@ -11,7 +11,7 @@ const PointAddNew = (props) => {
     mapDiv: {      
       margin: '10px',
       height: '69vh',     
-      background: 'radial-gradient(#91c7e3, #3d93bf)',     
+      // background: 'radial-gradient(#91c7e3, #3d93bf)',     
       borderRadius: '10px',
     },
   }
