@@ -19,6 +19,7 @@ function InputComChat() {
 
   const falar = () => {
     const synth = window.speechSynthesis;
+    synth.cancel();
     const utterThis = new SpeechSynthesisUtterance("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
     utterThis.rate = 0.8;
     synth.speak(utterThis);

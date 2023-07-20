@@ -29,6 +29,7 @@ const Nav = () => {
 
   const falar = (text) => {
     const synth = window.speechSynthesis;
+    synth.cancel();
     const utterThis = new SpeechSynthesisUtterance(text);
     utterThis.rate = 0.8;
     synth.speak(utterThis);
