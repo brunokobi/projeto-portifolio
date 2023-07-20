@@ -1,4 +1,4 @@
-import { Breadcrumb, Flex } from "@chakra-ui/react";
+import { Breadcrumb, Flex, Stack } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
@@ -100,6 +100,11 @@ const Nav = () => {
         background="black"
         zIndex={999999}
       >
+        <Stack 
+       width="80%"
+      align="center" // Centraliza horizontalmente os elementos no Stack
+      justify="center" // Centraliza verticalmente os elementos no Stack
+      >
         <Breadcrumb
           fontWeight="medium"
           fontSize="sm"
@@ -111,6 +116,14 @@ const Nav = () => {
             <Item {...{ label, url, icon }} key={i} />
           ))}
         </Breadcrumb>
+        </Stack>
+
+        <Stack 
+       width="20%"
+      align="center" // Centraliza horizontalmente os elementos no Stack
+      justify="center" // Centraliza verticalmente os elementos no Stack
+      direction={{ base: "row", md: "row" }}
+      >
        
 
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
@@ -297,9 +310,7 @@ const Nav = () => {
           }}
           />
         </button> 
-      
-           
-
+        </Stack>
       </Flex>
     </AnimatePresence>
   );
