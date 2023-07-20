@@ -22,8 +22,7 @@ const Item = ({ label, url, icon }) => {
     synth.cancel();
     const utterThis = new SpeechSynthesisUtterance(text);
     utterThis.rate = 0.8;
-    synth.speak(utterThis);
-    console.log(text);
+    synth.speak(utterThis);   
   }
 
   return (

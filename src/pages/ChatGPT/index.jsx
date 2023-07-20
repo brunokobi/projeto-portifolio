@@ -27,6 +27,14 @@ function InputComChat() {
 
   falar();
 
+  const mensagem = () => {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterThis = new SpeechSynthesisUtterance("Desculpe, a funcionalidade ainda não está disponível.");
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);   
+  }
+
 
 
 
@@ -103,10 +111,10 @@ function InputComChat() {
 
 
          
-          {/* <button className="button" onClick={speakText}>
+          <button className="button" onClick={mensagem}>
           <div className="enviar-text">ENVIAR</div>
             <div className="enviar-border"></div>
-          </button>         */}
+          </button>        
 
          </Box>
          <Box
