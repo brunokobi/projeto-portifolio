@@ -28,7 +28,8 @@ useEffect(() => {
 }, []);
 
 
-  const falartexto = () => {    
+  const falartexto = () => {
+    synth.cancel();    
     utterThis.rate = 0.8;
     synth.speak(utterThis);
   }
