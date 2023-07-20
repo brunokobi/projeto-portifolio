@@ -24,8 +24,9 @@ const PointAdd = (props) => {
       'esri/symbols/WebStyleSymbol',
       'esri/widgets/Legend',
       'esri/WebMap',
+
     ])
-      .then(([Map, MapView, Graphic]) => {
+      .then(([Map, MapView, Graphic,WebStyleSymbol]) => {
         // criação do mapa
         const map = new Map({basemap: 'hybrid'})
 
@@ -45,12 +46,29 @@ const PointAdd = (props) => {
         }
 
         // criação do simbolo vermelho seta
-        const simboloPadrao = {
-          type: 'simple-marker',
-          path: 'M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z',
-          color: 'red',
-          size: 24,
-        }
+        // const simboloPadrao = {
+        //   type: 'simple-marker',
+        //     path: 'M72 144a40 40 0 1 0-80 0v8a8 8 0 0 0 8 8h64a8 8 0 0 0 8-8zM72 216h-8v40H40v16h16v24h16v-24h16v-16h-16v-40zm160-56a40 40 0 1 0-80 0v8a8 8 0 0 0 8 8h64a8 8 0 0 0 8-8zM232 160h-8v40h-24v16h16v24h16v-24h16v-16h-16v-40z M112 344a16 16 0 1 0-32 0v96h32zM208 344a16 16 0 1 0-32 0v96h32z M56 280a8 8 0 0 0 8 8h96a8 8 0 0 0 8-8v-8H56zm168 0a8 8 0 0 0 8 8h96a8 8 0 0 0 8-8v-8H224z M120 368h64v16h-64zM152 232a8 8 0 0 0 8-8v-8h-32v8a8 8 0 0 0 8 8h16zm-40-56a8 8 0 0 0-8 8v16h32v-16a8 8 0 0 0-8-8h-16z M224 176a8 8 0 0 0 8-8v-8h-32v8a8 8 0 0 0 8 8h16zm-40-56a8 8 0 0 0-8 8v16h32v-16a8 8 0 0 0-8-8h-16z',
+        //     color: 'red',
+        //     size: 32,
+        //   };
+
+          const ovni = {
+            type: 'picture-marker',
+            url: 'https://media.tenor.com/j91H7eyBWEcAAAAi/flying-saucer-joypixels.gif',
+            width: '40',
+            height: '40',         
+          }
+
+        // const webStyleSymbol = new WebStyleSymbol({
+        //   name: "push-pin-1",
+        //   styleName: "Esri2DPointSymbolsStyle"
+        // });
+
+        // const webStyleSymbol2 = new WebStyleSymbol({
+        //   name: "flag",
+        //   styleName: "Esri2DPointSymbolsStyle"
+        // });
 
         const popupTemplate = {
           title: '{Name}',
@@ -71,7 +89,7 @@ const PointAdd = (props) => {
         // Add the geometry and symbol to a new graphic
         const graphic = new Graphic({
           geometry: point,
-          symbol: simboloPadrao,
+          symbol: ovni,
           attributes: attributes,
           popupTemplate: popupTemplate,
         })
