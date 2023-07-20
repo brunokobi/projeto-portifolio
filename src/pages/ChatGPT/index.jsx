@@ -9,43 +9,26 @@ import robot from "../../assets/img/robot.png";
 
 
 
+
+
+
 function InputComChat() {
   const [texto, setTexto] = useState('');
   const constraintsRef = useRef(null);
-  const { Configuration, OpenAIApi } = require("openai"); 
+ // const { Configuration, OpenAIApi } = require("openai"); 
 
-const configuration = new Configuration({  
-  organization: process.env.REACT_APP_OPENAI_ORGANIZATION,  
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+  const falar = () => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);
+  }
 
-  const enviarMensagem = async () => {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: texto,
-          max_tokens: 50,
-          temperature: 0.5,
-          n: 1,
-          stop: '\n'
-    }).then((data) => {
-      console.log(data.data.choices[0].text);
-      setTexto(data.data.choices[0].text);
-    }).catch((error) => {
-     alert(error);
-     console.log(error);
-    });
+  falar();
 
-    console.log("reposta",completion);
-    // if(completion.data){
-    //   console.log(completion.data.choices[0].text);
-    //   setTexto(completion.data.choices[0].text);   
-    // }  
-    // if(completion.data.error){
-    //   Alert.alert('Erro ao enviar mensagem'+ completion.data.error);
-    //   console.log(completion.data);
-    // }     
-  };
+
+
+
 
   return (
      <AnimatePresence>
@@ -116,11 +99,13 @@ const openai = new OpenAIApi(configuration);
                 />
             <div className="input-border"/>     
             </div>
+
+
          
-          <button className="button" onClick={enviarMensagem}>
+          {/* <button className="button" onClick={speakText}>
           <div className="enviar-text">ENVIAR</div>
             <div className="enviar-border"></div>
-          </button>        
+          </button>         */}
 
          </Box>
          <Box

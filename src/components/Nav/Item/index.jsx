@@ -17,6 +17,14 @@ const Item = ({ label, url, icon }) => {
     setIsActive(false);
   }, [location.pathname, url]);
 
+  const falar = (text) => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);
+    console.log(text);
+  }
+
   return (
     <BreadcrumbItem
       as={motion.div}
@@ -36,7 +44,7 @@ const Item = ({ label, url, icon }) => {
           _hover={{ color: "#42c920" }}
           style={{
             ...(isActive ? { color: "#42c920" } : ""),
-          }}
+          }}        
         >
           <Stack
             align="center"
@@ -47,7 +55,9 @@ const Item = ({ label, url, icon }) => {
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </StackItem>
             <StackItem>
-              <Text fontFamily="heading" fontSize={{ base: "sm" }}>
+              <Text fontFamily="heading" fontSize={{ base: "sm" }}
+              onMouseOver={() => falar(label)}
+              >
                 {label}
               </Text>
             </StackItem>
@@ -74,7 +84,9 @@ const Item = ({ label, url, icon }) => {
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </StackItem>
             <StackItem>
-              <Text fontFamily="heading" fontSize={{ base: "sm" }}>
+              <Text fontFamily="heading" fontSize={{ base: "sm" }}
+               onMouseOver={() => falar(label)}
+              >
                 {label}
               </Text>
             </StackItem>

@@ -8,7 +8,7 @@ import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
 import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
-import { FaGlobe, FaReact} from "react-icons/fa";
+import { FaGlobe, FaReact,FaRobot} from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { AiOutlineGithub } from "react-icons/ai";
 // import { AiOutlineInstagram } from "react-icons/ai";
@@ -26,6 +26,15 @@ import Item from "./Item";
 const Nav = () => {
   const intl = useIntl();
   const navigate = useNavigate();
+
+  const falar = (text) => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);
+    console.log(text);
+  }
+  
   const sections = [
     {
       label: intl.formatMessage({ id: "home" }),
@@ -43,12 +52,12 @@ const Nav = () => {
       url:  `/projects`,
       icon: FaReact,
     }, 
-    // {
-    //   label: "ChatGPT",
-    //   // label: intl.formatMessage({id: 'projetos'}),
-    //   url: "/chat",
-    //   icon: FaRobot,
-    // },
+    {
+      label: "ChatGPT",
+      // label: intl.formatMessage({id: 'projetos'}),
+      url: "/chat",
+      icon: FaRobot,
+    },
     {
       label: "Mapa Esri",
       // label: intl.formatMessage({id: 'projetos'}),
@@ -144,6 +153,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'pt'}))}
           />
         </button> 
 
@@ -165,6 +175,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'en'}))}
           />
         </button> 
 
@@ -185,6 +196,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'es'}))}
           />
         </button> 
 
@@ -205,6 +217,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'fr'}))}
           />
         </button>
 
@@ -225,6 +238,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'de'}))}
           />
           </button> 
 
@@ -245,6 +259,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'zh'}))}
           />
         </button> 
 
@@ -265,6 +280,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'ru'}))}
           />
         </button> 
 
@@ -285,6 +301,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.0rem",  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'ar'}))}
           />
         </button> 
 
@@ -308,6 +325,7 @@ const Nav = () => {
             filter: "drop-shadow(-3px -3px 20px #42c920)",           
             width:"2.5rem"  } : ""),
           }}
+          onMouseOver={() => falar(intl.formatMessage({id: 'kl'}))}
           />
         </button> 
         </Stack>
