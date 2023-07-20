@@ -36,6 +36,9 @@ import certf_4 from "../../assets/img/certificado_4.png";
 import certf_5 from "../../assets/img/certificado_5.png";
 import certf_6 from "../../assets/img/certificado_6.png";
 import certf_7 from "../../assets/img/certificado_7.png";
+import certf_8 from "../../assets/img//cert_form_mla.jpg";
+import certf_9 from "../../assets/img//cert_form_qa.jpg";
+import certf_10 from "../../assets/img///cert_form_npl.jpg";
 
 import { useObserver } from "./observers";
 import AnimatedStars from "../../components/AnimatedStars";
@@ -58,6 +61,9 @@ const About = () => {
       certf_5,
       certf_6,
       certf_7,
+      certf_8,
+      certf_9,
+      certf_10,
     ];
   }, []);
 
