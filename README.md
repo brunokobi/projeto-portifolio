@@ -8,9 +8,14 @@
 <img src="mapa.jpg" alt="Mapa" >
 
 Desenvolvido com react
+<br>
 Sistema de multilinguagem onde possue 9 idiomas :Klingon (Star Trek), Português, Inglês, Espanhol, Francês, Alemão, Chinês, Russo e Árabe.
+<br>
 Integração com mapas da Esri <img src="esri.png" alt="Mapa" style="width: 25px;">
+<br>
 Sistema de conversão de texto pra áudio, para melhor a acessibilidade do sistema
+<br>
+<br>
 
 No diretório do projeto, você pode executar:
 
