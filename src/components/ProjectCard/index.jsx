@@ -33,8 +33,12 @@ const ProjectCard = ({
     const utterThis = new SpeechSynthesisUtterance(text);
     utterThis.rate = 0.8;
     let som = localStorage.getItem('Audio');
-    if (!som === 'off') {
+    if (som === 'on') {
       synth.speak(utterThis);  
+    }else if(som === 'off'){
+      synth.cancel();
+    }else{
+      synth.speak(utterThis);
     }    
   }
 
