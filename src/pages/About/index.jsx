@@ -78,7 +78,7 @@ const About = () => {
     const utterThis = new SpeechSynthesisUtterance(text);
     utterThis.rate = 0.8;
     let som = localStorage.getItem('Audio');
-    if (som === 'on') {
+    if (!som === 'off') {
       synth.speak(utterThis);  
     }    
   }
