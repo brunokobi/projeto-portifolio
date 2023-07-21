@@ -18,6 +18,9 @@ const Item = ({ label, url, icon }) => {
   }, [location.pathname, url]);
 
   const falar = (text) => {
+    if(text === 'Github'){
+      text = 'Git Hub'
+    }
     const synth = window.speechSynthesis;
     synth.cancel();
     const utterThis = new SpeechSynthesisUtterance(text);
