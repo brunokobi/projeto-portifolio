@@ -9,7 +9,7 @@ import Mapa from "../pages/Map/index";
 import React, { useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
-import falar from '../components/TextAudio'
+//import falar from '../components/TextAudio'
 
 
 
@@ -33,7 +33,7 @@ const Router = () => {
         <Box position="fixed" top="10px" right="10px" zIndex="999">
       <Button onClick={toggleAudio} bgColor="transparent" _hover={{ bgColor: 'transparent' }}
       variant='outline' borderColor={isAudioOn ? '#42c920' : 'red'} borderRadius="full" borderWidth={2}
-      onMouseOver={() => falar(isAudioOn ? 'Desativar áudio' : 'Ativar áudio')}
+      // onMouseOver={() => falar(isAudioOn ? 'Desativar áudio' : 'Ativar áudio')}
       width={"2.0rem"} 
       >
         <Icon as={isAudioOn ? FaVolumeUp : FaVolumeMute} color={isAudioOn ? '#42c920' : 'red'} 

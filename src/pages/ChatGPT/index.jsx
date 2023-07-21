@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Box, Image } from "@chakra-ui/react";
 import AnimatedStars from "../../components/AnimatedStars";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,25 +9,19 @@ import robot from "../../assets/img/robot.png";
 import falar from "../../components/TextAudio";
 
 
-
-
-
-
 function InputComChat() {
-  const [texto, setTexto] = useState('');
+  const [texto, setTexto] = useState("");
   const constraintsRef = useRef(null);
- // const { Configuration, OpenAIApi } = require("openai"); 
+ 
+  useEffect(() => { 
+    falar("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
+  }, []);
+  
 
-
-
-  falar("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
-
-  const mensagem = () => {
+  const mensagem = () => {  
+    setTexto("Desculpe, a funcionalidade ainda não está disponível")  
     falar("Desculpe, a funcionalidade ainda não está disponível");    
   }
-
-
-
 
 
   return (
@@ -93,10 +87,12 @@ function InputComChat() {
           <div className="input-container">            
                 <textarea
                   className="input-text"
-                  value={texto}
+                 value={texto}
                   onChange={(e) => setTexto(e.target.value)}
-                  placeholder="Digite aqui sua pergunta para o ChatGPT"
-                />
+                  placeholder="Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?"
+              
+                  />                     
+               
             <div className="input-border"/>     
             </div>
 

@@ -65,6 +65,7 @@ setTimeout(() => {
                   fontSize={{ base: "xl", md: "5xl" }}
                   fontWeight={300}
                   mb={{ md: -1, lg: -2 }}
+                  onMouseOver={() => falar(intl.formatMessage({id: 'ola_mundo'}))}
                 >                
                   {/* tradução texto */}
                   {intl.formatMessage({id: 'ola_mundo'})},&nbsp;
@@ -76,6 +77,7 @@ setTimeout(() => {
                   variant="span"
                   position="relative"
                   zIndex="999"
+                  onMouseOver={() => falar(intl.formatMessage({id: 'eu_sou'}))}
                 >
                    {/* tradução texto */}
                   {intl.formatMessage({id: 'eu_sou'})}                
@@ -93,6 +95,7 @@ setTimeout(() => {
                     lg: "0px 0px 10px #42c920",
                   }}
                   fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
+                  onMouseOver={() => falar(intl.formatMessage({id: 'meunome'}))}
                 >
                    {intl.formatMessage({id: 'meunome'})}      
                   <Typewriter
@@ -123,6 +126,9 @@ setTimeout(() => {
                   fontWeight={300}
                   position="relative"
                   zIndex="999"
+                  onMouseOver={() => falar(intl.formatMessage({id: 'frase_1'})
+                  +intl.formatMessage({id: 'frase_2'})
+                  )}
                 >                 
                   <Typewriter
                     options={{
