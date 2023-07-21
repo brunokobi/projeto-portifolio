@@ -31,7 +31,10 @@ setTimeout(() => {
       );  
     synth.cancel();    
     utterThis.rate = 0.8;
-    synth.speak(utterThis);
+    let som = localStorage.getItem('Audio');
+    if (som === 'on') {
+      synth.speak(utterThis);  
+    }   
   }
 
 

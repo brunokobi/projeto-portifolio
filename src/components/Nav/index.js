@@ -28,11 +28,16 @@ const Nav = () => {
   const navigate = useNavigate();
 
   const falar = (text) => {
+    
     const synth = window.speechSynthesis;
     synth.cancel();
     const utterThis = new SpeechSynthesisUtterance(text);
     utterThis.rate = 0.8;
-    synth.speak(utterThis);  
+    
+    let som = localStorage.getItem('Audio');
+    if (som === 'on') {
+      synth.speak(utterThis);  
+    }   
   }
   
   const sections = [

@@ -22,7 +22,10 @@ function InputComChat() {
     synth.cancel();
     const utterThis = new SpeechSynthesisUtterance("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
     utterThis.rate = 0.8;
-    synth.speak(utterThis);
+    let som = localStorage.getItem('Audio');
+    if (som === 'on') {
+      synth.speak(utterThis);  
+    }   
   }
 
   falar();

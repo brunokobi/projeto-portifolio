@@ -6,11 +6,47 @@ import Projects from "../pages/Projects";
 import Nav from "../components/Nav";
 import InputComChat from "../pages/ChatGPT/index";
 import Mapa from "../pages/Map/index";
+import React, { useState } from 'react';
+import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
+import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
+
 
 
 const Router = () => {
+  const falar = (text) => {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8; 
+      synth.speak(utterThis);
+  }
+
+  const [isAudioOn, setIsAudioOn] = useState(true);
+
+  const toggleAudio = () => {
+    setIsAudioOn((prev) => !prev);
+    if (isAudioOn) {
+      localStorage.setItem('Audio', 'off');
+    }
+    else {
+      localStorage.setItem('Audio', 'on');
+    }    
+  };
+
   return (
     <Box minH="100vh" bg="black" color="rgb(196, 196, 196)">
+        <Box position="fixed" top="10px" right="10px" zIndex="999">
+      <Button onClick={toggleAudio} bgColor="transparent" _hover={{ bgColor: 'transparent' }}
+      variant='outline' borderColor={isAudioOn ? '#42c920' : 'red'} borderRadius="full" borderWidth={2}
+      onMouseOver={() => falar(isAudioOn ? 'Desativar áudio' : 'Ativar áudio')}
+      width={"2.0rem"} 
+      >
+        <Icon as={isAudioOn ? FaVolumeUp : FaVolumeMute} color={isAudioOn ? '#42c920' : 'red'} 
+        width={"2.0rem"} 
+        title={isAudioOn ? 'Desativar áudio' : 'Ativar áudio'}
+        />
+      </Button>
+    </Box>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
