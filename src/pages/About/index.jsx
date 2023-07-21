@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import falar from "../../components/TextAudio";
 
 import kenzie from "../../assets/img/certificadoKenzie.jpg";
 import certf_1 from "../../assets/img/certificado_1.png";
@@ -72,20 +73,7 @@ const About = () => {
   const { inViewport: experienciaViewPort } = useObserver(experienciaRef);
   const { inViewport: skillsViewPort } = useObserver(skillsRef);
   const wrapperRef = useRef(null);
-  const falar = (text) => {
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.rate = 0.8;
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }     
-  }
+  
 
   return (
     <AnimatePresence>

@@ -9,19 +9,14 @@ import Mapa from "../pages/Map/index";
 import React, { useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
+import falar from '../components/TextAudio'
 
 
 
 const Router = () => {
-  const falar = (text) => {
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.rate = 0.8; 
-      synth.speak(utterThis);
-  }
+ 
 
-  const [isAudioOn, setIsAudioOn] = useState(true);
+  const [isAudioOn, setIsAudioOn] = useState(false);
 
   const toggleAudio = () => {
     setIsAudioOn((prev) => !prev);

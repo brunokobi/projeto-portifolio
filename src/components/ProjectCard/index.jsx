@@ -15,6 +15,7 @@ import {
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useObserver } from "../../pages/About/observers";
+import falar from "../TextAudio";
 
 const ProjectCard = ({
   link,
@@ -27,20 +28,7 @@ const ProjectCard = ({
   i,
 }) => {
   const cardRef = useRef(null);
-  const falar = (text) => {   
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.rate = 0.8;
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }    
-  }
+  
 
   const { inViewport: cardViewport } = useObserver(cardRef);
 
