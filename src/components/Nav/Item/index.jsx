@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { linkMotion, iconMotion } from "../animationsConfig";
 import { Link, useLocation } from "react-router-dom";
+import falar from "../../../components/TextAudio";
 
 const Item = ({ label, url, icon }) => {
   const navLink = useRef(null);
@@ -17,23 +18,7 @@ const Item = ({ label, url, icon }) => {
     setIsActive(false);
   }, [location.pathname, url]);
 
-  const falar = (text) => {
-    if(text === 'Github'){
-      text = 'Git Hub'
-    }
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.rate = 0.8;
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }   
-  }
+ 
 
   return (
     <BreadcrumbItem

@@ -20,29 +20,13 @@ import { Image } from "@chakra-ui/react";
 import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
 import Item from "./Item";
+import falar from "../TextAudio";
 
 
 
 const Nav = () => {
   const intl = useIntl();
-  const navigate = useNavigate();
-
-  const falar = (text) => {
-    
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.rate = 0.8;
-    
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }   
-  }
+  const navigate = useNavigate();  
   
   const sections = [
     {

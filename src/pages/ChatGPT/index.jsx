@@ -6,6 +6,7 @@ import { useRef } from "react";
 import './InputTextArea.css'
 import questions from "../../assets/img/questions.png";
 import robot from "../../assets/img/robot.png";
+import falar from "../../components/TextAudio";
 
 
 
@@ -17,29 +18,12 @@ function InputComChat() {
   const constraintsRef = useRef(null);
  // const { Configuration, OpenAIApi } = require("openai"); 
 
-  const falar = () => {
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
-    utterThis.rate = 0.8;
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }    
-  }
 
-  falar();
+
+  falar("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
 
   const mensagem = () => {
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterThis = new SpeechSynthesisUtterance("Desculpe, a funcionalidade ainda não está disponível.");
-    utterThis.rate = 0.8;
-    synth.speak(utterThis);   
+    falar("Desculpe, a funcionalidade ainda não está disponível");    
   }
 
 

@@ -7,39 +7,22 @@ import profile from "../../assets/img/home-animation-removed.gif";
 
 import IconsBackground from "../../components/IconsBackground";
 import {useIntl} from 'react-intl'
+import falar from "../../components/TextAudio";
 
 
 
 
 const Home = () => {
- const intl = useIntl();
-
-
+const intl = useIntl();
 setTimeout(() => {
-  falartexto();
-}, 2000);
-
-
-  const falartexto = () => {
-    const synth = window.speechSynthesis;
-    const utterThis = new SpeechSynthesisUtterance(
-      intl.formatMessage({id: 'ola_mundo'})+
-      intl.formatMessage({id: 'eu_sou'})+
-      intl.formatMessage({id: 'meunome'})+
-      intl.formatMessage({id: 'frase_1'})+
-      intl.formatMessage({id: 'frase_2'}),
-      );  
-    synth.cancel();    
-    utterThis.rate = 0.8;
-    let som = localStorage.getItem('Audio');
-    if (som === 'on') {
-      synth.speak(utterThis);  
-    }else if(som === 'off'){
-      synth.cancel();
-    }else{
-      synth.speak(utterThis);
-    }    
-  }
+  falar(
+    intl.formatMessage({id: 'ola_mundo'})+
+    intl.formatMessage({id: 'eu_sou'})+
+    intl.formatMessage({id: 'meunome'})+
+    intl.formatMessage({id: 'frase_1'})+
+    intl.formatMessage({id: 'frase_2'})
+  )
+}, 1000); 
 
 
   return (
