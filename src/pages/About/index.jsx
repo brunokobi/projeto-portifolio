@@ -72,6 +72,13 @@ const About = () => {
   const { inViewport: experienciaViewPort } = useObserver(experienciaRef);
   const { inViewport: skillsViewPort } = useObserver(skillsRef);
   const wrapperRef = useRef(null);
+  const falar = (text) => {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);   
+  }
 
   return (
     <AnimatePresence>
@@ -140,16 +147,23 @@ const About = () => {
               color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
+                onMouseOver={() => falar(intl.formatMessage({ id: "sobre_mim" }))}
               >
                 {intl.formatMessage({ id: "sobre_mim" })}
               </Text>
-              <Heading fontSize={{ base: "3xl", lg: "4xl" }}>
+              <Heading fontSize={{ base: "3xl", lg: "4xl" }}
+              onMouseOver={() => falar('Bruno Kobi')}
+              >
                 Bruno Kobi
               </Heading>
-              <Text mb={2} fontSize={{ base: "sm", md: "md" }}>
+              <Text mb={2} fontSize={{ base: "sm", md: "md" }}
+              onMouseOver={() => falar(intl.formatMessage({ id: "sobre1" }))}
+              >
               {intl.formatMessage({ id: "sobre1" })}                            
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }}>
+              <Text fontSize={{ base: "xs", md: "sm" }}
+              onMouseOver={() => falar(intl.formatMessage({ id: "sobre2" }) + intl.formatMessage({ id: "sobre3" }))}
+              >
               {intl.formatMessage({ id: "sobre2" })}
                <br/>
                {intl.formatMessage({ id: "sobre3" })}
@@ -193,10 +207,13 @@ const About = () => {
               color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
+                onMouseOver={() => falar(intl.formatMessage({ id: "educacao" }))}
               >
                  {intl.formatMessage({ id: "educacao" })}
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={2}
+              onMouseOver={() => falar(intl.formatMessage({ id: "educacao1" }))}
+              >
               {intl.formatMessage({ id: "educacao1" })}
               </Text>             
             </StackItem>
@@ -314,6 +331,7 @@ const About = () => {
                 fontSize={{ base: "3xl", lg: "4xl" }}
                 textShadow="0px 0px 10px #42c920"
                 textAlign="center"
+                onMouseOver={() => falar(intl.formatMessage({ id: "skills" }))}
               >
                {intl.formatMessage({ id: "skills" })}
               </Heading>
@@ -355,7 +373,9 @@ const About = () => {
                       rounded="full"
                     />
 
-                    <Text display={{ base: "none", md: "block" }}>{label}</Text>
+                    <Text display={{ base: "none", md: "block" }}
+                    onMouseOver={() => falar(label)}
+                    >{label}</Text>
                   </WrapItem>
                 ))}
               </Wrap>
@@ -393,6 +413,7 @@ const About = () => {
                 fontSize={{ base: "3xl", lg: "4xl" }}
                 textShadow="0px 0px 10px #42c920"
                 textAlign="center"
+                onMouseOver={() => falar(intl.formatMessage({ id: "quali" }))}
               >
                  {intl.formatMessage({ id: "quali" })}
               </Heading>

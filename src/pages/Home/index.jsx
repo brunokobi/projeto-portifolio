@@ -7,28 +7,28 @@ import profile from "../../assets/img/home-animation-removed.gif";
 
 import IconsBackground from "../../components/IconsBackground";
 import {useIntl} from 'react-intl'
-import { useEffect } from "react";
+
 
 
 
 const Home = () => {
  const intl = useIntl();
- const synth = window.speechSynthesis;
- const utterThis = new SpeechSynthesisUtterance(
-   intl.formatMessage({id: 'ola_mundo'})+
-   intl.formatMessage({id: 'eu_sou'})+
-   intl.formatMessage({id: 'meunome'})+
-   intl.formatMessage({id: 'frase_1'})+
-   intl.formatMessage({id: 'frase_2'}),
-   );  
 
-useEffect(() => { 
-    falartexto();
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+
+setTimeout(() => {
+  falartexto();
+}, 2000);
 
 
   const falartexto = () => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(
+      intl.formatMessage({id: 'ola_mundo'})+
+      intl.formatMessage({id: 'eu_sou'})+
+      intl.formatMessage({id: 'meunome'})+
+      intl.formatMessage({id: 'frase_1'})+
+      intl.formatMessage({id: 'frase_2'}),
+      );  
     synth.cancel();    
     utterThis.rate = 0.8;
     synth.speak(utterThis);
