@@ -27,6 +27,13 @@ const ProjectCard = ({
   i,
 }) => {
   const cardRef = useRef(null);
+  const falar = (text) => {   
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8;
+    synth.speak(utterThis);   
+  }
 
   const { inViewport: cardViewport } = useObserver(cardRef);
 
@@ -54,7 +61,9 @@ const ProjectCard = ({
         textAlign="center"
       >
         <StackItem>
-          <Heading fontSize={"2xl"} fontFamily={"body"}>
+          <Heading fontSize={"2xl"} fontFamily={"body"}
+          onMouseOver={() => falar(title)}
+          >
             {title}
           </Heading>
         </StackItem>
@@ -94,6 +103,7 @@ const ProjectCard = ({
             color={useColorModeValue("rgb(196, 196, 196)", "gray.400")}
             px={1}
             fontSize="sm"
+            onMouseOver={() => falar(description)}
           >
             {description}
           </Text>
