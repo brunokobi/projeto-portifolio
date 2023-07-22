@@ -14,9 +14,16 @@ import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de t
 
 
 const Router = () => {
+const audio = localStorage.getItem('Audio'); 
  
 
-  const [isAudioOn, setIsAudioOn] = useState(false);
+  const [isAudioOn, setIsAudioOn] = useState(
+    {
+      audio: audio === 'on' ? true : false
+    }
+  );
+
+  
 
   const toggleAudio = () => {
     setIsAudioOn((prev) => !prev);
