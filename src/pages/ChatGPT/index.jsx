@@ -7,21 +7,28 @@ import './InputTextArea.css'
 import questions from "../../assets/img/questions.png";
 import robot from "../../assets/img/robot.png";
 import falar from "../../components/TextAudio";
+import brainBX from "../../components/BrainBX";
 
 
 function InputComChat() {
   const [texto, setTexto] = useState("");
   const constraintsRef = useRef(null);
+  const welcome = "Olá, eu sou o BK, seu assistente virtual. Como posso te ajudar?";
  
   useEffect(() => { 
-    falar("Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?");
+    falar(welcome);
   }, []);
   
 
-  const mensagem = () => {  
-    setTexto("Desculpe, a funcionalidade ainda não está disponível")  
-    falar("Desculpe, a funcionalidade ainda não está disponível");    
+  const mensagem = () => { 
+    console.log("submit msg",texto)
+    setTexto(brainBX(texto))
+     falar(brainBX(texto))  
   }
+
+  
+
+ 
 
 
   return (
@@ -89,7 +96,8 @@ function InputComChat() {
                   className="input-text"
                  value={texto}
                   onChange={(e) => setTexto(e.target.value)}
-                  placeholder="Olá, eu sou o ChatGPT, seu assistente virtual. Como posso te ajudar?"
+                  onClick={(e) => setTexto("")}
+                  placeholder={welcome}
               
                   />                     
                
