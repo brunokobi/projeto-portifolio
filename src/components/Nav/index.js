@@ -46,7 +46,7 @@ const Nav = () => {
       icon: FaReact,
     }, 
     {
-      label: "ChatGPT",
+      label: "BK Chat",
       // label: intl.formatMessage({id: 'projetos'}),
       url: "/chat",
       icon: FaRobot,
