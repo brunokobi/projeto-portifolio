@@ -1,8 +1,8 @@
 import {useEffect} from 'react'
 import {loadModules, setDefaultOptions} from 'esri-loader'
+import LoadingGlobo from '../Loading/index.jsx'
 
-const PointAdd = (props) => {
-  // console.log('props MAPA', props)
+const PointAdd = (props) => { 
   setDefaultOptions({css: true})
   const styles = {
     container: {
@@ -10,9 +10,9 @@ const PointAdd = (props) => {
     },
     mapDiv: {
       height: '69vh',
-      border: '3px solid #42c920',
-      background: '#42c920',
-      borderRadius: '10px',
+      border: '1px solid #42c920',
+      background: 'transparent',
+      borderRadius: '5px',
     },
   }
 
@@ -44,14 +44,7 @@ const PointAdd = (props) => {
           longitude: props.longitude,
           latitude: props.latitude,
         }
-
-        // criação do simbolo vermelho seta
-        // const simboloPadrao = {
-        //   type: 'simple-marker',
-        //     path: 'M72 144a40 40 0 1 0-80 0v8a8 8 0 0 0 8 8h64a8 8 0 0 0 8-8zM72 216h-8v40H40v16h16v24h16v-24h16v-16h-16v-40zm160-56a40 40 0 1 0-80 0v8a8 8 0 0 0 8 8h64a8 8 0 0 0 8-8zM232 160h-8v40h-24v16h16v24h16v-24h16v-16h-16v-40z M112 344a16 16 0 1 0-32 0v96h32zM208 344a16 16 0 1 0-32 0v96h32z M56 280a8 8 0 0 0 8 8h96a8 8 0 0 0 8-8v-8H56zm168 0a8 8 0 0 0 8 8h96a8 8 0 0 0 8-8v-8H224z M120 368h64v16h-64zM152 232a8 8 0 0 0 8-8v-8h-32v8a8 8 0 0 0 8 8h16zm-40-56a8 8 0 0 0-8 8v16h32v-16a8 8 0 0 0-8-8h-16z M224 176a8 8 0 0 0 8-8v-8h-32v8a8 8 0 0 0 8 8h16zm-40-56a8 8 0 0 0-8 8v16h32v-16a8 8 0 0 0-8-8h-16z',
-        //     color: 'red',
-        //     size: 32,
-        //   };
+      
 
           const ovni = {
             type: 'picture-marker',
@@ -60,15 +53,7 @@ const PointAdd = (props) => {
             height: '40',         
           }
 
-        // const webStyleSymbol = new WebStyleSymbol({
-        //   name: "push-pin-1",
-        //   styleName: "Esri2DPointSymbolsStyle"
-        // });
-
-        // const webStyleSymbol2 = new WebStyleSymbol({
-        //   name: "flag",
-        //   styleName: "Esri2DPointSymbolsStyle"
-        // });
+       
 
         const popupTemplate = {
           title: '{Name}',
@@ -115,10 +100,16 @@ const PointAdd = (props) => {
     //eslint-disable-next-line
   }, [props.longitude, props.latitude, props.name, props.description, props.zoom, props.duration])
 
+ 
+
   return (
+    <>
+   
     <div style={styles.container}>
+    <LoadingGlobo />
       <div id='viewDiv' style={styles.mapDiv}></div>{' '}
-    </div>
+    </div>     
+      </>
   )
 }
 

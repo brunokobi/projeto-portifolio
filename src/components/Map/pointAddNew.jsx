@@ -2,6 +2,7 @@ import {useEffect} from 'react'
 import {loadModules, setDefaultOptions} from 'esri-loader'
 
 
+
 const PointAddNew = (props) => { 
   setDefaultOptions({css: true})
   const styles = {
@@ -262,9 +263,9 @@ const PointAddNew = (props) => {
 
 
   return (
-    <div style={styles.container}>
+        <div style={styles.container}>
       <div id='viewDiv' style={styles.mapDiv}></div>{' '}
-    </div>
+    </div>  
   )
 }
 
