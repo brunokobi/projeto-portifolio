@@ -6,7 +6,7 @@ import Projects from "../pages/Projects";
 import Nav from "../components/Nav";
 import InputComChat from "../pages/ChatGPT/index";
 import Mapa from "../pages/Map/index";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
 //import falar from '../components/TextAudio'
@@ -15,15 +15,20 @@ import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de t
 
 const Router = () => {
 const audio = localStorage.getItem('Audio'); 
- 
+const [isAudioOn, setIsAudioOn] = useState(false);
 
-  const [isAudioOn, setIsAudioOn] = useState(
-    {
-      audio: audio === 'on' ? true : false
-    }
-  );
+useEffect(() => {
+  console.log( 'teste audio', audio);
+  if (audio === 'on') {
+    setIsAudioOn(true);
+  } else if (audio === 'off') {
+    setIsAudioOn(false);
+  }else if (audio === null){
+    setIsAudioOn(false);
+  }
+}, [audio]);
 
-  
+
 
   const toggleAudio = () => {
     setIsAudioOn((prev) => !prev);
