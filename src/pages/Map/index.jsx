@@ -38,11 +38,12 @@ function Mapa() {
 
   return (
       <>
-        <Stack
+    <Stack
       spacing={4} // Espaçamento entre os elementos dentro do Stack
       align="center" // Centraliza horizontalmente os elementos no Stack
       justify="center" // Centraliza verticalmente os elementos no Stack
       direction="column" // Alinha os elementos em uma coluna (verticalmente)
+      
     >
     <Box maxW='lg' borderWidth='1px' borderRadius='lg' m={4}  borderColor = {'#42c920'} overflow='hidden' mt={2}
        >
@@ -320,7 +321,10 @@ overflow='hidden'>   */}
         <AnimatedStars />
        
 
-        <Box w={'80%'} h={'70%'} mt={5}>
+        <Box w={'90%'} h={'100%'} mt={5}        
+        overflow={'auto'}
+        style={{"-webkit-overflow-scrolling": "touch", "scrollbar-width": "none", "msOverflowStyle": "none"}}
+        >
         {latitude !== '' && longitude !== '' ? (
             <PointAdd
               name={nome||'Novo Ponto'}

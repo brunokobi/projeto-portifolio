@@ -13,6 +13,7 @@ const LoadingGlobo = () => {
   
   <div
       style={{
+        marginTop: '10px',
         position: 'fixed',   
         alignItems: 'center',
         justifyContent: 'center',
