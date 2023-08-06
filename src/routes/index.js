@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+import { Box,Image,Heading,Stack } from "@chakra-ui/react";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Projects from "../pages/Projects";
@@ -40,8 +40,30 @@ useEffect(() => {
     }    
   };
 
-  return (
+  return ( 
+   
     <Box minH="100vh" bg="black" color="rgb(196, 196, 196)">
+    
+    
+    <Heading
+                  position="relative"
+                  mx={10}
+                  zIndex="999"
+                  display="flex"
+                  textShadow={{
+                    base: "0px 0px 20px #42c920",
+                    md: "0px 0px 8px #42c920",
+                    lg: "0px 0px 10px #42c920",
+                  }}
+                  fontSize={{ base: "1.0rem"}}
+                  color={"#42c920"}
+               
+                >
+       Visitas
+      </Heading>    
+      <Image  alt="contador de visitas"     
+        src="https://websmultimedia.com/contador-de-visitas.php?id=11541"/>
+  
         <Box position="fixed" top="10px" right="10px" zIndex="999">
       <Button onClick={toggleAudio} bgColor="transparent" _hover={{ bgColor: 'transparent' }}
       variant='outline' borderColor={isAudioOn ? '#42c920' : 'red'} borderRadius="full" borderWidth={2}
