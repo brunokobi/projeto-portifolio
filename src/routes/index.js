@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Box,Image,Heading,Stack } from "@chakra-ui/react";
+import { Box,Image,Heading} from "@chakra-ui/react";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Projects from "../pages/Projects";
