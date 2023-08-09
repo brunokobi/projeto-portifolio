@@ -8,7 +8,7 @@ import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
 import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
-import { FaGlobe, FaReact,FaRobot} from "react-icons/fa";
+import { FaGlobe, FaReact} from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
 // import { AiOutlineInstagram } from "react-icons/ai";
@@ -46,12 +46,12 @@ const Nav = () => {
       url:  `/projects`,
       icon: FaReact,
     }, 
-    {
-      label: "BK Chat",
-      // label: intl.formatMessage({id: 'projetos'}),
-      url: "/chat",
-      icon: FaRobot,
-    },
+    // {
+    //   label: "BK Chat",
+    //   // label: intl.formatMessage({id: 'projetos'}),
+    //   url: "/chat",
+    //   icon: FaRobot,
+    // },
     {
       label: "Mapa Esri",
       // label: intl.formatMessage({id: 'projetos'}),
@@ -69,8 +69,8 @@ const Nav = () => {
       icon: AiOutlineGithub,
     },
     {
-      label: 'Curriculum',
-      url: "https://github.com/brunokobi/projeto-portifolio/blob/main/src/assets/img/currculo.pdf",
+      label: 'Curriculo',
+      url: "https://github.com/brunokobi/projeto-portifolio/blob/main/src/assets/img/curriculo.pdf",
       icon:AiOutlineFilePdf,
     } 
     // {
