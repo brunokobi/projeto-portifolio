@@ -3,32 +3,49 @@ const brainBX = (text) => {
   let texto = text.toLowerCase().trim();
   console.log("brainBX2", texto);
 
-  if (texto === "oi" || texto === "olá"||
-  texto=== "ola" || texto === "oi, tudo bem?" || texto === "olá, tudo bem?" || texto === "ola, tudo bem?" ||
-  texto === "oi, tudo bem" || texto === "olá, tudo bem" || texto === "ola, tudo bem" || texto === "oi, tudo bem com você?" ||
-  texto === "olá, tudo bem com você?" || texto === "ola, tudo bem com você?" || texto === "oi, tudo bem com você") {
-  
+  if (
+    texto.includes("oi") || texto.includes("olá ") || texto.includes("ola ") ||
+    texto.includes("oi, tudo bem?") || texto.includes("olá, tudo bem?") || texto.includes("ola, tudo bem?") ||
+    texto.includes("oi, tudo bem") || texto.includes("olá, tudo bem") || texto.includes("ola, tudo bem") ||
+    texto.includes("oi, tudo bem com você?") || texto.includes("olá, tudo bem com você?") || texto.includes("ola, tudo bem com você?")
+  ) {
     return "Olá, tudo bem?";
-  } else if (texto === "tudo bem" || texto === "como você está"
-  || texto === "como vai você" || texto === "como você está se sentindo"||
-  texto === "tudo bem com você" || texto === "tudo bem com você?" || texto === "tudo bem com você?") {  
+  } else if (
+    texto.includes("tudo bem") || texto.includes("como você está") || texto.includes("como vai você") ||
+    texto.includes("como você está se sentindo") || texto.includes("tudo bem com você") || texto.includes("tudo bem com você?")
+  ) {
     return "Estou bem, obrigado por perguntar.";
-  } else if (texto === "como vai você" || texto === "como você está se sentindo") {
+  } else if (
+    texto.includes("como vai você") || texto.includes("como você está se sentindo")
+  ) {
     return "Estou bem, obrigado por perguntar.";
-  } else if (texto === "como você se chama?" || texto === "qual é o seu nome?") {
+  } else if (
+    texto.includes("como você se chama?") || texto.includes("qual é o seu nome?")
+  ) {
     return "Meu nome é BX.";
-  } else if (texto === "qual é sua idade?" || texto === "quanto anos você tem?") {
+  } else if (
+    texto.includes("qual é sua idade?") || texto.includes("quanto anos você tem?")
+  ) {
     return "Meu nome é BX e tenho 1 ano.";
-  } else if (texto === "qual é o significado da vida?" || texto === "qual é o sentido da vida?") {
+  } else if (
+    texto.includes("qual é o significado da vida?") || texto.includes("qual é o sentido da vida?")
+  ) {
     return "A resposta para essa pergunta é 42.";
-  } else if (texto === "onde você mora" || texto === "onde você vive"|| texto === "onde você está"||
-  texto === "onde você se encontra"|| texto === "onde você está agora"|| texto === "onde você está neste momento"
-  || texto === "onde você está localizado"|| texto === "onde você está situado"|| texto === "onde você está localizado") { 
+  } else if (
+    texto.includes("onde você mora") || texto.includes("onde você vive") || texto.includes("onde você está") ||
+    texto.includes("onde você se encontra") || texto.includes("onde você está agora") || texto.includes("onde você está neste momento") ||
+    texto.includes("onde você está localizado") || texto.includes("onde você está situado") || texto.includes("onde você está localizado")
+  ) {
     return "Até logo! Tenha um bom dia!";
-  } else if (texto === "bom dia" || texto === "bom dia, tudo bem?" || texto === "bom dia, tudo bem" || texto === "bom dia, tudo bem com você?" || texto === "bom dia, tudo bem com você") {
+  } else if (
+    texto.includes("bom dia") || texto.includes("bom dia, tudo bem?") || texto.includes("bom dia, tudo bem") ||
+    texto.includes("bom dia, tudo bem com você?") || texto.includes("bom dia, tudo bem com você")
+  ) {
     return "Bom dia, tudo bem?";
-  } else if (texto === "adeus" || texto === "tchau") {
-    return "Até logo! Tenha um bom dia!";
+  } else if (
+    texto.includes("adeus") || texto.includes("tchau")
+  ) {
+    return "Até logo! Tenha um bom dia!";  
   } else if (texto.includes("piada") || texto.includes("conto uma piada")) {
     return "Por que o peixe vive na água? Porque na terra ele morreria!";
   } else if (texto.includes("obrigado") || texto.includes("obrigada") || texto.includes("agradecido")) {
