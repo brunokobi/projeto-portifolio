@@ -10,7 +10,7 @@ import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
 import { FaGlobe, FaReact,FaRobot} from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
-import { AiOutlineGithub } from "react-icons/ai";
+import { AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
 // import { AiOutlineInstagram } from "react-icons/ai";
 // import { AiOutlineFacebook } from "react-icons/ai";
 import { RiAliensFill } from "react-icons/ri";
@@ -21,6 +21,7 @@ import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
 import Item from "./Item";
 import falar from "../TextAudio";
+
 
 
 
@@ -66,7 +67,12 @@ const Nav = () => {
       label: intl.formatMessage({id: 'github'}),
       url: "https://github.com/brunokobi",
       icon: AiOutlineGithub,
-    }, 
+    },
+    {
+      label: 'Curriculum',
+      url: "https://github.com/brunokobi/projeto-portifolio/blob/main/src/assets/img/currculo.pdf",
+      icon:AiOutlineFilePdf,
+    } 
     // {
     //   label: intl.formatMessage({id: 'instagram'}),
     //   url: "https://www.instagram.com/brunokobi/",
@@ -116,7 +122,8 @@ const Nav = () => {
         >
           {sections.map(({ label, url, icon }, i) => (
             <Item {...{ label, url, icon }} key={i} />
-          ))}
+          ))}      
+            
         </Breadcrumb>
         </Stack>
 
