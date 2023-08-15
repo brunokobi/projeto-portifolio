@@ -29,7 +29,7 @@ setTimeout(() => {
     <AnimatePresence>        
       <Flex
         minH="100vh"
-        w="100%"
+        w={{ base: "90%", md: "60%", lg: "100%", sm: "100%" }}
         direction="column"
         justify="center"
         align="center"
@@ -38,10 +38,11 @@ setTimeout(() => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        margin={'3%'}
       >
          
         <Stack
-          direction={{ base: "column", md: "row" }}
+          direction={{ base: "column", md: "row", lg: "row",sm:"column" }}
           spacing={5}
           display="flex"
           align="center"
@@ -94,7 +95,7 @@ setTimeout(() => {
                     md: "0px 0px 8px #42c920",
                     lg: "0px 0px 10px #42c920",
                   }}
-                  fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
+                  fontSize={{ base: "3xl", md: "3xl", lg: "5xl",sm:"3xl",xl:"6xl" }}
                   onMouseOver={() => falar(intl.formatMessage({id: 'meunome'}))}
                 >
                    {intl.formatMessage({id: 'meunome'})}      
