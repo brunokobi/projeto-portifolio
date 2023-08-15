@@ -43,8 +43,8 @@ const Item = ({ label, url, icon }) => {
         >
           <Stack
             align="center"
-            direction={{ base: "column", md: "row" }}
-            px={{ base: 1, md: 5 }}
+            direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
+            px={{ base: 1, md: 0, sm: 0}}
           >
             <StackItem as={motion.div} variants={iconMotion}>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
@@ -72,7 +72,7 @@ const Item = ({ label, url, icon }) => {
         >
           <Stack
             align="center"
-            direction={{ base: "column", md: "row" }}
+            direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
             px={{ base: 1, md: 5 }}
           >
             <StackItem as={motion.div} variants={iconMotion}>

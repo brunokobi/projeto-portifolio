@@ -101,7 +101,8 @@ const Nav = () => {
         justify="center"
         position="fixed"
         bottom={0}
-        w="100%"
+        w={{ base: "100%", md: "100%", sm: "100%", lg: "100%" }}
+        direction={{ base: "row", sm: "column", md: "column", lg: "row", xl: "row" }}
         color="whiteAlpha.700"
         borderTop="1px solid"
         borderColor="whiteAlpha.400"
@@ -109,7 +110,7 @@ const Nav = () => {
         zIndex={999999}
       >
         <Stack 
-       width="80%"
+       width={{ base: "80%", md: "100%", sm: "100%", lg: "80%" }}
       align="center" // Centraliza horizontalmente os elementos no Stack
       justify="center" // Centraliza verticalmente os elementos no Stack
       >
@@ -128,7 +129,7 @@ const Nav = () => {
         </Stack>
 
         <Stack 
-       width="20%"
+       width={{ base: "20%", md: "100%", sm: "100%", lg: "20%" }}
       align="center" // Centraliza horizontalmente os elementos no Stack
       justify="center" // Centraliza verticalmente os elementos no Stack
       direction={{ base: "row", md: "row" }}
