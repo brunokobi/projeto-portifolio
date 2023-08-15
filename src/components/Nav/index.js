@@ -70,7 +70,7 @@ const Nav = () => {
     },
     {
       label: 'Curriculo',
-      url: "https://github.com/brunokobi/projeto-portifolio/blob/main/src/assets/img/curriculo.pdf",
+      url: "/curriculo",
       icon:AiOutlineFilePdf,
     } 
     // {
@@ -110,7 +110,7 @@ const Nav = () => {
         zIndex={999999}
       >
         <Stack 
-       width={{ base: "80%", md: "100%", sm: "100%", lg: "80%" }}
+       width={{ base: "100%", md: "100%", sm: "100%", lg: "100%" }}
       align="center" // Centraliza horizontalmente os elementos no Stack
       justify="center" // Centraliza verticalmente os elementos no Stack
       >

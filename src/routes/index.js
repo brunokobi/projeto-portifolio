@@ -3,6 +3,7 @@ import { Box,Image,Heading} from "@chakra-ui/react";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Projects from "../pages/Projects";
+import Curriculo from "../pages/Curriculo";
 import Nav from "../components/Nav";
 import InputComChat from "../pages/ChatGPT/index";
 import Mapa from "../pages/Map/index";
@@ -81,7 +82,9 @@ useEffect(() => {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/chat" element={<InputComChat />} /> 
-        <Route path="/map" element={<Mapa />} />                  
+        <Route path="/map" element={<Mapa />} />
+        <Route path="/curriculo" element={<Curriculo />} />
+
       </Routes>
       <Nav />
     </Box>
