@@ -37,9 +37,8 @@ function Mapa() {
 
 
   return (
-      <>
-    <Stack
-     w={{ base: "90%", md: "60%", lg: "100%", sm: "100%" }}
+<>
+    <Stack w={{ base: "90%", md: "100%", lg: "100%", sm: "100%" }}
       spacing={4} // Espaçamento entre os elementos dentro do Stack
       align="center" // Centraliza horizontalmente os elementos no Stack
       justify="center" // Centraliza verticalmente os elementos no Stack
@@ -325,7 +324,7 @@ overflow="hidden">   */}
         overflow={"auto"}
         style={{"-webkit-overflow-scrolling": "touch", "scrollbar-width": "none", "msOverflowStyle": "none"}}
         >
-        {latitude !== " && longitude !== " ? (
+        {latitude !== "" && longitude !== "" ? (
             <PointAdd
               name={nome||"Novo Ponto"}
               description={descricao||"Ponto adicionado pelo usuário"}
@@ -340,6 +339,7 @@ overflow="hidden">   */}
         </Box>
 </Stack>
 </>
+
  
   );
 }
