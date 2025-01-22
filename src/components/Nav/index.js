@@ -68,11 +68,11 @@ const Nav = () => {
       url: "https://github.com/brunokobi",
       icon: AiOutlineGithub,
     },
-    {
-      label: 'Curriculo',
-      url: "/curriculo",
-      icon:AiOutlineFilePdf,
-    } 
+    // {
+    //   label: 'Curriculo',
+    //   url: "/curriculo",
+    //   icon:AiOutlineFilePdf,
+    // } 
     // {
     //   label: intl.formatMessage({id: 'instagram'}),
     //   url: "https://www.instagram.com/brunokobi/",

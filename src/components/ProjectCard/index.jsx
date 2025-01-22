@@ -9,7 +9,6 @@ import {
   Image,
   useColorModeValue,
   Box,
-  StackItem,
   SlideFade,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -55,14 +54,14 @@ const ProjectCard = ({
         justify="center"
         textAlign="center"
       >
-        <StackItem>
+        
           <Heading fontSize={"2xl"} fontFamily={"body"}
           onMouseOver={() => falar(title)}
           >
             {title}
           </Heading>
-        </StackItem>
-        <StackItem>
+        
+        
           <Flex flex={1} bg="blue.200">
             {link ? (
               <Box
@@ -86,7 +85,7 @@ const ProjectCard = ({
               <Image src={img} alt={title} width="100%" height="100%"/>
             )}
           </Flex>
-        </StackItem>
+        
         <Stack
           flex={1}
           flexDirection="column"
