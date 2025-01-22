@@ -1,4 +1,4 @@
-import { Flex, Heading, SlideFade, Stack, StackItem } from "@chakra-ui/react";
+import { Flex, Heading, SlideFade, Stack} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Typewriter from "typewriter-effect";
@@ -48,18 +48,18 @@ setTimeout(() => {
           align="center"
         >
           <IconsBackground />
-          <StackItem
+          <div
             as={SlideFade}
             in={true}
             offsetX="-50%"
             transition="all 1s"
           >
             <Image src={profile} w={{ base: 250, md: 300 }} />
-          </StackItem>
+          </div>
 
-          <StackItem>
+          <div>
             <Stack spacing={1}>
-              <StackItem display="flex" alignItems="flex-end">
+              <div display="flex" alignItems="flex-end">
                 <Heading
                   position="relative"
                   zIndex="999"
@@ -83,9 +83,9 @@ setTimeout(() => {
                    {/* tradução texto */}
                   {intl.formatMessage({id: 'eu_sou'})}                
                 </Heading>
-              </StackItem>
+              </div>
 
-              <StackItem>
+              <div>
                 <Heading
                   position="relative"
                   zIndex="999"
@@ -107,9 +107,9 @@ setTimeout(() => {
                     }}
                   />
                 </Heading>
-              </StackItem>
+              </div>
 
-              <StackItem>
+              <div>
                 <Heading
                   position="relative"
                   zIndex="999"
@@ -119,9 +119,9 @@ setTimeout(() => {
                 >
                   {"<dev/>"}
                 </Heading>
-              </StackItem>
+              </div>
 
-              <StackItem>
+              <div>
                 <Heading
                   fontSize={{ base: "sm", md: "xl" }}
                   fontWeight={300}
@@ -142,9 +142,9 @@ setTimeout(() => {
                     }}
                   />
                 </Heading>
-              </StackItem>
+              </div>
             </Stack>
-          </StackItem>
+          </div>
         </Stack>       
       </Flex>
     </AnimatePresence>

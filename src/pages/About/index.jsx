@@ -3,7 +3,7 @@ import {
   Flex,
   Heading,
   Stack,
-  StackItem,
+  div,
   Image,
   Divider,
   Icon,
@@ -117,21 +117,21 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <StackItem
+            <div
               as={SlideFade}
               in={presentationViewPort}
               offsetX="-50%"
               transition="all 1s"
             >
               <Image src={profilePhoto} w={300} ref={presentationRef} />
-            </StackItem>
+            </div>
             <Divider
               orientation="vertical"
               bgColor="white"
               h="100px"
               display={{ base: "none", md: "block" }}
             />
-            <StackItem
+            <div
               maxW="350px"
               as={SlideFade}
               in={presentationViewPort}
@@ -164,7 +164,7 @@ const About = () => {
                {intl.formatMessage({ id: "sobre3" })}
                <br/> 
               </Text>
-            </StackItem>
+            </div>
           </Stack>
           <Box
             as={motion.div}
@@ -191,7 +191,7 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <StackItem
+            <div
               maxW="350px"
               as={ScaleFade}
               initialScale={0.6}
@@ -201,7 +201,7 @@ const About = () => {
               <Text
               color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
-                mt={{ base: 2, md: -24 }}
+                mt={{ base: 2 }}
                 onMouseOver={() => falar(intl.formatMessage({ id: "educacao" }))}
               >
                  {intl.formatMessage({ id: "educacao" })}
@@ -211,9 +211,9 @@ const About = () => {
               >
               {intl.formatMessage({ id: "educacao1" })}
               </Text>             
-            </StackItem>
+            </div>
 
-            <StackItem
+            <div
               mt={-24}
               textAlign="center"
               as={SlideFade}
@@ -222,7 +222,7 @@ const About = () => {
               transition="all 1s"
             >             
               <Image src={questionImg} w={300} ref={aboutRef} />
-            </StackItem>
+            </div>
           </Stack>
           <Box
             as={motion.div}
@@ -249,7 +249,7 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <StackItem
+            <div
               textAlign="center"
               as={SlideFade}
               in={experienciaViewPort}
@@ -258,8 +258,8 @@ const About = () => {
             >
              
               <Image src={rock} w={300} ref={experienciaRef} />
-            </StackItem>
-            <StackItem
+            </div>
+            <div
               maxW="350px"
               as={SlideFade}
               in={experienciaViewPort}
@@ -269,18 +269,18 @@ const About = () => {
              <Text
               color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
-                mt={{ base: 3, md: -24 }}
+                mt={{ base: 3 }}
               >
                 {intl.formatMessage({ id: "experiencia" })}
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
               <b> {intl.formatMessage({ id: "experiencia1t" })} </b><br/>
               {intl.formatMessage({ id: "experiencia1e" })}<br/>              
               {intl.formatMessage({ id: "experiencia1d" })} <br/>              
               {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
               Metodologias Agile · MySQL · PHP · React.js · TypeScript · JavaScript · PostgreSQL
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }} mb={2}>         
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>         
               <b>{intl.formatMessage({ id: "experiencia2t" })}</b><br/>
               {intl.formatMessage({ id: "experiencia2e" })}<br/>
               {intl.formatMessage({ id: "experiencia2d" })}<br/>
@@ -292,7 +292,7 @@ const About = () => {
               {intl.formatMessage({ id: "experiencia3d" })}<br/>
               {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · JavaScript · PostgreSQL · AngularJS
               </Text>
-            </StackItem>
+            </div>
           </Stack>
          
           <Box
@@ -321,7 +321,7 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <StackItem>
+            <div>
               <Heading
                 fontSize={{ base: "3xl", lg: "4xl" }}
                 textShadow="0px 0px 10px #42c920"
@@ -330,8 +330,8 @@ const About = () => {
               >
                {intl.formatMessage({ id: "skills" })}
               </Heading>
-            </StackItem>
-            <StackItem>
+            </div>
+            <div>
               <Wrap
                 ref={skillsRef}
                 spacing={{ base: 2, md: 6 }}
@@ -374,7 +374,7 @@ const About = () => {
                   </WrapItem>
                 ))}
               </Wrap>
-            </StackItem>
+            </div>
           </Stack>
           <Box
             as={motion.div}
@@ -403,7 +403,7 @@ const About = () => {
             id="qualifications"
             spacing={12}
           >
-            <StackItem>
+            <div>
               <Heading
                 fontSize={{ base: "3xl", lg: "4xl" }}
                 textShadow="0px 0px 10px #42c920"
@@ -412,8 +412,8 @@ const About = () => {
               >
                  {intl.formatMessage({ id: "quali" })}
               </Heading>
-            </StackItem>
-            <StackItem maxW={{ base: "350px", md: "700px" }} zIndex="999">
+            </div>
+            <div maxW={{ base: "350px", md: "700px" }} zIndex="999">
               <Carousel autoPlay infiniteLoop={true}>
                 {certifications.map((certfImg, i) => (
                   <div key={i}>
@@ -421,7 +421,7 @@ const About = () => {
                   </div>
                 ))}
               </Carousel>
-            </StackItem>
+            </div>
           </Stack>
           <Box
             as={motion.div}
