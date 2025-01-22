@@ -6,6 +6,7 @@
     "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@formatjs/fast-memoize": "^2.2.6",
     "@formatjs/intl": "^2.5.1",
     "@formatjs/intl-pluralrules": "4.3.3",
     "@formatjs/intl-relativetimeformat": "10.0.1",
@@ -35,7 +36,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },  
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -47,5 +48,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  } 
+  }
 }

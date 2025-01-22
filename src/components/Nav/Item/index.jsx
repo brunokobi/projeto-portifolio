@@ -1,4 +1,4 @@
-import { BreadcrumbItem, BreadcrumbLink, Stack, StackItem, Text, Icon } from "@chakra-ui/react";
+import { BreadcrumbItem, BreadcrumbLink, Stack, Text, Icon } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { linkMotion, iconMotion } from "../animationsConfig";
@@ -46,16 +46,16 @@ const Item = ({ label, url, icon }) => {
             direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
             px={{ base: 1, md: 0, sm: 0}}
           >
-            <StackItem as={motion.div} variants={iconMotion}>
+            <div as={motion.div} variants={iconMotion}>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
-            </StackItem>
-            <StackItem>
+            </div>
+            <div>
               <Text fontFamily="heading" fontSize={{ base: "sm" }}
               onMouseOver={() => falar(label)}
               >
                 {label}
               </Text>
-            </StackItem>
+            </div>
           </Stack>
         </BreadcrumbLink>
       ) : (
@@ -75,16 +75,16 @@ const Item = ({ label, url, icon }) => {
             direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
             px={{ base: 1, md: 5 }}
           >
-            <StackItem as={motion.div} variants={iconMotion}>
+            <div as={motion.div} variants={iconMotion}>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
-            </StackItem>
-            <StackItem>
+            </div>
+            <div>
               <Text fontFamily="heading" fontSize={{ base: "sm" }}
                onMouseOver={() => falar(label)}
               >
                 {label}
               </Text>
-            </StackItem>
+            </div>
           </Stack>
         </BreadcrumbLink>
       )}
