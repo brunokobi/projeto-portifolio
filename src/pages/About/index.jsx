@@ -1,3 +1,4 @@
+
 import {
   Text,
   Flex,
@@ -14,22 +15,22 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { useMemo, useRef } from "react";
-import rock from "../../assets/img/rock.png";
-import profilePhoto from "../../assets/img/profile.png";
-import questionImg from "../../assets/img/int-icon.png";
+import rock from "../../assets/img/rock.png"; // Imagem usada na seção de experiência
+import profilePhoto from "../../assets/img/profile.png"; // Foto de perfil do usuário
+import questionImg from "../../assets/img/int-icon.png"; // Ícone usado na seção "Sobre mim"
 
-import { container, item } from "./animationConfig";
+import { container, item } from "./animationConfig"; // Configurações de animação
 
-import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs";
-import { SlideFade } from "@chakra-ui/react";
-import { skills } from "./skills";
-import { motion, AnimatePresence } from "framer-motion";
+import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs"; // Ícones de seta
+import { SlideFade } from "@chakra-ui/react"; // Animação de transição
+import { skills } from "./skills"; // Lista de habilidades
+import { motion, AnimatePresence } from "framer-motion"; // Biblioteca para animações avançadas
 
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
-import falar from "../../components/TextAudio";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Estilo do carrossel
+import { Carousel } from "react-responsive-carousel"; // Carrossel para exibição de certificados
+import falar from "../../components/TextAudio"; // Função para síntese de voz
 
-import kenzie from "../../assets/img/certificadoKenzie.jpg";
+import kenzie from "../../assets/img/certificadoKenzie.jpg"; // Certificados
 import certf_1 from "../../assets/img/certificado_1.png";
 import certf_2 from "../../assets/img/certificado_2.png";
 import certf_3 from "../../assets/img/certificado_3.png";
@@ -41,17 +42,18 @@ import certf_8 from "../../assets/img//cert_form_mla.jpg";
 import certf_9 from "../../assets/img//cert_form_qa.jpg";
 import certf_10 from "../../assets/img///cert_form_npl.jpg";
 
-import { useObserver } from "./observers";
-import AnimatedStars from "../../components/AnimatedStars";
-import { useIntl } from "react-intl";
+import { useObserver } from "./observers"; // Hook personalizado para observação de elementos no viewport
+import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrelas animadas
+import { useIntl } from "react-intl"; // Biblioteca para internacionalização
 
 const About = () => {
-  const intl = useIntl();
-  const skillsRef = useRef(null);
-  const aboutRef = useRef(null);
-  const experienciaRef = useRef(null);
-  const presentationRef = useRef(null);
+  const intl = useIntl(); // Objeto para acessar mensagens traduzidas
+  const skillsRef = useRef(null); // Referência para a seção de habilidades
+  const aboutRef = useRef(null); // Referência para a seção "Sobre mim"
+  const experienciaRef = useRef(null); // Referência para a seção de experiência
+  const presentationRef = useRef(null); // Referência para a seção de apresentação
 
+  // Lista de certificados
   const certifications = useMemo(() => {
     return [
       kenzie,
@@ -68,15 +70,16 @@ const About = () => {
     ];
   }, []);
 
+  // Verifica se as seções estão visíveis no viewport
   const { inViewport: presentationViewPort } = useObserver(presentationRef);
   const { inViewport: aboutViewPort } = useObserver(aboutRef);
   const { inViewport: experienciaViewPort } = useObserver(experienciaRef);
   const { inViewport: skillsViewPort } = useObserver(skillsRef);
-  const wrapperRef = useRef(null);
-  
+  const wrapperRef = useRef(null); // Referência para o container principal
 
   return (
     <AnimatePresence>
+      {/* Container principal com animação de entrada e saída */}
       <Box
         as={motion.div}
         initial={{ opacity: 0 }}
@@ -97,7 +100,7 @@ const About = () => {
           ref={wrapperRef}
           css={{
             "&::-webkit-scrollbar": {
-              width: "5px",
+              width: "5px", // Customização da barra de rolagem
               height: "10px",
             },
             "&::-webkit-scrollbar-track": {
@@ -108,7 +111,8 @@ const About = () => {
               borderRadius: "24px",
             },
           }}
-        >          
+        >
+          {/* Seção de apresentação */}
           <Stack
             id="top"
             direction={{ base: "column", md: "row" }}
@@ -117,6 +121,7 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
+            {/* Foto de perfil */}
             <div
               as={SlideFade}
               in={presentationViewPort}
@@ -131,6 +136,7 @@ const About = () => {
               h="100px"
               display={{ base: "none", md: "block" }}
             />
+            {/* Texto "Sobre mim" */}
             <div
               maxW="350px"
               as={SlideFade}
@@ -139,33 +145,47 @@ const About = () => {
               transition="all 1s"
             >
               <Text
-              color={"#42c920"}
+                color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
-                onMouseOver={() => falar(intl.formatMessage({ id: "sobre_mim" }))}
+                onMouseOver={() =>
+                  falar(intl.formatMessage({ id: "sobre_mim" }))
+                }
               >
                 {intl.formatMessage({ id: "sobre_mim" })}
               </Text>
-              <Heading fontSize={{ base: "3xl", lg: "4xl" }}
-              onMouseOver={() => falar('Bruno Kobi')}
+              <Heading
+                fontSize={{ base: "3xl", lg: "4xl" }}
+                onMouseOver={() => falar("Bruno Kobi")}
               >
                 Bruno Kobi
               </Heading>
-              <Text mb={2} fontSize={{ base: "sm", md: "md" }}
-              onMouseOver={() => falar(intl.formatMessage({ id: "sobre1" }))}
+              {/* Descrição sobre o usuário */}
+              <Text
+                mb={2}
+                fontSize={{ base: "sm", md: "md" }}
+                onMouseOver={() =>
+                  falar(intl.formatMessage({ id: "sobre1" }))
+                }
               >
-              {intl.formatMessage({ id: "sobre1" })}                            
+                {intl.formatMessage({ id: "sobre1" })}
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }}
-              onMouseOver={() => falar(intl.formatMessage({ id: "sobre2" }) + intl.formatMessage({ id: "sobre3" }))}
+              <Text
+                fontSize={{ base: "xs", md: "sm" }}
+                onMouseOver={() =>
+                  falar(
+                    intl.formatMessage({ id: "sobre2" }) +
+                      intl.formatMessage({ id: "sobre3" })
+                  )
+                }
               >
-              {intl.formatMessage({ id: "sobre2" })}
-               <br/>
-               {intl.formatMessage({ id: "sobre3" })}
-               <br/> 
+                {intl.formatMessage({ id: "sobre2" })}
+                <br />
+                {intl.formatMessage({ id: "sobre3" })}
               </Text>
             </div>
           </Stack>
+          {/* Ícone de navegação para a próxima seção */}
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
@@ -183,6 +203,7 @@ const About = () => {
               />
             </Link>
           </Box>
+         
           <Stack
             id="about"
             direction={{ base: "column-reverse", md: "row" }}
