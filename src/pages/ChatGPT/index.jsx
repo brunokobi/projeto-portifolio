@@ -1,3 +1,4 @@
+// teste de ia usando modelo de mistral
 import { useState } from "react";
 import axios from "axios";
 import "./InputTextArea.css";
