@@ -5,7 +5,7 @@ import About from "../pages/About";
 import Projects from "../pages/Projects";
 import Curriculo from "../pages/Curriculo";
 import Nav from "../components/Nav";
-import InputComChat from "../pages/ChatGPT/index";
+import LlamaChat from "../pages/ChatGPT/index";
 import Mapa from "../pages/Map/index";
 import React, { useEffect, useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
@@ -81,7 +81,7 @@ useEffect(() => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/chat" element={<InputComChat />} /> 
+        <Route path="/chat" element={<LlamaChat />} /> 
         <Route path="/map" element={<Mapa />} />
         <Route path="/curriculo" element={<Curriculo />} />
 
