@@ -174,7 +174,7 @@ setNome("Pirâmides do Egito");
 setDescricao("As pirâmides do Egito são estruturas monumentais construídas durante o Antigo Império do Egito Antigo para abrigar os corpos dos faraós egípcios, que eram considerados deuses na Terra. As pirâmides eram construídas de acordo com o projeto de uma câmara mortuária, onde o corpo do faraó seria colocado, e uma câmara de culto, onde os rituais de adoração seriam realizados.");
 falar("As pirâmides do Egito são estruturas monumentais construídas durante o Antigo Império do Egito Antigo para abrigar os corpos dos faraós egípcios, que eram considerados deuses na Terra. As pirâmides eram construídas de acordo com o projeto de uma câmara mortuária, onde o corpo do faraó seria colocado, e uma câmara de culto, onde os rituais de adoração seriam realizados.");
 }}>
-  <Image src="https://www.supermisterioso.com.br/wp-content/uploads/2021/03/piramides-do-egito-um-dos-fascinantes-misterios-da-humanidade.jpg" w={8} h={8} margin={"1"} borderRadius="full" title="Pirâmides do Egito" 
+  <Image src="https://static.todamateria.com.br/upload/pi/ra/piramidesdoegito-cke.jpg" w={8} h={8} margin={"1"} borderRadius="full" title="Pirâmides do Egito" 
   onMouseOver={(e) => {
     e.currentTarget.style.transform = "scale(2)"
     falar("Pirâmides do Egito")
