@@ -49,11 +49,12 @@ const Home = () => {
   >
      <Flex
              gap={5}
-             h="100vh"
+             h="90vh"
              w="100%"
              align="center"
              overflowY="auto"
-             py={4}
+             py={0}
+             mb={12}
              overflowX="hidden"
              flexDirection="column"
              position="relative"
@@ -81,7 +82,7 @@ const Home = () => {
           align="center"
           justify="center"
           px={4}
-          py={4}
+          py={4}          
 
         >
     <AnimatedStars />
@@ -104,19 +105,20 @@ const Home = () => {
             key={curriculo2}
             onMouseOver={() => falar("Curriculo Página 2")}
           />
-         </Stack>
-       
-        <Button
+
+<Button
     as="a"
     href={pdf}
     download="brunokobi.pdf"
     mt={4}
     mb={20}
     color={"#fff"} background={"#42c920"} _hover={{ background: "#256a10" }}
-    onMouseOver={() => falar("Baixar PDF")}
-  >
+    onMouseOver={() => falar("Baixar PDF")}  >
     Baixar PDF
   </Button>
+         </Stack>
+       
+      
       </Flex>
 
       <Modal isOpen={isOpen} onClose={onClose}
