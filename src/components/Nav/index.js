@@ -11,8 +11,8 @@ import klingon from "../../assets/img/klingo.png";
 import { FaGlobe, FaReact} from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
 import { AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
-// import { AiOutlineInstagram } from "react-icons/ai";
-// import { AiOutlineFacebook } from "react-icons/ai";
+import { AiOutlineInstagram } from "react-icons/ai";
+import { AiOutlineFacebook } from "react-icons/ai";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import china from "../../assets/img/china.png";
@@ -69,21 +69,21 @@ const Nav = () => {
       url: "https://github.com/brunokobi",
       icon: AiOutlineGithub,
     },
-    // {
-    //   label: 'Curriculo',
-    //   url: "/curriculo",
-    //   icon:AiOutlineFilePdf,
-    // } 
-    // {
-    //   label: intl.formatMessage({id: 'instagram'}),
-    //   url: "https://www.instagram.com/brunokobi/",
-    //   icon: AiOutlineInstagram,
-    // },
-    // {
-    //   label: intl.formatMessage({id: 'facebook'}),
-    //   url: "https://www.facebook.com/bruno.kobi/",
-    //   icon: AiOutlineFacebook,
-    // },
+    {
+      label: 'Curriculo',
+      url: "/curriculo",
+      icon:AiOutlineFilePdf,
+    }, 
+    {
+      label: intl.formatMessage({id: 'instagram'}),
+      url: "https://www.instagram.com/brunokobi/",
+      icon: AiOutlineInstagram,
+    },
+    {
+      label: intl.formatMessage({id: 'facebook'}),
+      url: "https://www.facebook.com/bruno.kobi/",
+      icon: AiOutlineFacebook,
+    },
         
   
   ];

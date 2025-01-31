@@ -6,25 +6,22 @@ import { Flex,Modal,
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,Image } from "@chakra-ui/react";
-import { motion, AnimatePresence } from "framer-motion";
+  useDisclosure,Image,Box } from "@chakra-ui/react";
+import { motion} from "framer-motion";
 import curriculo1 from "../../assets/img/curriculo1.jpg";
 import curriculo2 from "../../assets/img/curriculo2.jpg";
 import pdf from "../../assets/img/curriculo.pdf";
 import { useState } from "react";
 import falar from "../../components/TextAudio";
-
-
-import IconsBackground from "../../components/IconsBackground";
-
-
-
+import {useRef } from "react";
+import AnimatedStars from "../../components/AnimatedStars";
 
 
 const Home = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("Curriculo Pag 1");
+  const wrapperRef = useRef(null); // Referência para o container principal
 
   const handleImageClick = (imageSrc) => {
    if (imageSrc === curriculo1) {
@@ -44,26 +41,39 @@ const Home = () => {
   };
 
   return (
-    <AnimatePresence>
-      <Flex
-        minH="100vh"
-        direction="column"
-        align="center"
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        h="100vh"
-        w="100%"
-        overflowY="auto"
-        py={24}
-        overflowX="hidden"
-        flexDirection="column"
-        scrollBehavior="smooth"
-      >
-       
-
-        <Stack
+    <Box
+    as={motion.div}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+     <Flex
+             gap={5}
+             h="100vh"
+             w="100%"
+             align="center"
+             overflowY="auto"
+             py={4}
+             overflowX="hidden"
+             flexDirection="column"
+             position="relative"
+             scrollBehavior="smooth"
+             ref={wrapperRef}
+             css={{
+               "&::-webkit-scrollbar": {
+                 width: "5px", // Customização da barra de rolagem
+                 height: "10px",
+               },
+               "&::-webkit-scrollbar-track": {
+                 width: "6px",
+               },
+               "&::-webkit-scrollbar-thumb": {
+                 background: "#42c920",
+                 borderRadius: "24px",
+               },
+             }}
+           >
+             <Stack
           direction={{ base: "column", md: "row", lg: "row", sm: "column" }}
           spacing={5}
           w="100%"
@@ -74,7 +84,8 @@ const Home = () => {
           py={4}
 
         >
-           <IconsBackground />
+    <AnimatedStars />
+    
           <Image
             src={curriculo1}
             w={{ base: 400, md: 200, lg: 450, sm: 100, xl: 450 }}         
@@ -93,14 +104,15 @@ const Home = () => {
             key={curriculo2}
             onMouseOver={() => falar("Curriculo Página 2")}
           />
-         
-        </Stack>
+         </Stack>
+       
         <Button
     as="a"
     href={pdf}
     download="brunokobi.pdf"
     mt={4}
-    colorScheme="green"
+    mb={20}
+    color={"#fff"} background={"#42c920"} _hover={{ background: "#256a10" }}
     onMouseOver={() => falar("Baixar PDF")}
   >
     Baixar PDF
@@ -133,7 +145,9 @@ const Home = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-    </AnimatePresence>
+    
+    </Box>
+
   );
 };
 

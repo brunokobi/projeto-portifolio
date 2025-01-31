@@ -96,8 +96,8 @@ const LlamaChat = () => {
             placeholder="Pergunte algo..." />
           <div className="input-border"></div>
         </div>
-        <Button onClick={queryLlama} isDisabled={loading}
-        className="button"        
+        <Button onClick={queryLlama} isDisabled={loading} mt={5}
+        color={"#fff"} background={"#42c920"} _hover={{ background: "#256a10" }}           
         >
        {loading ? (
   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
