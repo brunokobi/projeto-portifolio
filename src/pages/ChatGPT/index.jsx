@@ -4,7 +4,10 @@ import axios from "axios";
 import "./InputTextArea.css";
 import robo from '../../assets/img/robot.png';
 import AnimatedStars from "../../components/AnimatedStars";
-import {Box} from "@chakra-ui/react";
+import {Box,Flex,Button,Spinner} from "@chakra-ui/react";
+import { motion } from "framer-motion"; // Biblioteca para animações avançadas
+import {useRef } from "react";
+
 
 const API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // 🔹 Substitua pelo seu modelo da Hugging Face
 const TOKEN = process.env.REACT_APP_HUGGING_FACE_API_KEY; // 🔹 Substitua pelo seu token da Hugging Face
@@ -13,6 +16,7 @@ const LlamaChat = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const wrapperRef = useRef(null); // Referência para o container principal
 
   const queryLlama = async () => {
     if (!input) return;
@@ -42,7 +46,38 @@ const LlamaChat = () => {
   };
 
   return (
-    <>
+    <Box
+    as={motion.div}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+     <Flex
+             gap={5}
+             h="100vh"
+             w="100%"
+             align="center"
+             overflowY="auto"
+             py={24}
+             overflowX="hidden"
+             flexDirection="column"
+             position="relative"
+             scrollBehavior="smooth"
+             ref={wrapperRef}
+             css={{
+               "&::-webkit-scrollbar": {
+                 width: "5px", // Customização da barra de rolagem
+                 height: "10px",
+               },
+               "&::-webkit-scrollbar-track": {
+                 width: "6px",
+               },
+               "&::-webkit-scrollbar-thumb": {
+                 background: "#42c920",
+                 borderRadius: "24px",
+               },
+             }}
+           >
     <AnimatedStars />
     <Box w={"90%"} h={"100%"} mt={5}
       overflow={"auto"}
@@ -61,9 +96,17 @@ const LlamaChat = () => {
             placeholder="Pergunte algo..." />
           <div className="input-border"></div>
         </div>
-        <button onClick={queryLlama} disabled={loading} className="button">
-          {loading ? "Carregando..." : "Enviar"}
-        </button>
+        <Button onClick={queryLlama} isDisabled={loading}
+        className="button"        
+        >
+       {loading ? (
+  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <Spinner size="sm" /> <span>Carregando...</span>
+  </div>
+) : (
+  "Enviar"
+)}
+        </Button>
         {response && (
           <div style={{ marginTop: "5px" }}>
             <h3>Resposta:</h3>
@@ -76,7 +119,8 @@ const LlamaChat = () => {
         )}
       </div>
     </Box>
-    </>
+    </Flex>
+    </Box>
   );
 };
 

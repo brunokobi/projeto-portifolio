@@ -15,6 +15,9 @@ import AnimatedStars from "../../components/AnimatedStars";
 import esri from "../../assets/img/esri.png";
 import falar from "../../components//TextAudio";
 import {FaSearch,FaTrash} from "react-icons/fa";
+import {Flex} from "@chakra-ui/react";
+import { motion } from "framer-motion"; // Biblioteca para animações avançadas
+import {useRef } from "react";
 
 
 
@@ -26,6 +29,7 @@ function Mapa() {
   const [longitude, setLongitude] = useState("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+  const wrapperRef = useRef(null); // Referência para o container principal
 
   
 
@@ -37,7 +41,38 @@ function Mapa() {
 
 
   return (
-<>
+    <Box
+    as={motion.div}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+     <Flex
+             gap={5}
+             h="100vh"
+             w="100%"
+             align="center"
+             overflowY="auto"
+             py={24}
+             overflowX="hidden"
+             flexDirection="column"
+             position="relative"
+             scrollBehavior="smooth"
+             ref={wrapperRef}
+             css={{
+               "&::-webkit-scrollbar": {
+                 width: "5px", // Customização da barra de rolagem
+                 height: "10px",
+               },
+               "&::-webkit-scrollbar-track": {
+                 width: "6px",
+               },
+               "&::-webkit-scrollbar-thumb": {
+                 background: "#42c920",
+                 borderRadius: "24px",
+               },
+             }}
+           >
     <Stack w={{ base: "90%", md: "100%", lg: "100%", sm: "100%" }}
       spacing={4} // Espaçamento entre os elementos dentro do Stack
       align="center" // Centraliza horizontalmente os elementos no Stack
@@ -338,7 +373,9 @@ overflow="hidden">   */}
         )}
         </Box>
 </Stack>
-</>
+</Flex>
+
+</Box>
 
  
   );
