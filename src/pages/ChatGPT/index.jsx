@@ -7,6 +7,7 @@ import AnimatedStars from "../../components/AnimatedStars";
 import {Box,Flex,Button,Spinner} from "@chakra-ui/react";
 import { motion } from "framer-motion"; // Biblioteca para animações avançadas
 import {useRef } from "react";
+import falar from "../../components/TextAudio";
 
 
 const API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // 🔹 Substitua pelo seu modelo da Hugging Face
@@ -108,6 +109,7 @@ const LlamaChat = () => {
 )}
         </Button>
         {response && (
+          falar(response),
           <div style={{ marginTop: "5px" }}>
             <h3>Resposta:</h3>
             <textarea
