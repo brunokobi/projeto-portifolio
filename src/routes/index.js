@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
 //import falar from '../components/TextAudio'
-import ObjectDetection from "../pages/ObjectDetection/index";
+// import ObjectDetection from "../pages/ObjectDetection/index";
 
 
 
@@ -88,7 +88,7 @@ useEffect(() => {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/chat" element={<LlamaChat />} /> 
-        <Route path="/object" element={<ObjectDetection />} />
+        {/* <Route path="/object" element={<ObjectDetection />} /> */}
         <Route path="/map" element={<Mapa />} />
         <Route path="/curriculo" element={<Curriculo />} />
 
