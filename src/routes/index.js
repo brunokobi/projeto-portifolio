@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Icon } from '@chakra-ui/react'; // Certifique-se de ter o pacote @chakra-ui/react instalado
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa'; // Certifique-se de ter o pacote react-icons instalado
 //import falar from '../components/TextAudio'
+//import ObjectDetection from "../pages/ObjectDetection/index";
 
 
 
@@ -46,24 +47,29 @@ useEffect(() => {
     <Box minH="100vh" bg="black" color="rgb(196, 196, 196)">
     
     
-    <Heading
-                  position="relative"
-                  mx={10}
-                  zIndex="999"
-                  display="flex"
-                  textShadow={{
-                    base: "0px 0px 20px #42c920",
-                    md: "0px 0px 8px #42c920",
-                    lg: "0px 0px 10px #42c920",
-                  }}
-                  fontSize={{ base: "1.0rem"}}
-                  color={"#42c920"}
-               
-                >
-       Visitas
-      </Heading>    
-      <Image  alt="contador de visitas"     
-        src="https://websmultimedia.com/contador-de-visitas.php?id=11541"/>
+           
+    <Box position="fixed" top="10px" left="10px" zIndex="9999">
+  <Heading
+    position="relative"
+    mb={2} // Adiciona um pequeno espaçamento entre o texto e a imagem
+    zIndex="999"
+    textShadow={{
+      base: "0px 0px 20px #42c920",
+      md: "0px 0px 8px #42c920",
+      lg: "0px 0px 10px #42c920",
+    }}
+    fontSize={{ base: "1.0rem" }}
+    color={"#42c920"}
+  >
+    Visitas
+  </Heading>  
+  <Image 
+    alt="contador de visitas"     
+    src="https://websmultimedia.com/contador-de-visitas.php?id=11541"
+  />
+</Box>
+
+     
   
         <Box position="fixed" top="10px" right="10px" zIndex="999">
       <Button onClick={toggleAudio} bgColor="transparent" _hover={{ bgColor: 'transparent' }}
@@ -82,6 +88,7 @@ useEffect(() => {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/chat" element={<LlamaChat />} /> 
+        {/* <Route path="/object" element={<ObjectDetection />} /> */}
         <Route path="/map" element={<Mapa />} />
         <Route path="/curriculo" element={<Curriculo />} />
 
