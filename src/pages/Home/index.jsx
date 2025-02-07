@@ -3,6 +3,7 @@ import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Typewriter from "typewriter-effect";
 import profile from "../../assets/img/home-animation-removed.gif";
+import fundo from "../../assets/img/fundo.mp4";
 
 
 import IconsBackground from "../../components/IconsBackground";
@@ -40,6 +41,7 @@ setTimeout(() => {
         exit={{ opacity: 0 }}
         margin={'3%'}
       >
+        
          
         <Stack
           direction={{ base: "column", md: "row", lg: "row",sm:"column" }}
@@ -48,14 +50,15 @@ setTimeout(() => {
           align="center"
         >
           <IconsBackground />
-          <div
+          <Stack
             as={SlideFade}
             in={true}
             offsetX="-50%"
             transition="all 1s"
           >
             <Image src={profile} w={{ base: 250, md: 300 }} />
-          </div>
+            
+          </Stack>
 
           <div>
             <Stack spacing={1}>
@@ -67,6 +70,11 @@ setTimeout(() => {
                   fontWeight={300}
                   mb={{ md: -1, lg: -2 }}
                   onMouseOver={() => falar(intl.formatMessage({id: 'ola_mundo'}))}
+                  textShadow={{
+                    base: "0px 0px 20px rgb(0, 0, 0)",
+                    md: "0px 0px 8px rgb(0, 0, 0)",
+                    lg: "0px 0px 10px rgb(0, 0, 0)",
+                  }}
                 >                
                   {/* tradução texto */}
                   {intl.formatMessage({id: 'ola_mundo'})},&nbsp;
@@ -79,6 +87,11 @@ setTimeout(() => {
                   position="relative"
                   zIndex="999"
                   onMouseOver={() => falar(intl.formatMessage({id: 'eu_sou'}))}
+                  textShadow={{
+                    base: "0px 0px 20px rgb(0, 0, 0)",
+                    md: "0px 0px 8px rgb(0, 0, 0)",
+                    lg: "0px 0px 10px rgb(0, 0, 0)",
+                  }}
                 >
                    {/* tradução texto */}
                   {intl.formatMessage({id: 'eu_sou'})}                
@@ -116,6 +129,11 @@ setTimeout(() => {
                   fontSize={{ base: "md", md: "3xl" }}
                   fontWeight={300}
                   color="whiteAlpha.600"
+                  textShadow={{
+                    base: "0px 0px 20px rgb(0, 0, 0)",
+                    md: "0px 0px 8px rgb(0, 0, 0)",
+                    lg: "0px 0px 10px rgb(0, 0, 0)",
+                  }}
                 >
                   {"<dev/>"}
                 </Heading>
@@ -127,6 +145,11 @@ setTimeout(() => {
                   fontWeight={300}
                   position="relative"
                   zIndex="999"
+                  textShadow={{
+                    base: "0px 0px 20px rgb(0, 0, 0)",
+                    md: "0px 0px 8px rgb(0, 0, 0)",
+                    lg: "0px 0px 10px rgb(0, 0, 0)",
+                  }}
                   onMouseOver={() => falar(intl.formatMessage({id: 'frase_1'})
                   +intl.formatMessage({id: 'frase_2'})
                   )}
