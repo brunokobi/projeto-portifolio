@@ -146,7 +146,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
           navigate('/')
           window.location.reload();}}>
-          <Image src={brazil} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"} margin={'1'} title= {intl.formatMessage({id: 'pt'})} 
+          <Image src={brazil} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"} margin={'1'} title= {intl.formatMessage({id: 'pt'})} 
            _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -168,7 +168,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'en' }));        
            navigate('/')
           window.location.reload();}}>
-          <Image src={usa} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'} title= {intl.formatMessage({id: 'en'})}
+          <Image src={usa} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'en'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -190,7 +190,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'es' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={spain} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"} margin={'1'} title= {intl.formatMessage({id: 'es'})}
+          <Image src={spain} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"} margin={'1'} title= {intl.formatMessage({id: 'es'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -211,7 +211,7 @@ const Nav = () => {
         <button  onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'fr' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={france} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'}title= {intl.formatMessage({id: 'fr'})}
+          <Image src={france} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'}title= {intl.formatMessage({id: 'fr'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -232,7 +232,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'de' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={germany} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'} title= {intl.formatMessage({id: 'de'})}
+          <Image src={germany} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'de'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -253,7 +253,7 @@ const Nav = () => {
           <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'zh' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={china} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'} title= {intl.formatMessage({id: 'zh'})}
+          <Image src={china} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'zh'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -274,7 +274,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ru' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={russia} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'} title= {intl.formatMessage({id: 'ru'})}
+          <Image src={russia} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'ru'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         
@@ -295,7 +295,7 @@ const Nav = () => {
         <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ar' }));
            navigate('/')
           window.location.reload();}}>
-          <Image src={arabe} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.5rem"}  margin={'1'} title= {intl.formatMessage({id: 'ar'})}
+          <Image src={arabe} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'ar'})}
             _hover={{
             color: "#42c920",
             transition: "0.2s",         

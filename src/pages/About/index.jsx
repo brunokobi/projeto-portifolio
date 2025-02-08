@@ -36,11 +36,11 @@ import certf_2 from "../../assets/img/certificado_2.png";
 import certf_3 from "../../assets/img/certificado_3.png";
 import certf_4 from "../../assets/img/certificado_4.png";
 import certf_5 from "../../assets/img/certificado_5.png";
-import certf_6 from "../../assets/img/certificado_6.png";
-import certf_7 from "../../assets/img/certificado_7.png";
+import certf_9 from "../../assets/img/certificado_6.png";
+import certf_10 from "../../assets/img/certificado_7.png";
 import certf_8 from "../../assets/img//cert_form_mla.jpg";
-import certf_9 from "../../assets/img//cert_form_qa.jpg";
-import certf_10 from "../../assets/img///cert_form_npl.jpg";
+import certf_6 from "../../assets/img//cert_form_qa.jpg";
+import certf_7 from "../../assets/img///cert_form_npl.jpg";
 
 import { useObserver } from "./observers"; // Hook personalizado para observação de elementos no viewport
 import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrelas animadas
@@ -242,9 +242,11 @@ const About = () => {
               offsetX="50%"
               transition="all 1s"
             >             
-              <Image src={questionImg} w={300} ref={aboutRef} />
+              <Image src={questionImg} w={700} ref={aboutRef} />
             </div>
           </Stack>
+
+
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
@@ -278,7 +280,7 @@ const About = () => {
               transition="all 1s"
             >
              
-              <Image src={rock} w={300} ref={experienciaRef} />
+              <Image src={rock} w={400} ref={experienciaRef} />
             </div>
             <div
               maxW="350px"
@@ -293,6 +295,13 @@ const About = () => {
                 mt={{ base: 3 }}
               >
                 {intl.formatMessage({ id: "experiencia" })}
+              </Text>
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
+              <b> {intl.formatMessage({ id: "experiencia4t" })} </b><br/>
+              {intl.formatMessage({ id: "experiencia4e" })}<br/>              
+              {intl.formatMessage({ id: "experiencia4d" })} <br/>              
+              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
+              Metodologias Agile · MySQL · PHP · React.js · TypeScript · JavaScript · PostgreSQL
               </Text>
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
               <b> {intl.formatMessage({ id: "experiencia1t" })} </b><br/>
