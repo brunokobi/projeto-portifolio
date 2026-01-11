@@ -137,6 +137,7 @@ function Mapa() {
     <FaTrash size={30}  title="Limpar"/>
   </Button>
   </Stack>
+  <Flex wrap="wrap" justify="center" gap={2} mt={2} mb={4}>
   <button onClick={() => { setLatitudei(48.8584); setLongitudei(2.2945);
   setNome("Torre Eiffel");
   setDescricao("A Torre Eiffel é uma torre treliça de ferro do século XIX localizada no Champ de Mars, em Paris, que se tornou um ícone mundial da França. A torre, que é o edifício mais alto de Paris, é o monumento pago mais visitado do mundo, com milhões de pessoas subindo a torre a cada ano. Nomeada em homenagem ao seu projetista, o engenheiro Gustave Eiffel, foi construída como o arco de entrada da Exposição Universal de 1889.");
@@ -259,7 +260,7 @@ setNome("Cristo Redentor");
 setDescricao("O Cristo Redentor é uma estátua art déco que retrata Jesus Cristo, localizada no topo do morro do Corcovado, a 709 metros acima do nível do mar, no Parque Nacional da Tijuca, com vista para a maior parte da cidade do Rio de Janeiro, Brasil. Uma símbolo do cristianismo em todo o mundo, a estátua se tornou um ícone cultural do Rio e do Brasil.");
 falar("O Cristo Redentor é uma estátua art déco que retrata Jesus Cristo, localizada no topo do morro do Corcovado, a 709 metros acima do nível do mar, no Parque Nacional da Tijuca, com vista para a maior parte da cidade do Rio de Janeiro, Brasil. Uma símbolo do cristianismo em todo o mundo, a estátua se tornou um ícone cultural do Rio e do Brasil.");
 }}>
-  <Image src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fviajeros360.com%2Fwp-content%2Fuploads%2F2016%2F01%2FDSCN6042.jpg&f=1&nofb=1&ipt=a7fcb316b54ddcbb0613b508819a10543555c92051d7efabdab089b96979ef2a&ipo=images" w={8} h={8} margin={"1"} borderRadius="full" title="Cristo Redentor" 
+  <Image src="https://rederiohoteis.com/wp-content/uploads/2017/09/2017-10-29-cristo-redentor-conheca-a-historia-dessa-maravilha-do-mundo-moderno2.jpg.webp" w={8} h={8} margin={"1"} borderRadius="full" title="Cristo Redentor" 
   onMouseOver={(e) => {
     e.currentTarget.style.transform = "scale(2)"
     falar("Cristo Redentor")
@@ -337,6 +338,7 @@ falar("O Convento de Nossa Senhora da Penha é um convento católico localizado 
   }}
   />
 </button>
+</Flex>
 </FormControl>
   
  
