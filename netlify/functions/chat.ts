@@ -15,7 +15,7 @@ export const handler: Handler = async (event) => {
     }
 
     const response = await fetch(
-      "http://44.202.156.220:5678/webhook/3a715bf2-80f7-4eb2-b5d9-a9c3682224bf/chat",
+      "http://44.202.156.220:5678/webhook/860456de-05c8-40bf-9ba2-cbca916a026d/chat",     
       {
         method: "POST",
         headers: {
