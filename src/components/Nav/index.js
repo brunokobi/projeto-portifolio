@@ -21,7 +21,7 @@ import {useIntl} from 'react-intl';
 import {useNavigate} from 'react-router-dom'
 import Item from "./Item";
 import falar from "../TextAudio";
-import { FaRobot } from "react-icons/fa";
+//import { FaRobot } from "react-icons/fa";
 
 
 
@@ -47,12 +47,12 @@ const Nav = () => {
       url:  `/projects`,
       icon: FaReact,
     }, 
-    {
-      label: "Chat IA",
-      // label: intl.formatMessage({id: 'projetos'}),
-      url: "/chat",
-      icon: FaRobot,
-    },
+    // {
+    //   label: "Chat IA",
+    //   // label: intl.formatMessage({id: 'projetos'}),
+    //   url: "/chat",
+    //   icon: FaRobot,
+    // },
     // {
     //   label: "Detecção de Objetos",
     //   // label: intl.formatMessage({id: 'projetos'}),

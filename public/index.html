@@ -68,5 +68,82 @@
       defer
       type="text/javascript"
     ></script>
+    <script type="module" defer>
+  import Chatbot from "https://cdn.n8nchatui.com/v1/embed.js";
+  Chatbot.init({
+    "n8nChatUrl": "/.netlify/functions/chat",
+    "metadata": {},
+    "theme": {
+      "button": {
+        "backgroundColor": "#00e055", /* Verde Neon */
+        "right": 20,
+        "bottom": 20,
+        "size": 50,
+        "iconColor": "#000000", /* Ícone preto para contraste no verde */
+        "customIconSrc": "favicon.ico",
+        "customIconSize": 60,
+        "customIconBorderRadius": 0,
+        "autoWindowOpen": {
+          "autoOpen": false,
+          "openDelay": 2
+        },
+        "borderRadius": "rounded"
+      },
+      "tooltip": {
+        "showTooltip": true,
+        "tooltipMessage": "Dúvidas",
+        "tooltipBackgroundColor": "#00e055", /* Verde Neon */
+        "tooltipTextColor": "#000000", /* Texto preto */
+        "tooltipFontSize": 10,
+        "hideTooltipOnMobile": true
+      },
+      "allowProgrammaticMessage": false,
+      "chatWindow": {
+        "borderRadiusStyle": "rounded",
+        "avatarBorderRadius": 25,
+        "messageBorderRadius": 6,
+        "showTitle": true,
+        "title": "Chat IA", /* Sugestão: Alterar para algo como 'Assistente Virtual' */
+        "titleAvatarSrc": "favicon.ico",
+        "avatarSize": 40,
+        "welcomeMessage": "Olá! 👋\nSeja bem-vindo(a)! Como posso te ajudar hoje?",
+        "errorMessage": "Entre em contato com o suporte",
+        "backgroundColor": "#0a0a0a", /* Fundo Preto/Dark Mode */
+        "height": 600,
+        "width": 400,
+        "fontSize": 16,
+        "starterPromptFontSize": 15,
+        "renderHTML": false,
+        "clearChatOnReload": false,
+        "showScrollbar": false,
+        "botMessage": {
+          "backgroundColor": "#1a1a1a", /* Balão do Robô Escuro */
+          "textColor": "#00e055", /* Texto do Robô Verde (Estilo Terminal) */
+          "showAvatar": true,
+          "avatarSrc": "https://www.svgrepo.com/show/334455/bot.svg",
+          "showCopyToClipboardIcon": false
+        },
+        "userMessage": {
+          "backgroundColor": "#00e055", /* Balão do Usuário Verde */
+          "textColor": "#000000", /* Texto do Usuário Preto */
+          "showAvatar": true,
+          "avatarSrc": "https://www.svgrepo.com/show/532363/user-alt-1.svg",
+          "avatarColor": "#00e055", /* Avatar do Usuário Verde */
+        },
+        "textInput": {
+          "placeholder": "Digite sua pergunta...",
+          "backgroundColor": "#1a1a1a", /* Input Escuro */
+          "textColor": "#ffffff", /* Texto branco ao digitar */
+          "sendButtonColor": "#00e055", /* Botão de enviar Verde */
+          "maxChars": 50,
+          "maxCharsWarningMessage": "Você excedeu o limite de caracteres.",
+          "autoFocus": false,
+          "borderRadius": 6,
+          "sendButtonBorderRadius": 50
+        }
+      }
+    }
+  });
+</script>
   </body>
 </html>
