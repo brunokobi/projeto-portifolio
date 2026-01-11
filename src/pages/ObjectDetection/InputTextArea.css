@@ -1,0 +1,124 @@
+.input-container {
+  position: relative;
+  width: 100%; 
+  border:#42c920  2px solid;
+  border-radius: 25px;  
+}
+
+.input-text {
+  position: relative; 
+  background-color: transparent;
+  color: #42c920; 
+  font-size: 20px;
+  padding: 10px;
+  width: 100%;
+  height: 'auto';
+  resize: none;
+  text-align: center;
+}
+
+.input-text2 {
+  position: relative; 
+  background-color: transparent;
+  color: #42c920; 
+  font-size: 16px;
+  padding: 4px;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  text-align: center; 
+}
+
+  .input-text2::-webkit-scrollbar {
+    width: 8px; /* Largura da barra de rolagem */
+  }
+  
+  .input-text2::-webkit-scrollbar-track {
+    background: transparent; /* Fundo da barra de rolagem */
+  }
+  
+  .input-text2::-webkit-scrollbar-thumb {
+    background: #42c920; /* Cor da barra de rolagem */
+    border-radius: 4px; /* Cantos arredondados */
+  }
+  
+  .input-text2::-webkit-scrollbar-thumb:hover {
+    background: #37a81c; /* Cor ao passar o mouse */
+  }
+  
+  /* Para navegadores compatíveis com scrollbar-color */
+  .input-text2 {
+    scrollbar-color: #42c920 transparent;
+    scrollbar-width: thin;
+  }
+  
+
+
+.input-text:focus {
+  outline: none;
+  color: #42c920;
+}
+
+.input-border {  
+  position: absolute;
+  width: 98%;
+  margin-left:1%;
+  height: 15px;
+  bottom: 0;
+  left: 0;
+  border-radius: 25px;
+  background-color: #42c920;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.input-text:focus + .input-border {
+  transform: scaleX(1);  
+}
+
+.input-text::placeholder {
+  color: #42c920;
+  padding: auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+
+}
+
+h3 {
+  color: #42c920; /* Cor do texto */
+  font-size: 20px; /* Tamanho da fonte */
+  font-weight: bold; /* Peso da fonte */
+  background-color: transparent; /* Fundo transparente */
+  text-align: center; /* Alinhamento centralizado */
+  margin: 10px 0; /* Margem acima e abaixo */
+  padding: 6px; /* Espaçamento interno */
+  border-bottom: 2px solid #42c920; /* Linha inferior com a cor especificada */
+}
+
+h1 {
+  color: #42c920; /* Cor do texto */
+  font-size: 24px; /* Tamanho da fonte */
+  font-weight: bold; /* Peso da fonte */
+  background-color: transparent; /* Fundo transparente */
+  text-align: center; /* Alinhamento centralizado */    
+}
+
+
+.button {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  text-decoration: none;
+  background: linear-gradient(to bottom, #42c920, #389d18);
+  box-shadow: 0 5px 0 #2f8e14, 0 10px 0 #2a7b12, 0 15px 0 #256a10, 0 20px 0 #20590e;
+  border-radius: 25px;
+}
+
+.button:hover {
+  background: linear-gradient(to bottom, #389d18, #42c920);
+  box-shadow: 0 5px 0 #2a7b12, 0 10px 0 #256a10, 0 15px 0 #20590e, 0 20px 0 #1c4d0c;
+}

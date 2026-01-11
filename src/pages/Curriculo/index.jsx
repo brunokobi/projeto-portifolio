@@ -15,6 +15,7 @@ import { useState } from "react";
 import falar from "../../components/TextAudio";
 import {useRef } from "react";
 import AnimatedStars from "../../components/AnimatedStars";
+import { useIntl } from "react-intl"; // Biblioteca para internacionalização
 
 
 const Home = () => {
@@ -22,17 +23,12 @@ const Home = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("Curriculo Pag 1");
   const wrapperRef = useRef(null); // Referência para o container principal
+  const intl = useIntl(); // Objeto para acessar mensagens traduzidas
 
-  const handleImageClick = (imageSrc) => {
+  const handleImageClick = (imageSrc) => {   
    if (imageSrc === curriculo1) {
       setTitle("Curriculo Página 1");
-      falar("Atualmente, sou um aluno de mestrado no Instituto Federal do Espírito Santo (IFES),"+
-      "onde estudo computação aplicada com ênfase em Inteligência Artificial. Em 2004, obtive meu diploma "+ 
-      "como técnico em informática no IFES, mas acabei não seguindo carreira nessa área. Desde 2018,"+
-      " decidi concentrar-me inteiramente no campo do desenvolvimento de software. Em 2020, obtive meu"+
-      " diploma de Bacharel em Sistemas de Informação na Universidade Salesiana (Unisales). Possuo um desempenho excelente"+
-      " em lógica de programação, tanto que fui monitor dessa disciplina durante minha graduação. Tenho habilidades em diversas"+
-       "linguagens, incluindo HTML, PHP, CSS, SQL, JavaScript, Python, C, Java, Prolog e LaTeX. Além disso, possuo conhecimento em frameworks como React, React Native");
+      falar(intl.formatMessage({ id: "educacao1" }));
        } else {
       setTitle("Curriculo Página 2");
     }
