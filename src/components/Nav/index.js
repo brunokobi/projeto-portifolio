@@ -1,5 +1,19 @@
-import { Breadcrumb, Flex, Stack } from "@chakra-ui/react";
+import React from "react";
+import { Breadcrumb, Flex, Stack, Box, HStack } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
+import { Image } from "@chakra-ui/react";
+import { useIntl } from "react-intl";
+import { useNavigate } from "react-router-dom";
+import Item from "./Item";
+import falar from "../TextAudio";
+
+// Ícones
+import { FaGlobe, FaReact } from "react-icons/fa";
+import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
+import { RiAliensFill } from "react-icons/ri";
+import { IoMdRocket } from "react-icons/io";
+
+// Imagens
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
 import spain from "../../assets/img/spain.png";
@@ -8,335 +22,157 @@ import germany from "../../assets/img/germany.png";
 import russia from "../../assets/img/russia.png";
 import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
-import { FaGlobe, FaReact} from "react-icons/fa";
-import { AiOutlineLinkedin } from "react-icons/ai";
-import { AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
-// import { AiOutlineInstagram } from "react-icons/ai";
-// import { AiOutlineFacebook } from "react-icons/ai";
-import { RiAliensFill } from "react-icons/ri";
-import { IoMdRocket } from "react-icons/io";
 import china from "../../assets/img/china.png";
-import { Image } from "@chakra-ui/react";
-import {useIntl} from 'react-intl';
-import {useNavigate} from 'react-router-dom'
-import Item from "./Item";
-import falar from "../TextAudio";
-//import { FaRobot } from "react-icons/fa";
 
-
-
+// Configuração dos idiomas para evitar repetição de código
+const languages = [
+  { id: "pt", img: brazil, label: "pt" },
+  { id: "en", img: usa, label: "en" },
+  { id: "es", img: spain, label: "es" },
+  { id: "fr", img: france, label: "fr" },
+  { id: "de", img: germany, label: "de" },
+  { id: "zh", img: china, label: "zh" },
+  { id: "ru", img: russia, label: "ru" },
+  { id: "ar", img: arabe, label: "ar" },
+  { id: "kl", img: klingon, label: "kl" },
+];
 
 const Nav = () => {
   const intl = useIntl();
-  const navigate = useNavigate();  
-  
+  const navigate = useNavigate();
+
+  // Recupera idioma atual
+  const ls = localStorage.getItem("i18nConfig");
+  const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
+  const currentLang = langConfig.selectedLang;
+
   const sections = [
-    {
-      label: intl.formatMessage({ id: "home" }),
-      url: `/`,
-      icon: IoMdRocket,
-    },
-    {
-      label: intl.formatMessage({id: 'sobre'}),
-      url:  `/about`,
-      icon: RiAliensFill,
-    },
-  
-    {
-      label: intl.formatMessage({id: 'projetos'}),
-      url:  `/projects`,
-      icon: FaReact,
-    }, 
-    // {
-    //   label: "Chat IA",
-    //   // label: intl.formatMessage({id: 'projetos'}),
-    //   url: "/chat",
-    //   icon: FaRobot,
-    // },
-    // {
-    //   label: "Detecção de Objetos",
-    //   // label: intl.formatMessage({id: 'projetos'}),
-    //   url: "/object",
-    //   icon: FaRobot,
-    // },
-    {
-      label: "Mapa Esri",
-      // label: intl.formatMessage({id: 'projetos'}),
-      url: "/Map",
-      icon: FaGlobe,
-    },        
-    {
-      label: intl.formatMessage({id: 'linkedin'}),
-      url: "https://www.linkedin.com/in/brunokobi/",
-      icon: AiOutlineLinkedin,
-    },
-    {
-      label: intl.formatMessage({id: 'github'}),
-      url: "https://github.com/brunokobi",
-      icon: AiOutlineGithub,
-    },
-    {
-      label: 'Curriculo',
-      url: "/curriculo",
-      icon:AiOutlineFilePdf,
-    }, 
-    // {
-    //   label: intl.formatMessage({id: 'instagram'}),
-    //   url: "https://www.instagram.com/brunokobi/",
-    //   icon: AiOutlineInstagram,
-    // },
-    // {
-    //   label: intl.formatMessage({id: 'facebook'}),
-    //   url: "https://www.facebook.com/bruno.kobi/",
-    //   icon: AiOutlineFacebook,
-    // },
-        
-  
+    { label: intl.formatMessage({ id: "home" }), url: `/`, icon: IoMdRocket },
+    { label: intl.formatMessage({ id: "sobre" }), url: `/about`, icon: RiAliensFill },
+    { label: intl.formatMessage({ id: "projetos" }), url: `/projects`, icon: FaReact },
+    { label: "Mapa Esri", url: "/Map", icon: FaGlobe },
+    { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
+    { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
+    { label: "Curriculo", url: "/curriculo", icon: AiOutlineFilePdf },
   ];
-  let ls = localStorage.getItem("i18nConfig")
-  let lang = JSON.parse(ls)
-  let idioma = 'pt'
-  if(lang){
-  idioma =lang.selectedLang
-  }
-  
+
+  // Função para trocar idioma
+  const handleLanguageChange = (langId) => {
+    localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: langId }));
+    navigate("/");
+    window.location.reload();
+  };
+
+  // Componente interno para renderizar o botão de idioma (DRY - Don't Repeat Yourself)
+  const LanguageButton = ({ lang }) => {
+    const isSelected = currentLang === lang.id;
+    const activeStyle = {
+      borderColor: "#42c920",
+      filter: "drop-shadow(0px 0px 8px #42c920)",
+      transform: "scale(1.1)",
+    };
+
+    return (
+      <Box
+        as="button"
+        onClick={() => handleLanguageChange(lang.id)}
+        onMouseOver={() => falar(intl.formatMessage({ id: lang.id }))}
+        mx={1}
+        flexShrink={0} // Impede que o botão encolha no mobile
+      >
+        <Image
+          src={lang.img}
+          alt={lang.id}
+          title={intl.formatMessage({ id: lang.id })}
+          w={{ base: "1.8rem", md: "1.5rem" }}
+          h={{ base: "1.8rem", md: "1.5rem" }}
+          borderRadius="full"
+          border="2px solid transparent"
+          transition="all 0.2s"
+          style={isSelected ? activeStyle : {}}
+          _hover={{
+            ...activeStyle,
+            borderColor: "#42c920",
+          }}
+        />
+      </Box>
+    );
+  };
 
   return (
     <AnimatePresence>
       <Flex
-        py={4}
-        justify="center"
+        as="nav"
         position="fixed"
         bottom={0}
-        w={{ base: "100%", md: "100%", sm: "100%", lg: "100%" }}
-        direction={{ base: "row", sm: "column", md: "column", lg: "row", xl: "row" }}
-        color="whiteAlpha.700"
+        w="100%"
+        zIndex={999999}
+        bg="black"
         borderTop="1px solid"
         borderColor="whiteAlpha.400"
-        background="black"
-        zIndex={999999}
+        color="whiteAlpha.700"
+        direction={{ base: "column", lg: "row" }} // Coluna no mobile, Linha no desktop
+        justify="space-between"
+        align="center"
+        py={2}
+        px={4}
+        boxShadow="0 -4px 20px rgba(0,0,0,0.5)"
       >
-        <Stack 
-       width={{ base: "100%", md: "100%", sm: "100%", lg: "100%" }}
-      align="center" // Centraliza horizontalmente os elementos no Stack
-      justify="center" // Centraliza verticalmente os elementos no Stack
-      >
-        <Breadcrumb
-          fontWeight="medium"
-          fontSize="sm"
-          spacing={{ base:0, md: 0}}
-          separator=""
-
+        {/* SEÇÃO 1: Links de Navegação */}
+        <Box
+          w={{ base: "100%", lg: "auto" }}
+          overflowX={{ base: "auto", lg: "visible" }} // Scroll horizontal no mobile
+          css={{
+            "&::-webkit-scrollbar": { display: "none" }, // Esconde barra de rolagem
+            scrollbarWidth: "none",
+          }}
+          mb={{ base: 2, lg: 0 }}
         >
-          {sections.map(({ label, url, icon }, i) => (
-            <Item {...{ label, url, icon }} key={i} />
-          ))}      
-            
-        </Breadcrumb>
-        </Stack>
+          <Stack
+            direction="row"
+            spacing={0}
+            justify={{ base: "flex-start", lg: "center" }}
+            align="center"
+            minW={{ base: "max-content", lg: "auto" }} // Garante largura para scroll
+            px={{ base: 2, lg: 0 }}
+          >
+            <Breadcrumb separator="" spacing={0}>
+              {sections.map(({ label, url, icon }, i) => (
+                <Item label={label} url={url} icon={icon} key={i} />
+              ))}
+            </Breadcrumb>
+          </Stack>
+        </Box>
 
-        <Stack 
-       width={{ base: "20%", md: "100%", sm: "100%", lg: "20%" }}
-      align="center" // Centraliza horizontalmente os elementos no Stack
-      justify="center" // Centraliza verticalmente os elementos no Stack
-      direction={{ base: "row", md: "row" }}
-      >
-       
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'pt' }));
-          navigate('/')
-          window.location.reload();}}>
-          <Image src={brazil} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"} margin={'1'} title= {intl.formatMessage({id: 'pt'})} 
-           _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='pt' ? {  color: "#42c920",
-            border: "groove 3px #42c920",
-            borderRadius: "25px",        
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'pt'}))}
-          />
-        </button> 
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'en' }));        
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={usa} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'en'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='en' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'en'}))}
-          />
-        </button> 
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'es' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={spain} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"} margin={'1'} title= {intl.formatMessage({id: 'es'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='es' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'es'}))}
-          />
-        </button> 
-
-        <button  onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'fr' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={france} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'}title= {intl.formatMessage({id: 'fr'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='fr' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'fr'}))}
-          />
-        </button>
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'de' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={germany} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'de'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='de' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'de'}))}
-          />
-          </button> 
-
-          <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'zh' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={china} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'zh'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='zh' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'zh'}))}
-          />
-        </button> 
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ru' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={russia} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'ru'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='ru' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'ru'}))}
-          />
-        </button> 
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'ar' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={arabe} w={{ base: "2rem", lg: "1.5rem" }} minW={"1.0rem"}  margin={'1'} title= {intl.formatMessage({id: 'ar'})}
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",                     
-          }}
-          style={{
-            ...(idioma==='ar' ? {  color: "#42c920",
-             border: "groove 3px #42c920",
-            borderRadius: "25px",             transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.0rem",  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'ar'}))}
-          />
-        </button> 
-
-        <button onClick={() => {localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: 'kl' }));
-           navigate('/')
-          window.location.reload();}}>
-          <Image src={klingon} w={{ base: 35, md: 35 }} margin={'1'} title= {intl.formatMessage({id: 'kl'})}
-          borderRadius="full"
-            _hover={{
-            color: "#42c920",
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.5rem",                     
-          }}
-          style={{
-            ...(idioma==='kl' ? {  
-            color: "#42c920",
-            border: "groove 3px #42c920",
-            borderRadius: "25px",          
-            transition: "0.2s",         
-            filter: "drop-shadow(-3px -3px 20px #42c920)",           
-            width:"2.5rem"  } : ""),
-          }}
-          onMouseOver={() => falar(intl.formatMessage({id: 'kl'}))}
-          />
-        </button> 
-        </Stack>
+        {/* SEÇÃO 2: Bandeiras de Idiomas */}
+        <Box
+  w={{ base: "100%", lg: "auto" }}
+  overflowX={{ base: "auto", lg: "visible" }} // Ativa rolagem no mobile
+  maxW="100vw" // Garante que não estoure a largura da viewport
+  css={{
+    "&::-webkit-scrollbar": { display: "none" }, // Esconde barra no Chrome/Safari
+    scrollbarWidth: "none", // Esconde barra no Firefox
+    "-ms-overflow-style": "none", // Esconde barra no IE/Edge
+  }}
+>
+  <HStack
+    spacing={3} // Espaçamento entre as bandeiras
+    // O segredo está aqui: minW="max-content" força o HStack a ter a largura
+    // real dos itens, impedindo a quebra de linha.
+    minW={{ base: "max-content", lg: "auto" }} 
+    
+    // No mobile, usamos 'flex-start' para o scroll começar da esquerda.
+    // Se usar 'center' com scroll, os primeiros itens podem ficar cortados.
+    justify={{ base: "flex-start", lg: "flex-end" }} 
+    
+    px={4} // Um pouco de respiro nas laterais para a primeira/última bandeira não colar na borda
+    py={2}
+  >
+    {languages.map((lang) => (
+      <LanguageButton key={lang.id} lang={lang} />
+    ))}
+  </HStack>
+</Box>
       </Flex>
     </AnimatePresence>
   );
