@@ -1,35 +1,198 @@
-# 🛸 Portifolio de Bruno Kobi V. Amorim 🛸
+# 🛸 Bruno Kobi | Full Stack Developer & AI Systems Engineer 🛸
 
-<img src="portifolio.png" alt="Bruno Kobi" >
+![Portfolio](portifolio.png)
 
-<img src="mapa.jpg" alt="Mapa" >
+<p align="center">
 
-## 👨‍💻 Desenvolvido com react 🖥
+  <!-- Status -->
+  <img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-green?style=for-the-badge&logo=rocket&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
 
-Seja bem-vindo ao meu portfólio!
+  <!-- Frontend -->
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
+  <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
 
-Eu desenvolvi este projeto utilizando React e estou empolgado em compartilhar as últimas atualizações com você. Uma das principais características é o suporte a 9 idiomas diferentes, incluindo o intrigante Klingon de Star Trek. Quero proporcionar uma experiência personalizada a cada visitante, conectando pessoas ao redor do mundo.
+  <!-- Backend -->
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
+  <img src="https://img.shields.io/badge/Deno-000000?style=for-the-badge&logo=deno&logoColor=white" />
 
-Recentemente, integrei a API da ESRI <img src="esri.png" alt="Mapa" style="width: 25px;"> para adicionar mapas 3D interativos ao meu portfólio. Agora, você pode desfrutar de uma visualização imersiva e detalhada enquanto explora lugares e informações de forma única.
+  <!-- AI -->
+  <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
 
-Pensando na sua comodidade, adicionei duas opções de localização. Você pode marcar pontos manualmente no mapa ou optar por explorar nossas localizações predefinidas, tornando sua jornada pelo meu conteúdo mais fácil e divertida.
+  <!-- GIS -->
+  <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
 
-Acredito que a acessibilidade é fundamental, então decidi incluir um sistema avançado de leitura de texto por áudio, usando a poderosa Web Speech API. Dessa forma, todos os usuários, inclusive aqueles com deficiência visual ou preferência por ouvir o conteúdo, podem aproveitar plenamente todas as informações e recursos disponíveis aqui.
+  <!-- Arquitetura -->
+  <img src="https://img.shields.io/badge/Architecture-Event--Driven-black?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Security-RLS%20Enabled-red?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Serverless-Edge%20Runtime-purple?style=for-the-badge" />
 
-Meu objetivo é tornar sua experiência neste portfólio incrível e memorável. Sinta-se à vontade para explorar e descobrir mais sobre meus projetos e habilidades. Estou constantemente buscando inovação e excelência, e mal posso esperar para compartilhar minhas criações com você.
+</p>
 
-Para conferir meu trabalho e interagir com esta experiência completa, visite meu repositório em: link do repositório
+------------------------------------------------------------------------
 
-Agradeço muito sua visita e espero que você se divirta ao explorar meu portfólio! Se tiver alguma dúvida ou feedback, não hesite em entrar em contato comigo. Estou ansioso para ouvir suas opiniões.
+## 🌌 Visão Estratégica
 
-Obrigado por estar aqui!
+Este portfólio foi projetado como um **ecossistema digital
+inteligente**, integrando:
 
-<a href="https://brunokobi.netlify.app/">`🛸 Visite o Site 🛸 `</a>
-<br>
+-   ⚡ Engenharia Full Stack
+-   🌍 Geoprocessamento (GIS)
+-   🤖 Inteligência Artificial Conversacional
+-   🔁 Arquitetura orientada a eventos
+-   ♿ Acessibilidade extrema
+-   🌐 Internacionalização avançada
 
-## 🛠 No diretório do projeto, você pode executar:
+Não é apenas uma interface visual --- é uma demonstração prática de
+arquitetura moderna em produção.
 
-`yarn start`
+------------------------------------------------------------------------
 
-Inicia o aplicativo no modo de desenvolvimento.
-Abra http://localhost:3000 para visualizá-lo no seu navegador.
+## 🧠 Arquitetura de Alto Nível
+
+Princípios adotados:
+
+-   Clean Architecture
+-   Event-Driven Design
+-   Backend-as-a-Service
+-   Serverless First
+-   Modularização por Domínio
+
+```{=html}
+<!-- -->
+````
+
+```
+Client (React 18)
+   ↓
+Supabase (Auth + PostgreSQL + Edge Functions)
+   ↓
+Postgres Trigger
+   ↓
+Webhook
+   ↓
+n8n (Orquestração)
+   ↓
+Google Gemini AI
+   ↓
+Resend (Email)
+```
+
+---
+
+## 🛠️ Stack Tecnológica
+
+### 🎨 Frontend
+
+* React 18 (Hooks + Context API)
+* Chakra UI (Design System acessível)
+* Framer Motion (Animações fluidas)
+* React-Intl (9 idiomas)
+* Web Speech API (Text-to-Speech)
+* Lazy Loading + Code Splitting
+
+### 🧠 Backend & Infraestrutura
+
+**Supabase** - PostgreSQL - JWT Authentication - Row Level Security
+(RLS) - Edge Functions (Deno Runtime) - Triggers automatizados
+
+**n8n** - Workflows assíncronos - Integração com APIs externas -
+Orquestração desacoplada do frontend - Pipeline inteligente
+
+**Inteligência Artificial** - Google Gemini AI - Análise de sentimento -
+Classificação automática de mensagens - Respostas inteligentes -
+Fallback para atendimento humano
+
+---
+
+## 🌍 Módulo Geoespacial (GIS)
+
+* ESRI ArcGIS API
+* Mapas 3D interativos
+* Geolocalização dinâmica
+* Visualização espacial estratégica
+
+---
+
+## 🛰️ Fluxo de Comunicação (Uplink)
+
+1. Validação e envio via Supabase SDK
+2. Persistência na tabela `contato`
+3. Trigger PostgreSQL ativa Edge Function
+4. Webhook dispara fluxo no n8n
+5. IA classifica mensagem
+6. Notificação via Resend
+
+---
+
+## 🔐 Segurança
+
+* JWT Authentication
+* Row Level Security (RLS)
+* Sanitização de inputs
+* Rate limiting
+* Variáveis de ambiente isoladas
+
+---
+
+## ⚙️ Execução Local
+
+```bash
+git clone https://github.com/brunokobi/projeto-portifolio.git
+yarn install
+cp .env.example .env.local
+yarn start
+```
+
+---
+
+## 🌐 Variáveis de Ambiente
+
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+N8N_WEBHOOK_URL=
+GOOGLE_AI_KEY=
+RESEND_API_KEY=
+```
+
+---
+
+## 📈 Roadmap
+
+* Sistema de fila inteligente com IA
+* Dashboard administrativo
+* Observabilidade (Sentry / OpenTelemetry)
+* CI/CD automatizado
+* Deploy multi-região
+
+---
+
+## 🧬 Diferenciais Técnicos
+
+✔ Arquitetura orientada a eventos
+✔ Serverless real
+✔ Integração IA + Automação
+✔ Geoprocessamento 3D
+✔ Sistema multilíngue
+✔ Acessibilidade com síntese de voz
+
+---
+
+## 🛸 Sobre Bruno Kobi
+
+Full Stack Developer especializado em:
+
+* Sistemas escaláveis
+* Inteligência Artificial aplicada
+* Automação inteligente
+* Arquitetura moderna (Serverless & Event Driven)
+
+Construindo sistemas que não apenas funcionam --- mas pensam,
+automatizam e evoluem.
+```
