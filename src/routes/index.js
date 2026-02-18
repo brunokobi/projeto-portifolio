@@ -48,7 +48,7 @@ useEffect(() => {
     
     
            
-     <Box position="fixed" top="10px" left="10px" zIndex="9999">
+     {/* <Box position="fixed" top="10px" left="10px" zIndex="9999">
   <Heading
     position="relative"
     mb={2} // Adiciona um pequeno espaçamento entre o texto e a imagem
@@ -67,7 +67,7 @@ useEffect(() => {
     alt="contador de visitas"     
     src="https://websmultimedia.com/contador-de-visitas.php?id=11541"
   />
-</Box>
+</Box> */}
 
      
   

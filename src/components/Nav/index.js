@@ -1,5 +1,8 @@
 import React from "react";
-import { Breadcrumb, Flex, Stack, Box, HStack } from "@chakra-ui/react";
+import { 
+  Breadcrumb, Flex, Stack, Box, HStack, 
+  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure 
+} from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Image } from "@chakra-ui/react";
 import { useIntl } from "react-intl";
@@ -7,13 +10,17 @@ import { useNavigate } from "react-router-dom";
 import Item from "./Item";
 import falar from "../TextAudio";
 
+// --- IMPORTANTE: Importe seu formulário aqui ---
+// Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
+import ContactForm from "../ContatoForm/ContactForm";
+
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
-import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf } from "react-icons/ai";
+import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf, AiOutlineMail } from "react-icons/ai"; // Adicionei AiOutlineMail
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 
-// Imagens
+// Imagens (mantive seus imports originais)
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
 import spain from "../../assets/img/spain.png";
@@ -24,7 +31,6 @@ import arabe from "../../assets/img/arabe.png";
 import klingon from "../../assets/img/klingo.png";
 import china from "../../assets/img/china.png";
 
-// Configuração dos idiomas para evitar repetição de código
 const languages = [
   { id: "pt", img: brazil, label: "pt" },
   { id: "en", img: usa, label: "en" },
@@ -40,8 +46,10 @@ const languages = [
 const Nav = () => {
   const intl = useIntl();
   const navigate = useNavigate();
+  
+  // --- 1. Hook para controlar o Modal do Formulário ---
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Recupera idioma atual
   const ls = localStorage.getItem("i18nConfig");
   const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
   const currentLang = langConfig.selectedLang;
@@ -50,20 +58,23 @@ const Nav = () => {
     { label: intl.formatMessage({ id: "home" }), url: `/`, icon: IoMdRocket },
     { label: intl.formatMessage({ id: "sobre" }), url: `/about`, icon: RiAliensFill },
     { label: intl.formatMessage({ id: "projetos" }), url: `/projects`, icon: FaReact },
+    
+    // --- 2. Item de Contato (Note a prop 'isAction') ---
+    // Coloquei um identificador para sabermos que esse item abre o modal e não muda de página
+    { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
+    
     { label: "Mapa Esri", url: "/Map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
     { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
     { label: "Curriculo", url: "/curriculo", icon: AiOutlineFilePdf },
   ];
 
-  // Função para trocar idioma
   const handleLanguageChange = (langId) => {
     localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: langId }));
     navigate("/");
     window.location.reload();
   };
 
-  // Componente interno para renderizar o botão de idioma (DRY - Don't Repeat Yourself)
   const LanguageButton = ({ lang }) => {
     const isSelected = currentLang === lang.id;
     const activeStyle = {
@@ -78,7 +89,7 @@ const Nav = () => {
         onClick={() => handleLanguageChange(lang.id)}
         onMouseOver={() => falar(intl.formatMessage({ id: lang.id }))}
         mx={1}
-        flexShrink={0} // Impede que o botão encolha no mobile
+        flexShrink={0}
       >
         <Image
           src={lang.img}
@@ -90,10 +101,7 @@ const Nav = () => {
           border="2px solid transparent"
           transition="all 0.2s"
           style={isSelected ? activeStyle : {}}
-          _hover={{
-            ...activeStyle,
-            borderColor: "#42c920",
-          }}
+          _hover={{ ...activeStyle, borderColor: "#42c920" }}
         />
       </Box>
     );
@@ -111,21 +119,17 @@ const Nav = () => {
         borderTop="1px solid"
         borderColor="whiteAlpha.400"
         color="whiteAlpha.700"
-        direction={{ base: "column", lg: "row" }} // Coluna no mobile, Linha no desktop
+        direction={{ base: "column", lg: "row" }}
         justify="space-between"
         align="center"
         py={2}
         px={4}
         boxShadow="0 -4px 20px rgba(0,0,0,0.5)"
       >
-        {/* SEÇÃO 1: Links de Navegação */}
         <Box
           w={{ base: "100%", lg: "auto" }}
-          overflowX={{ base: "auto", lg: "visible" }} // Scroll horizontal no mobile
-          css={{
-            "&::-webkit-scrollbar": { display: "none" }, // Esconde barra de rolagem
-            scrollbarWidth: "none",
-          }}
+          overflowX={{ base: "auto", lg: "visible" }}
+          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}
           mb={{ base: 2, lg: 0 }}
         >
           <Stack
@@ -133,47 +137,78 @@ const Nav = () => {
             spacing={0}
             justify={{ base: "flex-start", lg: "center" }}
             align="center"
-            minW={{ base: "max-content", lg: "auto" }} // Garante largura para scroll
+            minW={{ base: "max-content", lg: "auto" }}
             px={{ base: 2, lg: 0 }}
           >
             <Breadcrumb separator="" spacing={0}>
-              {sections.map(({ label, url, icon }, i) => (
-                <Item label={label} url={url} icon={icon} key={i} />
-              ))}
+              {sections.map((section, i) => {
+                // --- 3. Lógica para renderizar o botão de Contato ---
+                if (section.isAction) {
+                  return (
+                    <Box 
+                      key={i} 
+                      onClick={section.action} 
+                      cursor="pointer"
+                      display="inline-flex" // Garante alinhamento com os Breadcrumbs
+                    >
+                      {/* Reutilizamos o visual do Item, mas passamos url="#" para não navegar */}
+                      <Item label={section.label} url="#" icon={section.icon} />
+                    </Box>
+                  );
+                }
+                
+                // Renderização normal dos links
+                return (
+                  <Item 
+                    label={section.label} 
+                    url={section.url} 
+                    icon={section.icon} 
+                    key={i} 
+                  />
+                );
+              })}
             </Breadcrumb>
           </Stack>
         </Box>
 
-        {/* SEÇÃO 2: Bandeiras de Idiomas */}
         <Box
-  w={{ base: "100%", lg: "auto" }}
-  overflowX={{ base: "auto", lg: "visible" }} // Ativa rolagem no mobile
-  maxW="100vw" // Garante que não estoure a largura da viewport
-  css={{
-    "&::-webkit-scrollbar": { display: "none" }, // Esconde barra no Chrome/Safari
-    scrollbarWidth: "none", // Esconde barra no Firefox
-    "-ms-overflow-style": "none", // Esconde barra no IE/Edge
-  }}
->
-  <HStack
-    spacing={3} // Espaçamento entre as bandeiras
-    // O segredo está aqui: minW="max-content" força o HStack a ter a largura
-    // real dos itens, impedindo a quebra de linha.
-    minW={{ base: "max-content", lg: "auto" }} 
-    
-    // No mobile, usamos 'flex-start' para o scroll começar da esquerda.
-    // Se usar 'center' com scroll, os primeiros itens podem ficar cortados.
-    justify={{ base: "flex-start", lg: "flex-end" }} 
-    
-    px={4} // Um pouco de respiro nas laterais para a primeira/última bandeira não colar na borda
-    py={2}
-  >
-    {languages.map((lang) => (
-      <LanguageButton key={lang.id} lang={lang} />
-    ))}
-  </HStack>
-</Box>
+          w={{ base: "100%", lg: "auto" }}
+          overflowX={{ base: "auto", lg: "visible" }}
+          maxW="100vw"
+          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none", "-ms-overflow-style": "none" }}
+        >
+          <HStack
+            spacing={3}
+            minW={{ base: "max-content", lg: "auto" }}
+            justify={{ base: "flex-start", lg: "flex-end" }}
+            px={4}
+            py={2}
+          >
+            {languages.map((lang) => (
+              <LanguageButton key={lang.id} lang={lang} />
+            ))}
+          </HStack>
+        </Box>
       </Flex>
+
+      {/* --- 4. O Modal que contém o Formulário --- */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+        <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
+        <ModalContent bg="transparent" boxShadow="none" border="none">
+          <ModalCloseButton 
+            color="#39ff14" 
+            zIndex={10} 
+            bg="black" 
+            border="1px solid #39ff14"
+            _hover={{ bg: "#39ff14", color: "black" }}
+          />
+          <ModalBody p={0}>
+             {/* AQUI ESTÁ A CORREÇÃO: Passamos a função onClose */}
+             <ContactForm onClose={onClose} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
     </AnimatePresence>
   );
 };
