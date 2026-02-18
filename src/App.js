@@ -7,6 +7,9 @@ import Router from "./routes";
 // Importa o IntlProvider para suporte a internacionalização
 import { IntlProvider } from "react-intl";
 
+// --- NOVO: Importa o Contador de Visitas ---
+import VisitCounter from "./components/Contador/VisitCounter";
+
 // Importa polyfills e dados de idioma para suporte a formatação de tempo relativo
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/locale-data/en";
@@ -83,14 +86,19 @@ function App() {
   const messages = allMessages[locale]; // Obtém as mensagens traduzidas para o idioma selecionado
 
   return (
-    <> 
+    <>
       {/* Provedor de internacionalização */}
-      <IntlProvider locale={locale} messages={messages}> 
+      <IntlProvider locale={locale} messages={messages}>
+        
+        {/* --- NOVO: Contador fixo no topo --- */}
+        <VisitCounter />
+        
         {/* Gerencia as rotas da aplicação */}
-        <Router /> 
+        <Router />
+        
         {/* Exibe as notificações toast */}
-        <ToastContainer /> 
-      </IntlProvider> 
+        <ToastContainer />
+      </IntlProvider>
     </>
   );
 }
