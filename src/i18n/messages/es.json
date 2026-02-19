@@ -78,8 +78,12 @@
    "project8d":"Sitio de prueba FaceApi.js, usando la API tensorflow.js e implementando una serie de redes neuronales convulsivas (CNN).",
 
    "project9t": "Portafolio - Bruno Kobi Valadares de Amorim",
-"project9d": "Sitio web desarrollado en React para presentación de portafolio. Idiomas disponibles: Klingon (Star Trek), Portugués, Inglés, Español, Francés, Alemán, Chino, Ruso, Árabe. Créditos del tema: @matheus rocha"
+"project9d": "Sitio web desarrollado en React para presentación de portafolio. Idiomas disponibles: Klingon (Star Trek), Portugués, Inglés, Español, Francés, Alemán, Chino, Ruso, Árabe. Créditos del tema: @matheus rocha",
 
+"project10t": "Portafolio 3D: Alien Experience",
+  "project10d": "Desarrollo de un portafolio gamificado utilizando React Three Fiber y Three.js. El proyecto permite al usuario controlar un OVNI en un entorno 3D para 'abducir' vacas que representan mis stacks tecnológicos.",
+  "project10t": "Portfolio 3D : Alien Experience",
+  "project10d": "Développement d'un portfolio ludique utilisant React Three Fiber et Three.js. Le projet permet à l'utilisateur de contrôler un OVNI dans un environnement 3D pour 'enlever' des vaches qui représentent mes compétences technologiques."
 
 
 }

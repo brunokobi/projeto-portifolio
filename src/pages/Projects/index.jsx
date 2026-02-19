@@ -7,8 +7,9 @@ import AnimatedStars from "../../components/AnimatedStars";
 import { Link } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { useRef } from "react";
-// import { projects } from "./projects";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Imagens
 import placas from "../../assets/img/placas.png";
 import bio from "../../assets/img/bio.png";
 import guia from "../../assets/img/guia.png";
@@ -16,12 +17,25 @@ import etica from "../../assets/img/etica.png";
 import mestrado from "../../assets/img/mestrado.png";
 import face from "../../assets/img/face.jpg";
 import portifolio from "../../assets/img/portifolio.png";
+// --- NOVA IMAGEM: PORTFÓLIO 3D ---
+import portifolio3d from "../../assets/img/3dgame.png"; 
 
 const Projects = () => {
   const constraintsRef = useRef(null);
   const intl = useIntl();
 
   const projects = [
+    // --- NOVO PROJETO: PORTFÓLIO 3D (Adicionado no topo para destaque) ---
+    {
+      title: intl.formatMessage({id: 'project10t'}), 
+      link: "",
+      img: portifolio3d,
+      demo: "https://brunokobi3d.netlify.app",
+      description: intl.formatMessage({id: 'project10d'}),
+      tags: ["#REACT", "#THREE.JS", "#REACT THREE FIBER", "#3D", "#GAME"],
+      code: "https://github.com/brunokobi", // Atualize com o link exato do repositório se tiver
+    },
+    // --------------------------------------------------------------------
     {
       title: intl.formatMessage({id: 'project1t'}),
       link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6772979792737296384?compact=1",
@@ -110,8 +124,6 @@ const Projects = () => {
       tags: ["#JAVA","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
       code: "https://github.com/brunokobi",
     },
-  
-   
   ];
 
   return (

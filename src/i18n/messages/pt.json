@@ -76,7 +76,11 @@
   "project8d":"Site de Teste da FaceApi.js, utilizando a API do tensorflow.js e implementa uma série de redes neurais convulsionais (CNNs).",
 
   "project9t":" Portfólio",
-  "project9d":"Site desenvolvido em React para apresentação de portfólio. Idiomas disponíveis :Klingon(Star Trek), Português, Inglês, Espanhol, Francês, Alemão, Chinês, Russo e Árabe. Créditos Theme : @matheus rocha"
+  "project9d":"Site desenvolvido em React para apresentação de portfólio. Idiomas disponíveis :Klingon(Star Trek), Português, Inglês, Espanhol, Francês, Alemão, Chinês, Russo e Árabe. Créditos Theme : @matheus rocha",
+
+  
+  "project10t": "Portfólio 3D: Alien Experience",
+  "project10d": "Desenvolvimento de um portfólio gamificado utilizando React Three Fiber e Three.js. O projeto permite que o usuário controle um OVNI em um ambiente 3D para 'abduzir' vacas que representam minhas stacks tecnológicas."
 
 
 
