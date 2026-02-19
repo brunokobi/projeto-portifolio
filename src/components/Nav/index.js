@@ -19,6 +19,7 @@ import { FaGlobe, FaReact } from "react-icons/fa";
 import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf, AiOutlineMail } from "react-icons/ai"; // Adicionei AiOutlineMail
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
+import { BiCube } from "react-icons/bi"; // Ícone para o Portfolio 3D
 
 // Imagens (mantive seus imports originais)
 import usa from "../../assets/img/usa.png";
@@ -62,6 +63,11 @@ const Nav = () => {
     // --- 2. Item de Contato (Note a prop 'isAction') ---
     // Coloquei um identificador para sabermos que esse item abre o modal e não muda de página
     { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
+    { 
+      label: "Portfolio 3D", 
+      url: "https://brunokobi3d.netlify.app", 
+      icon: BiCube // ou FaCube
+    },
     
     { label: "Mapa Esri", url: "/Map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
