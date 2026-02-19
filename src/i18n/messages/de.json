@@ -78,6 +78,11 @@
   "project8d":"FaceApi.js-Testseite, die die tensorflow.js-API verwendet und eine Reihe konvulsiver neuronaler Netze (CNNs) implementiert.",
 
   "project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
-"project9d": "Mit React entwickelte Website zur Präsentation des Portfolios. Verfügbare Sprachen: Klingonisch (Star Trek), Portugiesisch, Englisch, Spanisch, Französisch, Deutsch, Chinesisch, Russisch, Arabisch. Theme-Credits: @matheus rocha"
+"project9d": "Mit React entwickelte Website zur Präsentation des Portfolios. Verfügbare Sprachen: Klingonisch (Star Trek), Portugiesisch, Englisch, Spanisch, Französisch, Deutsch, Chinesisch, Russisch, Arabisch. Theme-Credits: @matheus rocha",
+
+
+  "project10t": "3D-Portfolio: Alien Experience",
+  "project10d": "Entwicklung eines spielerischen Portfolios mit React Three Fiber und Three.js. Das Projekt ermöglicht es dem Benutzer, ein UFO in einer 3D-Umgebung zu steuern, um Kühe zu 'entführen', die meine technologischen Stacks repräsentieren."
+
 
 }
