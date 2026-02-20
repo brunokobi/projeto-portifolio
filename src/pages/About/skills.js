@@ -1,27 +1,24 @@
-import { IoLogoJavascript } from "react-icons/io5";
-import { IoLogoHtml5 } from "react-icons/io5";
-import { IoLogoCss3 } from "react-icons/io5";
-import { IoLogoReact } from "react-icons/io5";
-import { IoLogoNodejs } from "react-icons/io5";
+import { IoLogoJavascript, IoLogoHtml5, IoLogoCss3, IoLogoReact, IoLogoNodejs } from "react-icons/io5";
 
-import { SiPhp } from "react-icons/si";
-import { SiMysql } from "react-icons/si";
-import { SiTypescript } from "react-icons/si";
-import { SiC } from "react-icons/si";
-import { SiVisualstudiocode } from "react-icons/si";
-import { SiLatex } from "react-icons/si";
-import { SiSupabase } from "react-icons/si";
-import { SiLaravel } from "react-icons/si";
-import { SiDocker } from "react-icons/si";
-import { SiGithub } from "react-icons/si";
+import { 
+  SiPhp, 
+  SiMysql, 
+  SiTypescript, 
+  SiC, 
+  SiLatex, 
+  SiSupabase, 
+  SiLaravel, 
+  SiDocker, 
+  SiGithub,
+  SiChatwoot, // Ícone oficial do Chatwoot
+  SiN8N       // Ícone oficial do n8n
+} from "react-icons/si";
 
-// Substitutos para contornar o erro de versão do react-icons
-import { FaPython, FaCode, FaCogs, FaCube } from "react-icons/fa"; // FaCogs para n8n, FaCube para Three.js, FaCode para Lovable
-import { BsChatDots } from "react-icons/bs"; // Para Chatwoot
-import { MdOutlineElectricalServices } from "react-icons/md"; // Alternativa visual para Livewire
+import { TbBrandVscode } from "react-icons/tb";
 
-import { DiProlog } from "react-icons/di";
-import { DiPostgresql } from "react-icons/di";
+import { FaPython, FaCube, FaHeart } from "react-icons/fa"; // FaHeart adicionado para o Lovable
+
+import { DiProlog, DiPostgresql } from "react-icons/di";
 
 export const skills = [
   {
@@ -50,7 +47,7 @@ export const skills = [
   },  
   {
     label: "Three.js",
-    icon: FaCube, // Trocado para evitar erro
+    icon: FaCube, 
   },
   {
     label: "Node.js",
@@ -63,10 +60,6 @@ export const skills = [
   {
     label: "Laravel",
     icon: SiLaravel,
-  },
-  {
-    label: "Livewire",
-    icon: MdOutlineElectricalServices, // Trocado para evitar erro
   },
   {
     label: "PostgreSQL",
@@ -82,15 +75,15 @@ export const skills = [
   },
   {
     label: "n8n",
-    icon: FaCogs, // Trocado para evitar erro
+    icon: SiN8N, // Usando o oficial
   },
   {
     label: "Chatwoot",
-    icon: BsChatDots,
+    icon: SiChatwoot, // Usando o oficial
   },
   {
     label: "Lovable",
-    icon: FaCode,
+    icon: FaHeart, // Coração adicionado!
   },
   {
     label: "Docker",
@@ -114,6 +107,6 @@ export const skills = [
   },  
   {
     label: "VS Code",
-    icon: SiVisualstudiocode,
+    icon: TbBrandVscode, 
   },  
 ];
