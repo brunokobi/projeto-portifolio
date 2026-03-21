@@ -1,12 +1,10 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex, Link, Icon } from "@chakra-ui/react";
 import ProjectCard from "../../components/ProjectCard";
 import {useIntl} from 'react-intl';
 
 import { BsChevronDoubleUp } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
-import { Link } from "@chakra-ui/react";
-import { Icon } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Imagens
@@ -24,7 +22,8 @@ const Projects = () => {
   const constraintsRef = useRef(null);
   const intl = useIntl();
 
-  const projects = [
+  // Memoriza a lista para não ser recriada a cada renderização
+  const projects = useMemo(() => [
     // --- NOVO PROJETO: PORTFÓLIO 3D (Adicionado no topo para destaque) ---
     {
       title: intl.formatMessage({id: 'project10t'}), 
@@ -124,7 +123,7 @@ const Projects = () => {
       tags: ["#JAVA","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
       code: "https://github.com/brunokobi",
     },
-  ];
+  ], [intl]);
 
   return (
     <AnimatePresence>
@@ -135,7 +134,8 @@ const Projects = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <Box
+        {/* Substituído Box por Flex para que direction e align funcionem */}
+        <Flex
           h="100vh"
           overflowY="auto"
           w="100%"
@@ -162,28 +162,29 @@ const Projects = () => {
             },
           }}
         >
-          <Box
+          <Flex
             position="relative"
             id="top"
             direction={{ base: "column", md: "row" }}
+            wrap="wrap"
             px={6}
-            justify="space-between"
+            justify="center"
             alignItems="center"
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
-            initial="hidden"
-            animate="visible"
+            gap={8}
           >
            
             {projects.map(
-              ({ link, title, description, tags, demo, code, img }, i) => (
+              (project, i) => (
                 <ProjectCard
                   key={i}
-                  {...{ link, title, description, tags, demo, code, img, i }}
+                  i={i}
+                  {...project}
                 />
               )
             )}
-          </Box>
+          </Flex>
           <Box
             position="relative"
             as={motion.div}
@@ -203,7 +204,7 @@ const Projects = () => {
             </Link>
           </Box>
           <AnimatedStars />
-        </Box>
+        </Flex>
       </Box>
     </AnimatePresence>
   );

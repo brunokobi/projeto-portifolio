@@ -1,12 +1,15 @@
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {loadModules, setDefaultOptions} from 'esri-loader'
 import LoadingGlobo from '../Loading/index.jsx'
 
 const PointAdd = (props) => { 
   setDefaultOptions({css: true})
+  const [isLoading, setIsLoading] = useState(true)
+
   const styles = {
     container: {
       height: '70vh',
+      position: 'relative',
     },
     mapDiv: {
       height: '69vh',
@@ -14,9 +17,17 @@ const PointAdd = (props) => {
       background: 'transparent',
       borderRadius: '5px',
     },
+    loadingWrapper: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 10,
+    }
   }
 
   useEffect(() => {
+    setIsLoading(true)
     loadModules([
       'esri/Map',
       'esri/views/MapView',
@@ -32,10 +43,15 @@ const PointAdd = (props) => {
 
         // criação da view
         const view = new MapView({
-          container: 'viewDiv',
+          container: 'viewDivPoint',
           map: map,
           zoom: 4,
           center: [0, 0],
+        })
+
+        // Desliga o loading assim que o mapa estiver pronto
+        view.when(() => {
+          setIsLoading(false)
         })
 
         //posição do ponto recebido
@@ -106,8 +122,12 @@ const PointAdd = (props) => {
     <>
    
     <div style={styles.container}>
-    <LoadingGlobo />
-      <div id='viewDiv' style={styles.mapDiv}></div>{' '}
+      {isLoading && (
+        <div style={styles.loadingWrapper}>
+          <LoadingGlobo />
+        </div>
+      )}
+      <div id='viewDivPoint' style={styles.mapDiv}></div>{' '}
     </div>     
       </>
   )
