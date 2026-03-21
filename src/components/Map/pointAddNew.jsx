@@ -116,7 +116,7 @@ const PointAddNew = (props) => {
 
         // criação da view
         const view = new SceneView({
-          container: "viewDiv",
+          container: "viewDivGlobe",
           map: map,
           alphaCompositingEnabled: true,
           qualityProfile: "high",
@@ -264,7 +264,7 @@ const PointAddNew = (props) => {
 
   return (
         <div style={styles.container}>
-      <div id='viewDiv' style={styles.mapDiv}></div>{' '}
+      <div id='viewDivGlobe' style={styles.mapDiv}></div>{' '}
     </div>  
   )
 }
