@@ -1,26 +1,23 @@
-import React, { useState } from "react";
-import { PointAddNew } from "../../components/Map/pointAddNew.jsx";
-import { PointAdd } from "../../components/Map/pointAdd";
-
+import React, { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import {
   FormControl,
-  Stack,
   Input,
   Button,
   Heading,
   Box,
-  Image, 
+  Image,
+  Flex,
+  Text,
+  SimpleGrid,
+  IconButton,
 } from "@chakra-ui/react";
+import { FaSearch, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
+
+import { PointAddNew } from "../../components/Map/pointAddNew.jsx";
+import { PointAdd } from "../../components/Map/pointAdd";
 import AnimatedStars from "../../components/AnimatedStars";
-import esri from "../../assets/img/esri.png";
-import falar from "../../components//TextAudio";
-import {FaSearch,FaTrash} from "react-icons/fa";
-import {Flex} from "@chakra-ui/react";
-import { motion } from "framer-motion"; // Biblioteca para animações avançadas
-import {useRef } from "react";
-
-
-
+import falar from "../../components/TextAudio";
 
 const locations = [
   {
@@ -28,7 +25,7 @@ const locations = [
     lat: 48.8584,
     lng: 2.2945,
     desc: "A Torre Eiffel é uma torre treliça de ferro do século XIX localizada no Champ de Mars, em Paris, que se tornou um ícone mundial da França. A torre, que é o edifício mais alto de Paris, é o monumento pago mais visitado do mundo, com milhões de pessoas subindo a torre a cada ano. Nomeada em homenagem ao seu projetista, o engenheiro Gustave Eiffel, foi construída como o arco de entrada da Exposição Universal de 1889.",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg"
+    img: "https://lh3.googleusercontent.com/gps-cs-s/AHVAwercDFVxRv6lvjKcIuc3rH2S26serfJ6Zik_L5oR_jVUAOnM2ukpbh6XtuFgwH55pY4sq8Cbve4jnirGnX7FtnbGbDuQY66kEH9-V6AF2xGSA6MbTYDZWdkkUcN8loJz7ADUauwB4Q=s680-w680-h510-rw"
   },
   {
     name: "Estatua da Liberdade",
@@ -42,7 +39,7 @@ const locations = [
     lat: 27.1751,
     lng: 78.0421,
     desc: "O Taj Mahal é um mausoléu de mármore branco localizado na cidade indiana de Agra. Foi encomendado em 1632 pelo imperador Mughal Shah Jahan para abrigar o túmulo de sua esposa favorita, Mumtaz Mahal; também abriga o túmulo de Shah Jahan. O Taj Mahal é o monumento mais conhecido da Índia e um dos mais famosos do mundo.",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/800px-Taj_Mahal_%28Edited%29.jpeg"
+    img: "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerDyck-wTcZR6I54fb64Pxn39ivwAOtSaeJFESKKMmiY5Md9YBPb0jB_165wi2ML36jj947aaF2gohbksPfuWUlnM3yW9x0ksCDXAqia8VJ4VsI1svnj4ohGuxcAtgU86ZNP1KZ=w270-h312-n-k-no"
   },
   {
     name: "Coliseu de Roma",
@@ -106,6 +103,27 @@ const locations = [
     lng: -40.287222,
     desc: "O Convento de Nossa Senhora da Penha é um convento católico localizado no município de Vila Velha, no estado brasileiro do Espírito Santo. Foi construído no século XVI, no alto de um penhasco, a 154 metros de altitude, sendo um dos principais pontos turísticos do estado.",
     img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.WRrcSaaxSQ5dYFt3sKQJIQHaE6%26pid%3DApi&f=1&ipt=fda12a240552e4dd4e0d47b133ee9e8d25f43ef71d50b3b8e94d38ae71f77978&ipo=images"
+  },
+  {
+    name: "Stonehenge",
+    lat: 51.1789,
+    lng: -1.8262,
+    desc: "Stonehenge é um monumento pré-histórico localizado na planície de Salisbury, em Wiltshire, Inglaterra. Consiste em um anel de pedras verticais, cada uma com cerca de 4 metros de altura, 2,1 metros de largura e pesando cerca de 25 toneladas.",
+    img: "https://cdn.britannica.com/17/94717-050-FE53BEC9/Sunlight-portion-stone-circle-Stonehenge-Eng-Wiltshire.jpg"
+  },
+  {
+    name: "Área 51",
+    lat: 37.2431,
+    lng: -115.8111,
+    desc: "A Área 51 é o nome comum de uma instalação militar da Força Aérea dos Estados Unidos altamente classificada, localizada no deserto de Nevada. O intenso sigilo que envolve a base a tornou o assunto frequente de teorias da conspiração e folclore sobre objetos voadores não identificados (OVNIs) e vida alienígena.",
+    img: "https://conteudo.imguol.com.br/c/entretenimento/78/2022/04/08/area-51-nos-estados-unidos-1649464019179_v2_1x1.jpg"
+  },
+  {
+    name: "Wycliffe Well",
+    lat: -20.7816,
+    lng: 134.2366,
+    desc: "Wycliffe Well é uma localidade no Território do Norte, na Austrália, mundialmente famosa por ser considerada a 'Capital dos OVNIs' do país. Relatos de avistamentos de objetos voadores não identificados são frequentes na região desde a Segunda Guerra Mundial.",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThPOdMLsYrnUr4QdtyY7erLC2WE02s2WT97g&s"
   }
 ];
 
@@ -116,183 +134,236 @@ function Mapa() {
   const [longitude, setLongitude] = useState("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
-  const wrapperRef = useRef(null); // Referência para o container principal
-
-  
+  const wrapperRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   setLatitude(latitudei);
+    setLatitude(latitudei);
     setLongitude(longitudei);
   };
 
+  const handleClear = () => {
+    setLatitudei("");
+    setLongitudei("");
+    setLatitude("");
+    setLongitude("");
+    setNome("");
+    setDescricao("");
+    falar("Limpando campos");
+  };
 
   return (
-    <Box
-    as={motion.div}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-  >
-     <Flex
-             gap={5}
-             h="100vh"
-             w="100%"
-             align="center"
-             overflowY="auto"
-             py={24}
-             overflowX="hidden"
-             flexDirection="column"
-             position="relative"
-             scrollBehavior="smooth"
-             ref={wrapperRef}
-             css={{
-               "&::-webkit-scrollbar": {
-                 width: "5px", // Customização da barra de rolagem
-                 height: "10px",
-               },
-               "&::-webkit-scrollbar-track": {
-                 width: "6px",
-               },
-               "&::-webkit-scrollbar-thumb": {
-                 background: "#42c920",
-                 borderRadius: "24px",
-               },
-             }}
-           >
-    <Stack w={{ base: "90%", md: "100%", lg: "100%", sm: "100%" }}
-      spacing={4} // Espaçamento entre os elementos dentro do Stack
-      align="center" // Centraliza horizontalmente os elementos no Stack
-      justify="center" // Centraliza verticalmente os elementos no Stack
-      direction="column" // Alinha os elementos em uma coluna (verticalmente)
-      
+    <Flex
+      w="100vw"
+      h="100vh"
+      align="center"
+      justify="center"
+      position="relative"
+      bg="#050810" // Fundo global escuro
+      overflow="hidden"
     >
-    <Box maxW="lg" borderWidth="1px" borderRadius="lg" m={4}  borderColor = {"#42c920"} overflow="visible" mt={2}>
-<form onSubmit={handleSubmit} className="flex flex-col items-center">
+      <AnimatedStars />
 
-  <FormControl>
-   
-    <Stack  direction="row"m={2}  align="center" // Centraliza horizontalmente os elementos no Stack
-      justify="center" // Centraliza verticalmente os elementos no Stack>
-      position={"relative"}
+      {/* Main Container UI */}
+      <Box
+        as={motion.div}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        w={{ base: "95vw", lg: "85vw", xl: "75vw" }}
+        h="85vh"
+        bg="#0F172A" // Cor da interface (slate-900)
+        borderRadius="xl"
+        border="1px solid #42c920"
+        zIndex={10}
+        display="flex"
+        flexDirection="column"
+        overflow="hidden"
+        boxShadow="0px 0px 30px rgba(66, 201, 32, 0.15)"
       >
-    <Heading color={"#42c920"} as="h2" size="lg" my={2} >  
-      Mapa React ESRI   
-      </Heading>   
-      <Image src={esri} w={12} margin={"1"} />
-      </Stack>
-   
-  <Stack spacing={4} direction="row"m={4}>
- 
-  <Input htmlSize={20} width="auto" 
-   type="text"
-   value={latitudei }
-   onChange={(e) => setLatitudei(e.target.value)}
-   color={"#42c920"}  
-    placeholder="Latitude"
-    _placeholder={{ color: "inherit" }}
-    borderColor = {"#42c920"}
-    />
-  
-  <Input htmlSize={20} width="auto"
-  type="text"
-  value={longitudei}
-  onChange={(e) => setLongitudei(e.target.value)}
-  color={"#42c920"} 
-  placeholder="Longitude"
-  _placeholder={{ color: "inherit" }} 
-  borderColor = {"#42c920"}
-  />
-  <Button  width="auto" color={"#000"} backgroundColor={"#42c920"} type="submit" 
-  onMouseOver={() => falar("Localizar")}
-  >
-  <FaSearch size={30} title="Localizar" />
-  </Button>
- 
-  <Button  width="auto" color={"#000"} backgroundColor={"red"} 
-  onClick={() => { 
-    setLatitudei("");
-     setLongitudei(""); 
-     setLatitude(""); 
-     setLongitude("");
-     setNome("");
-     setDescricao("");
-      falar("Limpando campos");
-     }} 
-  onMouseOver={() => falar("Limpar")}
-  >
-    <FaTrash size={30}  title="Limpar"/>
-  </Button>
-  </Stack>
-  <Flex wrap="wrap" justify="center" gap={2} mt={2} mb={4}>
-  {locations.map((loc, index) => (
-    <button
-      key={index}
-      style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
-      onClick={() => {
-        setLatitudei(loc.lat);
-        setLongitudei(loc.lng);
-        setNome(loc.name);
-        setDescricao(loc.desc);
-        falar(loc.desc);
-      }}
-    >
-      <Image
-        src={loc.img}
-        w={8} h={8} margin={"1"} borderRadius="full" title={loc.name}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = "scale(2)";
-          falar(loc.name);
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = "scale(1)"; // Retornar à escala original
-        }}
-        transition="transform 0.2s ease-in-out"
-      />
-    </button>
-  ))}
-</Flex>
-</FormControl>
-  
- 
-</form>
-</Box>  
-{/* <Box maxW="100%" borderWidth="1px"  borderRadius="lg" m={2}
-backgroundColor={"#42c920"}
-borderColor = {"#42c920"} 
-overflow="hidden">   */}
-
-
-
-     
-    {/* </Box> */}
-   
-        <AnimatedStars />
-       
-
-        <Box w={"90%"} h={"100%"} mt={5}        
-        overflow={"auto"}
-        style={{"-webkit-overflow-scrolling": "touch", "scrollbar-width": "none", "msOverflowStyle": "none"}}
+        {/* Header Bar */}
+        <Flex
+          w="100%"
+          h="60px"
+          align="center"
+          justify="center"
+          borderBottom="1px solid"
+          borderColor="whiteAlpha.200"
+          position="relative"
+          bg="#0B1120"
         >
-        {latitude !== "" && longitude !== "" ? (
-            <PointAdd
-              name={nome||"Novo Ponto"}
-              description={descricao||"Ponto adicionado pelo usuário"}
-              latitude={latitude}
-              longitude={longitude}
-              zoom={16}
-              duration={6000}
-            />
-          ) : (
-            <PointAddNew />
-        )}
-        </Box>
-</Stack>
-</Flex>
+          <Flex align="center" gap={2} color="#42c920">
+            <FaMapMarkerAlt size={20} />
+            <Heading as="h1" size="md" fontWeight="600">
+              Mapa Global (Satélite) ESRI
+            </Heading>
+          </Flex>
+        </Flex>
 
-</Box>
+        {/* Content Area (Sidebar + Map) */}
+        <Flex flex="1" overflow="hidden" flexDirection={{ base: "column", md: "row" }}>
+          
+          {/* SIDEBAR LEFT */}
+          <Box
+            w={{ base: "100%", md: "380px" }}
+            h="100%"
+            borderRight={{ base: "none", md: "1px solid" }}
+            borderColor="whiteAlpha.200"
+            bg="#0F172A"
+            p={5}
+            overflowY="auto"
+            css={{
+              "&::-webkit-scrollbar": { width: "6px" },
+              "&::-webkit-scrollbar-track": { background: "transparent" },
+              "&::-webkit-scrollbar-thumb": { background: "#42c920", borderRadius: "10px" },
+            }}
+          >
+            {/* Box Inserir Coordenadas */}
+            <Box borderWidth="1px" borderColor="#2D3748" borderRadius="md" p={4} mb={6}>
+              <Text color="#42c920" fontSize="sm" fontWeight="bold" mb={3} textTransform="uppercase">
+                Inserir Coordenadas
+              </Text>
+              <form onSubmit={handleSubmit}>
+                <FormControl>
+                  <Flex gap={3} mb={3}>
+                    <Input
+                      type="text"
+                      value={latitudei}
+                      onChange={(e) => setLatitudei(e.target.value)}
+                      placeholder="Latitude"
+                      color="#42c920"
+                      borderColor="#42c920"
+                      _placeholder={{ color: "gray.500" }}
+                      _hover={{ borderColor: "#42c920" }}
+                      focusBorderColor="#42c920"
+                    />
+                    <Input
+                      type="text"
+                      value={longitudei}
+                      onChange={(e) => setLongitudei(e.target.value)}
+                      placeholder="Longitude"
+                      color="#42c920"
+                      borderColor="#42c920"
+                      _placeholder={{ color: "gray.500" }}
+                      _hover={{ borderColor: "#42c920" }}
+                      focusBorderColor="#42c920"
+                    />
+                  </Flex>
+                  <Flex gap={3}>
+                    <Button
+                      flex="1"
+                      type="submit"
+                      bg="#42c920"
+                      color="black"
+                      _hover={{ bg: "#36a319" }}
+                      leftIcon={<FaSearch />}
+                      onMouseEnter={() => falar("Localizar")}
+                    >
+                      Localizar
+                    </Button>
+                    <IconButton
+                      aria-label="Limpar"
+                      icon={<FaTrash />}
+                      bg="#E53E3E"
+                      color="white"
+                      _hover={{ bg: "#C53030" }}
+                      onClick={handleClear}
+                      onMouseEnter={() => falar("Limpar")}
+                    />
+                  </Flex>
+                </FormControl>
+              </form>
+            </Box>
 
- 
+            {/* Grid Pontos Turísticos */}
+            <Text color="#42c920" fontSize="sm" fontWeight="bold" mb={4} textTransform="uppercase" textAlign="center">
+              Pontos Turísticos
+            </Text>
+            <SimpleGrid columns={3} spacing={5}>
+              {locations.map((loc, index) => (
+                <Flex
+                  as="button"
+                  key={index}
+                  direction="column"
+                  align="center"
+                  onClick={() => {
+                    setLatitudei(loc.lat);
+                    setLongitudei(loc.lng);
+                    setLatitude(loc.lat);
+                    setLongitude(loc.lng);
+                    setNome(loc.name);
+                    setDescricao(loc.desc);
+                    falar(loc.desc);
+                  }}
+                  onMouseEnter={() => falar(loc.name)}
+                  role="group"
+                >
+                  <Box
+                    w="60px"
+                    h="60px"
+                    borderRadius="full"
+                    border="2px solid transparent"
+                    _groupHover={{ borderColor: "#42c920", transform: "scale(1.1)" }}
+                    transition="all 0.2s"
+                    overflow="hidden"
+                    mb={2}
+                  >
+                    <Image src={loc.img} alt={loc.name} w="100%" h="100%" objectFit="cover" />
+                  </Box>
+                  <Text color="gray.300" fontSize="xs" textAlign="center" lineHeight="tight" _groupHover={{ color: "white" }}>
+                    {loc.name}
+                  </Text>
+                </Flex>
+              ))}
+            </SimpleGrid>
+          </Box>
+
+          {/* RIGHT AREA: MAP */}
+          <Box flex="1" position="relative" bg="#000">
+            {latitude !== "" && longitude !== "" ? (
+              <PointAdd
+                key={`${latitude}-${longitude}`}
+                name={nome || "Novo Ponto"}
+                description={descricao || "Ponto adicionado pelo usuário"}
+                latitude={latitude}
+                longitude={longitude}
+                zoom={16}
+                duration={6000}
+              />
+            ) : (
+              <PointAddNew key="globo-inicial" />
+            )}
+
+            {/* Info Overlay Box (Bottom Left) */}
+            {nome && (
+              <Box
+                position="absolute"
+                bottom={6}
+                left={6}
+                right={6}
+                bg="rgba(0, 0, 0, 0.75)"
+                backdropFilter="blur(10px)"
+                border="1px solid"
+                borderColor="whiteAlpha.300"
+                borderRadius="lg"
+                p={4}
+                zIndex={20} // Acima do mapa
+                boxShadow="xl"
+                borderLeft="4px solid #42c920"
+              >
+                <Heading as="h3" size="sm" color="#42c920" mb={1}>
+                  {nome}
+                </Heading>
+                <Text color="gray.200" fontSize="sm" noOfLines={3}>
+                  {descricao}
+                </Text>
+              </Box>
+            )}
+          </Box>
+
+        </Flex>
+      </Box>
+    </Flex>
   );
 }
 
