@@ -71,5 +71,7 @@
   "project11t": "Arkon: A Fenda do Aglomerado",
   "project11d": "Jogo multiplayer 2D em tempo real no navegador, inspirado em Tibia, com sátira política brasileira. Desenvolvido com React, Phaser 4, Zustand e Supabase. Em desenvolvimento.",
   "project12t": "BPF Check — Sistema de Auditoria Sanitária",
-  "project12d": "Sistema web de auditoria sanitária para verificação de Boas Práticas de Fabricação (BPF). Permite login, gestão de inspeções e geração de relatórios de conformidade sanitária."
+  "project12d": "Sistema web de auditoria sanitária para verificação de Boas Práticas de Fabricação (BPF). Permite login, gestão de inspeções e geração de relatórios de conformidade sanitária.",
+  "project13t": "Mega-Sena IA — Machine Learning",
+  "project13d": "Experimento educacional de Machine Learning que analisa o histórico completo da Mega-Sena (2.806 sorteios) com Gradient Boosting Classifier. Gera combinações com scores de probabilidade e exibe mapas de calor estatísticos."
 }

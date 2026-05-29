@@ -64,5 +64,7 @@
   "project11t": "Arkon：星团裂隙",
   "project11d": "基于浏览器的实时2D多人游戏，灵感来自Tibia，融入巴西政治讽刺元素。使用React、Phaser 4、Zustand和Supabase开发。开发中。",
   "project12t": "BPF Check — 卫生审计系统",
-  "project12d": "用于验证良好生产规范（GMP）的网络卫生审计系统。包含登录、检查管理和合规报告生成功能。"
+  "project12d": "用于验证良好生产规范（GMP）的网络卫生审计系统。包含登录、检查管理和合规报告生成功能。",
+  "project13t": "Mega-Sena AI — 机器学习",
+  "project13d": "教育性机器学习实验，使用梯度提升分类器分析Mega-Sena彩票完整历史记录（2,806次抽奖）。生成带概率评分的组合和统计热图。"
 }

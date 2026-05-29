@@ -71,5 +71,7 @@
   "experiencia6e": "INFOVIX",
   "experiencia6d": "déc 2018 - jul 2019",
   "project12t": "BPF Check — Système d'Audit Sanitaire",
-  "project12d": "Système web d'audit sanitaire pour la vérification des Bonnes Pratiques de Fabrication (BPF). Comprend connexion, gestion des inspections et génération de rapports de conformité."
+  "project12d": "Système web d'audit sanitaire pour la vérification des Bonnes Pratiques de Fabrication (BPF). Comprend connexion, gestion des inspections et génération de rapports de conformité.",
+  "project13t": "Mega-Sena IA — Machine Learning",
+  "project13d": "Expérience éducative de Machine Learning analysant l'historique complet de la Mega-Sena (2 806 tirages) avec Gradient Boosting Classifier. Génère des combinaisons avec scores de probabilité et cartes de chaleur statistiques."
 }

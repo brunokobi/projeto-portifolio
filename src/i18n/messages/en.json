@@ -71,5 +71,7 @@
   "project11t": "Arkon: The Cluster Rift",
   "project11d": "Real-time 2D browser multiplayer game inspired by Tibia, with Brazilian political satire theme. Built with React, Phaser 4, Zustand and Supabase. In development.",
   "project12t": "BPF Check — Sanitary Audit System",
-  "project12d": "Web-based sanitary audit system for verifying Good Manufacturing Practices (GMP). Features login, inspection management and compliance report generation."
+  "project12d": "Web-based sanitary audit system for verifying Good Manufacturing Practices (GMP). Features login, inspection management and compliance report generation.",
+  "project13t": "Mega-Sena AI — Machine Learning",
+  "project13d": "Educational Machine Learning experiment analyzing the complete Mega-Sena lottery history (2,806 draws) using Gradient Boosting Classifier. Generates combinations with probability scores and statistical heatmaps."
 }
