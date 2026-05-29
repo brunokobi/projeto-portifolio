@@ -24,28 +24,37 @@
   "ar":"Árabe",
 
   "sobre_mim":"Sobre mim",
-  "sobre1":"Apaixonado por programação, tecnologia e inovação.",
-  "sobre2":"Sempre buscando novos conhecimentos e desafios.",
-  "sobre3":"Entrando de cabeça no mundo da inteligência artificial.",
- 
-  "educacao":"Educação",  
-  "educacao1":"Atualmente, sou um aluno de mestrado no Instituto Federal do Espírito Santo (IFES), onde estudo computação aplicada com ênfase em Inteligência Artificial. Em 2004, obtive meu diploma como técnico em informática no IFES, mas acabei não seguindo carreira nessa área. Desde 2018, decidi concentrar-me inteiramente no campo do desenvolvimento de software. Em 2020, obtive meu diploma de Bacharel em Sistemas de Informação na Universidade Salesiana (Unisales).",
+  "sobre1":"Software Developer | Full Stack | React | Node | IA · Serra, Espírito Santo, Brasil.",
+  "sobre2":"Minha jornada na tecnologia começou em 2004, quando me formei como técnico em informática pelo IFES. Após 14 anos no setor administrativo, redirecionei minha carreira em 2017 para o desenvolvimento de software.",
+  "sobre3":"Em 2020, concluí o Bacharelado em Sistemas de Informação pela Unisales. Atualmente curso Mestrado em TI na Ufes. Tenho sólida experiência em HTML, CSS, TypeScript, JavaScript, PHP, Python, React, React Native, Node.js e Inteligência Artificial.",
+
+  "educacao":"Educação",
+  "educacao1":"• Ufes — Mestrado em Tecnologia da Informação (set/2025 - mar/2026)\n• IFES — Pós-graduação Cultural Maker e Educação 4.0 (fev/2025 - jul/2025)\n• IFES — Mestrado em Computação Aplicada, IA (mar/2022 - jul/2024)\n• UniSales — Bacharelado em Sistemas de Informação (2017 - 2020)\n• IFES — Técnico em Informática (2003 - 2004)",
+
   "experiencia":"Experiência",
+  "experiencia5t":"Desenvolvedor Full Stack / IA / Automação",
+  "experiencia5e":"Vennx",
+  "experiencia5d":"mai de 2025 - Presente",
+
+  "experiencia4t":"Analista de Sistemas",
+  "experiencia4e":"Ambipar Response | BR",
+  "experiencia4d":"out de 2023 - jan de 2025",
+
   "experiencia1t":"Assistente de Programação II",
   "experiencia1e":"Ambipar Response Orbitgeo Ltda",
   "experiencia1d":"set de 2021 - jun de 2023",
 
-  "experiencia2t":"Analista de desenvolvimento de software",
+  "experiencia2t":"Analista de Desenvolvimento de Software",
   "experiencia2e":"Directy",
   "experiencia2d":"nov de 2020 - set de 2021",
 
-  "experiencia3t":"Estagiário de sistemas da informação",
+  "experiencia3t":"Estagiário de Sistemas da Informação",
   "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
   "experiencia3d":"ago de 2019 - jan de 2020",
 
-  "experiencia4t":"Analista de Sistemas Jr",
-  "experiencia4e":"Ambipar Response Ltda",
-  "experiencia4d":"out de 2023 - jan de 2025",
+  "experiencia6t":"Estagiário de Desenvolvimento de Software",
+  "experiencia6e":"INFOVIX",
+  "experiencia6d":"dez de 2018 - jul de 2019",
 
   "competencias":"Competências",
   "skills":"Skills",

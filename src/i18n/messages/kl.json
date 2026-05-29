@@ -1,91 +1,72 @@
-{ 
-  "meunome" : "choraQ joH." ,  
-  "ola_mundo":"qo' vIvan",
-  "eu_sou":"vIta'laH",
-  "frase_1":"Dej 'oSwI' DamojqangtaHvIS.",
+{
+  "meunome": "choraQ joH.",
+  "ola_mundo": "qo' vIvan",
+  "eu_sou": "vIta'laH",
+  "frase_1": "Dej 'oSwI' DamojqangtaHvIS.",
   "frase_2": "Sab",
-
-  "sobre":"nav qatwI'",
-  "home":"juH",
-  "projetos":"Qovpatlh",
-  "linkedin":"Hol",
-  "github":"Humbaba",
-  "facebook":"DawI'",
-  "instagram":"Qo'wI'",
-
-  "pt":"QI'tu'",
-  "en":"Te ra'",
-  "es":"qaryoQ",
-  "fr":"baH",
-  "de":"DoyIchlan", 
-  "zh":"QungwI'",
-  "ru":"raSya'",
-  "kl":"tlhIngan",
-
-  "sobre_mim":"HIHIv",
-  "sobre1":"chaq tlhInganpu'.",
-  "sobre2":"chuS'ughHom woH vetlh chuTwI' je.",
-  "sobre3":"pay' tlhInganpu' 'e' vIchaw'.",
- 
-  "educacao":"maQmIgh",  
-  "educacao1":"Sajchugh Human teSDu'wIjDaq jIleghlaHbe' vIQamlaHbe'. Artificial.Me tlhoS QongDaqvetlh vIlaDtaHvIS, ja'chuqtaHvIS 'otlh bong joq Huj. 'ach jImon 'e' vIqaSmoH.",
-
-  "experiencia":"po'qu'",
-  "experiencia1t":"Assistente de Programação II",
-  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
-  "experiencia1d":"set de 2021 - o momento",
-
-  "experiencia2t":"Analista de desenvolvimento de software",
-  "experiencia2e":"Directy",
-  "experiencia2d":"nov de 2020 - set de 2021",
-
-  "experiencia3t":"Estagiário de sistemas da informação",
-  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
-  "experiencia3d":"ago de 2019 - jan de 2020",
-
-  "experiencia4t":"Analista de Sistemas Jr",
-  "experiencia4e":"Ambipar Response Ltda",
-  "experiencia4d":"out de 2023 - jan de 2025",
-
-  "competencias":"Qel",
-  "skills":"Qel",
-  "quali":"'ut",
-
-  "project1t":"Presence Now",
-  "project1d":"Presence Now ghu'qa' lutoy'lu'DI', 'ej chalvo' QongmeH chaw'DI' yo' chenmoHlu'.js.js, 'oHmo' yuQmey vIlo' 'ej mISlaHbe' je 'ej not chuQun ghaH, 'ej Dochmeyvam puS. tlhoy chemvaH poHlu' 'e' luqatbe'mo' chenmoHlu'",
-
-  "project2t":"Guia Alimentar BR",
-  "project2d":"jonta' tlhIngan SuvwI' yo' qIj HoD, tlhIngan sep voDleH. qaStaHvIS tup law' tlhIngan SuvwI' je. 'ej veSDuj vIraDtaHvIS, choHtaHvIS. qaStaHvIS poH bIQ'a' jonpIn, De' chutmey, 'ej chenmoHlu'pa'. ",
-  
-  "project3t":"Quiz da Etica - Aplicativo",
-  "project3d":"pay' jIyevtaH 'e' maq. nobta' ghaH.",
-
-  "project4t":"Jogo das Placas ",
-  "project4d":"tangqa' targh wIpoSmoH qorDu'ghotpu' lo'taHvIS voDleH, 'ej choHchu' 'e' wInIDchu'.",
-
-  "project5t":"Quiz Web Biomedicina Unisales",
-  "project5d":"QamchoH latlh wamwI'ghom ra'wI' je.",
-
-  "project6t":"Mestrado em Inteligência Artificial",
-  "project6d":"Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
-
-  "project7t":"Algoritmos de Busca",
-  
-"project7d": "PythonDa' qIvoq chaw' 'e' DaH jatlh chenmoHmeH roj cha'logh la'lu'chugh IFES maH. 'oH 'e' vIneHbe'lu'chu'be' jatlh Hol yItlhutlh.",
-
-  "project8t":"Teste da FaceApi.js", 
+  "sobre": "nav qatwI'",
+  "home": "juH",
+  "projetos": "Qovpatlh",
+  "linkedin": "Hol",
+  "github": "Humbaba",
+  "facebook": "DawI'",
+  "instagram": "Qo'wI'",
+  "pt": "QI'tu'",
+  "en": "Te ra'",
+  "es": "qaryoQ",
+  "fr": "baH",
+  "de": "DoyIchlan",
+  "zh": "QungwI'",
+  "ru": "raSya'",
+  "kl": "tlhIngan",
+  "sobre_mim": "HIHIv",
+  "sobre1": "Software Developer | Full Stack | React | Node | AI · Serra, Brasil.",
+  "sobre2": "2004DIS IFES-Daq jIHaDpu' computer technician. 14 DIS administrative latlh jIHta'. 2017DIS software development vIghaj.",
+  "sobre3": "2020DIS Unisales-Daq Bachelor jIHaDpu'. DaH Ufes-Daq Master jIHaD. React, Node.js, AI, TypeScript je vIlo'. Qapla'!",
+  "educacao": "maQmIgh",
+  "educacao1": "• Ufes — Master IT (2025-2026)\n• IFES — Cultural Maker Postgrad (2025)\n• IFES — Master AI (2022-2024)\n• UniSales — Bachelor IS (2017-2020)\n• IFES — Computer Tech (2003-2004)",
+  "experiencia": "po'qu'",
+  "experiencia1t": "Programming Assistant II",
+  "experiencia1e": "Ambipar Response Orbitgeo Ltda",
+  "experiencia1d": "2021 - 2023",
+  "experiencia2t": "Software Development Analyst",
+  "experiencia2e": "Directy",
+  "experiencia2d": "2020 - 2021",
+  "experiencia3t": "Information Systems Intern",
+  "experiencia3e": "Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d": "2019 - 2020",
+  "experiencia4t": "Systems Analyst",
+  "experiencia4e": "Ambipar Response | BR",
+  "experiencia4d": "2023 - 2025",
+  "competencias": "Qel",
+  "skills": "Qel",
+  "quali": "'ut",
+  "project1t": "Presence Now",
+  "project1d": "Presence Now ghu'qa' lutoy'lu'DI', 'ej chalvo' QongmeH chaw'DI' yo' chenmoHlu'.js.js, 'oHmo' yuQmey vIlo' 'ej mISlaHbe' je 'ej not chuQun ghaH, 'ej Dochmeyvam puS. tlhoy chemvaH poHlu' 'e' luqatbe'mo' chenmoHlu'",
+  "project2t": "Guia Alimentar BR",
+  "project2d": "jonta' tlhIngan SuvwI' yo' qIj HoD, tlhIngan sep voDleH. qaStaHvIS tup law' tlhIngan SuvwI' je. 'ej veSDuj vIraDtaHvIS, choHtaHvIS. qaStaHvIS poH bIQ'a' jonpIn, De' chutmey, 'ej chenmoHlu'pa'. ",
+  "project3t": "Quiz da Etica - Aplicativo",
+  "project3d": "pay' jIyevtaH 'e' maq. nobta' ghaH.",
+  "project4t": "Jogo das Placas ",
+  "project4d": "tangqa' targh wIpoSmoH qorDu'ghotpu' lo'taHvIS voDleH, 'ej choHchu' 'e' wInIDchu'.",
+  "project5t": "Quiz Web Biomedicina Unisales",
+  "project5d": "QamchoH latlh wamwI'ghom ra'wI' je.",
+  "project6t": "Mestrado em Inteligência Artificial",
+  "project6d": "Anotaçoes de aulas e trabalhos desenvolvidos no mestrado em Inteligência Artificial no IFES - Instituto Federal do Espírito Santo.",
+  "project7t": "Algoritmos de Busca",
+  "project7d": "PythonDa' qIvoq chaw' 'e' DaH jatlh chenmoHmeH roj cha'logh la'lu'chugh IFES maH. 'oH 'e' vIneHbe'lu'chu'be' jatlh Hol yItlhutlh.",
+  "project8t": "Teste da FaceApi.js",
   "project8d": "FaceApi.js pe'vIl jatlh test laH API tensorflow.js je CNNs rur neH neural networks cha'logh.",
-
-
-"project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
-"project9d": "QInlIj - Bruno Kobi Valadares De' Amorim. React Duy vIparHa' Dajatlh vItlhutlh. Holmey Dach 'oH maH, Klingon(Star Trek), Português, Inglês, Español, Français, Deutsch, 中文, Русский, عربى. Theme jatlh: @matheus rocha",
-"project10t": "3D muchpa': nov Duj",
+  "project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
+  "project9d": "QInlIj - Bruno Kobi Valadares De' Amorim. React Duy vIparHa' Dajatlh vItlhutlh. Holmey Dach 'oH maH, Klingon(Star Trek), Português, Inglês, Español, Français, Deutsch, 中文, Русский, عربى. Theme jatlh: @matheus rocha",
+  "project10t": "3D muchpa': nov Duj",
   "project10d": "React Three Fiber je Three.js lo'lu'taH muchpa' vIchenmoH. 3D qo'Daq nov Duj Dachegh 'ej tech-Ha'DIbaH DInIH. Qapla'!",
-
   "project11t": "Arkon: A Fenda do Aglomerado",
-  "project11d": "2D Hov leng multiplayer batlh vItlhutlh real-time browser. Tibia-Inspired. React, Phaser 4, Zustand, Supabase je lo'lu'taH. chenmoHlu'taH. Qapla'!"
-  
-
-
-
+  "project11d": "2D Hov leng multiplayer batlh vItlhutlh real-time browser. Tibia-Inspired. React, Phaser 4, Zustand, Supabase je lo'lu'taH. chenmoHlu'taH. Qapla'!",
+  "experiencia5t": "Full Stack Developer / AI / Automation",
+  "experiencia5e": "Vennx",
+  "experiencia5d": "2025 - DaH",
+  "experiencia6t": "Software Development Intern",
+  "experiencia6e": "INFOVIX",
+  "experiencia6d": "2018 - 2019"
 }

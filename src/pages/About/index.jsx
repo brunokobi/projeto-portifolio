@@ -295,31 +295,47 @@ const About = () => {
               >
                 {intl.formatMessage({ id: "experiencia" })}
               </Text>
+
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
+              <b> {intl.formatMessage({ id: "experiencia5t" })} </b><br/>
+              {intl.formatMessage({ id: "experiencia5e" })}<br/>
+              {intl.formatMessage({ id: "experiencia5d" })} <br/>
+              {intl.formatMessage({ id: "competencias" })}: React · Node.js · IA · LangChain · Claude · Chatwoot · n8n · Automação · TypeScript · JavaScript
+              </Text>
+
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
               <b> {intl.formatMessage({ id: "experiencia4t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia4e" })}<br/>              
-              {intl.formatMessage({ id: "experiencia4d" })} <br/>              
-              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
-              Metodologias Agile · MySQL · PHP · React.js · TypeScript · JavaScript · PostgreSQL
+              {intl.formatMessage({ id: "experiencia4e" })}<br/>
+              {intl.formatMessage({ id: "experiencia4d" })} <br/>
+              {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) · Laravel · PHP · PostgreSQL · Scrum
               </Text>
+
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
               <b> {intl.formatMessage({ id: "experiencia1t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia1e" })}<br/>              
-              {intl.formatMessage({ id: "experiencia1d" })} <br/>              
-              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Git · 
-              Metodologias Agile · MySQL · PHP · React.js · TypeScript · JavaScript · PostgreSQL
+              {intl.formatMessage({ id: "experiencia1e" })}<br/>
+              {intl.formatMessage({ id: "experiencia1d" })} <br/>
+              {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) · API REST · Git · Scrum
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>         
+
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>
               <b>{intl.formatMessage({ id: "experiencia2t" })}</b><br/>
               {intl.formatMessage({ id: "experiencia2e" })}<br/>
               {intl.formatMessage({ id: "experiencia2d" })}<br/>
-              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · Node.js · Git · Metodologias Agile · MySQL · React.js · react native · TypeScript · JavaScript · expo
-                            </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }}>               
+              {intl.formatMessage({ id: "competencias" })}: Node.js · MySQL · React · React Native · TypeScript · Expo · Scrum
+              </Text>
+
+              <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>
               <b>{intl.formatMessage({ id: "experiencia3t" })} </b><br/>
               {intl.formatMessage({ id: "experiencia3e" })}<br/>
               {intl.formatMessage({ id: "experiencia3d" })}<br/>
-              {intl.formatMessage({ id: "competencias" })}: Desenvolvimento de front-end · HTML · CSS · API REST · JavaScript · PostgreSQL · AngularJS
+              {intl.formatMessage({ id: "competencias" })}: AngularJS · PostgreSQL · Leaflet · Scrum
+              </Text>
+
+              <Text fontSize={{ base: "xs", md: "sm" }}>
+              <b>{intl.formatMessage({ id: "experiencia6t" })} </b><br/>
+              {intl.formatMessage({ id: "experiencia6e" })}<br/>
+              {intl.formatMessage({ id: "experiencia6d" })}<br/>
+              {intl.formatMessage({ id: "competencias" })}: CodeIgniter · PHP · MySQL · HTML · CSS · JavaScript
               </Text>
             </div>
           </Stack>

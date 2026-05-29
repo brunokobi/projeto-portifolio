@@ -1,91 +1,73 @@
-{ 
-  "meunome" : "Bruno Kobi Valadares de Amorim" ,  
-  "ola_mundo":"Hallo Welt",
-  "eu_sou":"Ich bin der",
-  "frase_1":"Master in Angewandter Informatik in Künstlicher Intelligenz",
+{
+  "meunome": "Bruno Kobi Valadares de Amorim",
+  "ola_mundo": "Hallo Welt",
+  "eu_sou": "Ich bin der",
+  "frase_1": "Master in Angewandter Informatik in Künstlicher Intelligenz",
   "frase_2": "Full-Stack-Entwickler",
-
-  "sobre":"Um", 
-  "home":"Home",
-  "projetos":"Projekte",
-  "linkedin":"Linkedin",
-  "github":"Github",
-  "facebook":"Facebook",
-  "instagram":"Instagram",
-
-  "pt":"Portugiesisch",
-  "en":"Englisch",
-  "es" : "Spanier",
+  "sobre": "Um",
+  "home": "Home",
+  "projetos": "Projekte",
+  "linkedin": "Linkedin",
+  "github": "Github",
+  "facebook": "Facebook",
+  "instagram": "Instagram",
+  "pt": "Portugiesisch",
+  "en": "Englisch",
+  "es": "Spanier",
   "fr": "Französisch",
   "de": "Deutsch",
   "zh": "Chinesisch",
   "ru": "Russisch",
   "kl": "Klingone",
   "ar": "Arabisch",
-
-  "sobre_mim":"Über mich",
-  "sobre1":"Leidenschaft für Programmierung, Technologie und Innovation.",
-  "sobre2":"Immer auf der Suche nach neuen Erkenntnissen und Herausforderungen.",
-  "sobre3":"Einstieg in die Welt der künstlichen Intelligenz.",
-
-  "experiencia":"Erfahrung",
-
-  "educacao":"Bildung",
-  "educacao1":"Ich bin derzeit Masterstudent am IFES in Angewandter Informatik im Bereich Künstliche Intelligenz.Ich habe 2004 meinen Abschluss als Computertechniker am IFES gemacht, bin aber in dem Bereich nicht weitergekommen. Seit 2018 habe ich mich entschieden, mich ganz auf den Bereich Softwareentwicklung zu konzentrieren und eine 14-jährige Rolle im administrativen Bereich zu verlassen. Ich habe 2020 meinen Bachelor of Information Systems bei Unisales abgeschlossen.",
- 
-  "experiencia1t":"Programmierassistent II",
-  "experiencia1e":"Ambipar Response Orbitgeo Ltda",
-  "experiencia1d":"Sep 2021 - der Moment",
-
-  "experiencia2t":"Software Development Analyst",
-  "experience2e":"Directy",
-  "experiencia2d":"Nov 2020 - Sep 2021",
-
-  "experiencia3t":"Wirtschaftsinformatik-Trainee",
-  "experiencia3e":"Ecosoft Consultoria E Softwares Ambientais Ltda",
-  "experiencia3d":"August 2019 - Jan. 2020",
-
-  "experiencia4t":"Analista de Sistemas Jr",
-  "experiencia4e":"Ambipar Response Ltda",
-  "experiencia4d":"out de 2023 - jan de 2025",  
- 
-  "skills":"Fähigkeiten",
-  "competencias":"Fähigkeiten",
-  "quali":"Qualifikationen",
-
-  "project1t":"Präsenz jetzt",
-  "project1d":"Presence Now ist eine Echtzeit-Gesichtserkennungssoftware für die Anwesenheit von Studenten, FrontEnd wurde in React mit Typoskript entwickelt, BackEnd verwendet die gleichen Sprachen und wurde in Form von Rest API implementiert, das Modul Gesichtserkennung verwendet nur Javascript , HTML und CSS, verwendet jedoch faceapi.js, das die tensorflow.js-API verwendet und eine Reihe von Convulsional Neural Networks (CNNs) implementiert. Das System registriert die Anwesenheit des Schülers grundsätzlich durch Echtzeit-Gesichtserkennung.",
-
-  "project2t":"Ernährungsratgeber BR",
-  "project2d":"Brasilianische Food Guide-Anwendung, entwickelt für die TCC of Nutrition-Studentin Rafaela Soares Souza Kobi, die Anwendung wurde in React Native von FrameWork Expo entwickelt und im Google PlayStore für Android-Geräte veröffentlicht. \n Guia-Anwendung Alimentar Brasileiro, Arbeit dass ich am XXVII Brasilianischen Ernährungskongress, dem größten Kongress Lateinamerikas zum Thema Lebensmittel und Ernährung, an der Nutri Sabre Messe teilnehmen konnte.",
-  
-  "project3t":"Ethik-Quiz - Bewerbung",
-  "project3d":"In der letzten Abschlussphase und zusammen mit Lucas Barbosa da Silva entwickeltes Integrationsprojekt unter Verwendung von Java von Android Studio. (Clone Show do Milhão).",
-
-  "project4t":"Plattenspiel",
-  "project4d": "Ein Lernspiel zur Verkehrserziehung in Bezug auf Verkehrszeichen, wurde als Werk des Multimedia-Fachs entwickelt, wobei die gesamte Bearbeitung von Bildern und Audios, verwendeten Sprachen Javascript, HTML und CSS vorgenommen wird." ,
-
-  "project5t":"Quiz Web Biomedicina Unisales",
-  "project5d":"Online-Quizseite, entwickelt für Studenten des Unisales-Biomedizinkurses.",
-
-  "project6t":"Master in Künstlicher Intelligenz",
-  "project6d":"Unterrichtsnotizen und Arbeiten, die im Masterstudiengang Künstliche Intelligenz am IFES - Instituto Federal do Espírito Santo entwickelt wurden.",
-
-  "project7t":"Suchalgorithmen",
-  "project7d":"In Python entwickelte Suchalgorithmen für die Disziplin Künstliche Intelligenz des Masterstudiengangs am IFES .",
-
-  "project8t":"FaceApi Test.js",
-  "project8d":"FaceApi.js-Testseite, die die tensorflow.js-API verwendet und eine Reihe konvulsiver neuronaler Netze (CNNs) implementiert.",
-
+  "sobre_mim": "Über mich",
+  "sobre1": "Software Developer | Full Stack | React | Node | KI · Serra, Espírito Santo, Brasilien.",
+  "sobre2": "Mein Weg in die Technologie begann 2004, als ich meinen Abschluss als Computertechniker am IFES machte. Nach 14 Jahren im Verwaltungsbereich richtete ich meine Karriere 2017 auf die Softwareentwicklung aus.",
+  "sobre3": "2020 schloss ich meinen Bachelor in Informationssystemen an der Unisales ab. Derzeit absolviere ich einen Master in IT an der Ufes. Erfahrung in HTML, CSS, TypeScript, JavaScript, PHP, Python, React, React Native, Node.js und KI.",
+  "experiencia": "Erfahrung",
+  "educacao": "Bildung",
+  "educacao1": "• Ufes — Master IT (Sep/2025 - Mär/2026)\n• IFES — Postgrad Cultural Maker & Bildung 4.0 (Feb/2025 - Jul/2025)\n• IFES — Master Angewandte Informatik, KI (Mär/2022 - Jul/2024)\n• UniSales — Bachelor Informationssysteme (2017 - 2020)\n• IFES — Computertechniker (2003 - 2004)",
+  "experiencia1t": "Programmierassistent II",
+  "experiencia1e": "Ambipar Response Orbitgeo Ltda",
+  "experiencia1d": "Sep 2021 - Jun 2023",
+  "experiencia2t": "Softwareentwicklungsanalyst",
+  "experience2e": "Directy",
+  "experiencia2d": "Nov 2020 - Sep 2021",
+  "experiencia3t": "Praktikant Informationssysteme",
+  "experiencia3e": "Ecosoft Consultoria E Softwares Ambientais Ltda",
+  "experiencia3d": "Aug 2019 - Jan 2020",
+  "experiencia4t": "Systemanalyst",
+  "experiencia4e": "Ambipar Response | BR",
+  "experiencia4d": "Okt 2023 - Jan 2025",
+  "skills": "Fähigkeiten",
+  "competencias": "Fähigkeiten",
+  "quali": "Qualifikationen",
+  "project1t": "Präsenz jetzt",
+  "project1d": "Presence Now ist eine Echtzeit-Gesichtserkennungssoftware für die Anwesenheit von Studenten, FrontEnd wurde in React mit Typoskript entwickelt, BackEnd verwendet die gleichen Sprachen und wurde in Form von Rest API implementiert, das Modul Gesichtserkennung verwendet nur Javascript , HTML und CSS, verwendet jedoch faceapi.js, das die tensorflow.js-API verwendet und eine Reihe von Convulsional Neural Networks (CNNs) implementiert. Das System registriert die Anwesenheit des Schülers grundsätzlich durch Echtzeit-Gesichtserkennung.",
+  "project2t": "Ernährungsratgeber BR",
+  "project2d": "Brasilianische Food Guide-Anwendung, entwickelt für die TCC of Nutrition-Studentin Rafaela Soares Souza Kobi, die Anwendung wurde in React Native von FrameWork Expo entwickelt und im Google PlayStore für Android-Geräte veröffentlicht. \n Guia-Anwendung Alimentar Brasileiro, Arbeit dass ich am XXVII Brasilianischen Ernährungskongress, dem größten Kongress Lateinamerikas zum Thema Lebensmittel und Ernährung, an der Nutri Sabre Messe teilnehmen konnte.",
+  "project3t": "Ethik-Quiz - Bewerbung",
+  "project3d": "In der letzten Abschlussphase und zusammen mit Lucas Barbosa da Silva entwickeltes Integrationsprojekt unter Verwendung von Java von Android Studio. (Clone Show do Milhão).",
+  "project4t": "Plattenspiel",
+  "project4d": "Ein Lernspiel zur Verkehrserziehung in Bezug auf Verkehrszeichen, wurde als Werk des Multimedia-Fachs entwickelt, wobei die gesamte Bearbeitung von Bildern und Audios, verwendeten Sprachen Javascript, HTML und CSS vorgenommen wird.",
+  "project5t": "Quiz Web Biomedicina Unisales",
+  "project5d": "Online-Quizseite, entwickelt für Studenten des Unisales-Biomedizinkurses.",
+  "project6t": "Master in Künstlicher Intelligenz",
+  "project6d": "Unterrichtsnotizen und Arbeiten, die im Masterstudiengang Künstliche Intelligenz am IFES - Instituto Federal do Espírito Santo entwickelt wurden.",
+  "project7t": "Suchalgorithmen",
+  "project7d": "In Python entwickelte Suchalgorithmen für die Disziplin Künstliche Intelligenz des Masterstudiengangs am IFES .",
+  "project8t": "FaceApi Test.js",
+  "project8d": "FaceApi.js-Testseite, die die tensorflow.js-API verwendet und eine Reihe konvulsiver neuronaler Netze (CNNs) implementiert.",
   "project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
-"project9d": "Mit React entwickelte Website zur Präsentation des Portfolios. Verfügbare Sprachen: Klingonisch (Star Trek), Portugiesisch, Englisch, Spanisch, Französisch, Deutsch, Chinesisch, Russisch, Arabisch. Theme-Credits: @matheus rocha",
-
-
+  "project9d": "Mit React entwickelte Website zur Präsentation des Portfolios. Verfügbare Sprachen: Klingonisch (Star Trek), Portugiesisch, Englisch, Spanisch, Französisch, Deutsch, Chinesisch, Russisch, Arabisch. Theme-Credits: @matheus rocha",
   "project10t": "3D-Portfolio: Alien Experience",
   "project10d": "Entwicklung eines spielerischen Portfolios mit React Three Fiber und Three.js. Das Projekt ermöglicht es dem Benutzer, ein UFO in einer 3D-Umgebung zu steuern, um Kühe zu 'entführen', die meine technologischen Stacks repräsentieren.",
-
   "project11t": "Arkon: Der Riss des Clusters",
-  "project11d": "Echtzeit-2D-Multiplayer-Browserspiel inspiriert von Tibia mit brasilianischer politischer Satire. Entwickelt mit React, Phaser 4, Zustand und Supabase. In Entwicklung."
-
-
+  "project11d": "Echtzeit-2D-Multiplayer-Browserspiel inspiriert von Tibia mit brasilianischer politischer Satire. Entwickelt mit React, Phaser 4, Zustand und Supabase. In Entwicklung.",
+  "experiencia5t": "Full Stack Entwickler / KI / Automatisierung",
+  "experiencia5e": "Vennx",
+  "experiencia5d": "Mai 2025 - Heute",
+  "experiencia6t": "Softwareentwicklungs-Praktikant",
+  "experiencia6e": "INFOVIX",
+  "experiencia6d": "Dez 2018 - Jul 2019"
 }
