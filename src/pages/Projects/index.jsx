@@ -15,6 +15,7 @@ import mestrado from "../../assets/img/mestrado.png";
 import face from "../../assets/img/face.jpg";
 import portifolio from "../../assets/img/portifolio.png";
 import portifolio3d from "../../assets/img/3dgame.png";
+import bpfcheck from "../../assets/img/bpfcheck.png";
 import arkon from "../../assets/img/arkon.png";
 
 const Projects = () => {
@@ -23,6 +24,15 @@ const Projects = () => {
 
   // Memoriza a lista para não ser recriada a cada renderização
   const projects = useMemo(() => [
+    {
+      title: intl.formatMessage({id: 'project12t'}),
+      link: "",
+      img: bpfcheck,
+      demo: "https://bpfcheck.netlify.app/",
+      description: intl.formatMessage({id: 'project12d'}),
+      tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
+      code: "https://github.com/brunokobi/bpfcheck",
+    },
     {
       title: intl.formatMessage({id: 'project11t'}),
       link: "",
