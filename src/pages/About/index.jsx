@@ -4,7 +4,6 @@ import {
   Flex,
   Heading,
   Stack,
-  div,
   Image,
   Divider,
   Icon,

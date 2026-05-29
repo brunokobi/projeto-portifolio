@@ -7,7 +7,8 @@ import fundo from "../../assets/img/fundo.mp4";
 
 
 import IconsBackground from "../../components/IconsBackground";
-import {useIntl} from 'react-intl'
+import { useIntl } from 'react-intl';
+import { useEffect } from 'react';
 import falar from "../../components/TextAudio";
 
 
@@ -15,15 +16,20 @@ import falar from "../../components/TextAudio";
 
 const Home = () => {
 const intl = useIntl();
-setTimeout(() => {
-  falar(
-    intl.formatMessage({id: 'ola_mundo'})+
-    intl.formatMessage({id: 'eu_sou'})+
-    intl.formatMessage({id: 'meunome'})+
-    intl.formatMessage({id: 'frase_1'})+
-    intl.formatMessage({id: 'frase_2'})
-  )
-}, 1000); 
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    falar(
+      intl.formatMessage({id: 'ola_mundo'})+
+      intl.formatMessage({id: 'eu_sou'})+
+      intl.formatMessage({id: 'meunome'})+
+      intl.formatMessage({id: 'frase_1'})+
+      intl.formatMessage({id: 'frase_2'})
+    );
+  }, 1000);
+  return () => clearTimeout(timer);
+// eslint-disable-next-line
+}, []);
 
 
   return (

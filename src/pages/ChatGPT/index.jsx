@@ -6,7 +6,7 @@ import robo from '../../assets/img/robot.png';
 import AnimatedStars from "../../components/AnimatedStars";
 import {Box,Flex,Button,Spinner} from "@chakra-ui/react";
 import { motion } from "framer-motion"; // Biblioteca para animações avançadas
-import {useRef } from "react";
+import { useRef, useEffect } from "react";
 import falar from "../../components/TextAudio";
 
 
@@ -17,7 +17,11 @@ const LlamaChat = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-  const wrapperRef = useRef(null); // Referência para o container principal
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    if (response) falar(response);
+  }, [response]);
 
   const queryLlama = async () => {
     if (!input) return;
@@ -109,7 +113,6 @@ const LlamaChat = () => {
 )}
         </Button>
         {response && (
-          falar(response),
           <div style={{ marginTop: "5px" }}>
             <h3>Resposta:</h3>
             <textarea

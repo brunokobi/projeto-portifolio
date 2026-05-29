@@ -16,12 +16,11 @@ import ContactForm from "../ContatoForm/ContactForm";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
-import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf, AiOutlineMail } from "react-icons/ai"; // Adicionei AiOutlineMail
+import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf, AiOutlineMail } from "react-icons/ai";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
-import { BiCube } from "react-icons/bi"; // Ícone para o Portfolio 3D
+import { BiCube } from "react-icons/bi";
 
-// Imagens (mantive seus imports originais)
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
 import spain from "../../assets/img/spain.png";
@@ -44,11 +43,43 @@ const languages = [
   { id: "kl", img: klingon, label: "kl" },
 ];
 
+const activeStyle = {
+  borderColor: "#42c920",
+  filter: "drop-shadow(0px 0px 8px #42c920)",
+  transform: "scale(1.1)",
+};
+
+const LanguageButton = ({ lang, currentLang, onLanguageChange, intl }) => {
+  const isSelected = currentLang === lang.id;
+
+  return (
+    <Box
+      as="button"
+      onClick={() => onLanguageChange(lang.id)}
+      onMouseOver={() => falar(intl.formatMessage({ id: lang.id }))}
+      mx={1}
+      flexShrink={0}
+    >
+      <Image
+        src={lang.img}
+        alt={lang.id}
+        title={intl.formatMessage({ id: lang.id })}
+        w={{ base: "1.8rem", md: "1.5rem" }}
+        h={{ base: "1.8rem", md: "1.5rem" }}
+        borderRadius="full"
+        border="2px solid transparent"
+        transition="all 0.2s"
+        style={isSelected ? activeStyle : {}}
+        _hover={{ ...activeStyle, borderColor: "#42c920" }}
+      />
+    </Box>
+  );
+};
+
 const Nav = () => {
   const intl = useIntl();
   const navigate = useNavigate();
-  
-  // --- 1. Hook para controlar o Modal do Formulário ---
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const ls = localStorage.getItem("i18nConfig");
@@ -60,14 +91,8 @@ const Nav = () => {
     { label: intl.formatMessage({ id: "sobre" }), url: `/about`, icon: RiAliensFill },
     { label: intl.formatMessage({ id: "projetos" }), url: `/projects`, icon: FaReact },
     
-    // --- 2. Item de Contato (Note a prop 'isAction') ---
-    // Coloquei um identificador para sabermos que esse item abre o modal e não muda de página
     { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
-    { 
-      label: "Portfolio 3D", 
-      url: "https://brunokobi3d.netlify.app", 
-      icon: BiCube // ou FaCube
-    },
+    { label: "Portfolio 3D", url: "https://brunokobi3d.netlify.app", icon: BiCube },
     
     { label: "Mapa Esri", url: "/Map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
@@ -79,38 +104,6 @@ const Nav = () => {
     localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: langId }));
     navigate("/");
     window.location.reload();
-  };
-
-  const LanguageButton = ({ lang }) => {
-    const isSelected = currentLang === lang.id;
-    const activeStyle = {
-      borderColor: "#42c920",
-      filter: "drop-shadow(0px 0px 8px #42c920)",
-      transform: "scale(1.1)",
-    };
-
-    return (
-      <Box
-        as="button"
-        onClick={() => handleLanguageChange(lang.id)}
-        onMouseOver={() => falar(intl.formatMessage({ id: lang.id }))}
-        mx={1}
-        flexShrink={0}
-      >
-        <Image
-          src={lang.img}
-          alt={lang.id}
-          title={intl.formatMessage({ id: lang.id })}
-          w={{ base: "1.8rem", md: "1.5rem" }}
-          h={{ base: "1.8rem", md: "1.5rem" }}
-          borderRadius="full"
-          border="2px solid transparent"
-          transition="all 0.2s"
-          style={isSelected ? activeStyle : {}}
-          _hover={{ ...activeStyle, borderColor: "#42c920" }}
-        />
-      </Box>
-    );
   };
 
   return (
@@ -148,14 +141,13 @@ const Nav = () => {
           >
             <Breadcrumb separator="" spacing={0}>
               {sections.map((section, i) => {
-                // --- 3. Lógica para renderizar o botão de Contato ---
                 if (section.isAction) {
                   return (
-                    <Box 
-                      key={i} 
-                      onClick={section.action} 
+                    <Box
+                      key={i}
+                      onClick={section.action}
                       cursor="pointer"
-                      display="inline-flex" // Garante alinhamento com os Breadcrumbs
+                      display="inline-flex"
                     >
                       {/* Reutilizamos o visual do Item, mas passamos url="#" para não navegar */}
                       <Item label={section.label} url="#" icon={section.icon} />
@@ -163,13 +155,12 @@ const Nav = () => {
                   );
                 }
                 
-                // Renderização normal dos links
                 return (
-                  <Item 
-                    label={section.label} 
-                    url={section.url} 
-                    icon={section.icon} 
-                    key={i} 
+                  <Item
+                    label={section.label}
+                    url={section.url}
+                    icon={section.icon}
+                    key={i}
                   />
                 );
               })}
@@ -191,26 +182,30 @@ const Nav = () => {
             py={2}
           >
             {languages.map((lang) => (
-              <LanguageButton key={lang.id} lang={lang} />
+              <LanguageButton
+                key={lang.id}
+                lang={lang}
+                currentLang={currentLang}
+                onLanguageChange={handleLanguageChange}
+                intl={intl}
+              />
             ))}
           </HStack>
         </Box>
       </Flex>
 
-      {/* --- 4. O Modal que contém o Formulário --- */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
         <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
         <ModalContent bg="transparent" boxShadow="none" border="none">
-          <ModalCloseButton 
-            color="#39ff14" 
-            zIndex={10} 
-            bg="black" 
+          <ModalCloseButton
+            color="#39ff14"
+            zIndex={10}
+            bg="black"
             border="1px solid #39ff14"
             _hover={{ bg: "#39ff14", color: "black" }}
           />
           <ModalBody p={0}>
-             {/* AQUI ESTÁ A CORREÇÃO: Passamos a função onClose */}
-             <ContactForm onClose={onClose} />
+            <ContactForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 
 import astro from "../../assets/img/astro.png";
 
-const Astro = ({ wrapper }) => {
-  const spin = keyframes`
+const spin = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 `;
 
-  const animation = `${spin} infinite 10s linear`;
+const animation = `${spin} infinite 10s linear`;
 
+const Astro = ({ wrapper }) => {
   return (
     <Box
       as={motion.div}

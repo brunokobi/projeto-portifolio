@@ -18,7 +18,7 @@ import AnimatedStars from "../../components/AnimatedStars";
 import { useIntl } from "react-intl"; // Biblioteca para internacionalização
 
 
-const Home = () => {
+const Curriculo = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("Curriculo Pag 1");
@@ -149,4 +149,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Curriculo;
