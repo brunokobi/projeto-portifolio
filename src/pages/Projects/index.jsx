@@ -17,6 +17,7 @@ import portifolio from "../../assets/img/portifolio.png";
 import portifolio3d from "../../assets/img/3dgame.png";
 import bpfcheck from "../../assets/img/bpfcheck.png";
 import arkon from "../../assets/img/arkon.png";
+import loteria from "../../assets/img/loteria.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -25,15 +26,6 @@ const Projects = () => {
   // Memoriza a lista para não ser recriada a cada renderização
   const projects = useMemo(() => [
     {
-      title: intl.formatMessage({id: 'project12t'}),
-      link: "",
-      img: bpfcheck,
-      demo: "https://bpfcheck.netlify.app/",
-      description: intl.formatMessage({id: 'project12d'}),
-      tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
-      code: "https://github.com/brunokobi/bpfcheck",
-    },
-    {
       title: intl.formatMessage({id: 'project11t'}),
       link: "",
       img: arkon,
@@ -41,6 +33,24 @@ const Projects = () => {
       description: intl.formatMessage({id: 'project11d'}),
       tags: ["#REACT", "#PHASER 4", "#SUPABASE", "#MULTIPLAYER", "#GAME"],
       code: "https://github.com/brunokobi/arkon-game",
+    },
+    {
+      title: intl.formatMessage({id: 'project13t'}),
+      link: "",
+      img: loteria,
+      demo: "https://loteriabruno.netlify.app/",
+      description: intl.formatMessage({id: 'project13d'}),
+      tags: ["#PYTHON", "#MACHINE LEARNING", "#GRADIENT BOOSTING", "#IA", "#SCIKIT-LEARN"],
+      code: "https://github.com/brunokobi/Loteria_Mega",
+    },
+    {
+      title: intl.formatMessage({id: 'project12t'}),
+      link: "",
+      img: bpfcheck,
+      demo: "https://bpfcheck.netlify.app/",
+      description: intl.formatMessage({id: 'project12d'}),
+      tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
+      code: "https://github.com/brunokobi/bpfcheck",
     },
     {
       title: intl.formatMessage({id: 'project10t'}),
