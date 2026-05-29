@@ -14,9 +14,12 @@ export const handler: Handler = async (event) => {
       };
     }
 
-    const response = await fetch(
-      "http://44.202.156.220:5678/webhook/860456de-05c8-40bf-9ba2-cbca916a026d/chat",     
-      {
+    const webhookUrl = process.env.N8N_WEBHOOK_URL;
+    if (!webhookUrl) {
+      return { statusCode: 500, body: JSON.stringify({ error: "N8N_WEBHOOK_URL not configured" }) };
+    }
+
+    const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

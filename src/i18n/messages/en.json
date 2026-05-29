@@ -82,5 +82,8 @@
   "project9d": "React-based website for portfolio presentation. Available languages: Klingon (Star Trek), Portuguese, English, Spanish, French, German, Chinese, Russian, Arabic. Theme credits: @matheus rocha",
 
   "project10t": "3D Portfolio: Alien Experience",
-  "project10d": "Development of a gamified portfolio using React Three Fiber and Three.js. The project allows the user to control a UFO in a 3D environment to 'abduct' cows that represent my technological stacks."
+  "project10d": "Development of a gamified portfolio using React Three Fiber and Three.js. The project allows the user to control a UFO in a 3D environment to 'abduct' cows that represent my technological stacks.",
+
+  "project11t": "Arkon: The Cluster Rift",
+  "project11d": "Real-time 2D browser multiplayer game inspired by Tibia, with Brazilian political satire theme. Built with React, Phaser 4, Zustand and Supabase. In development."
 }

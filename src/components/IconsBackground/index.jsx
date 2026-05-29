@@ -19,13 +19,10 @@ const IconsBackground = () => {
         <source src={fundo} type="video/mp4" />  {/* replace with your video */}
       </video>
 
-      <Box position="relative" top="-200%" left="-20%">        
-        {Array(120)
-          .fill(<IconsLine />)
-          .map((item, i) => (
-            <Stack key={i}>{item}</Stack>
-          ))}
-         
+      <Box position="relative" top="-200%" left="-20%">
+        {Array.from({ length: 120 }, (_, i) => (
+          <Stack key={i}><IconsLine /></Stack>
+        ))}
       </Box>
     </Flex>
   );

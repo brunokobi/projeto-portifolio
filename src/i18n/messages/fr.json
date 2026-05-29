@@ -81,7 +81,10 @@
    "project9t": "Portfolio - Bruno Kobi Valadares de Amorim",
 "project9d": "Site développé en React pour la présentation du portfolio. Langues disponibles: Klingon (Star Trek), Portugais, Anglais, Espagnol, Français, Allemand, Chinois, Russe, Arabe. Crédits du thème: @matheus rocha",
 "project10t": "Portfolio 3D : Alien Experience",
-  "project10d": "Développement d'un portfolio ludique utilisant React Three Fiber et Three.js. Le projet permet à l'utilisateur de contrôler un OVNI dans un environnement 3D pour 'enlever' des vaches qui représentent mes compétences technologiques."
+  "project10d": "Développement d'un portfolio ludique utilisant React Three Fiber et Three.js. Le projet permet à l'utilisateur de contrôler un OVNI dans un environnement 3D pour 'enlever' des vaches qui représentent mes compétences technologiques.",
+
+  "project11t": "Arkon : La Faille de l'Amas",
+  "project11d": "Jeu multijoueur 2D en temps réel dans le navigateur, inspiré de Tibia, avec une satire politique brésilienne. Développé avec React, Phaser 4, Zustand et Supabase. En développement."
 
 
 }

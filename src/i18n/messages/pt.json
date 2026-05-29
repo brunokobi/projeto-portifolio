@@ -80,7 +80,10 @@
 
   
   "project10t": "Portfólio 3D: Alien Experience",
-  "project10d": "Desenvolvimento de um portfólio gamificado utilizando React Three Fiber e Three.js. O projeto permite que o usuário controle um OVNI em um ambiente 3D para 'abduzir' vacas que representam minhas stacks tecnológicas."
+  "project10d": "Desenvolvimento de um portfólio gamificado utilizando React Three Fiber e Three.js. O projeto permite que o usuário controle um OVNI em um ambiente 3D para 'abduzir' vacas que representam minhas stacks tecnológicas.",
+
+  "project11t": "Arkon: A Fenda do Aglomerado",
+  "project11d": "Jogo multiplayer 2D em tempo real no navegador, inspirado em Tibia, com sátira política brasileira. Desenvolvido com React, Phaser 4, Zustand e Supabase. Em desenvolvimento."
 
 
 

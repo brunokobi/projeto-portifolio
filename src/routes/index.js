@@ -20,7 +20,6 @@ const audio = localStorage.getItem('Audio');
 const [isAudioOn, setIsAudioOn] = useState(false);
 
 useEffect(() => {
-  console.log( 'teste audio', audio);
   if (audio === 'on') {
     setIsAudioOn(true);
   } else if (audio === 'off') {
