@@ -15,6 +15,7 @@ import mestrado from "../../assets/img/mestrado.png";
 import face from "../../assets/img/face.jpg";
 import portifolio from "../../assets/img/portifolio.png";
 import portifolio3d from "../../assets/img/3dgame.png";
+import arkon from "../../assets/img/arkon.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -25,7 +26,7 @@ const Projects = () => {
     {
       title: intl.formatMessage({id: 'project11t'}),
       link: "",
-      img: "https://opengraph.githubassets.com/1/brunokobi/arkon-game",
+      img: arkon,
       demo: "https://arkonkobi.netlify.app",
       description: intl.formatMessage({id: 'project11d'}),
       tags: ["#REACT", "#PHASER 4", "#SUPABASE", "#MULTIPLAYER", "#GAME"],
