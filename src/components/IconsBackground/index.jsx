@@ -54,7 +54,7 @@ const COLS = Array.from({ length: NUM_COLS }, (_, col) => {
 const IconsBackground = () => {
   const videoRef = useRef(null);
 
-  // Injeta o keyframe CSS uma única vez
+  // Injeta o keyframe e as regras de hover uma única vez
   useEffect(() => {
     const style = document.createElement("style");
     const startY = -(STREAM_LENGTH * ICON_SPACING + 40);
@@ -62,6 +62,16 @@ const IconsBackground = () => {
       @keyframes ${FALL_KF} {
         from { transform: translateY(${startY}px); }
         to   { transform: translateY(110vh); }
+      }
+      .matrix-icon {
+        pointer-events: auto;
+        cursor: default;
+        transition: opacity 0.25s ease, filter 0.25s ease, color 0.25s ease;
+      }
+      .matrix-icon:hover {
+        opacity: 1 !important;
+        color: #ffffff !important;
+        filter: drop-shadow(0 0 14px #42c920) drop-shadow(0 0 6px #fff) !important;
       }
     `;
     document.head.appendChild(style);
@@ -125,15 +135,15 @@ const IconsBackground = () => {
             return (
               <div
                 key={i}
+                className="matrix-icon"
                 style={{
                   position: "absolute",
                   top: i * ICON_SPACING,
-                  opacity: TRAIL[i],
+                  opacity: TRAIL[i] * 0.5,
                   color: isHead ? "#ccffdd" : "#42c920",
                   filter: isHead
                     ? "drop-shadow(0 0 10px #42c920) drop-shadow(0 0 4px #fff)"
                     : "none",
-                  transition: "none",
                 }}
               >
                 <Icon as={IconComp} boxSize={`${size}px`} display="block" />
