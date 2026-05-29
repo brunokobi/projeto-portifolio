@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Box, Icon } from "@chakra-ui/react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
@@ -87,6 +87,7 @@ const ParallaxLayer = ({ mouseX, mouseY, depth, size, opacity, icons }) => {
 const IconsBackground = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const onMove = (e) => {
@@ -96,6 +97,14 @@ const IconsBackground = () => {
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
   }, [mouseX, mouseY]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = true;
+      video.play().catch(() => {});
+    }
+  }, []);
 
   const layers = useMemo(
     () => LAYERS.map((l) => ({ ...l, icons: seededPositions(l.count, l.seed) })),
@@ -111,12 +120,20 @@ const IconsBackground = () => {
       pointerEvents="none"
     >
       <video
-        width="100%"
-        height="100%"
+        ref={videoRef}
         autoPlay
         loop
         muted
-        style={{ objectFit: "cover", display: "block" }}
+        playsInline
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
       >
         <source src={fundo} type="video/mp4" />
       </video>
