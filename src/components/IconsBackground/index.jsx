@@ -23,22 +23,20 @@ const ALL_ICONS = [
   FaCube, SiDocker, SiGithub,
 ];
 
-// Ângulo de ouro — distribui 30 direções de forma uniforme ao redor de 360°
+// Ângulo de ouro — distribui 40 direções de forma uniforme ao redor de 360°
 const GOLDEN_ANGLE = 2.399963229728653;
 
-// Configurações geradas uma única vez fora do componente
-const ICONS_CONFIG = Array.from({ length: 30 }, (_, i) => {
-  const angle  = i * GOLDEN_ANGLE;
-  const speed  = 2.5 + (i % 6) * 0.55;       // 2.5s a ~5.5s por ciclo
-  const delay  = (i * 0.7) % 5;               // delay escalonado 0~4.9s
-  const size   = 20 + (i % 5) * 8;            // 20 a 52px
-  const icon   = ALL_ICONS[i % ALL_ICONS.length];
-  const tx     = Math.cos(angle) * 1400;      // deslocamento X final (px)
-  const ty     = Math.sin(angle) * 900;       // deslocamento Y final (px)
+const ICONS_CONFIG = Array.from({ length: 40 }, (_, i) => {
+  const angle = i * GOLDEN_ANGLE;
+  const speed = 4 + (i % 5) * 0.9;            // 4s a ~7.6s por ciclo
+  const delay = (i * 0.618) % 5;              // delays escalonados 0~5s
+  const size  = 42 + (i % 4) * 14;            // 42 a 84px base
+  const icon  = ALL_ICONS[i % ALL_ICONS.length];
+  const tx    = Math.cos(angle) * 1300;        // destino X (px)
+  const ty    = Math.sin(angle) * 850;         // destino Y (px)
   return { speed, delay, size, icon, tx, ty };
 });
 
-// Componente individual de ícone voador
 const FlyingIcon = ({ icon: IconComp, speed, delay, size, tx, ty }) => (
   <motion.div
     style={{
@@ -53,16 +51,16 @@ const FlyingIcon = ({ icon: IconComp, speed, delay, size, tx, ty }) => (
     animate={{
       x:       [0, tx],
       y:       [0, ty],
-      scale:   [0.05, 4],
-      opacity: [0, 0.7, 0.55, 0],
+      scale:   [0.25, 10],
+      opacity: [0, 0.9, 0.85, 0],
     }}
     transition={{
       duration: speed,
       delay,
       repeat: Infinity,
-      ease: "easeIn",
+      ease: "linear",
       opacity: {
-        times: [0, 0.10, 0.75, 1],
+        times: [0, 0.06, 0.70, 1],
         ease: "linear",
       },
     }}
@@ -70,7 +68,7 @@ const FlyingIcon = ({ icon: IconComp, speed, delay, size, tx, ty }) => (
     <Icon
       as={IconComp}
       boxSize={`${size}px`}
-      color="rgba(66, 201, 32, 0.9)"
+      color="#42c920"
       display="block"
     />
   </motion.div>
