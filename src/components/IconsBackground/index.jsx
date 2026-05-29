@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Box, Icon } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 
 import {
   FaPhp, FaHtml5, FaNodeJs, FaPython, FaCss3Alt,
@@ -23,66 +22,56 @@ const ALL_ICONS = [
   FaCube, SiDocker, SiGithub,
 ];
 
-// Ângulo de ouro — distribui 40 direções de forma uniforme ao redor de 360°
-const GOLDEN_ANGLE = 2.399963229728653;
+const STREAM_LENGTH = 9;    // ícones por coluna
+const ICON_SPACING  = 58;   // px entre ícones na trilha
+const COL_GAP       = 64;   // px entre colunas
+const NUM_COLS      = 32;   // colunas (cobre telas largas)
+const FALL_KF       = "matrix-icon-fall";
 
-const ICONS_CONFIG = Array.from({ length: 40 }, (_, i) => {
-  const angle = i * GOLDEN_ANGLE;
-  const speed = 4 + (i % 5) * 0.9;            // 4s a ~7.6s por ciclo
-  const delay = (i * 0.618) % 5;              // delays escalonados 0~5s
-  const size  = 42 + (i % 4) * 14;            // 42 a 84px base
-  const icon  = ALL_ICONS[i % ALL_ICONS.length];
-  const tx    = Math.cos(angle) * 1300;        // destino X (px)
-  const ty    = Math.sin(angle) * 850;         // destino Y (px)
-  return { speed, delay, size, icon, tx, ty };
+// Opacidade de topo (cauda) → base (cabeça) — cria o efeito de trilha
+const TRAIL = [0.03, 0.07, 0.13, 0.22, 0.36, 0.54, 0.72, 0.88, 1.0];
+
+const seededRng = (seed) => {
+  let s = seed;
+  return () => {
+    s = (Math.imul(1664525, s) + 1013904223) | 0;
+    return (s >>> 0) / 4294967296;
+  };
+};
+
+// Configurações fixas — geradas uma vez fora do componente
+const COLS = Array.from({ length: NUM_COLS }, (_, col) => {
+  const rng   = seededRng(col * 1000033 + 7919);
+  const speed = 8 + rng() * 10;                          // 8–18s por queda
+  const delay = -(rng() * 18);                           // inicia em ponto aleatório da animação
+  const size  = [28, 34, 40][Math.floor(rng() * 3)];    // 3 tamanhos de ícone
+  const icons = Array.from({ length: STREAM_LENGTH }, () =>
+    ALL_ICONS[Math.floor(rng() * ALL_ICONS.length)]
+  );
+  return { x: col * COL_GAP + 8, speed, delay, size, icons };
 });
-
-const FlyingIcon = ({ icon: IconComp, speed, delay, size, tx, ty }) => (
-  <motion.div
-    style={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      marginLeft: `-${size / 2}px`,
-      marginTop: `-${size / 2}px`,
-      pointerEvents: "none",
-      willChange: "transform, opacity",
-    }}
-    animate={{
-      x:       [0, tx],
-      y:       [0, ty],
-      scale:   [0.25, 10],
-      opacity: [0, 0.9, 0.85, 0],
-    }}
-    transition={{
-      duration: speed,
-      delay,
-      repeat: Infinity,
-      ease: "linear",
-      opacity: {
-        times: [0, 0.06, 0.70, 1],
-        ease: "linear",
-      },
-    }}
-  >
-    <Icon
-      as={IconComp}
-      boxSize={`${size}px`}
-      color="#42c920"
-      display="block"
-    />
-  </motion.div>
-);
 
 const IconsBackground = () => {
   const videoRef = useRef(null);
 
+  // Injeta o keyframe CSS uma única vez
   useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.muted = true;
-      video.play().catch(() => {});
-    }
+    const style = document.createElement("style");
+    const startY = -(STREAM_LENGTH * ICON_SPACING + 40);
+    style.textContent = `
+      @keyframes ${FALL_KF} {
+        from { transform: translateY(${startY}px); }
+        to   { transform: translateY(110vh); }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
+  // Garante reprodução do vídeo
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) { v.muted = true; v.play().catch(() => {}); }
   }, []);
 
   return (
@@ -96,25 +85,62 @@ const IconsBackground = () => {
       {/* Vídeo de fundo */}
       <video
         ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
+        autoPlay loop muted playsInline
         style={{
           position: "absolute",
           top: 0, left: 0,
-          width: "100%",
-          height: "100%",
+          width: "100%", height: "100%",
           objectFit: "cover",
           display: "block",
+          opacity: 0.25,
         }}
       >
         <source src={fundo} type="video/mp4" />
       </video>
 
-      {/* Ícones voando do centro para as bordas */}
-      {ICONS_CONFIG.map((config, i) => (
-        <FlyingIcon key={i} {...config} />
+      {/* Overlay escuro para os ícones se destacarem */}
+      <Box
+        position="absolute"
+        top={0} left={0} right={0} bottom={0}
+        bg="rgba(0, 0, 0, 0.55)"
+      />
+
+      {/* Colunas Matrix com ícones caindo */}
+      {COLS.map(({ x, speed, delay, size, icons }, col) => (
+        <div
+          key={col}
+          style={{
+            position: "absolute",
+            left: x,
+            top: 0,
+            animationName: FALL_KF,
+            animationDuration: `${speed}s`,
+            animationDelay: `${delay}s`,
+            animationTimingFunction: "linear",
+            animationIterationCount: "infinite",
+          }}
+        >
+          {icons.map((IconComp, i) => {
+            const isHead = i === STREAM_LENGTH - 1;
+            return (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  top: i * ICON_SPACING,
+                  opacity: TRAIL[i],
+                  color: isHead ? "#ccffdd" : "#42c920",
+                  filter: isHead
+                    ? "drop-shadow(0 0 10px #42c920) drop-shadow(0 0 4px #fff)"
+                    : "none",
+                  transition: "none",
+                }}
+              >
+                <Icon as={IconComp} boxSize={`${size}px`} display="block" />
+              </div>
+            );
+          })}
+        </div>
       ))}
     </Box>
   );
