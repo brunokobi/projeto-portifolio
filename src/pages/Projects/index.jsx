@@ -30,7 +30,7 @@ const Projects = () => {
       title: intl.formatMessage({id: 'project14t'}),
       link: "",
       img: chatbruno,
-      demo: "",
+      demo: "https://brunokobi.netlify.app/",
       description: intl.formatMessage({id: 'project14d'}),
       tags: ["#N8N", "#LANGCHAIN", "#RAG", "#SUPABASE", "#GOOGLE GEMINI", "#AWS EC2", "#MULTI-AGENTE"],
       code: "https://github.com/brunokobi/chatn8n",
