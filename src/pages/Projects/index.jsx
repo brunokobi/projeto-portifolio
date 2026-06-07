@@ -33,7 +33,7 @@ const Projects = () => {
       demo: "",
       description: intl.formatMessage({id: 'project14d'}),
       tags: ["#N8N", "#LANGCHAIN", "#RAG", "#SUPABASE", "#GOOGLE GEMINI", "#AWS EC2", "#MULTI-AGENTE"],
-      code: "https://github.com/brunokobi",
+      code: "https://github.com/brunokobi/chatn8n",
     },
     {
       title: intl.formatMessage({id: 'project11t'}),
