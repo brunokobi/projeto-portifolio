@@ -39,7 +39,7 @@ import certf_9 from "../../assets/img/certificado_6.png";
 import certf_10 from "../../assets/img/certificado_7.png";
 import certf_8 from "../../assets/img//cert_form_mla.jpg";
 import certf_6 from "../../assets/img//cert_form_qa.jpg";
-import certf_7 from "../../assets/img///cert_form_npl.jpg";
+import certf_7 from "../../assets/img/cert_form_npl.jpg";
 
 import { useObserver } from "./observers"; // Hook personalizado para observação de elementos no viewport
 import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrelas animadas

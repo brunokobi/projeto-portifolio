@@ -14,6 +14,9 @@ import {
 } from "@chakra-ui/react";
 import { FaSearch, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 
+import conventoImg from "../../assets/img/convento_da_penha.jpg";
+import tajImg from "../../assets/img/taj_mahal.jpg";
+import eiffelImg from "../../assets/img/torre_eiffel.jpg";
 import { PointAddNew } from "../../components/Map/pointAddNew.jsx";
 import { PointAdd } from "../../components/Map/pointAdd";
 import AnimatedStars from "../../components/AnimatedStars";
@@ -25,7 +28,7 @@ const locations = [
     lat: 48.8584,
     lng: 2.2945,
     desc: "A Torre Eiffel é uma torre treliça de ferro do século XIX localizada no Champ de Mars, em Paris, que se tornou um ícone mundial da França. A torre, que é o edifício mais alto de Paris, é o monumento pago mais visitado do mundo, com milhões de pessoas subindo a torre a cada ano. Nomeada em homenagem ao seu projetista, o engenheiro Gustave Eiffel, foi construída como o arco de entrada da Exposição Universal de 1889.",
-    img: "https://lh3.googleusercontent.com/gps-cs-s/AHVAwercDFVxRv6lvjKcIuc3rH2S26serfJ6Zik_L5oR_jVUAOnM2ukpbh6XtuFgwH55pY4sq8Cbve4jnirGnX7FtnbGbDuQY66kEH9-V6AF2xGSA6MbTYDZWdkkUcN8loJz7ADUauwB4Q=s680-w680-h510-rw"
+    img: eiffelImg
   },
   {
     name: "Estatua da Liberdade",
@@ -39,7 +42,7 @@ const locations = [
     lat: 27.1751,
     lng: 78.0421,
     desc: "O Taj Mahal é um mausoléu de mármore branco localizado na cidade indiana de Agra. Foi encomendado em 1632 pelo imperador Mughal Shah Jahan para abrigar o túmulo de sua esposa favorita, Mumtaz Mahal; também abriga o túmulo de Shah Jahan. O Taj Mahal é o monumento mais conhecido da Índia e um dos mais famosos do mundo.",
-    img: "https://lh3.googleusercontent.com/gps-cs-s/AHVAwerDyck-wTcZR6I54fb64Pxn39ivwAOtSaeJFESKKMmiY5Md9YBPb0jB_165wi2ML36jj947aaF2gohbksPfuWUlnM3yW9x0ksCDXAqia8VJ4VsI1svnj4ohGuxcAtgU86ZNP1KZ=w270-h312-n-k-no"
+    img: tajImg
   },
   {
     name: "Coliseu de Roma",
@@ -102,7 +105,7 @@ const locations = [
     lat: -20.329444,
     lng: -40.287222,
     desc: "O Convento de Nossa Senhora da Penha é um convento católico localizado no município de Vila Velha, no estado brasileiro do Espírito Santo. Foi construído no século XVI, no alto de um penhasco, a 154 metros de altitude, sendo um dos principais pontos turísticos do estado.",
-    img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.WRrcSaaxSQ5dYFt3sKQJIQHaE6%26pid%3DApi&f=1&ipt=fda12a240552e4dd4e0d47b133ee9e8d25f43ef71d50b3b8e94d38ae71f77978&ipo=images"
+    img: conventoImg
   },
   {
     name: "Stonehenge",

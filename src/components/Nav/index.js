@@ -94,7 +94,7 @@ const Nav = () => {
     { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
     { label: "Portfolio 3D", url: "https://brunokobi3d.netlify.app", icon: BiCube },
     
-    { label: "Mapa Esri", url: "/Map", icon: FaGlobe },
+    { label: "Mapa Esri", url: "/map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
     { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
     { label: "Curriculo", url: "/curriculo", icon: AiOutlineFilePdf },

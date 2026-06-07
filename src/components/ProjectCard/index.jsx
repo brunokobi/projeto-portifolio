@@ -173,7 +173,8 @@ const ProjectCard = ({
               _hover={{
                 transform: "scale(1)",
               }}
-              onClick={() => window.open(demo, "_blank")}
+              onClick={() => demo && window.open(demo, "_blank")}
+              isDisabled={!demo}
             >
               Demo
             </Button>
