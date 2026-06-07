@@ -18,6 +18,7 @@ import portifolio3d from "../../assets/img/3dgame.png";
 import bpfcheck from "../../assets/img/bpfcheck.png";
 import arkon from "../../assets/img/arkon.png";
 import loteria from "../../assets/img/loteria.png";
+import chatbruno from "../../assets/img/chatbruno.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -25,6 +26,15 @@ const Projects = () => {
 
   // Memoriza a lista para não ser recriada a cada renderização
   const projects = useMemo(() => [
+    {
+      title: intl.formatMessage({id: 'project14t'}),
+      link: "",
+      img: chatbruno,
+      demo: "",
+      description: intl.formatMessage({id: 'project14d'}),
+      tags: ["#N8N", "#LANGCHAIN", "#RAG", "#SUPABASE", "#GOOGLE GEMINI", "#AWS EC2", "#MULTI-AGENTE"],
+      code: "https://github.com/brunokobi",
+    },
     {
       title: intl.formatMessage({id: 'project11t'}),
       link: "",

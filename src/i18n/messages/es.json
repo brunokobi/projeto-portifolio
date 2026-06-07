@@ -73,5 +73,7 @@
   "project12t": "BPF Check — Sistema de Auditoría Sanitaria",
   "project12d": "Sistema web de auditoría sanitaria para verificación de Buenas Prácticas de Fabricación (BPF). Incluye login, gestión de inspecciones y generación de informes de conformidad.",
   "project13t": "Mega-Sena IA — Machine Learning",
-  "project13d": "Experimento educativo de Machine Learning que analiza el historial completo de la Mega-Sena (2.806 sorteos) con Gradient Boosting Classifier. Genera combinaciones con puntuaciones de probabilidad y mapas de calor estadísticos."
+  "project13d": "Experimento educativo de Machine Learning que analiza el historial completo de la Mega-Sena (2.806 sorteos) con Gradient Boosting Classifier. Genera combinaciones con puntuaciones de probabilidad y mapas de calor estadísticos.",
+  "project14t": "chatBruno — Asistente Multi-Agente con RAG",
+  "project14d": "Asistente virtual inteligente con arquitectura Multi-Agente + RAG, construido sobre n8n, LangChain, Supabase pgvector y Google Gemini. 8 agentes especializados enrutados por Gemini 2.5 Flash. Base vectorial de 22 fragmentos en Supabase. Alojado en instancia propia de AWS EC2."
 }
