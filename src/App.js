@@ -3,6 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Router from "./routes";
 import { IntlProvider } from "react-intl";
 import VisitCounter from "./components/Contador/VisitCounter";
+import WeatherBar from "./components/WeatherBar";
 
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/locale-data/en";
@@ -66,6 +67,7 @@ function App() {
   return (
     <>
       <IntlProvider locale={locale} messages={messages}>
+        <WeatherBar />
         <VisitCounter />
         <Router />
         <ToastContainer />
