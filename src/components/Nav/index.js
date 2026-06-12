@@ -14,6 +14,7 @@ import falar from "../TextAudio";
 // Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
 import ContactForm from "../ContatoForm/ContactForm";
 import { NewsPanel, NewsPanelButton } from "../NewsPanel";
+import { getGeoIP } from "../../utils/geoip";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
@@ -107,16 +108,13 @@ const Nav = () => {
   // Detecta o país do visitante e define o idioma automaticamente na primeira visita
   useEffect(() => {
     if (ls) return; // já tem preferência salva, não sobrescreve
-    fetch("https://ipapi.co/json/")
-      .then((res) => res.json())
-      .then((data) => {
-        const lang = COUNTRY_TO_LANG[data.country_code];
-        if (lang && lang !== "pt") {
-          localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: lang }));
-          window.location.reload();
-        }
-      })
-      .catch(() => {}); // falha silenciosa, mantém pt como padrão
+    getGeoIP().then((data) => {
+      const lang = COUNTRY_TO_LANG[data.country_code];
+      if (lang && lang !== "pt") {
+        localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: lang }));
+        window.location.reload();
+      }
+    }).catch(() => {});
   // eslint-disable-next-line
   }, []);
 

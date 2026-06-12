@@ -24,8 +24,8 @@ const ALL_ICONS = [
 
 const STREAM_LENGTH = 9;    // ícones por coluna
 const ICON_SPACING  = 58;   // px entre ícones na trilha
-const COL_GAP       = 64;   // px entre colunas
-const NUM_COLS      = 32;   // colunas (cobre telas largas)
+const COL_GAP       = 80;   // px entre colunas
+const NUM_COLS      = 18;   // colunas — suficiente para telas largas
 const FALL_KF       = "matrix-icon-fall";
 
 // Opacidade de topo (cauda) → base (cabeça) — cria o efeito de trilha
@@ -95,7 +95,7 @@ const IconsBackground = () => {
       {/* Vídeo de fundo */}
       <video
         ref={videoRef}
-        autoPlay loop muted playsInline
+        autoPlay loop muted playsInline preload="none"
         style={{
           position: "absolute",
           top: 0, left: 0,

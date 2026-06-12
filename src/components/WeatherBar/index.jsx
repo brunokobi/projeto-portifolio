@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, HStack, Text, Spinner, Divider } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { getGeoIP } from "../../utils/geoip";
 
 const WMO = {
   0:  { icon: "☀️",  label: "Limpo" },
@@ -43,7 +44,7 @@ const WeatherBar = () => {
 
     const load = async () => {
       try {
-        const geo = await fetch("https://ipapi.co/json/").then((r) => r.json());
+        const geo = await getGeoIP();
         if (cancelled) return;
 
         const { latitude, longitude, city: cityName, country_code } = geo;
