@@ -121,6 +121,39 @@ const ArticleCard = ({ title, link, date, source }) => (
   </Box>
 );
 
+// Cache de traduções (permanente por sessão)
+const translationCache = new Map();
+
+async function translateTitle(text) {
+  if (translationCache.has(text)) return translationCache.get(text);
+  try {
+    const res = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|pt-BR`
+    );
+    const data = await res.json();
+    const translated = data.responseData?.translatedText || text;
+    translationCache.set(text, translated);
+    return translated;
+  } catch {
+    return text;
+  }
+}
+
+// Traduz em lotes de 5 para não sobrecarregar a API
+async function translateArticles(articles) {
+  const result = articles.map((a) => ({ ...a }));
+  const intl = result.filter((a) => a.source.flag === "🌎");
+  const BATCH = 5;
+  for (let i = 0; i < intl.length; i += BATCH) {
+    await Promise.all(
+      intl.slice(i, i + BATCH).map(async (a) => {
+        a.title = await translateTitle(a.title);
+      })
+    );
+  }
+  return result;
+}
+
 // Cache in-memory para evitar refetch desnecessário
 const cache = { data: null, ts: 0 };
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
@@ -148,14 +181,18 @@ export const NewsPanel = ({ isOpen, onClose }) => {
       )
     );
 
-    const all = results
+    const raw = results
       .filter((r) => r.status === "fulfilled")
       .flatMap((r) => r.value)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
 
-    cache.data = all;
+    // Mostra os títulos originais imediatamente enquanto traduz
+    setArticles(raw);
+
+    const translated = await translateArticles(raw);
+    cache.data = translated;
     cache.ts = Date.now();
-    setArticles(all);
+    setArticles(translated);
     setLoading(false);
   }, []);
 
