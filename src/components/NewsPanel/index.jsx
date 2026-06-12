@@ -236,7 +236,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
           </HStack>
         </DrawerHeader>
 
-        <DrawerBody px={4} py={3} overflowY="auto"
+        <DrawerBody px={4} pt={4} pb={6} overflowY="auto"
           css={{
             "&::-webkit-scrollbar": { width: "4px" },
             "&::-webkit-scrollbar-thumb": { background: GREEN_DIM, borderRadius: "8px" },

@@ -32,7 +32,7 @@ const VisitCounter = () => {
       position="fixed"
       top={{ base: "15px", md: "25px" }}
       left={{ base: "15px", md: "25px" }}
-      zIndex="9999"
+      zIndex="100"
       bg={darkMetalBg}
       border="3px solid"
       borderColor={arcadeGreen} // Borda externa continua brilhante
