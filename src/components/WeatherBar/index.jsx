@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, HStack, Text, Spinner } from "@chakra-ui/react";
+import { Box, HStack, Text, Spinner, Divider } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 const WMO = {
   0:  { icon: "☀️",  label: "Limpo" },
@@ -27,6 +28,10 @@ const WMO = {
   96: { icon: "⛈️", label: "Tempestade c/ granizo" },
   99: { icon: "⛈️", label: "Tempestade c/ granizo" },
 };
+
+const GREEN = "#42c920";
+const GREEN_DIM = "rgba(66,201,32,0.18)";
+const GREEN_GLOW = "0 0 8px rgba(66,201,32,0.55)";
 
 const WeatherBar = () => {
   const [weather, setWeather] = useState(null);
@@ -66,33 +71,72 @@ const WeatherBar = () => {
 
   return (
     <Box
+      as={motion.div}
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       position="fixed"
       top={0}
       right={0}
       zIndex={1000000}
-      bg="rgba(0,0,0,0.72)"
-      backdropFilter="blur(8px)"
-      borderBottom="1px solid rgba(66,201,32,0.25)"
-      borderLeft="1px solid rgba(66,201,32,0.25)"
-      borderBottomLeftRadius="10px"
-      px={3}
-      py={1}
+      bg="rgba(0,0,0,0.82)"
+      backdropFilter="blur(10px)"
+      borderBottom={`1px solid ${GREEN_DIM}`}
+      borderLeft={`1px solid ${GREEN_DIM}`}
+      borderBottomLeftRadius="12px"
+      px={4}
+      py="6px"
+      boxShadow={`0 2px 16px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(66,201,32,0.06)`}
     >
       {!weather ? (
-        <Spinner size="xs" color="#42c920" />
+        <Spinner size="xs" color={GREEN} thickness="2px" />
       ) : (
-        <HStack spacing={2}>
-          <Text fontSize="lg" lineHeight={1}>{wmo.icon}</Text>
-          <Text fontSize="sm" color="#42c920" fontWeight="600" fontFamily="monospace">
+        <HStack spacing={3} align="center">
+          {/* Ícone */}
+          <Text fontSize="md" lineHeight={1} userSelect="none">
+            {wmo.icon}
+          </Text>
+
+          {/* Temperatura com glow */}
+          <Text
+            fontSize="sm"
+            fontWeight="700"
+            color={GREEN}
+            fontFamily="heading"
+            letterSpacing="0.04em"
+            style={{ textShadow: GREEN_GLOW }}
+          >
             {weather.temp}°C
           </Text>
+
+          {/* Divisor estilo terminal */}
+          <Divider
+            orientation="vertical"
+            h="14px"
+            borderColor={GREEN_DIM}
+          />
+
+          {/* Cidade */}
           {city && (
-            <Text fontSize="xs" color="whiteAlpha.700" fontFamily="monospace">
+            <Text
+              fontSize="xs"
+              color="whiteAlpha.600"
+              fontFamily="heading"
+              letterSpacing="0.03em"
+            >
               {city}
             </Text>
           )}
-          <Text fontSize="xs" color="whiteAlpha.500" fontFamily="monospace" display={{ base: "none", md: "block" }}>
-            {wmo.label}
+
+          {/* Condição — oculto no mobile */}
+          <Text
+            fontSize="xs"
+            color="whiteAlpha.400"
+            fontFamily="heading"
+            display={{ base: "none", md: "block" }}
+            letterSpacing="0.02em"
+          >
+            · {wmo.label}
           </Text>
         </HStack>
       )}
