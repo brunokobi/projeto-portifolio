@@ -211,11 +211,11 @@ export const NewsPanel = ({ isOpen, onClose }) => {
           border={`1px solid ${GREEN_DIM}`}
           borderRadius="full"
           _hover={{ bg: GREEN, color: "#000" }}
-          top={4}
+          top="44px"
           right={4}
         />
 
-        <DrawerHeader borderBottom={`1px solid ${GREEN_DIM}`} pb={3}>
+        <DrawerHeader borderBottom={`1px solid ${GREEN_DIM}`} pt="44px" pb={3}>
           <HStack spacing={2}>
             <Text fontSize="lg" lineHeight={1}>📰</Text>
             <Text
