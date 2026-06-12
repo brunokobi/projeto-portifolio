@@ -49,13 +49,14 @@ const Item = ({ label, url, icon }) => {
             <div as={motion.div} variants={iconMotion}>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </div>
-            <div>
-              <Text fontFamily="heading" fontSize={{ base: "sm" }}
+            <Text
+              fontFamily="heading"
+              fontSize={{ base: "sm" }}
+              display={{ base: "none", md: "block" }}
               onMouseOver={() => falar(label)}
-              >
-                {label}
-              </Text>
-            </div>
+            >
+              {label}
+            </Text>
           </Stack>
         </BreadcrumbLink>
       ) : (
@@ -78,13 +79,14 @@ const Item = ({ label, url, icon }) => {
             <div as={motion.div} variants={iconMotion}>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </div>
-            <div>
-              <Text fontFamily="heading" fontSize={{ base: "sm" }}
-               onMouseOver={() => falar(label)}
-              >
-                {label}
-              </Text>
-            </div>
+            <Text
+              fontFamily="heading"
+              fontSize={{ base: "sm" }}
+              display={{ base: "none", md: "block" }}
+              onMouseOver={() => falar(label)}
+            >
+              {label}
+            </Text>
           </Stack>
         </BreadcrumbLink>
       )}
