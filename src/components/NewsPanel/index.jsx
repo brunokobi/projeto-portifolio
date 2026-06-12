@@ -121,17 +121,19 @@ const ArticleCard = ({ title, link, date, source }) => (
   </Box>
 );
 
-// Cache de traduções (permanente por sessão)
+// Cache de traduções permanente por sessão
 const translationCache = new Map();
 
 async function translateTitle(text) {
   if (translationCache.has(text)) return translationCache.get(text);
   try {
-    const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|pt-BR`
-    );
+    const url =
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` +
+      encodeURIComponent(text);
+    const res = await fetch(url);
     const data = await res.json();
-    const translated = data.responseData?.translatedText || text;
+    // resposta: [ [ ["traduzido","original"], ...], ...]
+    const translated = data[0]?.map((d) => d[0]).join("") || text;
     translationCache.set(text, translated);
     return translated;
   } catch {
@@ -142,12 +144,18 @@ async function translateTitle(text) {
 // Traduz em lotes de 5 para não sobrecarregar a API
 async function translateArticles(articles) {
   const result = articles.map((a) => ({ ...a }));
-  const intl = result.filter((a) => a.source.flag === "🌎");
+  const intlIdxs = result
+    .map((a, i) => (a.source.flag === "🌎" ? i : -1))
+    .filter((i) => i >= 0);
+
   const BATCH = 5;
-  for (let i = 0; i < intl.length; i += BATCH) {
+  for (let b = 0; b < intlIdxs.length; b += BATCH) {
     await Promise.all(
-      intl.slice(i, i + BATCH).map(async (a) => {
-        a.title = await translateTitle(a.title);
+      intlIdxs.slice(b, b + BATCH).map(async (idx) => {
+        result[idx] = {
+          ...result[idx],
+          title: await translateTitle(result[idx].title),
+        };
       })
     );
   }
@@ -185,9 +193,6 @@ export const NewsPanel = ({ isOpen, onClose }) => {
       .filter((r) => r.status === "fulfilled")
       .flatMap((r) => r.value)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
-
-    // Mostra os títulos originais imediatamente enquanto traduz
-    setArticles(raw);
 
     const translated = await translateArticles(raw);
     cache.data = translated;
