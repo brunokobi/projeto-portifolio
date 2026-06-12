@@ -4,7 +4,6 @@ import {
   Box, Flex, HStack, VStack, Text, Badge, Link, Spinner, Divider, Icon,
 } from "@chakra-ui/react";
 import { BsNewspaper, BsBoxArrowUpRight } from "react-icons/bs";
-import { motion, AnimatePresence } from "framer-motion";
 
 const GREEN = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -65,53 +64,56 @@ function timeAgo(date) {
 
 const ArticleCard = ({ title, link, date, source }) => (
   <Box
-    as={motion.div}
-    initial={{ opacity: 0, x: 16 }}
-    animate={{ opacity: 1, x: 0 }}
     borderLeft={`2px solid ${source.color}`}
     pl={3}
     py={2}
-    _hover={{ bg: "rgba(255,255,255,0.03)", borderRadius: "4px" }}
+    borderRadius="0 4px 4px 0"
+    _hover={{ bg: "rgba(255,255,255,0.03)" }}
     transition="background 0.2s"
   >
-    <HStack mb={1} spacing={2}>
+    <HStack mb={1} spacing={2} flexWrap="wrap">
       <Badge
-        fontSize="9px"
+        fontSize="11px"
+        fontFamily="heading"
+        fontWeight="600"
         px={2}
-        py="1px"
+        py="2px"
         borderRadius="full"
         bg={`${source.color}22`}
         color={source.color}
         border={`1px solid ${source.color}44`}
-        letterSpacing="0.05em"
+        letterSpacing="0.04em"
+        textTransform="uppercase"
       >
         {source.flag} {source.name}
       </Badge>
       {date && (
-        <Text fontSize="10px" color="whiteAlpha.400">
+        <Text fontSize="11px" fontFamily="heading" color="whiteAlpha.400">
           {timeAgo(date)}
         </Text>
       )}
     </HStack>
 
     <Link href={link} isExternal _hover={{ textDecoration: "none" }}>
-      <Flex align="flex-start" gap={2}>
+      <Flex align="flex-start" gap={2} minW={0}>
         <Text
           fontSize="sm"
-          color="whiteAlpha.850"
+          color="whiteAlpha.800"
           fontFamily="heading"
-          lineHeight="1.45"
+          lineHeight="1.5"
           _hover={{ color: "white" }}
           transition="color 0.15s"
           flex={1}
+          minW={0}
+          noOfLines={3}
         >
           {title}
         </Text>
         <Icon
           as={BsBoxArrowUpRight}
-          boxSize="10px"
+          boxSize="11px"
           color="whiteAlpha.300"
-          mt="3px"
+          mt="4px"
           flexShrink={0}
         />
       </Flex>
@@ -201,7 +203,8 @@ export const NewsPanel = ({ isOpen, onClose }) => {
         bg="#0a0a0a"
         borderLeft={`1px solid ${GREEN_DIM}`}
         boxShadow={`-4px 0 32px rgba(0,0,0,0.8)`}
-        maxW={{ base: "100vw", md: "420px" }}
+        w={{ base: "100vw", md: "420px" }}
+        maxW="100vw"
       >
         <DrawerCloseButton
           color={GREEN}
@@ -249,23 +252,21 @@ export const NewsPanel = ({ isOpen, onClose }) => {
               </VStack>
             </Flex>
           ) : (
-            <AnimatePresence>
-              <VStack spacing={3} align="stretch">
-                {filtered.length === 0 && (
-                  <Text fontSize="sm" color="whiteAlpha.400" textAlign="center" mt={8} fontFamily="heading">
-                    Nenhuma notícia encontrada.
-                  </Text>
-                )}
-                {filtered.map((a, i) => (
-                  <Box key={`${a.source.name}-${i}`}>
-                    <ArticleCard {...a} />
-                    {i < filtered.length - 1 && (
-                      <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
-                    )}
-                  </Box>
-                ))}
-              </VStack>
-            </AnimatePresence>
+            <VStack spacing={3} align="stretch">
+              {filtered.length === 0 && (
+                <Text fontSize="sm" color="whiteAlpha.400" textAlign="center" mt={8} fontFamily="heading">
+                  Nenhuma notícia encontrada.
+                </Text>
+              )}
+              {filtered.map((a, i) => (
+                <Box key={`${a.source.name}-${i}`}>
+                  <ArticleCard {...a} />
+                  {i < filtered.length - 1 && (
+                    <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
+                  )}
+                </Box>
+              ))}
+            </VStack>
           )}
         </DrawerBody>
       </DrawerContent>
