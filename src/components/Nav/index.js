@@ -13,6 +13,7 @@ import falar from "../TextAudio";
 // --- IMPORTANTE: Importe seu formulário aqui ---
 // Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
 import ContactForm from "../ContatoForm/ContactForm";
+import { NewsPanel, NewsPanelButton } from "../NewsPanel";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
@@ -97,6 +98,7 @@ const Nav = () => {
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isNewsOpen, onOpen: onNewsOpen, onClose: onNewsClose } = useDisclosure();
 
   const ls = localStorage.getItem("i18nConfig");
   const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
@@ -213,6 +215,10 @@ const Nav = () => {
             px={4}
             py={2}
           >
+            <NewsPanelButton onClick={onNewsOpen} />
+
+            <Box w="1px" h="20px" bg="whiteAlpha.200" mx={1} />
+
             {languages.map((lang) => (
               <LanguageButton
                 key={lang.id}
@@ -241,6 +247,8 @@ const Nav = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <NewsPanel isOpen={isNewsOpen} onClose={onNewsClose} />
 
     </AnimatePresence>
   );
