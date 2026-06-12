@@ -1,7 +1,7 @@
-import React from "react";
-import { 
-  Breadcrumb, Flex, Stack, Box, HStack, 
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure 
+import React, { useEffect } from "react";
+import {
+  Breadcrumb, Flex, Stack, Box, HStack,
+  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure
 } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Image } from "@chakra-ui/react";
@@ -42,6 +42,22 @@ const languages = [
   { id: "ar", img: arabe, label: "ar" },
   { id: "kl", img: klingon, label: "kl" },
 ];
+
+// Mapeamento país → idioma
+const COUNTRY_TO_LANG = {
+  BR: "pt",
+  PT: "pt",
+  US: "en", GB: "en", AU: "en", CA: "en", NZ: "en", IE: "en", ZA: "en",
+  ES: "es", MX: "es", AR: "es", CL: "es", CO: "es", PE: "es", VE: "es",
+  UY: "es", PY: "es", BO: "es", EC: "es", CR: "es", PA: "es", DO: "es",
+  GT: "es", HN: "es", SV: "es", NI: "es", CU: "es",
+  FR: "fr", BE: "fr", CH: "fr", LU: "fr", MC: "fr", SN: "fr", CI: "fr",
+  DE: "de", AT: "de",
+  CN: "zh", TW: "zh", HK: "zh", MO: "zh", SG: "zh",
+  RU: "ru", BY: "ru", KZ: "ru",
+  SA: "ar", AE: "ar", EG: "ar", MA: "ar", DZ: "ar", TN: "ar", LY: "ar",
+  JO: "ar", LB: "ar", SY: "ar", IQ: "ar", KW: "ar", QA: "ar", BH: "ar", OM: "ar", YE: "ar",
+};
 
 const activeStyle = {
   borderColor: "#42c920",
@@ -85,6 +101,22 @@ const Nav = () => {
   const ls = localStorage.getItem("i18nConfig");
   const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
   const currentLang = langConfig.selectedLang;
+
+  // Detecta o país do visitante e define o idioma automaticamente na primeira visita
+  useEffect(() => {
+    if (ls) return; // já tem preferência salva, não sobrescreve
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => {
+        const lang = COUNTRY_TO_LANG[data.country_code];
+        if (lang && lang !== "pt") {
+          localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: lang }));
+          window.location.reload();
+        }
+      })
+      .catch(() => {}); // falha silenciosa, mantém pt como padrão
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sections = [
     { label: intl.formatMessage({ id: "home" }), url: `/`, icon: IoMdRocket },
