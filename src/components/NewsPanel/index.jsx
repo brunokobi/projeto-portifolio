@@ -245,7 +245,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
         bg="#0a0a0a"
         borderLeft={`1px solid ${GREEN_DIM}`}
         boxShadow={`-4px 0 32px rgba(0,0,0,0.8)`}
-        w={{ base: "100vw", md: "420px" }}
+        w={{ base: "100vw", md: "50vw" }}
         maxW="100vw"
       >
         <DrawerCloseButton
