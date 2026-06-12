@@ -117,7 +117,7 @@ const Nav = () => {
         }
       })
       .catch(() => {}); // falha silenciosa, mantém pt como padrão
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line
   }, []);
 
   const sections = [
