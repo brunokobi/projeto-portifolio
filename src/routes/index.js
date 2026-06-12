@@ -29,7 +29,7 @@ const Router = () => {
 
   return (
     <Box minH="100vh" bg="black" color="rgb(196, 196, 196)">
-      <Box position="fixed" top="10px" right="10px" zIndex="999">
+      <Box position="fixed" top="44px" right="10px" zIndex="999">
         <Button
           onClick={toggleAudio}
           bgColor="transparent"
