@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, HStack, Text, Spinner, Divider } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { Box, HStack, Text, Divider } from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
 
 const WMO = {
@@ -30,35 +29,60 @@ const WMO = {
   99: { icon: "⛈️", label: "Tempestade c/ granizo" },
 };
 
-const GREEN = "#42c920";
+const GREEN     = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.18)";
 const GREEN_GLOW = "0 0 8px rgba(66,201,32,0.55)";
 
+// Busca coordenadas: tenta geolocalização do browser, cai no ipapi.co
+const getCoords = () =>
+  new Promise((resolve) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, city: null }),
+        () => getGeoIP().then((g) => resolve({ lat: g.latitude, lon: g.longitude, city: g.city, country: g.country_code }))
+      );
+    } else {
+      getGeoIP().then((g) => resolve({ lat: g.latitude, lon: g.longitude, city: g.city, country: g.country_code }));
+    }
+  });
+
 const WeatherBar = () => {
-  const [weather, setWeather] = useState(null);
-  const [city, setCity] = useState(null);
-  const [error, setError] = useState(false);
+  const [data, setData] = useState(null); // null = carregando, false = erro, objeto = ok
 
   useEffect(() => {
     let cancelled = false;
 
     const load = async () => {
       try {
-        const geo = await getGeoIP();
+        const { lat, lon, city, country } = await getCoords();
+
+        if (!lat || !lon) { if (!cancelled) setData(false); return; }
+
+        const res = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`
+        );
+        const meteo = await res.json();
         if (cancelled) return;
 
-        const { latitude, longitude, city: cityName, country_code } = geo;
-        setCity(`${cityName}, ${country_code}`);
+        const { temperature_2m, weather_code } = meteo.current ?? {};
+        if (temperature_2m == null) { setData(false); return; }
 
-        const meteo = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`
-        ).then((r) => r.json());
-        if (cancelled) return;
+        // Se cidade não veio do browser, busca do ipapi (já em cache)
+        let displayCity = city;
+        let displayCountry = country;
+        if (!displayCity) {
+          const geo = await getGeoIP();
+          displayCity = geo.city;
+          displayCountry = geo.country_code;
+        }
 
-        const { temperature_2m, weather_code } = meteo.current;
-        setWeather({ temp: Math.round(temperature_2m), code: weather_code });
+        setData({
+          temp: Math.round(temperature_2m),
+          code: weather_code,
+          city: displayCity ? `${displayCity}, ${displayCountry}` : null,
+        });
       } catch {
-        if (!cancelled) setError(true);
+        if (!cancelled) setData(false);
       }
     };
 
@@ -66,16 +90,13 @@ const WeatherBar = () => {
     return () => { cancelled = true; };
   }, []);
 
-  if (error) return null;
+  // Não mostra nada enquanto carrega ou se falhou
+  if (!data) return null;
 
-  const wmo = weather ? (WMO[weather.code] ?? { icon: "🌡️", label: "" }) : null;
+  const wmo = WMO[data.code] ?? { icon: "🌡️", label: "" };
 
   return (
     <Box
-      as={motion.div}
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
       position="fixed"
       top={0}
       right={0}
@@ -88,59 +109,43 @@ const WeatherBar = () => {
       px={4}
       py="6px"
       boxShadow={`0 2px 16px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(66,201,32,0.06)`}
+      style={{ animation: "weatherFadeIn 0.5s ease" }}
     >
-      {!weather ? (
-        <Spinner size="xs" color={GREEN} thickness="2px" />
-      ) : (
-        <HStack spacing={3} align="center">
-          {/* Ícone */}
-          <Text fontSize="md" lineHeight={1} userSelect="none">
-            {wmo.icon}
-          </Text>
+      <style>{`@keyframes weatherFadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
-          {/* Temperatura com glow */}
-          <Text
-            fontSize="sm"
-            fontWeight="700"
-            color={GREEN}
-            fontFamily="heading"
-            letterSpacing="0.04em"
-            style={{ textShadow: GREEN_GLOW }}
-          >
-            {weather.temp}°C
-          </Text>
+      <HStack spacing={3} align="center">
+        <Text fontSize="md" lineHeight={1} userSelect="none">{wmo.icon}</Text>
 
-          {/* Divisor estilo terminal */}
-          <Divider
-            orientation="vertical"
-            h="14px"
-            borderColor={GREEN_DIM}
-          />
+        <Text
+          fontSize="sm"
+          fontWeight="700"
+          color={GREEN}
+          fontFamily="heading"
+          letterSpacing="0.04em"
+          style={{ textShadow: GREEN_GLOW }}
+        >
+          {data.temp}°C
+        </Text>
 
-          {/* Cidade */}
-          {city && (
-            <Text
-              fontSize="xs"
-              color="whiteAlpha.600"
-              fontFamily="heading"
-              letterSpacing="0.03em"
-            >
-              {city}
+        {data.city && (
+          <>
+            <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+            <Text fontSize="xs" color="whiteAlpha.600" fontFamily="heading" letterSpacing="0.03em">
+              {data.city}
             </Text>
-          )}
+          </>
+        )}
 
-          {/* Condição — oculto no mobile */}
-          <Text
-            fontSize="xs"
-            color="whiteAlpha.400"
-            fontFamily="heading"
-            display={{ base: "none", md: "block" }}
-            letterSpacing="0.02em"
-          >
-            · {wmo.label}
-          </Text>
-        </HStack>
-      )}
+        <Text
+          fontSize="xs"
+          color="whiteAlpha.400"
+          fontFamily="heading"
+          display={{ base: "none", md: "block" }}
+          letterSpacing="0.02em"
+        >
+          · {wmo.label}
+        </Text>
+      </HStack>
     </Box>
   );
 };
