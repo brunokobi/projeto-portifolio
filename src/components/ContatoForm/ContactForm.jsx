@@ -10,7 +10,7 @@ import { RiAliensFill } from "react-icons/ri";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 const signalWave = keyframes`
   0% { transform: scale(1); opacity: 0.8; border-color: #39ff14; }
@@ -42,12 +42,17 @@ const ContactForm = ({ onClose }) => {
     e.preventDefault();
     setLoading(true);
 
+    if (!supabase) {
+      setLoading(false);
+      toast({ title: "Serviço indisponível", status: "error", duration: 4000, isClosable: true, position: "top" });
+      return;
+    }
     const { error } = await supabase
       .from('contato')
-      .insert([{ 
-          nome: formData.nome, 
-          email: formData.email, 
-          mensagem: formData.mensagem 
+      .insert([{
+          nome: formData.nome,
+          email: formData.email,
+          mensagem: formData.mensagem
       }]);
 
     setLoading(false);

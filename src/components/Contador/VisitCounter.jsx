@@ -4,13 +4,14 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 const VisitCounter = () => {
   const [visits, setVisits] = useState(null);
 
   useEffect(() => {
     const updateCounter = async () => {
+      if (!supabase) return;
       const { data, error } = await supabase.rpc("increment_views");
       if (error) {
         console.error("Erro ao atualizar visitas:", error);
