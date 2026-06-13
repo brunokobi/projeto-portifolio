@@ -92,17 +92,19 @@ const ContactForm = ({ onClose }) => {
   const panelBg = "rgba(20, 20, 20, 0.95)";
 
   return (
-    <Box 
-      bg={panelBg} 
-      p={{ base: 6, md: 8 }} 
-      borderRadius="2xl" 
-      border="2px solid" 
+    <Box
+      bg={panelBg}
+      p={{ base: 4, md: 8 }}
+      borderRadius="2xl"
+      border="2px solid"
       borderColor={arcadeGreen}
       boxShadow={`0 0 20px ${arcadeGreen}30, inset 0 0 20px ${arcadeGreen}10`}
       maxW="500px"
+      w="100%"
       mx="auto"
       position="relative"
-      overflow="hidden"
+      overflowY="auto"
+      maxH={{ base: "85vh", md: "none" }}
     >
       <Flex direction="column" align="center" mb={6}>
         <Box position="relative" mb={4}>

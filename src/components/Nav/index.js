@@ -231,9 +231,9 @@ const Nav = () => {
         </Box>
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size={{ base: "full", md: "xl" }} scrollBehavior="inside">
         <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
-        <ModalContent bg="transparent" boxShadow="none" border="none">
+        <ModalContent bg="transparent" boxShadow="none" border="none" maxH={{ base: "100dvh", md: "90vh" }} my={{ base: 0, md: 4 }}>
           <ModalCloseButton
             color="#39ff14"
             zIndex={10}
@@ -241,7 +241,7 @@ const Nav = () => {
             border="1px solid #39ff14"
             _hover={{ bg: "#39ff14", color: "black" }}
           />
-          <ModalBody p={0}>
+          <ModalBody p={{ base: 2, md: 0 }} overflowY="auto">
             <ContactForm onClose={onClose} />
           </ModalBody>
         </ModalContent>

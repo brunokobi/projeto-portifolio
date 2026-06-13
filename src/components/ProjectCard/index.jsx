@@ -45,7 +45,8 @@ const ProjectCard = ({
     >
       <Stack
         borderRadius="lg"
-        w={{ sm: "350px", md: "640px" }}
+        w={{ base: "95vw", sm: "350px", md: "640px" }}
+        maxW="640px"
         direction="column"
         bg={useColorModeValue("transparent", "gray.900")}
         boxShadow={"2xl"}
@@ -101,7 +102,7 @@ const ProjectCard = ({
           >
             {description}
           </Text>
-          <Stack align={"center"} justify={"center"} direction={"row"} mt={6}>
+          <Stack align={"center"} justify={"center"} direction={"row"} mt={6} wrap="wrap" gap={2}>
             {tags &&
               tags.map((tag, i) => (
                 <Badge

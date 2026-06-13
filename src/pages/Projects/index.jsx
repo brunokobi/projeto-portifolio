@@ -201,14 +201,14 @@ const Projects = () => {
           <Flex
             position="relative"
             id="top"
-            direction={{ base: "column", md: "row" }}
+            direction="column"
             wrap="wrap"
-            px={6}
+            px={{ base: 2, md: 6 }}
             justify="center"
             alignItems="center"
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
-            gap={8}
+            gap={{ base: 4, md: 8 }}
           >
            
             {projects.map(
