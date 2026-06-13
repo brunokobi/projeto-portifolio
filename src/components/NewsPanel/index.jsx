@@ -14,6 +14,7 @@ const FEEDS = [
   { name: "AINEWS",       url: "https://ainews.com.br/feed/",                                            flag: "🇧🇷", color: "#00c8ff" },
   { name: "Exame IA",     url: "https://exame.com/inteligencia-artificial/feed/",                        flag: "🇧🇷", color: "#00c8ff" },
   // Mundo
+  { name: "MIT News",     url: "https://news.mit.edu/rss/topic/artificial-intelligence",                flag: "🌎", color: GREEN },
   { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",     flag: "🌎", color: GREEN },
   { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",         flag: "🌎", color: GREEN },
   { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",               flag: "🌎", color: GREEN },
@@ -169,7 +170,6 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 min
 export const NewsPanel = ({ isOpen, onClose }) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState("all"); // all | br | world
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
@@ -211,33 +211,6 @@ export const NewsPanel = ({ isOpen, onClose }) => {
 
   if (isOpen && !fetchedRef.current) handleOpen();
 
-  const filtered = articles.filter((a) => {
-    if (filter === "br") return a.source.flag === "🇧🇷";
-    if (filter === "world") return a.source.flag === "🌎";
-    return true;
-  });
-
-  const FilterBtn = ({ id, label }) => (
-    <Box
-      as="button"
-      onClick={() => setFilter(id)}
-      px={3}
-      py={1}
-      borderRadius="full"
-      fontSize="xs"
-      fontFamily="heading"
-      fontWeight={filter === id ? "700" : "400"}
-      color={filter === id ? "#000" : "whiteAlpha.600"}
-      bg={filter === id ? GREEN : "transparent"}
-      border={`1px solid ${filter === id ? GREEN : "rgba(255,255,255,0.12)"}`}
-      transition="all 0.2s"
-      _hover={{ borderColor: GREEN, color: GREEN }}
-      style={filter === id ? { boxShadow: `0 0 8px ${GREEN}88` } : {}}
-    >
-      {label}
-    </Box>
-  );
-
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay bg="rgba(0,0,0,0.7)" backdropFilter="blur(4px)" />
@@ -271,11 +244,6 @@ export const NewsPanel = ({ isOpen, onClose }) => {
             </Text>
           </HStack>
 
-          <HStack mt={3} spacing={2}>
-            <FilterBtn id="all"   label="Todos" />
-            <FilterBtn id="world" label="🌎 Mundo" />
-            <FilterBtn id="br"    label="🇧🇷 Brasil" />
-          </HStack>
         </DrawerHeader>
 
         <DrawerBody px={4} pt={4} pb={6} overflowY="auto"
@@ -295,15 +263,15 @@ export const NewsPanel = ({ isOpen, onClose }) => {
             </Flex>
           ) : (
             <VStack spacing={3} align="stretch">
-              {filtered.length === 0 && (
+              {articles.length === 0 && (
                 <Text fontSize="sm" color="whiteAlpha.400" textAlign="center" mt={8} fontFamily="heading">
                   Nenhuma notícia encontrada.
                 </Text>
               )}
-              {filtered.map((a, i) => (
+              {articles.map((a, i) => (
                 <Box key={`${a.source.name}-${i}`}>
                   <ArticleCard {...a} />
-                  {i < filtered.length - 1 && (
+                  {i < articles.length - 1 && (
                     <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
                   )}
                 </Box>
