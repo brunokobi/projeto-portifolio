@@ -18,7 +18,8 @@ import { getGeoIP } from "../../utils/geoip";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
-import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineFilePdf, AiOutlineMail } from "react-icons/ai";
+import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineMail } from "react-icons/ai";
+import { MdOutlineNewspaper } from "react-icons/md";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import { BiCube } from "react-icons/bi";
@@ -129,7 +130,7 @@ const Nav = () => {
     { label: "Mapa Esri", url: "/map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
     { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
-    { label: "Curriculo", url: "/curriculo", icon: AiOutlineFilePdf },
+    { label: "Notícias IA", icon: MdOutlineNewspaper, isAction: true, action: onNewsOpen },
   ];
 
   const handleLanguageChange = (langId) => {
