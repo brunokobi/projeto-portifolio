@@ -43,9 +43,10 @@ Este portfólio foi projetado como um **ecossistema digital inteligente**, integ
 - 🌍 Geoprocessamento (GIS)
 - 🤖 Inteligência Artificial Conversacional
 - 📰 Feed de Notícias de IA em tempo real
+- 🌐 Internacionalização com detecção automática por IP (9 idiomas)
+- 🌤️ Clima em tempo real com precisão GPS
 - 🔁 Arquitetura orientada a eventos
 - ♿ Acessibilidade extrema
-- 🌐 Internacionalização avançada (9 idiomas)
 
 Não é apenas uma interface visual — é uma demonstração prática de arquitetura moderna em produção.
 
@@ -150,6 +151,60 @@ Painel lateral em tempo real que agrega **20 feeds RSS** de fontes globais de IA
 
 ---
 
+## 🌐 Internacionalização com Detecção Automática de Idioma
+
+O portfólio suporta **9 idiomas** com troca automática baseada na localização geográfica do visitante.
+
+### Como funciona
+
+1. Na primeira visita (sem preferência salva), o sistema consulta `ipapi.co` para obter o **código do país** do IP do visitante
+2. Um mapeamento interno converte o país para o idioma correspondente (ex: `BR` → `pt`, `DE` → `de`, `SA` → `ar`)
+3. O idioma é salvo no `localStorage` — nas visitas seguintes, a preferência do usuário é sempre respeitada
+4. O visitante pode trocar o idioma manualmente a qualquer momento pelo seletor de bandeiras no menu
+
+### Idiomas suportados e cobertura geográfica
+
+| Idioma | Código | Países cobertos |
+|--------|--------|-----------------|
+| Português | `pt` | Brasil, Portugal |
+| Inglês | `en` | EUA, Reino Unido, Austrália, Canadá, Nova Zelândia, Irlanda, África do Sul + outros |
+| Espanhol | `es` | Espanha, México, Argentina, Chile, Colômbia, Peru, Venezuela + 14 países |
+| Francês | `fr` | França, Bélgica, Suíça, Luxemburgo, Mônaco, Senegal, Costa do Marfim |
+| Alemão | `de` | Alemanha, Áustria |
+| Chinês | `zh` | China, Taiwan, Hong Kong, Macau, Singapura |
+| Russo | `ru` | Rússia, Bielorrússia, Cazaquistão |
+| Árabe | `ar` | Arábia Saudita, EAU, Egito, Marrocos, Argélia + 12 países |
+| Klingon | `kl` | Galáxia inteira 🖖 |
+
+---
+
+## 🌤️ Barra de Clima em Tempo Real (WeatherBar)
+
+Widget fixo no canto superior direito que exibe as **condições climáticas atuais** do visitante com máxima precisão.
+
+### Como funciona
+
+1. **Prioridade 1 — GPS do navegador**: solicita `navigator.geolocation` para obter coordenadas exatas (precisão de metros)
+2. **Fallback — IP Geolocation**: se o usuário negar permissão ou o browser não suportar, usa `ipapi.co` para obter latitude/longitude aproximada pela rede
+3. As coordenadas são enviadas à **Open-Meteo API** (gratuita, sem chave) para buscar temperatura e código de condição meteorológica em tempo real
+4. O nome da cidade é exibido junto à temperatura quando disponível
+
+### Dados exibidos
+
+- 🌡️ Temperatura atual em °C (arredondada)
+- Ícone da condição meteorológica (22 códigos WMO mapeados)
+- Nome da cidade e país
+- Descrição textual da condição (ex: "Chuva leve", "Tempestade")
+
+### Precisão
+
+| Fonte | Precisão da localização |
+|-------|------------------------|
+| GPS do navegador | Metros (alta precisão) |
+| IP via ipapi.co | Cidade (precisão de ~1–10 km) |
+
+---
+
 ## 🌍 Módulo Geoespacial (GIS)
 
 - ESRI ArcGIS API
@@ -235,6 +290,7 @@ RESEND_API_KEY=
 ✔ Integração IA + Automação  
 ✔ Geoprocessamento 3D  
 ✔ Sistema multilíngue (9 idiomas + detecção automática por IP)  
+✔ Clima em tempo real com fallback GPS → IP (Open-Meteo API)  
 ✔ Acessibilidade com síntese de voz  
 ✔ Feed de notícias de IA em tempo real com 20 fontes globais  
 ✔ Tradução automática de títulos (EN → PT-BR)  
