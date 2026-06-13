@@ -14,7 +14,8 @@ const FEEDS = [
   { name: "AINEWS",       url: "https://ainews.com.br/feed/",                                            flag: "🇧🇷", color: "#00c8ff" },
   { name: "Exame IA",     url: "https://exame.com/inteligencia-artificial/feed/",                        flag: "🇧🇷", color: "#00c8ff" },
   // Mundo
-  { name: "MIT News",     url: "https://news.mit.edu/rss/topic/artificial-intelligence",                flag: "🌎", color: GREEN },
+  { name: "MIT News",      url: "https://news.mit.edu/rss/topic/artificial-intelligence",               flag: "🌎", color: GREEN },
+  { name: "Product Hunt", url: "https://www.producthunt.com/feed",                                      flag: "🌎", color: "#da552f" },
   { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",     flag: "🌎", color: GREEN },
   { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",         flag: "🌎", color: GREEN },
   { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",               flag: "🌎", color: GREEN },
