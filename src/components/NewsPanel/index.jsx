@@ -15,12 +15,18 @@ const FEEDS = [
   { name: "AINEWS",       url: "https://ainews.com.br/feed/",                                            flag: "🇧🇷", color: "#00c8ff" },
   { name: "Exame IA",     url: "https://exame.com/inteligencia-artificial/feed/",                        flag: "🇧🇷", color: "#00c8ff" },
   // Mundo
-  { name: "MIT News",      url: "https://news.mit.edu/rss/topic/artificial-intelligence",               flag: "🌎", color: GREEN },
-  { name: "AI News",      url: "https://www.artificialintelligence-news.com/feed/",                     flag: "🌎", color: GREEN },
-  { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",     flag: "🌎", color: GREEN },
-  { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",         flag: "🌎", color: GREEN },
-  { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",               flag: "🌎", color: GREEN },
-  { name: "MIT Tech Rev", url: "https://www.technologyreview.com/feed/",                                flag: "🌎", color: GREEN },
+  { name: "AI Weekly",    url: "https://aiweekly.co/issues.rss",                                         flag: "🌎", color: GREEN },
+  { name: "AI Insider",   url: "https://theaiinsider.tech/feed",                                         flag: "🌎", color: GREEN },
+  { name: "MIT News",     url: "https://news.mit.edu/rss/topic/artificial-intelligence",                 flag: "🌎", color: GREEN },
+  { name: "AI News",      url: "https://www.artificialintelligence-news.com/feed/",                      flag: "🌎", color: GREEN },
+  { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",      flag: "🌎", color: GREEN },
+  { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",          flag: "🌎", color: GREEN },
+  { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",                flag: "🌎", color: GREEN },
+  { name: "MIT Tech Rev", url: "https://www.technologyreview.com/feed/",                                 flag: "🌎", color: GREEN },
+  { name: "Google Res.",  url: "https://research.google/blog/rss/",                                      flag: "🌎", color: "#4285f4" },
+  { name: "BAIR",         url: "https://bair.berkeley.edu/blog/feed.xml",                                flag: "🌎", color: "#ffa500" },
+  { name: "MIRI",         url: "https://intelligence.org/feed",                                          flag: "🌎", color: GREEN },
+  { name: "Meta Eng.",    url: "https://engineering.fb.com/feed/",                                       flag: "🌎", color: "#0866ff" },
 ];
 
 const PROXY = "/.netlify/functions/news?url=";
