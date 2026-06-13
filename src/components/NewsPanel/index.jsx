@@ -55,7 +55,6 @@ function parseRSS(xml) {
       item.querySelector(sel)?.getAttribute(attr) ?? "";
 
     const title = getText("title");
-    // link pode ser texto ou atributo href (Atom)
     const link =
       getText("link") ||
       getAttr("link[rel='alternate']", "href") ||
@@ -66,7 +65,18 @@ function parseRSS(xml) {
       getText("updated") ||
       getText("dc\\:date");
 
-    return { title, link, date: date ? new Date(date) : null };
+    // Extrai thumbnail: media:thumbnail → media:content → enclosure → <img> na descrição
+    const img =
+      getAttr("media\\:thumbnail, thumbnail", "url") ||
+      getAttr("media\\:content, content", "url") ||
+      getAttr("enclosure[type^='image']", "url") ||
+      (() => {
+        const raw = getText("description") || getText("content\\:encoded") || getText("content");
+        const match = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
+        return match ? match[1] : "";
+      })();
+
+    return { title, link, date: date ? new Date(date) : null, img: img || null };
   }).filter((a) => a.title && a.link);
 }
 
@@ -79,7 +89,7 @@ function timeAgo(date) {
   return date.toLocaleDateString("pt-BR");
 }
 
-const ArticleCard = ({ title, link, date, source }) => (
+const ArticleCard = ({ title, link, date, source, img }) => (
   <Box
     borderLeft={`2px solid ${source.color}`}
     pl={3}
@@ -112,27 +122,46 @@ const ArticleCard = ({ title, link, date, source }) => (
     </HStack>
 
     <Link href={link} isExternal _hover={{ textDecoration: "none" }}>
-      <Flex align="flex-start" gap={2} minW={0}>
-        <Text
-          fontSize="sm"
-          color="whiteAlpha.800"
-          fontFamily="heading"
-          lineHeight="1.5"
-          _hover={{ color: "white" }}
-          transition="color 0.15s"
-          flex={1}
-          minW={0}
-          noOfLines={3}
-        >
-          {title}
-        </Text>
-        <Icon
-          as={BsBoxArrowUpRight}
-          boxSize="11px"
-          color="whiteAlpha.300"
-          mt="4px"
-          flexShrink={0}
-        />
+      <Flex align="center" gap={3} minW={0}>
+        {img && (
+          <Box
+            flexShrink={0}
+            w="72px"
+            h="52px"
+            borderRadius="6px"
+            overflow="hidden"
+            bg="whiteAlpha.50"
+          >
+            <img
+              src={img}
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              onError={(e) => { e.target.parentElement.style.display = "none"; }}
+            />
+          </Box>
+        )}
+        <Flex align="flex-start" gap={2} minW={0} flex={1}>
+          <Text
+            fontSize="sm"
+            color="whiteAlpha.800"
+            fontFamily="heading"
+            lineHeight="1.5"
+            _hover={{ color: "white" }}
+            transition="color 0.15s"
+            flex={1}
+            minW={0}
+            noOfLines={3}
+          >
+            {title}
+          </Text>
+          <Icon
+            as={BsBoxArrowUpRight}
+            boxSize="11px"
+            color="whiteAlpha.300"
+            mt="4px"
+            flexShrink={0}
+          />
+        </Flex>
       </Flex>
     </Link>
   </Box>
