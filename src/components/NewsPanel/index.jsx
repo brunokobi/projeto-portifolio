@@ -27,6 +27,14 @@ const FEEDS = [
   { name: "BAIR",         url: "https://bair.berkeley.edu/blog/feed.xml",                                flag: "🌎", color: "#ffa500" },
   { name: "MIRI",         url: "https://intelligence.org/feed",                                          flag: "🌎", color: GREEN },
   { name: "Meta Eng.",    url: "https://engineering.fb.com/feed/",                                       flag: "🌎", color: "#0866ff" },
+  { name: "HuggingFace",  url: "https://huggingface.co/blog/feed.xml",                                   flag: "🌎", color: "#ff9d00" },
+  { name: "KDnuggets",    url: "https://kdnuggets.com/feed",                                             flag: "🌎", color: GREEN },
+  { name: "arXiv AI",     url: "https://export.arxiv.org/rss/cs.AI",                                    flag: "🌎", color: "#b31b1b" },
+  { name: "The Gradient", url: "https://thegradient.pub/rss/",                                           flag: "🌎", color: GREEN },
+  { name: "IEEE Spectrum", url: "https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss",    flag: "🌎", color: "#00629b" },
+  { name: "Import AI",    url: "https://jack-clark.net/feed",                                            flag: "🌎", color: GREEN },
+  { name: "Synced",       url: "https://syncedreview.com/feed",                                         flag: "🌎", color: GREEN },
+  { name: "Analytics V.", url: "https://www.analyticsvidhya.com/feed/",                                 flag: "🌎", color: GREEN },
 ];
 
 const PROXY = "/.netlify/functions/news?url=";
