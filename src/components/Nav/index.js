@@ -13,7 +13,7 @@ import falar from "../TextAudio";
 // --- IMPORTANTE: Importe seu formulário aqui ---
 // Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
 import ContactForm from "../ContatoForm/ContactForm";
-import { NewsPanel, NewsPanelButton } from "../NewsPanel";
+import { NewsPanel } from "../NewsPanel";
 import { getGeoIP } from "../../utils/geoip";
 
 // Ícones
@@ -214,10 +214,6 @@ const Nav = () => {
             px={4}
             py={2}
           >
-            <NewsPanelButton onClick={onNewsOpen} />
-
-            <Box w="1px" h="20px" bg="whiteAlpha.200" mx={1} />
-
             {languages.map((lang) => (
               <LanguageButton
                 key={lang.id}
