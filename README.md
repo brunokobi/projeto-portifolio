@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
-  <img src="https://img.shields.io/badge/Deno-000000?style=for-the-badge&logo=deno&logoColor=white" />
+  <img src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
 
   <!-- AI -->
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
@@ -33,38 +33,33 @@
 
 </p>
 
-------------------------------------------------------------------------
+---
 
 ## 🌌 Visão Estratégica
 
-Este portfólio foi projetado como um **ecossistema digital
-inteligente**, integrando:
+Este portfólio foi projetado como um **ecossistema digital inteligente**, integrando:
 
--   ⚡ Engenharia Full Stack
--   🌍 Geoprocessamento (GIS)
--   🤖 Inteligência Artificial Conversacional
--   🔁 Arquitetura orientada a eventos
--   ♿ Acessibilidade extrema
--   🌐 Internacionalização avançada
+- ⚡ Engenharia Full Stack
+- 🌍 Geoprocessamento (GIS)
+- 🤖 Inteligência Artificial Conversacional
+- 📰 Feed de Notícias de IA em tempo real
+- 🔁 Arquitetura orientada a eventos
+- ♿ Acessibilidade extrema
+- 🌐 Internacionalização avançada (9 idiomas)
 
-Não é apenas uma interface visual --- é uma demonstração prática de
-arquitetura moderna em produção.
+Não é apenas uma interface visual — é uma demonstração prática de arquitetura moderna em produção.
 
-------------------------------------------------------------------------
+---
 
 ## 🧠 Arquitetura de Alto Nível
 
 Princípios adotados:
 
--   Clean Architecture
--   Event-Driven Design
--   Backend-as-a-Service
--   Serverless First
--   Modularização por Domínio
-
-```{=html}
-<!-- -->
-````
+- Clean Architecture
+- Event-Driven Design
+- Backend-as-a-Service
+- Serverless First
+- Modularização por Domínio
 
 ```
 Client (React 18)
@@ -88,33 +83,80 @@ Resend (Email)
 
 ### 🎨 Frontend
 
-* React 18 (Hooks + Context API)
-* Chakra UI (Design System acessível)
-* Framer Motion (Animações fluidas)
-* React-Intl (9 idiomas)
-* Web Speech API (Text-to-Speech)
-* Lazy Loading + Code Splitting
+- React 18 (Hooks + Context API)
+- Chakra UI (Design System acessível)
+- Framer Motion (Animações fluidas)
+- React-Intl (9 idiomas: PT, EN, ES, FR, DE, ZH, RU, AR, KL)
+- Web Speech API (Text-to-Speech)
+- Lazy Loading + Code Splitting
 
 ### 🧠 Backend & Infraestrutura
 
-**Supabase** - PostgreSQL - JWT Authentication - Row Level Security
-(RLS) - Edge Functions (Deno Runtime) - Triggers automatizados
+**Supabase** — PostgreSQL · JWT Authentication · Row Level Security (RLS) · Edge Functions (Deno Runtime) · Triggers automatizados
 
-**n8n** - Workflows assíncronos - Integração com APIs externas -
-Orquestração desacoplada do frontend - Pipeline inteligente
+**n8n** — Workflows assíncronos · Integração com APIs externas · Orquestração desacoplada do frontend · Pipeline inteligente
 
-**Inteligência Artificial** - Google Gemini AI - Análise de sentimento -
-Classificação automática de mensagens - Respostas inteligentes -
-Fallback para atendimento humano
+**Netlify** — Deploy contínuo · Serverless Functions (TypeScript) · Proxy de feeds RSS
+
+**Inteligência Artificial** — Google Gemini AI · Análise de sentimento · Classificação automática de mensagens · Respostas inteligentes · Fallback para atendimento humano
+
+---
+
+## 📰 Módulo de Notícias de IA (NewsPanel)
+
+Painel lateral em tempo real que agrega **20 feeds RSS** de fontes globais de IA, com tradução automática para português, thumbnails extraídos dos feeds e animação de entrada bottom-to-top.
+
+### Como funciona
+
+1. O frontend solicita os feeds via `/.netlify/functions/news` (proxy serverless em TypeScript)
+2. O proxy busca e retorna o XML de cada feed contornando restrições de CORS
+3. O `parseRSS` extrai título, link, data e imagem (`media:thumbnail`, `media:content`, `enclosure` ou `<img>` na descrição)
+4. Títulos em inglês são traduzidos automaticamente via Google Translate API (sem chave)
+5. Os artigos são ordenados por data e exibidos com animação escalonada (stagger 50ms)
+6. Cache in-memory de 5 minutos evita refetch desnecessário
+
+### Fontes — Brasil 🇧🇷
+
+| Nome | URL |
+|------|-----|
+| SWEN.AI | https://swen.ai/feed/ |
+| AINEWS | https://ainews.com.br/feed/ |
+| Exame IA | https://exame.com/inteligencia-artificial/feed/ |
+
+### Fontes — Mundo 🌎
+
+| Nome | URL |
+|------|-----|
+| AI Weekly | https://aiweekly.co/issues.rss |
+| AI Insider | https://theaiinsider.tech/feed |
+| MIT News AI | https://news.mit.edu/rss/topic/artificial-intelligence |
+| AI News | https://www.artificialintelligence-news.com/feed/ |
+| The Verge AI | https://www.theverge.com/ai-artificial-intelligence/rss/index.xml |
+| TechCrunch AI | https://techcrunch.com/category/artificial-intelligence/feed/ |
+| Wired AI | https://www.wired.com/feed/tag/artificial-intelligence/ |
+| MIT Tech Review | https://www.technologyreview.com/feed/ |
+| Google Research | https://research.google/blog/rss/ |
+| BAIR (Berkeley) | https://bair.berkeley.edu/blog/feed.xml |
+| MIRI | https://intelligence.org/feed |
+| Meta Engineering | https://engineering.fb.com/feed/ |
+| Hugging Face Blog | https://huggingface.co/blog/feed.xml |
+| KDnuggets | https://kdnuggets.com/feed |
+| arXiv cs.AI | https://export.arxiv.org/rss/cs.AI |
+| The Gradient | https://thegradient.pub/rss/ |
+| IEEE Spectrum AI | https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss |
+| Import AI | https://jack-clark.net/feed |
+| Synced | https://syncedreview.com/feed |
+| Analytics Vidhya | https://www.analyticsvidhya.com/feed/ |
 
 ---
 
 ## 🌍 Módulo Geoespacial (GIS)
 
-* ESRI ArcGIS API
-* Mapas 3D interativos
-* Geolocalização dinâmica
-* Visualização espacial estratégica
+- ESRI ArcGIS API
+- Mapas 3D interativos com pontos turísticos globais
+- Geolocalização dinâmica
+- Fotos locais nos marcadores (imagens próprias do autor)
+- Visualização espacial estratégica
 
 ---
 
@@ -129,13 +171,24 @@ Fallback para atendimento humano
 
 ---
 
+## 📱 Responsividade Mobile
+
+Todas as páginas foram otimizadas para dispositivos móveis:
+
+- **Página de Projetos** — cards com largura fluida (`95vw` no mobile), tags com wrap automático
+- **Modal de Contato** — `scrollBehavior="inside"`, tamanho full-screen no mobile
+- **Menu de navegação** — scroll horizontal suave em telas pequenas
+- **NewsPanel** — drawer full-width no mobile com scroll interno
+
+---
+
 ## 🔐 Segurança
 
-* JWT Authentication
-* Row Level Security (RLS)
-* Sanitização de inputs
-* Rate limiting
-* Variáveis de ambiente isoladas
+- JWT Authentication
+- Row Level Security (RLS)
+- Sanitização de inputs
+- Rate limiting
+- Variáveis de ambiente isoladas
 
 ---
 
@@ -153,9 +206,9 @@ yarn start
 ## 🌐 Variáveis de Ambiente
 
 ```
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+REACT_APP_SUPABASE_URL=
+REACT_APP_SUPABASE_ANON_KEY=
+REACT_APP_ESRI_API_KEY=
 N8N_WEBHOOK_URL=
 GOOGLE_AI_KEY=
 RESEND_API_KEY=
@@ -165,22 +218,27 @@ RESEND_API_KEY=
 
 ## 📈 Roadmap
 
-* Sistema de fila inteligente com IA
-* Dashboard administrativo
-* Observabilidade (Sentry / OpenTelemetry)
-* CI/CD automatizado
-* Deploy multi-região
+- Sistema de fila inteligente com IA
+- Dashboard administrativo
+- Observabilidade (Sentry / OpenTelemetry)
+- CI/CD automatizado
+- Deploy multi-região
+- Filtro por categoria no NewsPanel
+- Notificações push de breaking news
 
 ---
 
 ## 🧬 Diferenciais Técnicos
 
-✔ Arquitetura orientada a eventos
-✔ Serverless real
-✔ Integração IA + Automação
-✔ Geoprocessamento 3D
-✔ Sistema multilíngue
-✔ Acessibilidade com síntese de voz
+✔ Arquitetura orientada a eventos  
+✔ Serverless real (Netlify Functions)  
+✔ Integração IA + Automação  
+✔ Geoprocessamento 3D  
+✔ Sistema multilíngue (9 idiomas + detecção automática por IP)  
+✔ Acessibilidade com síntese de voz  
+✔ Feed de notícias de IA em tempo real com 20 fontes globais  
+✔ Tradução automática de títulos (EN → PT-BR)  
+✔ Thumbnails dinâmicos extraídos dos feeds RSS  
 
 ---
 
@@ -188,11 +246,11 @@ RESEND_API_KEY=
 
 Full Stack Developer especializado em:
 
-* Sistemas escaláveis
-* Inteligência Artificial aplicada
-* Automação inteligente
-* Arquitetura moderna (Serverless & Event Driven)
+- Sistemas escaláveis
+- Inteligência Artificial aplicada
+- Automação inteligente
+- Arquitetura moderna (Serverless & Event Driven)
 
-Construindo sistemas que não apenas funcionam --- mas pensam,
-automatizam e evoluem.
-```
+Construindo sistemas que não apenas funcionam — mas pensam, automatizam e evoluem.
+
+🔗 [Portfolio](https://brunokobi.netlify.app) · [LinkedIn](https://www.linkedin.com/in/brunokobi/) · [GitHub](https://github.com/brunokobi)
