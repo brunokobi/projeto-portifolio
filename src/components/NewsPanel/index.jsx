@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton,
   Box, Flex, HStack, VStack, Text, Badge, Link, Spinner, Divider, Icon,
@@ -269,14 +270,21 @@ export const NewsPanel = ({ isOpen, onClose }) => {
                   Nenhuma notícia encontrada.
                 </Text>
               )}
-              {articles.map((a, i) => (
-                <Box key={`${a.source.name}-${i}`}>
-                  <ArticleCard {...a} />
-                  {i < articles.length - 1 && (
-                    <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
-                  )}
-                </Box>
-              ))}
+              <AnimatePresence>
+                {articles.map((a, i) => (
+                  <motion.div
+                    key={`${a.source.name}-${i}`}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: i * 0.05, ease: "easeOut" }}
+                  >
+                    <ArticleCard {...a} />
+                    {i < articles.length - 1 && (
+                      <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </VStack>
           )}
         </DrawerBody>
