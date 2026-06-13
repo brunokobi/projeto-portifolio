@@ -86,7 +86,7 @@ const Projects = () => {
       img:portifolio,
       demo: "https://brunokobi.netlify.app",
       description: intl.formatMessage({id: 'project9d'}),
-      tags: ["#REACT","#JAVASCRIPT","#MULTILINGUAGEM", "#PORTIFÓLIO"],
+      tags: ["#REACT", "#CHAKRA UI", "#SUPABASE", "#N8N", "#ARCGIS", "#MULTILINGUAGEM", "#RSS", "#SERVERLESS"],
       code: "https://github.com/brunokobi/projeto-portifolio",
     },
     
