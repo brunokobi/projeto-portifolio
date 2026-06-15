@@ -3,6 +3,7 @@ import { Box, Text, Skeleton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { createClient } from "@supabase/supabase-js";
 import { useIntl } from "react-intl";
+import falar from "../TextAudio";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
@@ -50,6 +51,7 @@ const VisitCounter = () => {
       top={{ base: "12px", md: "20px" }}
       left={{ base: "12px", md: "20px" }}
       zIndex="100"
+      onMouseEnter={() => visits !== null && falar(`${visits} ${label}`)}
       // Placa metálica enferrujada
       bg="linear-gradient(145deg, #1c0f06 0%, #2e1a0a 25%, #1a0c05 55%, #28160a 75%, #1e1008 100%)"
       borderRadius="6px"
