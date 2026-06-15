@@ -178,9 +178,8 @@ async function translateTitle(text) {
     const url =
       `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` +
       encodeURIComponent(text);
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
     const data = await res.json();
-    // resposta: [ [ ["traduzido","original"], ...], ...]
     const translated = data[0]?.map((d) => d[0]).join("") || text;
     translationCache.set(text, translated);
     return translated;
@@ -189,12 +188,13 @@ async function translateTitle(text) {
   }
 }
 
-// Traduz em lotes de 5 para não sobrecarregar a API
+// Traduz apenas os primeiros 40 artigos internacionais para não sobrecarregar a API
 async function translateArticles(articles) {
   const result = articles.map((a) => ({ ...a }));
   const intlIdxs = result
     .map((a, i) => (a.source.flag === "🌎" ? i : -1))
-    .filter((i) => i >= 0);
+    .filter((i) => i >= 0)
+    .slice(0, 40);
 
   const BATCH = 5;
   for (let b = 0; b < intlIdxs.length; b += BATCH) {
@@ -228,7 +228,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
     setLoading(true);
     const results = await Promise.allSettled(
       FEEDS.map((feed) =>
-        fetch(`${PROXY}${encodeURIComponent(feed.url)}`)
+        fetch(`${PROXY}${encodeURIComponent(feed.url)}`, { signal: AbortSignal.timeout(10000) })
           .then((r) => r.text())
           .then((xml) =>
             parseRSS(xml).map((a) => ({ ...a, source: feed }))
