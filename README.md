@@ -415,18 +415,32 @@ create trigger on_contato_insert
 
 ## 📊 Feature: Contador de Visitas Atômico
 
-> **Complexidade:** ⭐⭐⭐ — RPC PostgreSQL com incremento atômico + visual de placa enferrujada
+> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + Edge Functions + visual de placa enferrujada + Text-to-Speech
 
-O contador usa uma **função RPC no Supabase** para garantir que o incremento seja atômico, evitando race conditions com múltiplos visitantes simultâneos:
+O contador usa o **Supabase** como backend completo: a contagem é persistida em PostgreSQL e o incremento ocorre via **função RPC**, garantindo atomicidade sem race conditions entre visitantes simultâneos. O visual imita um placar industrial antigo com ferrugem, rebites, dígitos em verde matrix e scanlines — tudo em CSS puro com `@emotion/react`.
+
+### Arquitetura Supabase
+
+```
+Browser
+  → supabase.rpc("increment_views")          ← chamada direta via supabase-js
+  → PostgreSQL executa UPDATE atômico         ← sem race condition
+  → Retorna novo total                        ← exibido nos dígitos
+  → Edge Function (Deno) notifica n8n         ← pipeline de automação ativado
+```
+
+A **Edge Function** do Supabase fica escutando inserções na tabela e pode disparar webhooks para automações externas (n8n, alertas, analytics) sem nenhum servidor adicional.
 
 ### Como reproduzir — Supabase
 
+**1. Tabela e RPC no PostgreSQL:**
+
 ```sql
--- Tabela de contagem
+-- Tabela de contagem (single-row)
 create table page_views (
   id int primary key default 1,
   count bigint default 0,
-  check (id = 1)  -- garante apenas uma linha
+  check (id = 1)
 );
 
 insert into page_views (id, count) values (1, 0);
@@ -439,12 +453,35 @@ returns bigint language sql as $$
 $$;
 ```
 
-**Chamada no frontend:**
+**2. Edge Function (Deno) — opcional para automações:**
+
+```typescript
+// supabase/functions/on-visit/index.ts
+import { serve } from "https://deno.land/std/http/server.ts";
+
+serve(async (req) => {
+  const payload = await req.json();
+  // Dispara webhook externo, notifica Slack, atualiza analytics, etc.
+  await fetch(Deno.env.get("N8N_WEBHOOK_URL")!, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return new Response("ok");
+});
+```
+
+Deploy: `supabase functions deploy on-visit`
+
+**3. Chamada no frontend:**
 
 ```javascript
 const { data } = await supabase.rpc("increment_views");
 setVisits(data); // retorna o novo total
 ```
+
+### Text-to-Speech no hover
+
+Ao passar o mouse sobre o placar, o contador lê em voz alta a contagem no idioma atual (ex: _"42 VISITS"_ em inglês, _"42 VISITAS"_ em português) usando a Web Speech API nativa — nenhuma dependência extra.
 
 ---
 
