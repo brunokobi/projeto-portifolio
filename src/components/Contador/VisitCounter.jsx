@@ -21,7 +21,7 @@ const Rivet = ({ top, left, right, bottom }) => (
   <Box
     position="absolute"
     top={top} left={left} right={right} bottom={bottom}
-    w="9px" h="9px"
+    w="7px" h="7px"
     borderRadius="full"
     bg="linear-gradient(135deg, #7a4a2a 0%, #3d1e0a 50%, #5c3317 100%)"
     boxShadow="inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 1px rgba(255,180,80,0.15)"
@@ -79,10 +79,10 @@ const VisitCounter = () => {
         zIndex={1}
         bg="linear-gradient(160deg, #160a03 0%, #1f1108 50%, #160a03 100%)"
         borderRadius="4px"
-        px={3}
-        pt="10px"
-        pb="10px"
-        minW={{ base: "100px", md: "120px" }}
+        px={2}
+        pt="7px"
+        pb="7px"
+        minW={{ base: "82px", md: "98px" }}
         overflow="hidden"
         // Riscos / scratches
         _after={{
@@ -107,13 +107,13 @@ const VisitCounter = () => {
 
         {/* Label estêncil */}
         <Text
-          fontSize="9px"
+          fontSize="8px"
           fontFamily="'Courier New', monospace"
           fontWeight="900"
-          letterSpacing="0.25em"
+          letterSpacing="0.2em"
           textTransform="uppercase"
           textAlign="center"
-          mb="6px"
+          mb="4px"
           color="#7a4a20"
           style={{
             textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 6px rgba(180,80,10,0.3)",
@@ -127,7 +127,7 @@ const VisitCounter = () => {
         <Box
           h="1px"
           mx={2}
-          mb="8px"
+          mb="5px"
           bg="linear-gradient(90deg, transparent, #6b3d1a, #8b5020, #6b3d1a, transparent)"
           opacity={0.6}
         />
@@ -162,10 +162,10 @@ const VisitCounter = () => {
             />
           ) : (
             <Text
-              fontSize={{ base: "2xl", md: "3xl" }}
+              fontSize={{ base: "xl", md: "2xl" }}
               fontWeight="700"
               fontFamily="'Courier New', monospace"
-              letterSpacing="4px"
+              letterSpacing="3px"
               lineHeight="1"
               color="#ff6200"
               style={{
