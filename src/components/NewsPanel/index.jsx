@@ -5,6 +5,7 @@ import {
   Box, Flex, HStack, VStack, Text, Badge, Link, Spinner, Divider, Icon,
 } from "@chakra-ui/react";
 import { BsNewspaper, BsBoxArrowUpRight } from "react-icons/bs";
+import falar from "../TextAudio";
 
 const GREEN = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -97,6 +98,7 @@ const ArticleCard = ({ title, link, date, source, img }) => (
     borderRadius="0 4px 4px 0"
     _hover={{ bg: "rgba(255,255,255,0.03)" }}
     transition="background 0.2s"
+    onMouseEnter={() => falar(title)}
   >
     <HStack mb={1} spacing={2} flexWrap="wrap">
       <Badge
