@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Text, Skeleton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { createClient } from "@supabase/supabase-js";
+import { useIntl } from "react-intl";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
@@ -13,8 +14,8 @@ const flicker = keyframes`
 `;
 
 const digitPulse = keyframes`
-  0%, 100% { text-shadow: 0 0 4px #ff6200, 0 0 12px #e04500, 0 0 24px #b03000; }
-  50%       { text-shadow: 0 0 6px #ff7a00, 0 0 18px #ff5500, 0 0 32px #cc3300; }
+  0%, 100% { text-shadow: 0 0 4px #42c920, 0 0 12px #39ff14, 0 0 24px #1a8f00; }
+  50%       { text-shadow: 0 0 8px #42c920, 0 0 20px #39ff14, 0 0 36px #2ab800; }
 `;
 
 const Rivet = ({ top, left, right, bottom }) => (
@@ -31,6 +32,8 @@ const Rivet = ({ top, left, right, bottom }) => (
 
 const VisitCounter = () => {
   const [visits, setVisits] = useState(null);
+  const intl = useIntl();
+  const label = intl.formatMessage({ id: "visitas" });
 
   useEffect(() => {
     const updateCounter = async () => {
@@ -120,7 +123,7 @@ const VisitCounter = () => {
             WebkitTextStroke: "0.3px #5c3010",
           }}
         >
-          ▌ VISITS ▐
+          ▌ {label} ▐
         </Text>
 
         {/* Divisor enferrujado */}
@@ -167,10 +170,10 @@ const VisitCounter = () => {
               fontFamily="'Courier New', monospace"
               letterSpacing="3px"
               lineHeight="1"
-              color="#ff6200"
+              color="#42c920"
               style={{
                 animation: `${digitPulse} 3s ease-in-out infinite, ${flicker} 8s linear infinite`,
-                textShadow: "0 0 4px #ff6200, 0 0 14px #e04500, 0 0 28px #aa3000",
+                textShadow: "0 0 4px #42c920, 0 0 14px #39ff14, 0 0 28px #1a8f00",
                 fontVariantNumeric: "tabular-nums",
               }}
             >

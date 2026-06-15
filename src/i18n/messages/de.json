@@ -75,5 +75,6 @@
   "project13t": "Mega-Sena KI — Machine Learning",
   "project13d": "Bildungsexperiment mit Machine Learning, das die vollständige Mega-Sena-Geschichte (2.806 Ziehungen) mit Gradient Boosting Classifier analysiert. Erzeugt Kombinationen mit Wahrscheinlichkeits-Scores und statistischen Heatmaps.",
   "project14t": "chatBruno — Multi-Agenten-Assistent mit RAG",
-  "project14d": "Intelligenter virtueller Assistent mit Multi-Agenten + RAG-Architektur auf n8n, LangChain, Supabase pgvector und Google Gemini. 8 spezialisierte Agenten gesteuert von Gemini 2.5 Flash. 22 Vektor-Chunks in Supabase. Selbstgehostet auf AWS EC2."
+  "project14d": "Intelligenter virtueller Assistent mit Multi-Agenten + RAG-Architektur auf n8n, LangChain, Supabase pgvector und Google Gemini. 8 spezialisierte Agenten gesteuert von Gemini 2.5 Flash. 22 Vektor-Chunks in Supabase. Selbstgehostet auf AWS EC2.",
+  "visitas": "BESUCHE"
 }

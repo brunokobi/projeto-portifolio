@@ -76,5 +76,6 @@
   "project13t": "Mega-Sena ИИ — Машинное обучение",
   "project13d": "Образовательный эксперимент машинного обучения, анализирующий полную историю лотереи Mega-Sena (2806 тиражей) с помощью Gradient Boosting Classifier. Генерирует комбинации с оценками вероятности и тепловыми картами.",
   "project14t": "chatBruno — Мульти-агентный ассистент с RAG",
-  "project14d": "Интеллектуальный виртуальный ассистент с архитектурой Multi-Agent + RAG на n8n, LangChain, Supabase pgvector и Google Gemini. 8 специализированных агентов маршрутизируются через Gemini 2.5 Flash. 22 вектора в Supabase. Размещён на собственном AWS EC2."
+  "project14d": "Интеллектуальный виртуальный ассистент с архитектурой Multi-Agent + RAG на n8n, LangChain, Supabase pgvector и Google Gemini. 8 специализированных агентов маршрутизируются через Gemini 2.5 Flash. 22 вектора в Supabase. Размещён на собственном AWS EC2.",
+  "visitas": "ВИЗИТЫ"
 }
