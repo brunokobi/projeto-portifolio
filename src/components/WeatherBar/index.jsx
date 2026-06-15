@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, HStack, Text, Divider } from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
+import falar from "../TextAudio";
 
 const WMO = {
   0:  { icon: "☀️",  label: "Limpo" },
@@ -102,6 +103,10 @@ const WeatherBar = () => {
       right={0}
       zIndex={1000000}
       bg="rgba(0,0,0,0.82)"
+      onMouseEnter={() => {
+        const city = data.city ? `, ${data.city}` : "";
+        falar(`${data.temp} graus${city}, ${wmo.label}`);
+      }}
       backdropFilter="blur(10px)"
       borderBottom={`1px solid ${GREEN_DIM}`}
       borderLeft={`1px solid ${GREEN_DIM}`}
