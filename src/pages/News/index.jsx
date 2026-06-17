@@ -3,7 +3,8 @@ import {
   Box, Flex, Grid, Text, Badge, Link, Spinner,
   VStack, HStack, Icon, Tooltip,
 } from "@chakra-ui/react";
-import { BsBoxArrowUpRight, BsChevronLeft, BsChevronRight, BsSortDown, BsClock } from "react-icons/bs";
+import { Link as RouterLink } from "react-router-dom";
+import { BsBoxArrowUpRight, BsChevronLeft, BsChevronRight, BsSortDown, BsClock, BsArrowLeft } from "react-icons/bs";
 
 const GREEN = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -533,77 +534,99 @@ const NewsPage = () => {
   const latest = sorted.filter((a) => !carouselLinks.has(a.link) && !destaqueLinks.has(a.link));
 
   return (
-    <Box minH="100vh" w="100vw" bg="#050505" color="white" pb="100px" pt="44px" overflowX="hidden">
+    <Box minH="100vh" w="100vw" bg="#050505" color="white" pb="80px" overflowX="hidden">
 
-      {/* ── Header ── */}
+      {/* ── Header próprio do news site ── */}
       <Box
-        bg="rgba(5,5,5,0.97)" borderBottom={`2px solid ${GREEN}`}
-        px={{ base: 3, md: 8 }} py={3}
-        position="sticky" top="44px" zIndex={100}
-        backdropFilter="blur(12px)"
-        style={{ boxShadow: `0 4px 30px rgba(66,201,32,0.15)` }}
+        bg="rgba(5,5,5,0.98)" borderBottom={`2px solid ${GREEN}`}
+        px={{ base: 3, md: 8 }}
+        position="sticky" top={0} zIndex={200}
+        backdropFilter="blur(14px)"
+        style={{ boxShadow: `0 4px 30px rgba(66,201,32,0.18)` }}
       >
-        <Flex align="center" justify="space-between" gap={2} flexWrap="wrap">
-          {/* Branding */}
-          <HStack spacing={3}>
-            <Text fontSize="2xl" lineHeight={1}>🛸</Text>
-            <Box>
-              <Text fontFamily="heading" fontSize="xl" fontWeight="900" color={GREEN}
-                lineHeight={1} letterSpacing="0.12em"
-                style={{ textShadow: `0 0 16px ${GREEN}99` }}
-              >
-                IA NEWS
-              </Text>
-              <Text fontSize="9px" color="whiteAlpha.400" fontFamily="heading" letterSpacing="0.2em">
-                INTELIGÊNCIA ARTIFICIAL
-              </Text>
-            </Box>
+        {/* Linha 1: voltar + branding + sort */}
+        <Flex align="center" justify="space-between" gap={2} py={3} flexWrap="wrap">
+          <HStack spacing={4}>
+            {/* Botão voltar */}
+            <Link
+              as={RouterLink} to="/"
+              display="flex" alignItems="center" gap={2}
+              px={3} py={1} borderRadius="full"
+              border="1px solid rgba(255,255,255,0.15)"
+              color="whiteAlpha.600" fontSize="xs" fontFamily="heading"
+              _hover={{ borderColor: GREEN, color: GREEN, textDecoration: "none" }}
+              transition="all 0.2s"
+            >
+              <Icon as={BsArrowLeft} boxSize="12px" />
+              Portfólio
+            </Link>
+
+            {/* Separador vertical */}
+            <Box w="1px" h="28px" bg="rgba(255,255,255,0.1)" />
+
+            {/* Branding */}
+            <HStack spacing={2}>
+              <Text fontSize="2xl" lineHeight={1}>🛸</Text>
+              <Box>
+                <Text fontFamily="heading" fontSize="lg" fontWeight="900" color={GREEN}
+                  lineHeight={1} letterSpacing="0.12em"
+                  style={{ textShadow: `0 0 16px ${GREEN}99` }}
+                >
+                  IA NEWS
+                </Text>
+                <Text fontSize="8px" color="whiteAlpha.400" fontFamily="heading" letterSpacing="0.22em">
+                  INTELIGÊNCIA ARTIFICIAL
+                </Text>
+              </Box>
+            </HStack>
           </HStack>
 
-          <HStack spacing={2} flexWrap="wrap">
-            {/* Filtros região */}
+          {/* Sort */}
+          <Tooltip label={sortBy === "importance" ? "Ordenado por importância" : "Ordenado por data"} hasArrow>
+            <Box
+              as="button"
+              onClick={() => setSortBy((s) => s === "importance" ? "date" : "importance")}
+              px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
+              display="flex" alignItems="center" gap={1}
+              color={sortBy === "importance" ? "#ffaa00" : "whiteAlpha.600"}
+              bg={sortBy === "importance" ? "rgba(255,170,0,0.12)" : "transparent"}
+              border={`1px solid ${sortBy === "importance" ? "#ffaa0066" : "rgba(255,255,255,0.15)"}`}
+              transition="all 0.2s"
+              _hover={{ borderColor: "#ffaa00", color: "#ffaa00" }}
+            >
+              <Icon as={sortBy === "importance" ? BsSortDown : BsClock} boxSize="11px" />
+              <Text as="span" ml={1}>{sortBy === "importance" ? "Importância" : "Data"}</Text>
+            </Box>
+          </Tooltip>
+        </Flex>
+
+        {/* Linha 2: filtros + legenda */}
+        <Flex
+          align="center" justify="space-between"
+          borderTop="1px solid rgba(255,255,255,0.06)"
+          py={2} flexWrap="wrap" gap={2}
+        >
+          <HStack spacing={2}>
             <FilterBtn id="all"   label="Todos"     active={filter === "all"}   onClick={setFilter} />
             <FilterBtn id="world" label="🌎 Mundo"  active={filter === "world"} onClick={setFilter} />
             <FilterBtn id="br"    label="🇧🇷 Brasil" active={filter === "br"}    onClick={setFilter} />
+          </HStack>
 
-            {/* Separador */}
-            <Box w="1px" h="20px" bg="rgba(255,255,255,0.12)" mx={1} />
-
-            {/* Sort */}
-            <Tooltip label={sortBy === "importance" ? "Ordenado por importância" : "Ordenado por data"} hasArrow>
-              <Box
-                as="button"
-                onClick={() => setSortBy((s) => s === "importance" ? "date" : "importance")}
-                px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
-                display="flex" alignItems="center" gap={1}
-                color={sortBy === "importance" ? "#ffaa00" : "whiteAlpha.600"}
-                bg={sortBy === "importance" ? "rgba(255,170,0,0.12)" : "transparent"}
-                border={`1px solid ${sortBy === "importance" ? "#ffaa0066" : "rgba(255,255,255,0.15)"}`}
-                transition="all 0.2s"
-                _hover={{ borderColor: "#ffaa00", color: "#ffaa00" }}
-              >
-                <Icon as={sortBy === "importance" ? BsSortDown : BsClock} boxSize="11px" />
-                <Text as="span">{sortBy === "importance" ? "Importância" : "Data"}</Text>
-              </Box>
-            </Tooltip>
+          <HStack spacing={3}>
+            {[
+              { label: "URGENTE",   color: "#ff4444", icon: "🔥" },
+              { label: "DESTAQUE",  color: "#ffaa00", icon: "⚡" },
+              { label: "RELEVANTE", color: GREEN,     icon: "📌" },
+            ].map((l) => (
+              <HStack key={l.label} spacing={1}>
+                <Text fontSize="9px">{l.icon}</Text>
+                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.08em">
+                  {l.label}
+                </Text>
+              </HStack>
+            ))}
           </HStack>
         </Flex>
-
-        {/* Legenda de importância */}
-        <HStack mt={2} spacing={3} flexWrap="wrap">
-          {[
-            { label: "URGENTE",   color: "#ff4444", icon: "🔥" },
-            { label: "DESTAQUE",  color: "#ffaa00", icon: "⚡" },
-            { label: "RELEVANTE", color: GREEN,     icon: "📌" },
-          ].map((l) => (
-            <HStack key={l.label} spacing={1}>
-              <Text fontSize="9px">{l.icon}</Text>
-              <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.08em">
-                {l.label}
-              </Text>
-            </HStack>
-          ))}
-        </HStack>
       </Box>
 
       {loading ? (

@@ -4,6 +4,7 @@ import Router from "./routes";
 import { IntlProvider } from "react-intl";
 import VisitCounter from "./components/Contador/VisitCounter";
 import WeatherBar from "./components/WeatherBar";
+import { useLocation } from "react-router-dom";
 
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/locale-data/en";
@@ -60,15 +61,17 @@ export function setLanguage(lang) {
 }
 
 function App() {
-  const lang = getConfig();
-  const locale = lang?.selectedLang ?? "pt";
+  const lang    = getConfig();
+  const locale  = lang?.selectedLang ?? "pt";
   const messages = allMessages[locale];
+  const { pathname } = useLocation();
+  const isNews  = pathname.startsWith("/news");
 
   return (
     <>
       <IntlProvider locale={locale} messages={messages}>
-        <WeatherBar />
-        <VisitCounter />
+        {!isNews && <WeatherBar />}
+        {!isNews && <VisitCounter />}
         <Router />
         <ToastContainer />
       </IntlProvider>
