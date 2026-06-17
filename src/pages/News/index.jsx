@@ -610,7 +610,7 @@ function CategorySection({ title, desc, accent, articles }) {
       <Flex direction={{ base:"column", lg:"row" }} gap={{ base:4, lg:8 }} align="flex-start">
         {/* Left */}
         <Box flexShrink={0} w={{ base:"100%", lg:"220px" }}
-          style={{ opacity:inView?1:0, animation:inView?"nwsHeroTxt .5s ease .05s both":"none" }}>
+          style={{ animation:inView?"nwsHeroTxt .5s ease .05s both":"none" }}>
           <Box w="32px" h="3px" bg={accent} borderRadius="full" mb={3}
             style={{ boxShadow:`0 0 10px ${accent}`, animation:inView?"nwsBarGrow .4s ease both":"none" }} />
           <Text fontFamily="heading" fontSize="lg" fontWeight="800" color="white" lineHeight="1.2" mb={2}>
