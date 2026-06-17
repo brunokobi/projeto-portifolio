@@ -538,59 +538,50 @@ const NewsPage = () => {
 
       {/* ── Header próprio do news site ── */}
       <Box
-        bg="rgba(5,5,5,0.98)" borderBottom={`2px solid ${GREEN}`}
-        px={{ base: 3, md: 8 }}
+        bg="rgba(5,5,5,0.98)"
         position="sticky" top={0} zIndex={200}
         backdropFilter="blur(14px)"
         style={{ boxShadow: `0 4px 30px rgba(66,201,32,0.18)` }}
       >
-        {/* Linha 1: voltar + branding + sort */}
-        <Flex align="center" justify="space-between" gap={2} py={3} flexWrap="wrap">
-          <HStack spacing={4}>
-            {/* Botão voltar */}
-            <Link
-              as={RouterLink} to="/"
-              display="flex" alignItems="center" gap={2}
-              px={3} py={1} borderRadius="full"
-              border="1px solid rgba(255,255,255,0.15)"
-              color="whiteAlpha.600" fontSize="xs" fontFamily="heading"
-              _hover={{ borderColor: GREEN, color: GREEN, textDecoration: "none" }}
-              transition="all 0.2s"
-            >
-              <Icon as={BsArrowLeft} boxSize="12px" />
-              Portfólio
-            </Link>
-
-            {/* Separador vertical */}
-            <Box w="1px" h="28px" bg="rgba(255,255,255,0.1)" />
-
-            {/* Branding */}
-            <HStack spacing={2}>
-              <Text fontSize="2xl" lineHeight={1}>🛸</Text>
-              <Box>
-                <Text fontFamily="heading" fontSize="lg" fontWeight="900" color={GREEN}
-                  lineHeight={1} letterSpacing="0.12em"
-                  style={{ textShadow: `0 0 16px ${GREEN}99` }}
+        {/* Linha 1: branding + sort */}
+        <Flex
+          align="center" justify="space-between" gap={2}
+          px={{ base: 3, md: 8 }} py={3}
+          borderBottom={`1px solid rgba(255,255,255,0.07)`}
+        >
+          {/* Branding */}
+          <HStack spacing={3}>
+            <Text fontSize="2xl" lineHeight={1}>🛸</Text>
+            <Box>
+              <HStack spacing={0} align="baseline">
+                <Text fontFamily="heading" fontSize={{ base: "md", md: "xl" }} fontWeight="900"
+                  color={GREEN} lineHeight={1} letterSpacing="0.1em"
+                  style={{ textShadow: `0 0 18px ${GREEN}99` }}
                 >
                   IA NEWS
                 </Text>
-                <Text fontSize="8px" color="whiteAlpha.400" fontFamily="heading" letterSpacing="0.22em">
-                  INTELIGÊNCIA ARTIFICIAL
+                <Text fontFamily="heading" fontSize={{ base: "md", md: "xl" }} fontWeight="900"
+                  color="whiteAlpha.700" lineHeight={1} letterSpacing="0.1em" ml={2}
+                >
+                  BRUNO KOBI
                 </Text>
-              </Box>
-            </HStack>
+              </HStack>
+              <Text fontSize="8px" color="whiteAlpha.350" fontFamily="heading" letterSpacing="0.22em">
+                INTELIGÊNCIA ARTIFICIAL
+              </Text>
+            </Box>
           </HStack>
 
-          {/* Sort */}
+          {/* Sort toggle */}
           <Tooltip label={sortBy === "importance" ? "Ordenado por importância" : "Ordenado por data"} hasArrow>
             <Box
               as="button"
               onClick={() => setSortBy((s) => s === "importance" ? "date" : "importance")}
               px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
               display="flex" alignItems="center" gap={1}
-              color={sortBy === "importance" ? "#ffaa00" : "whiteAlpha.600"}
-              bg={sortBy === "importance" ? "rgba(255,170,0,0.12)" : "transparent"}
-              border={`1px solid ${sortBy === "importance" ? "#ffaa0066" : "rgba(255,255,255,0.15)"}`}
+              color={sortBy === "importance" ? "#ffaa00" : "whiteAlpha.500"}
+              bg={sortBy === "importance" ? "rgba(255,170,0,0.1)" : "transparent"}
+              border={`1px solid ${sortBy === "importance" ? "#ffaa0055" : "rgba(255,255,255,0.12)"}`}
               transition="all 0.2s"
               _hover={{ borderColor: "#ffaa00", color: "#ffaa00" }}
             >
@@ -600,33 +591,88 @@ const NewsPage = () => {
           </Tooltip>
         </Flex>
 
-        {/* Linha 2: filtros + legenda */}
-        <Flex
-          align="center" justify="space-between"
-          borderTop="1px solid rgba(255,255,255,0.06)"
-          py={2} flexWrap="wrap" gap={2}
+        {/* Linha 2: nav do portfólio no estilo news */}
+        <Box
+          borderBottom={`2px solid ${GREEN}`}
+          px={{ base: 2, md: 8 }}
+          overflowX="auto"
+          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}
         >
-          <HStack spacing={2}>
-            <FilterBtn id="all"   label="Todos"     active={filter === "all"}   onClick={setFilter} />
-            <FilterBtn id="world" label="🌎 Mundo"  active={filter === "world"} onClick={setFilter} />
-            <FilterBtn id="br"    label="🇧🇷 Brasil" active={filter === "br"}    onClick={setFilter} />
-          </HStack>
+          <HStack spacing={0} py="10px" minW="max-content">
+            {[
+              { label: "← Voltar", to: "/", accent: true },
+              { label: "Home",      to: "/" },
+              { label: "Sobre",     to: "/about" },
+              { label: "Projetos",  to: "/projects" },
+              { label: "Chat IA",   to: "/chat" },
+              { label: "Mapa",      to: "/map" },
+              { label: "Currículo", to: "/curriculo" },
+            ].map((item, i) => (
+              <HStack key={i} spacing={0}>
+                {i > 0 && (
+                  <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={1} flexShrink={0} />
+                )}
+                <Link
+                  as={RouterLink} to={item.to}
+                  px={3} py={1}
+                  fontFamily="heading" fontSize="xs" fontWeight={item.accent ? "700" : "500"}
+                  color={item.accent ? GREEN : "whiteAlpha.600"}
+                  letterSpacing="0.06em"
+                  borderRadius="4px"
+                  whiteSpace="nowrap"
+                  _hover={{
+                    color: item.accent ? GREEN : "white",
+                    bg: item.accent ? `${GREEN}15` : "rgba(255,255,255,0.05)",
+                    textDecoration: "none",
+                  }}
+                  transition="all 0.15s"
+                  style={item.accent ? { textShadow: `0 0 8px ${GREEN}88` } : {}}
+                >
+                  {item.label}
+                </Link>
+              </HStack>
+            ))}
 
-          <HStack spacing={3}>
+            {/* Separador antes dos filtros */}
+            <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
+
+            {/* Filtros de região inline no mesmo menu */}
+            {[
+              { id: "all",   label: "Todos" },
+              { id: "world", label: "🌎 Mundo" },
+              { id: "br",    label: "🇧🇷 Brasil" },
+            ].map((f) => (
+              <Box
+                key={f.id}
+                as="button" onClick={() => setFilter(f.id)}
+                px={3} py={1} borderRadius="4px"
+                fontFamily="heading" fontSize="xs" fontWeight={filter === f.id ? "700" : "500"}
+                color={filter === f.id ? GREEN : "whiteAlpha.500"}
+                bg={filter === f.id ? `${GREEN}15` : "transparent"}
+                transition="all 0.15s"
+                _hover={{ color: GREEN, bg: `${GREEN}10` }}
+                whiteSpace="nowrap"
+              >
+                {f.label}
+              </Box>
+            ))}
+
+            {/* Legenda importância */}
+            <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
             {[
               { label: "URGENTE",   color: "#ff4444", icon: "🔥" },
               { label: "DESTAQUE",  color: "#ffaa00", icon: "⚡" },
               { label: "RELEVANTE", color: GREEN,     icon: "📌" },
             ].map((l) => (
-              <HStack key={l.label} spacing={1}>
+              <HStack key={l.label} spacing={1} px={2} flexShrink={0}>
                 <Text fontSize="9px">{l.icon}</Text>
-                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.08em">
+                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.06em" display={{ base: "none", md: "block" }}>
                   {l.label}
                 </Text>
               </HStack>
             ))}
           </HStack>
-        </Flex>
+        </Box>
       </Box>
 
       {loading ? (
