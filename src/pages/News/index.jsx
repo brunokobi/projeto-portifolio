@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  BsBoxArrowUpRight, BsChevronLeft, BsChevronRight,
+  BsChevronLeft, BsChevronRight,
   BsSortDown, BsClock, BsArrowRight,
 } from "react-icons/bs";
 import { IoMdRocket } from "react-icons/io";
@@ -74,6 +74,10 @@ const MATRIX_CSS = `
 .nws-hero-btn   { animation: nwsHeroTxt .5s ease .46s both; }
 .nws-hero-img   { animation: nwsHeroImg .8s ease .1s both; }
 .nws-header     { animation: nwsEntry .45s ease both; }
+
+/* carousel */
+@keyframes nwsProgress { from{width:0%} to{width:100%} }
+.nws-carousel-slide { position:absolute; inset:0; transition:opacity .6s ease; }
 `;
 
 // ── useInView hook ─────────────────────────────────────────────────────────
@@ -262,88 +266,178 @@ const Corners = () => (
   </>
 );
 
-// ── Hero Feature ───────────────────────────────────────────────────────────
-function HeroFeature({ article }) {
+// ── Hero Slide (single slide inside carousel) ──────────────────────────────
+function HeroSlide({ article }) {
   const [imgErr, setImgErr] = useState(false);
-  if (!article) return null;
   const lvl = importanceLevel(article.score ?? 0);
 
   return (
-    <Box bg="#0a0a0a" borderBottom="1px solid rgba(255,255,255,0.07)">
-      <Grid templateColumns={{ base:"1fr", md:"1fr 1fr" }} minH={{ base:"auto", md:"420px" }}>
-        {/* Left */}
-        <Flex direction="column" justify="center"
-          px={{ base:5, md:10 }} py={{ base:6, md:10 }}
-          borderRight={{ md:"1px solid rgba(255,255,255,0.06)" }}>
+    <Grid templateColumns={{ base:"1fr", md:"1fr 1fr" }} h="100%">
+      {/* Left */}
+      <Flex direction="column" justify="center"
+        px={{ base:5, md:10 }} py={{ base:6, md:10 }}
+        borderRight={{ md:"1px solid rgba(255,255,255,0.06)" }}>
 
-          <div className="nws-hero-badge">
-            <HStack mb={3} spacing={2} flexWrap="wrap">
-              <Badge fontSize="9px" fontFamily="heading" fontWeight="700"
-                bg={`${article.source.color}22`} color={article.source.color}
-                border={`1px solid ${article.source.color}44`} px={2} py="2px" borderRadius="full">
-                {article.source.flag} {article.source.name}
+        <div className="nws-hero-badge">
+          <HStack mb={3} spacing={2} flexWrap="wrap">
+            <Badge fontSize="9px" fontFamily="heading" fontWeight="700"
+              bg={`${article.source.color}22`} color={article.source.color}
+              border={`1px solid ${article.source.color}44`} px={2} py="2px" borderRadius="full">
+              {article.source.flag} {article.source.name}
+            </Badge>
+            {lvl && (
+              <Badge fontSize="9px" fontFamily="heading" fontWeight="800"
+                bg={`${lvl.color}18`} color={lvl.color}
+                border={`1px solid ${lvl.color}44`} px={2} py="2px" borderRadius="full">
+                {lvl.icon} {lvl.label}
               </Badge>
-              {lvl && (
-                <Badge fontSize="9px" fontFamily="heading" fontWeight="800"
-                  bg={`${lvl.color}18`} color={lvl.color}
-                  border={`1px solid ${lvl.color}44`} px={2} py="2px" borderRadius="full">
-                  {lvl.icon} {lvl.label}
-                </Badge>
-              )}
-              {article.date && <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">{timeAgo(article.date)} atrás</Text>}
-            </HStack>
+            )}
+            {article.date && <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">{timeAgo(article.date)} atrás</Text>}
+          </HStack>
+        </div>
+
+        <div className="nws-hero-title">
+          <Link href={article.link} isExternal _hover={{ textDecoration:"none" }}>
+            <Text fontSize={{ base:"xl", md:"2xl", lg:"3xl" }} fontWeight="900"
+              color="white" fontFamily="heading" lineHeight="1.2"
+              _hover={{ color:GREEN }} transition="color .2s" mb={4}
+              style={{ display:"-webkit-box", WebkitLineClamp:4, WebkitBoxOrient:"vertical", overflow:"hidden" }}>
+              {article.title}
+            </Text>
+          </Link>
+        </div>
+
+        {article.desc && (
+          <div className="nws-hero-desc">
+            <Text fontSize="sm" color="whiteAlpha.600" fontFamily="heading" lineHeight="1.7" mb={5} noOfLines={2}>
+              {article.desc}
+            </Text>
           </div>
+        )}
 
-          <div className="nws-hero-title">
-            <Link href={article.link} isExternal _hover={{ textDecoration:"none" }}>
-              <Text fontSize={{ base:"2xl", md:"3xl", lg:"4xl" }} fontWeight="900"
-                color="white" fontFamily="heading" lineHeight="1.2"
-                _hover={{ color:GREEN }} transition="color .2s" mb={4}>
-                {article.title}
-              </Text>
-            </Link>
-          </div>
+        <div className="nws-hero-btn">
+          <Link href={article.link} isExternal _hover={{ textDecoration:"none" }} display="inline-flex" alignSelf="flex-start">
+            <Box display="flex" alignItems="center" gap={2}
+              px={4} py={2} borderRadius="full" bg={GREEN} color="#000"
+              fontFamily="heading" fontSize="xs" fontWeight="700"
+              _hover={{ bg:"white", transform:"translateY(-1px)" }} transition="all .2s"
+              style={{ boxShadow:`0 0 20px ${GREEN}66` }}>
+              Saiba mais <Icon as={BsArrowRight} boxSize="12px" />
+            </Box>
+          </Link>
+        </div>
+      </Flex>
 
-          {article.desc && (
-            <div className="nws-hero-desc">
-              <Text fontSize="sm" color="whiteAlpha.600" fontFamily="heading" lineHeight="1.7" mb={5} noOfLines={3}>
-                {article.desc}
-              </Text>
-            </div>
-          )}
+      {/* Right — image */}
+      <Box position="relative" minH={{ base:"220px", md:"auto" }} overflow="hidden" bg="#111">
+        {article.img && !imgErr ? (
+          <img src={article.img} alt=""
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }}
+            onError={() => setImgErr(true)}
+          />
+        ) : (
+          <Flex h="100%" minH="220px" align="center" justify="center" bg="#0d0d0d">
+            <Text fontSize="6xl" style={{ animation:"nwsGlitch 3s ease infinite" }}>🤖</Text>
+          </Flex>
+        )}
+        <Box position="absolute" inset={0} display={{ base:"none", md:"block" }}
+          background="linear-gradient(to right, #0a0a0a 0%, transparent 28%)" />
+        <Box position="absolute" inset={0} pointerEvents="none"
+          style={{ backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(66,201,32,0.018) 3px,rgba(66,201,32,0.018) 4px)" }} />
+      </Box>
+    </Grid>
+  );
+}
 
-          <div className="nws-hero-btn">
-            <Link href={article.link} isExternal _hover={{ textDecoration:"none" }} display="inline-flex" alignSelf="flex-start">
-              <Box display="flex" alignItems="center" gap={2}
-                px={4} py={2} borderRadius="full" bg={GREEN} color="#000"
-                fontFamily="heading" fontSize="xs" fontWeight="700"
-                _hover={{ bg:"white", transform:"translateY(-1px)" }} transition="all .2s"
-                style={{ boxShadow:`0 0 20px ${GREEN}66` }}>
-                Saiba mais <Icon as={BsArrowRight} boxSize="12px" />
-              </Box>
-            </Link>
-          </div>
-        </Flex>
+// ── Hero Carousel ──────────────────────────────────────────────────────────
+const SLIDE_INTERVAL = 5500;
 
-        {/* Right — image */}
-        <Box position="relative" minH={{ base:"220px", md:"auto" }} overflow="hidden" bg="#111">
-          {article.img && !imgErr ? (
-            <img src={article.img} alt="" className="nws-hero-img"
-              style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }}
-              onError={() => setImgErr(true)}
+function HeroCarousel({ articles }) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused]   = useState(false);
+  const total = articles.length;
+
+  useEffect(() => {
+    if (paused || total < 2) return;
+    const id = setInterval(() => setCurrent(c => (c + 1) % total), SLIDE_INTERVAL);
+    return () => clearInterval(id);
+  }, [paused, total]);
+
+  const go = useCallback((dir) => {
+    setCurrent(c => (c + dir + total) % total);
+  }, [total]);
+
+  if (!total) return null;
+
+  return (
+    <Box bg="#0a0a0a" borderBottom="1px solid rgba(255,255,255,0.07)"
+      position="relative"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}>
+
+      {/* Slides stack */}
+      <Box position="relative" minH={{ base:"400px", md:"420px" }}>
+        {articles.map((article, i) => (
+          <Box key={article.link} className="nws-carousel-slide"
+            opacity={current === i ? 1 : 0}
+            zIndex={current === i ? 1 : 0}
+            pointerEvents={current === i ? "auto" : "none"}
+            top={0} left={0} right={0} bottom={0}>
+            <HeroSlide article={article} />
+          </Box>
+        ))}
+
+        {/* Arrow left */}
+        {total > 1 && (
+          <Box as="button" onClick={() => go(-1)}
+            position="absolute" left={{ base:2, md:4 }} top="50%" transform="translateY(-50%)" zIndex={10}
+            w={{ base:"32px", md:"40px" }} h={{ base:"32px", md:"40px" }}
+            display="flex" alignItems="center" justifyContent="center"
+            bg="rgba(0,0,0,0.75)" border={`1px solid ${GREEN}55`} borderRadius="full"
+            color={GREEN} _hover={{ bg:GREEN, color:"#000", borderColor:GREEN }}
+            transition="all .2s"
+            style={{ boxShadow:`0 0 12px ${GREEN}44` }}>
+            <Icon as={BsChevronLeft} boxSize="14px" />
+          </Box>
+        )}
+
+        {/* Arrow right */}
+        {total > 1 && (
+          <Box as="button" onClick={() => go(1)}
+            position="absolute" right={{ base:2, md:4 }} top="50%" transform="translateY(-50%)" zIndex={10}
+            w={{ base:"32px", md:"40px" }} h={{ base:"32px", md:"40px" }}
+            display="flex" alignItems="center" justifyContent="center"
+            bg="rgba(0,0,0,0.75)" border={`1px solid ${GREEN}55`} borderRadius="full"
+            color={GREEN} _hover={{ bg:GREEN, color:"#000", borderColor:GREEN }}
+            transition="all .2s"
+            style={{ boxShadow:`0 0 12px ${GREEN}44` }}>
+            <Icon as={BsChevronRight} boxSize="14px" />
+          </Box>
+        )}
+      </Box>
+
+      {/* Progress bar */}
+      <Box h="2px" bg="rgba(255,255,255,0.07)" position="relative" overflow="hidden">
+        <Box key={`${current}-prog`} position="absolute" left={0} top={0} h="100%"
+          bg={GREEN} style={{
+            animation: paused ? "none" : `nwsProgress ${SLIDE_INTERVAL}ms linear forwards`,
+            boxShadow: `0 0 8px ${GREEN}`,
+          }} />
+      </Box>
+
+      {/* Dot indicators */}
+      {total > 1 && (
+        <Flex justify="center" gap={2} py={3}>
+          {articles.map((_, i) => (
+            <Box key={i} as="button" onClick={() => setCurrent(i)}
+              w={current === i ? "20px" : "6px"} h="6px" borderRadius="full"
+              bg={current === i ? GREEN : "rgba(255,255,255,0.25)"}
+              transition="all .3s ease"
+              style={current === i ? { boxShadow:`0 0 8px ${GREEN}` } : {}}
             />
-          ) : (
-            <Flex h="100%" minH="220px" align="center" justify="center" bg="#0d0d0d">
-              <Text fontSize="6xl" style={{ animation:"nwsGlitch 3s ease infinite" }}>🤖</Text>
-            </Flex>
-          )}
-          <Box position="absolute" inset={0} display={{ base:"none", md:"block" }}
-            background="linear-gradient(to right, #0a0a0a 0%, transparent 28%)" />
-          {/* Matrix scanlines on image */}
-          <Box position="absolute" inset={0} pointerEvents="none"
-            style={{ backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(66,201,32,0.018) 3px,rgba(66,201,32,0.018) 4px)" }} />
-        </Box>
-      </Grid>
+          ))}
+        </Flex>
+      )}
     </Box>
   );
 }
@@ -590,10 +684,10 @@ const NewsPage = () => {
       :(b.date?.getTime()??0)-(a.date?.getTime()??0)
   );
 
-  const heroArticle   = sorted.find(a=>a.img)||sorted[0];
-  const heroLink      = heroArticle?.link;
-  const miniCards     = sorted.filter(a=>a.link!==heroLink).slice(0,10);
-  const usedLinks     = new Set([heroLink,...miniCards.map(a=>a.link)]);
+  const heroSlides    = sorted.filter(a=>a.img).slice(0,6);
+  const heroLinks     = new Set(heroSlides.map(a=>a.link));
+  const miniCards     = sorted.filter(a=>!heroLinks.has(a.link)).slice(0,10);
+  const usedLinks     = new Set([...heroLinks,...miniCards.map(a=>a.link)]);
   const catArticles   = sorted.filter(a=>!usedLinks.has(a.link));
   const catSources    = CATEGORIES.flatMap(c=>c.sources);
 
@@ -684,7 +778,7 @@ const NewsPage = () => {
 
       {loading ? <MatrixLoader /> : (
         <Box pb="60px">
-          {heroArticle && <HeroFeature article={heroArticle} />}
+          {heroSlides.length > 0 && <HeroCarousel articles={heroSlides} />}
 
           {miniCards.length>0 && (
             <Box px={{base:4,md:8}} py={6} bg="#080808" borderBottom="1px solid rgba(255,255,255,0.06)">
