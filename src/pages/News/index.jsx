@@ -4,14 +4,48 @@ import {
   VStack, HStack, Icon, Tooltip,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { BsBoxArrowUpRight, BsChevronLeft, BsChevronRight, BsSortDown, BsClock, BsArrowLeft } from "react-icons/bs";
+import {
+  BsBoxArrowUpRight, BsChevronLeft, BsChevronRight,
+  BsSortDown, BsClock, BsArrowLeft, BsArrowRight,
+} from "react-icons/bs";
 
-const GREEN = "#42c920";
+const GREEN     = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
-const PROXY = "/.netlify/functions/news?url=";
+const PROXY     = "/.netlify/functions/news?url=";
+
+// ── Categorias ─────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  {
+    id: "brasil",
+    title: "🇧🇷 Brasil",
+    desc: "Cobertura nacional sobre IA — startups, pesquisas e impacto no mercado brasileiro.",
+    sources: ["SWEN.AI", "AINEWS", "Exame IA"],
+    accent: "#00c8ff",
+  },
+  {
+    id: "pesquisa",
+    title: "🔬 Pesquisa & Ciência",
+    desc: "Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR e The Gradient.",
+    sources: ["MIT News", "MIT Tech Rev", "Google Res.", "BAIR", "The Gradient", "IEEE Spectrum"],
+    accent: "#a855f7",
+  },
+  {
+    id: "industria",
+    title: "💼 Indústria & Tech",
+    desc: "Lançamentos, empresas e tendências — TechCrunch, The Verge, Wired e AI News.",
+    sources: ["The Verge", "TechCrunch", "Wired AI", "AI News", "AI Insider", "AI Weekly"],
+    accent: GREEN,
+  },
+  {
+    id: "ferramentas",
+    title: "🛠️ Modelos & Ferramentas",
+    desc: "Novos modelos, datasets e ferramentas para desenvolvedores de IA.",
+    sources: ["HuggingFace", "KDnuggets", "MIRI", "Synced"],
+    accent: "#ff9d00",
+  },
+];
 
 // ── Importância ────────────────────────────────────────────────────────────
-
 const SOURCE_PRESTIGE = {
   "MIT Tech Rev": 20, "MIT News": 20, "Google Res.": 18,
   "IEEE Spectrum": 16, "BAIR": 15, "The Gradient": 14,
@@ -20,54 +54,32 @@ const SOURCE_PRESTIGE = {
   "AI Weekly": 9, "Exame IA": 9, "KDnuggets": 8,
   "SWEN.AI": 8, "AINEWS": 8, "Synced": 7,
 };
+const KW_CRITICAL = ["agi","artificial general intelligence","superintelligence","breakthrough","ban","regulation","acquisition","merger","openai","anthropic","google deepmind","deepmind"];
+const KW_HIGH     = ["gpt","claude","gemini","llama","mistral","nvidia","sora","release","launch","lança","novo modelo","new model","meta ai","microsoft","apple intelligence"];
+const KW_MED      = ["model","machine learning","neural","research","billion","open source","safety","hallucination","robot","robô","chatbot","agent","agente","multimodal"];
 
-const KW_CRITICAL = [
-  "agi", "artificial general intelligence", "superintelligence",
-  "breakthrough", "ban", "regulation", "acquisition", "merger",
-  "openai", "anthropic", "google deepmind", "deepmind",
-];
-const KW_HIGH = [
-  "gpt", "claude", "gemini", "llama", "mistral", "nvidia", "sora",
-  "release", "launch", "lança", "novo modelo", "new model",
-  "meta ai", "microsoft", "apple intelligence",
-];
-const KW_MED = [
-  "model", "machine learning", "neural", "research", "billion",
-  "open source", "safety", "hallucination", "robot", "robô",
-  "chatbot", "agent", "agente", "multimodal",
-];
-
-function scoreArticle(article) {
-  let score = SOURCE_PRESTIGE[article.source?.name] || 5;
-
-  if (article.date && !isNaN(article.date)) {
-    const h = (Date.now() - article.date) / 3_600_000;
-    if (h < 2)  score += 40;
-    else if (h < 6)  score += 33;
-    else if (h < 12) score += 25;
-    else if (h < 24) score += 16;
-    else if (h < 48) score += 8;
-    else if (h < 96) score += 3;
+function scoreArticle(a) {
+  let s = SOURCE_PRESTIGE[a.source?.name] || 5;
+  if (a.date && !isNaN(a.date)) {
+    const h = (Date.now() - a.date) / 3_600_000;
+    s += h < 2 ? 40 : h < 6 ? 33 : h < 12 ? 25 : h < 24 ? 16 : h < 48 ? 8 : h < 96 ? 3 : 0;
   }
-
-  const t = (article.title || "").toLowerCase();
-  KW_CRITICAL.forEach((k) => { if (t.includes(k)) score += 18; });
-  KW_HIGH.forEach((k)     => { if (t.includes(k)) score += 10; });
-  KW_MED.forEach((k)      => { if (t.includes(k)) score += 4;  });
-
-  if (article.img) score += 6;
-  return score;
+  const t = (a.title || "").toLowerCase();
+  KW_CRITICAL.forEach(k => { if (t.includes(k)) s += 18; });
+  KW_HIGH.forEach(k     => { if (t.includes(k)) s += 10; });
+  KW_MED.forEach(k      => { if (t.includes(k)) s += 4; });
+  if (a.img) s += 6;
+  return s;
 }
 
 function importanceLevel(score) {
-  if (score >= 65) return { label: "URGENTE", color: "#ff4444", icon: "🔥", glow: "#ff444488" };
-  if (score >= 45) return { label: "DESTAQUE", color: "#ffaa00", icon: "⚡", glow: "#ffaa0066" };
-  if (score >= 28) return { label: "RELEVANTE", color: GREEN, icon: "📌", glow: `${GREEN}66` };
-  return { label: "NORMAL", color: "rgba(255,255,255,0.35)", icon: "📰", glow: "transparent" };
+  if (score >= 65) return { label: "URGENTE",   color: "#ff4444", icon: "🔥" };
+  if (score >= 45) return { label: "DESTAQUE",  color: "#ffaa00", icon: "⚡" };
+  if (score >= 28) return { label: "RELEVANTE", color: GREEN,     icon: "📌" };
+  return null;
 }
 
 // ── Feeds ──────────────────────────────────────────────────────────────────
-
 const FEEDS = [
   { name: "SWEN.AI",       url: "https://swen.ai/feed/",                                                 flag: "🇧🇷", color: "#00c8ff" },
   { name: "AINEWS",        url: "https://ainews.com.br/feed/",                                           flag: "🇧🇷", color: "#00c8ff" },
@@ -89,9 +101,8 @@ const FEEDS = [
 ];
 
 // ── RSS parsing ────────────────────────────────────────────────────────────
-
 function extractImage(item) {
-  for (const tag of ["thumbnail", "content", "image"]) {
+  for (const tag of ["thumbnail","content","image"]) {
     for (const name of [`media:${tag}`, tag]) {
       const els = item.getElementsByTagName(name);
       for (let i = 0; i < els.length; i++) {
@@ -100,13 +111,13 @@ function extractImage(item) {
       }
     }
   }
-  const enclosures = item.getElementsByTagName("enclosure");
-  for (let i = 0; i < enclosures.length; i++) {
-    const type = enclosures[i].getAttribute("type") || "";
-    const url  = enclosures[i].getAttribute("url")  || "";
-    if (url && (type.startsWith("image") || /\.(jpe?g|png|gif|webp)$/i.test(url))) return url;
+  const enc = item.getElementsByTagName("enclosure");
+  for (let i = 0; i < enc.length; i++) {
+    const t = enc[i].getAttribute("type") || "";
+    const u = enc[i].getAttribute("url")  || "";
+    if (u && (t.startsWith("image") || /\.(jpe?g|png|gif|webp)$/i.test(u))) return u;
   }
-  for (const sel of ["description", "content", "summary", "content:encoded"]) {
+  for (const sel of ["description","content","summary","content:encoded"]) {
     const el = item.getElementsByTagName(sel)[0];
     if (!el) continue;
     const raw = el.textContent || "";
@@ -123,7 +134,7 @@ function parseRSS(xml) {
   let items = Array.from(doc.querySelectorAll("item"));
   if (!items.length) items = Array.from(doc.querySelectorAll("entry"));
 
-  return items.slice(0, 6).map((item) => {
+  return items.slice(0, 8).map((item) => {
     const getText = (tag) => item.getElementsByTagName(tag)[0]?.textContent?.trim() ?? "";
     const title = getText("title");
     let link = getText("link");
@@ -133,26 +144,27 @@ function parseRSS(xml) {
     }
     const date = getText("pubDate") || getText("published") || getText("updated") || getText("dc:date");
     const img  = extractImage(item);
-    return { title, link, date: date ? new Date(date) : null, img: img || null };
+    const rawDesc = getText("description") || getText("summary") || getText("content");
+    const desc = rawDesc.replace(/<[^>]+>/g, "").trim().slice(0, 180) || "";
+    return { title, link, date: date ? new Date(date) : null, img: img || null, desc };
   }).filter((a) => a.title && a.link);
 }
 
 function timeAgo(date) {
   if (!date || isNaN(date)) return "";
-  const diff = (Date.now() - date) / 1000;
-  if (diff < 3600)  return `${Math.floor(diff / 60)}min atrás`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h atrás`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d atrás`;
+  const d = (Date.now() - date) / 1000;
+  if (d < 3600)   return `${Math.floor(d / 60)}min`;
+  if (d < 86400)  return `${Math.floor(d / 3600)}h`;
+  if (d < 604800) return `${Math.floor(d / 86400)}d`;
   return date.toLocaleDateString("pt-BR");
 }
 
 // ── Tradução ───────────────────────────────────────────────────────────────
-
 const translationCache = new Map();
 async function translateTitle(text) {
   if (translationCache.has(text)) return translationCache.get(text);
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` + encodeURIComponent(text);
+    const url  = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` + encodeURIComponent(text);
     const res  = await fetch(url, { signal: AbortSignal.timeout(3000) });
     const data = await res.json();
     const out  = data[0]?.map((d) => d[0]).join("") || text;
@@ -160,10 +172,9 @@ async function translateTitle(text) {
     return out;
   } catch { return text; }
 }
-
 async function translateArticles(articles) {
-  const result  = articles.map((a) => ({ ...a }));
-  const idxs    = result.map((a, i) => (a.source.flag === "🌎" ? i : -1)).filter((i) => i >= 0).slice(0, 40);
+  const result = articles.map((a) => ({ ...a }));
+  const idxs   = result.map((a, i) => (a.source.flag === "🌎" ? i : -1)).filter((i) => i >= 0).slice(0, 40);
   for (let b = 0; b < idxs.length; b += 5) {
     await Promise.all(idxs.slice(b, b + 5).map(async (idx) => {
       result[idx] = { ...result[idx], title: await translateTitle(result[idx].title) };
@@ -175,166 +186,99 @@ async function translateArticles(articles) {
 const cache = { data: null, ts: 0 };
 const CACHE_TTL = 5 * 60 * 1000;
 
-// ── Importance Badge ───────────────────────────────────────────────────────
-
-function ImportanceBadge({ score }) {
-  const lvl = importanceLevel(score);
-  if (lvl.label === "NORMAL") return null;
-  return (
-    <Tooltip label={`Score: ${score}`} placement="top" hasArrow>
-      <Badge
-        fontSize="9px" fontFamily="heading" fontWeight="800"
-        bg={`${lvl.color}18`} color={lvl.color}
-        border={`1px solid ${lvl.color}44`}
-        px={1.5} py="1px" borderRadius="full" letterSpacing="0.06em"
-        style={{ boxShadow: `0 0 6px ${lvl.glow}` }}
-        cursor="default"
-      >
-        {lvl.icon} {lvl.label}
-      </Badge>
-    </Tooltip>
-  );
-}
-
-// ── Hero Carousel (somente artigos COM imagem) ─────────────────────────────
-
-function HeroCarousel({ articles }) {
-  const [idx, setIdx]       = useState(0);
-  const [imgErr, setImgErr] = useState({});
-  const [paused, setPaused] = useState(false);
-
-  // Filtra de novo os que ainda têm img válida (após possível erro de load)
-  const valid = articles.filter((_, i) => !imgErr[i]);
-  const total = valid.length;
-
-  useEffect(() => {
-    setIdx(0);
-  }, [articles.length]);
-
-  useEffect(() => {
-    if (paused || total === 0) return;
-    const t = setInterval(() => setIdx((i) => (i + 1) % total), 6500);
-    return () => clearInterval(t);
-  }, [paused, total]);
-
-  if (!total) return null;
-
-  const a   = valid[idx % total];
-  const lvl = importanceLevel(a.score ?? 0);
+// ── Hero Feature ───────────────────────────────────────────────────────────
+function HeroFeature({ article }) {
+  const [imgErr, setImgErr] = useState(false);
+  if (!article) return null;
+  const lvl = importanceLevel(article.score ?? 0);
 
   return (
-    <Box
-      position="relative" w="100%"
-      h={{ base: "340px", md: "500px" }}
-      overflow="hidden"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      {/* Slides */}
-      {articles.map((article, i) => (
-        <Box
-          key={i}
-          position="absolute" inset={0}
-          opacity={valid[idx % total]?.link === article.link ? 1 : 0}
-          transition="opacity 0.9s ease"
-        >
-          <img
-            src={article.img}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            onError={() => setImgErr((e) => ({ ...e, [i]: true }))}
-          />
-        </Box>
-      ))}
+    <Box bg="#0a0a0a" borderBottom={`1px solid rgba(255,255,255,0.07)`}>
+      <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} minH={{ base: "auto", md: "420px" }}>
+        {/* Left — text */}
+        <Flex direction="column" justify="center" px={{ base: 5, md: 10 }} py={{ base: 6, md: 10 }}
+          borderRight={{ md: "1px solid rgba(255,255,255,0.06)" }}>
+          <HStack mb={3} spacing={2} flexWrap="wrap">
+            <Badge fontSize="9px" fontFamily="heading" fontWeight="700"
+              bg={`${article.source.color}22`} color={article.source.color}
+              border={`1px solid ${article.source.color}44`} px={2} py="2px" borderRadius="full">
+              {article.source.flag} {article.source.name}
+            </Badge>
+            {lvl && (
+              <Badge fontSize="9px" fontFamily="heading" fontWeight="800"
+                bg={`${lvl.color}18`} color={lvl.color}
+                border={`1px solid ${lvl.color}44`} px={2} py="2px" borderRadius="full">
+                {lvl.icon} {lvl.label}
+              </Badge>
+            )}
+            {article.date && (
+              <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">{timeAgo(article.date)} atrás</Text>
+            )}
+          </HStack>
 
-      {/* Gradiente */}
-      <Box position="absolute" inset={0}
-        background="linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.1) 100%)"
-      />
+          <Link href={article.link} isExternal _hover={{ textDecoration: "none" }}>
+            <Text fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }} fontWeight="900"
+              color="white" fontFamily="heading" lineHeight="1.2"
+              _hover={{ color: GREEN }} transition="color 0.2s" mb={4}>
+              {article.title}
+            </Text>
+          </Link>
 
-      {/* Scanlines */}
-      <Box position="absolute" inset={0} pointerEvents="none"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(66,201,32,0.02) 2px,rgba(66,201,32,0.02) 4px)" }}
-      />
+          {article.desc && (
+            <Text fontSize="sm" color="whiteAlpha.600" fontFamily="heading" lineHeight="1.7" mb={5} noOfLines={3}>
+              {article.desc}
+            </Text>
+          )}
 
-      {/* Barra lateral colorida por importância */}
-      <Box position="absolute" left={0} top={0} bottom={0} w="4px"
-        bg={lvl.label !== "NORMAL" ? lvl.color : GREEN}
-        style={{ boxShadow: `0 0 18px ${lvl.label !== "NORMAL" ? lvl.color : GREEN}` }}
-      />
+          <Link href={article.link} isExternal _hover={{ textDecoration: "none" }} display="inline-flex" alignSelf="flex-start">
+            <Box
+              display="flex" alignItems="center" gap={2}
+              px={4} py={2} borderRadius="full"
+              bg={GREEN} color="#000"
+              fontFamily="heading" fontSize="xs" fontWeight="700"
+              _hover={{ bg: "white" }} transition="all 0.2s"
+              style={{ boxShadow: `0 0 16px ${GREEN}66` }}
+            >
+              Saiba mais <Icon as={BsArrowRight} boxSize="12px" />
+            </Box>
+          </Link>
+        </Flex>
 
-      {/* Conteúdo */}
-      <Box position="absolute" bottom={0} left={0} right={0} px={{ base: 5, md: 10 }} pb={{ base: 5, md: 8 }}>
-        <HStack mb={2} spacing={2} flexWrap="wrap">
-          <Badge
-            fontSize="10px" fontFamily="heading" fontWeight="700"
-            bg={`${a.source?.color || GREEN}22`} color={a.source?.color || GREEN}
-            border={`1px solid ${a.source?.color || GREEN}55`}
-            px={2} py="2px" borderRadius="full"
-          >
-            {a.source?.flag} {a.source?.name}
-          </Badge>
-          <ImportanceBadge score={a.score ?? 0} />
-          {a.date && <Text fontSize="11px" color="whiteAlpha.500" fontFamily="heading">{timeAgo(a.date)}</Text>}
-        </HStack>
-
-        <Link href={a.link} isExternal _hover={{ textDecoration: "none" }}>
-          <Text
-            fontSize={{ base: "xl", md: "3xl" }} fontWeight="800"
-            color="white" fontFamily="heading" lineHeight="1.25" noOfLines={3}
-            _hover={{ color: GREEN }} transition="color 0.2s"
-            style={{ textShadow: "0 2px 16px rgba(0,0,0,0.95)" }}
-          >
-            {a.title}
-          </Text>
-        </Link>
-
-        {/* Dots */}
-        <HStack mt={4} spacing="6px">
-          {valid.map((_, i) => (
-            <Box key={i} as="button" onClick={() => setIdx(i)}
-              h="4px" w={i === idx % total ? "28px" : "6px"} borderRadius="full"
-              bg={i === idx % total ? (a.source?.color || GREEN) : "rgba(255,255,255,0.22)"}
-              transition="all 0.35s"
-              style={i === idx % total ? { boxShadow: `0 0 8px ${a.source?.color || GREEN}` } : {}}
+        {/* Right — image */}
+        <Box position="relative" minH={{ base: "220px", md: "auto" }} overflow="hidden" bg="#111">
+          {article.img && !imgErr ? (
+            <img src={article.img} alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", position: "absolute", inset: 0 }}
+              onError={() => setImgErr(true)}
             />
-          ))}
-        </HStack>
-      </Box>
-
-      {/* Setas */}
-      {[{ side: { left: "14px" }, fn: () => setIdx((i) => (i - 1 + total) % total), Ic: BsChevronLeft },
-        { side: { right: "14px" }, fn: () => setIdx((i) => (i + 1) % total), Ic: BsChevronRight },
-      ].map(({ side, fn, Ic }, i) => (
-        <Box key={i} position="absolute" top="50%" transform="translateY(-50%)" {...side}>
-          <Box as="button" onClick={fn}
-            w="38px" h="38px" display="flex" alignItems="center" justifyContent="center"
-            bg="rgba(0,0,0,0.7)" border={`1px solid ${GREEN_DIM}`} borderRadius="full"
-            color={GREEN} _hover={{ bg: GREEN, color: "#000" }} transition="all 0.2s"
-          >
-            <Icon as={Ic} boxSize="14px" />
-          </Box>
+          ) : (
+            <Flex h="100%" minH="220px" align="center" justify="center" bg="#0d0d0d">
+              <Text fontSize="6xl">🤖</Text>
+            </Flex>
+          )}
+          {/* Left gradient blend */}
+          <Box position="absolute" inset={0} display={{ base: "none", md: "block" }}
+            background="linear-gradient(to right, #0a0a0a 0%, transparent 30%)" />
         </Box>
-      ))}
+      </Grid>
     </Box>
   );
 }
 
-// ── Destaque Card ──────────────────────────────────────────────────────────
-
-function DestaqueCard({ title, link, img, date, source, score }) {
+// ── Mini Card (abaixo do hero) ─────────────────────────────────────────────
+function MiniCard({ title, link, img, date, source, score }) {
   const [imgErr, setImgErr] = useState(false);
   const lvl = importanceLevel(score ?? 0);
 
   return (
-    <Link href={link} isExternal _hover={{ textDecoration: "none" }} h="100%" display="block">
+    <Link href={link} isExternal _hover={{ textDecoration: "none" }} flexShrink={0} w={{ base: "160px", md: "200px" }}>
       <Box
-        borderRadius="8px" overflow="hidden"
-        border={`1px solid ${GREEN_DIM}`} bg="#0a0a0a"
-        _hover={{ borderColor: `${source.color}88`, transform: "translateY(-3px)", boxShadow: `0 8px 32px rgba(66,201,32,0.12)` }}
-        transition="all 0.25s" h="100%" display="flex" flexDirection="column"
+        borderRadius="8px" overflow="hidden" bg="#0f0f0f"
+        border="1px solid rgba(255,255,255,0.07)"
+        _hover={{ borderColor: `${source.color}66`, transform: "translateY(-2px)" }}
+        transition="all 0.2s" h="100%"
       >
-        <Box h="160px" overflow="hidden" position="relative" flexShrink={0} bg="#111">
+        <Box h="110px" overflow="hidden" position="relative" bg="#111">
           {img && !imgErr ? (
             <img src={img} alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -342,33 +286,26 @@ function DestaqueCard({ title, link, img, date, source, score }) {
             />
           ) : (
             <Flex h="100%" align="center" justify="center">
-              <Text fontSize="4xl">🤖</Text>
+              <Text fontSize="2xl">📰</Text>
             </Flex>
           )}
-          <Box position="absolute" bottom={0} left={0} right={0} h="40px"
-            background="linear-gradient(to top, #0a0a0a, transparent)" />
-          <Box position="absolute" top={2} left={2}>
-            <Badge fontSize="9px" fontFamily="heading" fontWeight="700"
+          {lvl && (
+            <Box position="absolute" top={0} left={0} right={0} h="2px"
+              bg={lvl.color} style={{ boxShadow: `0 0 6px ${lvl.color}` }} />
+          )}
+          <Box position="absolute" top={1} left={1}>
+            <Badge fontSize="8px" fontFamily="heading" fontWeight="700"
               bg="rgba(0,0,0,0.82)" color={source.color}
-              border={`1px solid ${source.color}44`} px={1.5} py="1px" borderRadius="full"
-            >
-              {source.flag} {source.name}
+              border={`1px solid ${source.color}33`} px={1} py="1px" borderRadius="full">
+              {source.flag}
             </Badge>
           </Box>
-          {/* Barra de importância no topo */}
-          {lvl.label !== "NORMAL" && (
-            <Box position="absolute" top={0} left={0} right={0} h="2px"
-              bg={lvl.color} style={{ boxShadow: `0 0 8px ${lvl.color}` }} />
-          )}
         </Box>
-
-        <Box p={3} flex={1}>
-          <HStack mb={1.5} spacing={2} flexWrap="wrap">
-            <ImportanceBadge score={score ?? 0} />
-            {date && <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">{timeAgo(date)}</Text>}
-          </HStack>
-          <Text fontSize="sm" fontWeight="700" color="whiteAlpha.900"
-            fontFamily="heading" lineHeight="1.45" noOfLines={3}>
+        <Box p={2}>
+          {date && <Text fontSize="9px" color="whiteAlpha.400" fontFamily="heading" mb={1}>{timeAgo(date)} atrás</Text>}
+          <Text fontSize="xs" fontWeight="700" color="whiteAlpha.900"
+            fontFamily="heading" lineHeight="1.35" noOfLines={3}
+            _hover={{ color: GREEN }}>
             {title}
           </Text>
         </Box>
@@ -377,110 +314,183 @@ function DestaqueCard({ title, link, img, date, source, score }) {
   );
 }
 
-// ── Article Row ────────────────────────────────────────────────────────────
-
-function ArticleRow({ title, link, img, date, source, score }) {
+// ── Category Card (dentro das seções) ─────────────────────────────────────
+function CategoryCard({ title, link, img, date, source, score, desc }) {
   const [imgErr, setImgErr] = useState(false);
   const lvl = importanceLevel(score ?? 0);
 
   return (
-    <Box borderBottom="1px solid rgba(255,255,255,0.05)"
-      borderLeft={lvl.label !== "NORMAL" ? `2px solid ${lvl.color}` : "2px solid transparent"}
-      style={lvl.label !== "NORMAL" ? { boxShadow: `inset 3px 0 8px ${lvl.glow}` } : {}}
-    >
-      <Link href={link} isExternal _hover={{ textDecoration: "none" }}>
-        <HStack spacing={3} py={3} px={2} borderRadius="0 6px 6px 0"
-          _hover={{ bg: "rgba(66,201,32,0.04)" }} transition="background 0.2s" align="flex-start"
-        >
-          <Box flexShrink={0} w="80px" h="56px" borderRadius="6px" overflow="hidden" bg="#111">
-            {img && !imgErr ? (
-              <img src={img} alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                onError={() => setImgErr(true)}
-              />
-            ) : (
-              <Flex h="100%" align="center" justify="center">
-                <Text fontSize="lg">📰</Text>
-              </Flex>
-            )}
+    <Link href={link} isExternal _hover={{ textDecoration: "none" }} flexShrink={0} w={{ base: "220px", md: "260px" }}>
+      <Box
+        borderRadius="8px" overflow="hidden" bg="#0d0d0d"
+        border="1px solid rgba(255,255,255,0.07)"
+        _hover={{ borderColor: `${source.color}66`, transform: "translateY(-3px)", boxShadow: `0 8px 24px rgba(0,0,0,0.4)` }}
+        transition="all 0.25s" h="100%"
+      >
+        <Box h="140px" overflow="hidden" position="relative" bg="#111" flexShrink={0}>
+          {img && !imgErr ? (
+            <img src={img} alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              onError={() => setImgErr(true)}
+            />
+          ) : (
+            <Flex h="100%" align="center" justify="center">
+              <Text fontSize="3xl">🤖</Text>
+            </Flex>
+          )}
+          {lvl && (
+            <Box position="absolute" top={0} left={0} right={0} h="2px"
+              bg={lvl.color} style={{ boxShadow: `0 0 8px ${lvl.color}` }} />
+          )}
+          <Box position="absolute" bottom={0} left={0} right={0} h="50px"
+            background="linear-gradient(to top, #0d0d0d, transparent)" />
+          <Box position="absolute" top={2} left={2}>
+            <Badge fontSize="8px" fontFamily="heading" fontWeight="700"
+              bg="rgba(0,0,0,0.85)" color={source.color}
+              border={`1px solid ${source.color}33`} px={1.5} py="1px" borderRadius="full">
+              {source.flag} {source.name}
+            </Badge>
           </Box>
+        </Box>
 
-          <Box flex={1} minW={0}>
-            <HStack mb={1} spacing={2} flexWrap="wrap">
-              <Badge fontSize="9px" fontFamily="heading" fontWeight="700"
-                bg={`${source.color}22`} color={source.color}
-                border={`1px solid ${source.color}44`} px={1.5} py="1px" borderRadius="full"
-              >
-                {source.flag} {source.name}
-              </Badge>
-              <ImportanceBadge score={score ?? 0} />
-              {date && <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">{timeAgo(date)}</Text>}
-            </HStack>
-            <Text fontSize="sm" fontWeight="600" color="whiteAlpha.800"
-              fontFamily="heading" lineHeight="1.4" noOfLines={2}
-              _hover={{ color: "white" }} transition="color 0.15s"
-            >
-              {title}
+        <Box p={3}>
+          {date && <Text fontSize="9px" color="whiteAlpha.400" fontFamily="heading" mb={1}>{timeAgo(date)} atrás</Text>}
+          <Text fontSize="sm" fontWeight="700" color="whiteAlpha.900"
+            fontFamily="heading" lineHeight="1.4" noOfLines={3} mb={desc ? 1 : 0}
+            _hover={{ color: GREEN }}>
+            {title}
+          </Text>
+          {desc && (
+            <Text fontSize="10px" color="whiteAlpha.500" fontFamily="heading" lineHeight="1.5" noOfLines={2} mt={1}>
+              {desc}
             </Text>
-          </Box>
+          )}
+          {lvl && (
+            <HStack mt={2}>
+              <Text fontSize="9px" fontFamily="heading" color={lvl.color}>{lvl.icon} {lvl.label}</Text>
+            </HStack>
+          )}
+        </Box>
+      </Box>
+    </Link>
+  );
+}
 
-          <Icon as={BsBoxArrowUpRight} boxSize="10px" color="whiteAlpha.300" mt={1} flexShrink={0} />
-        </HStack>
-      </Link>
+// ── Scroll Row com setas ───────────────────────────────────────────────────
+function ScrollRow({ articles, CardComponent }) {
+  const ref = useRef(null);
+  const scroll = (dir) => {
+    if (ref.current) ref.current.scrollBy({ left: dir * 280, behavior: "smooth" });
+  };
+
+  if (!articles.length) return null;
+
+  return (
+    <Box position="relative">
+      {/* Seta esquerda */}
+      <Box position="absolute" left={0} top="50%" transform="translateY(-50%)" zIndex={2}
+        display={{ base: "none", md: "block" }}>
+        <Box as="button" onClick={() => scroll(-1)}
+          w="32px" h="32px" display="flex" alignItems="center" justifyContent="center"
+          bg="rgba(0,0,0,0.85)" border={`1px solid ${GREEN_DIM}`} borderRadius="full"
+          color={GREEN} _hover={{ bg: GREEN, color: "#000" }} transition="all 0.2s"
+          ml={-4}>
+          <Icon as={BsChevronLeft} boxSize="12px" />
+        </Box>
+      </Box>
+
+      {/* Cards */}
+      <Box
+        ref={ref}
+        display="flex" flexDirection="row" gap={3}
+        overflowX="auto" pb={2}
+        css={{
+          "&::-webkit-scrollbar": { height: "3px" },
+          "&::-webkit-scrollbar-thumb": { background: GREEN_DIM, borderRadius: "8px" },
+          scrollbarWidth: "thin",
+          scrollbarColor: `${GREEN_DIM} transparent`,
+        }}
+      >
+        {articles.map((a, i) => (
+          <CardComponent key={i} {...a} />
+        ))}
+      </Box>
+
+      {/* Seta direita */}
+      <Box position="absolute" right={0} top="50%" transform="translateY(-50%)" zIndex={2}
+        display={{ base: "none", md: "block" }}>
+        <Box as="button" onClick={() => scroll(1)}
+          w="32px" h="32px" display="flex" alignItems="center" justifyContent="center"
+          bg="rgba(0,0,0,0.85)" border={`1px solid ${GREEN_DIM}`} borderRadius="full"
+          color={GREEN} _hover={{ bg: GREEN, color: "#000" }} transition="all 0.2s"
+          mr={-4}>
+          <Icon as={BsChevronRight} boxSize="12px" />
+        </Box>
+      </Box>
     </Box>
   );
 }
 
-// ── Helpers UI ─────────────────────────────────────────────────────────────
+// ── Category Section ───────────────────────────────────────────────────────
+function CategorySection({ title, desc, accent, articles }) {
+  if (!articles.length) return null;
 
+  return (
+    <Box py={8} borderTop="1px solid rgba(255,255,255,0.06)">
+      <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 4, lg: 8 }} align="flex-start">
+
+        {/* Left — title + desc */}
+        <Box flexShrink={0} w={{ base: "100%", lg: "220px" }}>
+          <Box w="32px" h="3px" bg={accent} borderRadius="full" mb={3}
+            style={{ boxShadow: `0 0 10px ${accent}` }} />
+          <Text fontFamily="heading" fontSize="lg" fontWeight="800" color="white"
+            lineHeight="1.2" mb={2} letterSpacing="-0.01em">
+            {title}
+          </Text>
+          <Text fontSize="xs" color="whiteAlpha.500" fontFamily="heading" lineHeight="1.6">
+            {desc}
+          </Text>
+          <HStack mt={3} spacing={1} color={accent} fontSize="xs" fontFamily="heading" fontWeight="600">
+            <Text>{articles.length} artigos</Text>
+          </HStack>
+        </Box>
+
+        {/* Right — scroll row */}
+        <Box flex={1} minW={0} overflow="hidden" px={{ base: 0, md: 4 }}>
+          <ScrollRow articles={articles} CardComponent={CategoryCard} />
+        </Box>
+      </Flex>
+    </Box>
+  );
+}
+
+// ── Filter / Sort buttons ──────────────────────────────────────────────────
 function FilterBtn({ id, label, active, onClick }) {
   return (
     <Box as="button" onClick={() => onClick(id)}
-      px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
-      fontWeight={active ? "700" : "400"}
-      color={active ? "#000" : "whiteAlpha.600"}
-      bg={active ? GREEN : "transparent"}
-      border={`1px solid ${active ? GREEN : "rgba(255,255,255,0.15)"}`}
-      transition="all 0.2s"
-      _hover={{ borderColor: GREEN, color: active ? "#000" : GREEN }}
-      style={active ? { boxShadow: `0 0 10px ${GREEN}66` } : {}}
-    >
+      px={3} py={1} borderRadius="4px" fontSize="xs" fontFamily="heading"
+      fontWeight={active ? "700" : "500"}
+      color={active ? GREEN : "whiteAlpha.600"}
+      bg={active ? `${GREEN}15` : "transparent"}
+      transition="all 0.15s"
+      _hover={{ color: GREEN, bg: `${GREEN}10` }}
+      whiteSpace="nowrap">
       {label}
     </Box>
   );
 }
 
-function SectionTitle({ children, dim }) {
-  return (
-    <HStack mb={4} spacing={3} align="center">
-      <Box w="3px" h="20px" borderRadius="full"
-        bg={dim ? "rgba(255,255,255,0.2)" : GREEN}
-        style={dim ? {} : { boxShadow: `0 0 8px ${GREEN}` }}
-      />
-      <Text fontFamily="heading" fontSize="xs" fontWeight="800" letterSpacing="0.15em"
-        color={dim ? "whiteAlpha.400" : GREEN}>
-        {children}
-      </Text>
-    </HStack>
-  );
-}
-
 // ── Main Page ──────────────────────────────────────────────────────────────
-
 const NewsPage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading]   = useState(false);
   const [filter, setFilter]     = useState("all");
-  const [sortBy, setSortBy]     = useState("importance"); // "importance" | "date"
+  const [sortBy, setSortBy]     = useState("importance");
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
-    if (cache.data && Date.now() - cache.ts < CACHE_TTL) {
-      setArticles(cache.data);
-      return;
-    }
+    if (cache.data && Date.now() - cache.ts < CACHE_TTL) { setArticles(cache.data); return; }
     setLoading(true);
-
     const results = await Promise.allSettled(
       FEEDS.map((feed) =>
         fetch(`${PROXY}${encodeURIComponent(feed.url)}`, { signal: AbortSignal.timeout(10000) })
@@ -488,81 +498,65 @@ const NewsPage = () => {
           .then((xml) => parseRSS(xml).map((a) => ({ ...a, source: feed })))
       )
     );
-
-    const raw = results
-      .filter((r) => r.status === "fulfilled")
-      .flatMap((r) => r.value)
+    const raw = results.filter((r) => r.status === "fulfilled").flatMap((r) => r.value)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
-
     const translated = await translateArticles(raw);
-    // Calcula score após tradução (título já em pt-BR)
     const scored = translated.map((a) => ({ ...a, score: scoreArticle(a) }));
-
-    cache.data = scored;
-    cache.ts   = Date.now();
-    setArticles(scored);
-    setLoading(false);
+    cache.data = scored; cache.ts = Date.now();
+    setArticles(scored); setLoading(false);
   }, []);
 
   useEffect(() => {
     if (!fetchedRef.current) { fetchedRef.current = true; fetchFeeds(); }
   }, [fetchFeeds]);
 
-  // Filtro região
   const filtered = articles.filter((a) => {
     if (filter === "br")    return a.source.flag === "🇧🇷";
     if (filter === "world") return a.source.flag === "🌎";
     return true;
   });
 
-  // Ordenação
   const sorted = [...filtered].sort((a, b) =>
     sortBy === "importance"
       ? (b.score ?? 0) - (a.score ?? 0)
       : (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0)
   );
 
-  // Carousel: APENAS artigos com imagem
-  const carouselArticles = sorted.filter((a) => a.img).slice(0, 8);
-  const carouselLinks    = new Set(carouselArticles.map((a) => a.link));
+  // Hero: maior score com imagem
+  const heroArticle = sorted.find((a) => a.img) || sorted[0];
+  const heroLink    = heroArticle?.link;
 
-  // Destaques: top 6 do restante (por score)
-  const afterCarousel = sorted.filter((a) => !carouselLinks.has(a.link));
-  const destaques     = afterCarousel.slice(0, 6);
-  const destaqueLinks = new Set(destaques.map((a) => a.link));
+  // Mini-cards abaixo do hero
+  const miniCards = sorted.filter((a) => a.link !== heroLink).slice(0, 10);
+  const usedLinks = new Set([heroLink, ...miniCards.map((a) => a.link)]);
 
-  const latest = sorted.filter((a) => !carouselLinks.has(a.link) && !destaqueLinks.has(a.link));
+  // Seções por categoria
+  const catArticles = sorted.filter((a) => !usedLinks.has(a.link));
 
   return (
-    <Box minH="100vh" w="100vw" bg="#050505" color="white" pb="80px" overflowX="hidden">
+    <Box minH="100vh" w="100vw" bg="#050505" color="white" overflowX="hidden">
 
-      {/* ── Header próprio do news site ── */}
+      {/* ── Header ── */}
       <Box
-        bg="rgba(5,5,5,0.98)"
-        position="sticky" top={0} zIndex={200}
+        bg="rgba(5,5,5,0.98)" position="sticky" top={0} zIndex={200}
         backdropFilter="blur(14px)"
         style={{ boxShadow: `0 4px 30px rgba(66,201,32,0.18)` }}
       >
         {/* Linha 1: branding + sort */}
-        <Flex
-          align="center" justify="space-between" gap={2}
+        <Flex align="center" justify="space-between" gap={2}
           px={{ base: 3, md: 8 }} py={3}
-          borderBottom={`1px solid rgba(255,255,255,0.07)`}
-        >
-          {/* Branding */}
+          borderBottom="1px solid rgba(255,255,255,0.07)">
           <HStack spacing={3}>
             <Text fontSize="2xl" lineHeight={1}>🛸</Text>
             <Box>
               <HStack spacing={0} align="baseline">
                 <Text fontFamily="heading" fontSize={{ base: "md", md: "xl" }} fontWeight="900"
                   color={GREEN} lineHeight={1} letterSpacing="0.1em"
-                  style={{ textShadow: `0 0 18px ${GREEN}99` }}
-                >
+                  style={{ textShadow: `0 0 18px ${GREEN}99` }}>
                   IA NEWS
                 </Text>
                 <Text fontFamily="heading" fontSize={{ base: "md", md: "xl" }} fontWeight="900"
-                  color="whiteAlpha.700" lineHeight={1} letterSpacing="0.1em" ml={2}
-                >
+                  color="whiteAlpha.700" lineHeight={1} letterSpacing="0.1em" ml={2}>
                   BRUNO KOBI
                 </Text>
               </HStack>
@@ -572,32 +566,25 @@ const NewsPage = () => {
             </Box>
           </HStack>
 
-          {/* Sort toggle */}
           <Tooltip label={sortBy === "importance" ? "Ordenado por importância" : "Ordenado por data"} hasArrow>
-            <Box
-              as="button"
+            <Box as="button"
               onClick={() => setSortBy((s) => s === "importance" ? "date" : "importance")}
               px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
               display="flex" alignItems="center" gap={1}
               color={sortBy === "importance" ? "#ffaa00" : "whiteAlpha.500"}
               bg={sortBy === "importance" ? "rgba(255,170,0,0.1)" : "transparent"}
               border={`1px solid ${sortBy === "importance" ? "#ffaa0055" : "rgba(255,255,255,0.12)"}`}
-              transition="all 0.2s"
-              _hover={{ borderColor: "#ffaa00", color: "#ffaa00" }}
-            >
+              transition="all 0.2s" _hover={{ borderColor: "#ffaa00", color: "#ffaa00" }}>
               <Icon as={sortBy === "importance" ? BsSortDown : BsClock} boxSize="11px" />
               <Text as="span" ml={1}>{sortBy === "importance" ? "Importância" : "Data"}</Text>
             </Box>
           </Tooltip>
         </Flex>
 
-        {/* Linha 2: nav do portfólio no estilo news */}
-        <Box
-          borderBottom={`2px solid ${GREEN}`}
-          px={{ base: 2, md: 8 }}
+        {/* Linha 2: nav + filtros */}
+        <Box borderBottom={`2px solid ${GREEN}`} px={{ base: 2, md: 8 }}
           overflowX="auto"
-          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}
-        >
+          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
           <HStack spacing={0} py="10px" minW="max-content">
             {[
               { label: "← Voltar", to: "/", accent: true },
@@ -609,55 +596,26 @@ const NewsPage = () => {
               { label: "Currículo", to: "/curriculo" },
             ].map((item, i) => (
               <HStack key={i} spacing={0}>
-                {i > 0 && (
-                  <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={1} flexShrink={0} />
-                )}
-                <Link
-                  as={RouterLink} to={item.to}
-                  px={3} py={1}
-                  fontFamily="heading" fontSize="xs" fontWeight={item.accent ? "700" : "500"}
+                {i > 0 && <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={1} flexShrink={0} />}
+                <Link as={RouterLink} to={item.to}
+                  px={3} py={1} fontFamily="heading" fontSize="xs"
+                  fontWeight={item.accent ? "700" : "500"}
                   color={item.accent ? GREEN : "whiteAlpha.600"}
-                  letterSpacing="0.06em"
-                  borderRadius="4px"
-                  whiteSpace="nowrap"
-                  _hover={{
-                    color: item.accent ? GREEN : "white",
-                    bg: item.accent ? `${GREEN}15` : "rgba(255,255,255,0.05)",
-                    textDecoration: "none",
-                  }}
+                  borderRadius="4px" whiteSpace="nowrap"
+                  _hover={{ color: "white", bg: "rgba(255,255,255,0.05)", textDecoration: "none" }}
                   transition="all 0.15s"
-                  style={item.accent ? { textShadow: `0 0 8px ${GREEN}88` } : {}}
-                >
+                  style={item.accent ? { textShadow: `0 0 8px ${GREEN}88` } : {}}>
                   {item.label}
                 </Link>
               </HStack>
             ))}
 
-            {/* Separador antes dos filtros */}
             <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
 
-            {/* Filtros de região inline no mesmo menu */}
-            {[
-              { id: "all",   label: "Todos" },
-              { id: "world", label: "🌎 Mundo" },
-              { id: "br",    label: "🇧🇷 Brasil" },
-            ].map((f) => (
-              <Box
-                key={f.id}
-                as="button" onClick={() => setFilter(f.id)}
-                px={3} py={1} borderRadius="4px"
-                fontFamily="heading" fontSize="xs" fontWeight={filter === f.id ? "700" : "500"}
-                color={filter === f.id ? GREEN : "whiteAlpha.500"}
-                bg={filter === f.id ? `${GREEN}15` : "transparent"}
-                transition="all 0.15s"
-                _hover={{ color: GREEN, bg: `${GREEN}10` }}
-                whiteSpace="nowrap"
-              >
-                {f.label}
-              </Box>
-            ))}
+            <FilterBtn id="all"   label="Todos"     active={filter === "all"}   onClick={setFilter} />
+            <FilterBtn id="world" label="🌎 Mundo"  active={filter === "world"} onClick={setFilter} />
+            <FilterBtn id="br"    label="🇧🇷 Brasil" active={filter === "br"}    onClick={setFilter} />
 
-            {/* Legenda importância */}
             <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
             {[
               { label: "URGENTE",   color: "#ff4444", icon: "🔥" },
@@ -666,9 +624,8 @@ const NewsPage = () => {
             ].map((l) => (
               <HStack key={l.label} spacing={1} px={2} flexShrink={0}>
                 <Text fontSize="9px">{l.icon}</Text>
-                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.06em" display={{ base: "none", md: "block" }}>
-                  {l.label}
-                </Text>
+                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.06em"
+                  display={{ base: "none", md: "block" }}>{l.label}</Text>
               </HStack>
             ))}
           </HStack>
@@ -676,7 +633,7 @@ const NewsPage = () => {
       </Box>
 
       {loading ? (
-        <Flex h="60vh" align="center" justify="center">
+        <Flex h="70vh" align="center" justify="center">
           <VStack spacing={4}>
             <Spinner size="xl" color={GREEN} thickness="3px" />
             <Text fontSize="sm" color="whiteAlpha.500" fontFamily="heading">
@@ -685,52 +642,50 @@ const NewsPage = () => {
           </VStack>
         </Flex>
       ) : (
-        <Box>
-          {/* ── Carousel (só com imagem) ── */}
-          {carouselArticles.length > 0 && <HeroCarousel articles={carouselArticles} />}
+        <Box pb="60px">
+          {/* ── Hero feature ── */}
+          {heroArticle && <HeroFeature article={heroArticle} />}
 
+          {/* ── Mini cards ── */}
+          {miniCards.length > 0 && (
+            <Box px={{ base: 4, md: 8 }} py={6} bg="#080808" borderBottom="1px solid rgba(255,255,255,0.06)">
+              <Text fontFamily="heading" fontSize="xs" fontWeight="700" color="whiteAlpha.400"
+                letterSpacing="0.15em" mb={4}>
+                MAIS NOTÍCIAS
+              </Text>
+              <ScrollRow articles={miniCards} CardComponent={MiniCard} />
+            </Box>
+          )}
+
+          {/* ── Category sections ── */}
           <Box px={{ base: 4, md: 8 }}>
-            {/* ── Destaques ── */}
-            {destaques.length > 0 && (
-              <Box mt={8}>
-                <SectionTitle>
-                  {sortBy === "importance" ? "🔥 MAIS IMPORTANTES" : "📅 MAIS RECENTES"}
-                </SectionTitle>
-                <Grid
-                  templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
-                  gap={4}
-                >
-                  {destaques.map((a, i) => <DestaqueCard key={`dest-${i}`} {...a} />)}
-                </Grid>
-              </Box>
-            )}
+            {CATEGORIES.map((cat) => {
+              const arts = catArticles.filter((a) => cat.sources.includes(a.source.name));
+              return (
+                <CategorySection
+                  key={cat.id}
+                  title={cat.title}
+                  desc={cat.desc}
+                  accent={cat.accent}
+                  articles={arts}
+                />
+              );
+            })}
 
-            {/* ── Banner ── */}
-            {latest.length > 0 && (
-              <Box mt={8} px={4} py={3} bg={GREEN_DIM} border={`1px solid ${GREEN_DIM}`} borderRadius="8px">
-                <Text fontSize="xs" fontFamily="heading" color={GREEN} letterSpacing="0.1em" fontWeight="700">
-                  🤖 TODAS AS NOTÍCIAS — ATUALIZADO A CADA 5 MINUTOS
-                </Text>
-              </Box>
-            )}
-
-            {/* ── Lista completa ── */}
-            {latest.length > 0 && (
-              <Box mt={6}>
-                <SectionTitle dim>TODAS AS NOTÍCIAS</SectionTitle>
-                <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={0} columnGap={8}>
-                  {latest.map((a, i) => <ArticleRow key={`latest-${i}`} {...a} />)}
-                </Grid>
-              </Box>
-            )}
-
-            {!loading && filtered.length === 0 && (
-              <Flex h="40vh" align="center" justify="center">
-                <Text fontSize="sm" color="whiteAlpha.400" fontFamily="heading">
-                  Nenhuma notícia encontrada.
-                </Text>
-              </Flex>
-            )}
+            {/* Artigos não categorizados */}
+            {(() => {
+              const catSources = CATEGORIES.flatMap((c) => c.sources);
+              const remaining = catArticles.filter((a) => !catSources.includes(a.source.name));
+              if (!remaining.length) return null;
+              return (
+                <CategorySection
+                  title="🌐 Outros"
+                  desc="Notícias de outras fontes de IA ao redor do mundo."
+                  accent="rgba(255,255,255,0.4)"
+                  articles={remaining}
+                />
+              );
+            })()}
           </Box>
         </Box>
       )}
