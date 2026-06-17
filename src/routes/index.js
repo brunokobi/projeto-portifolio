@@ -12,6 +12,7 @@ const Projects = lazy(() => import("../pages/Projects"));
 const Curriculo = lazy(() => import("../pages/Curriculo"));
 const LlamaChat = lazy(() => import("../pages/ChatGPT/index"));
 const Mapa      = lazy(() => import("../pages/Map/index"));
+const News      = lazy(() => import("../pages/News/index"));
 
 const Router = () => {
   const audio = localStorage.getItem('Audio');
@@ -57,6 +58,7 @@ const Router = () => {
           <Route path="/chat"     element={<LlamaChat />} />
           <Route path="/map"      element={<Mapa />} />
           <Route path="/curriculo" element={<Curriculo />} />
+          <Route path="/news"     element={<News />} />
         </Routes>
       </Suspense>
 

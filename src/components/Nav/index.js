@@ -13,7 +13,6 @@ import falar from "../TextAudio";
 // --- IMPORTANTE: Importe seu formulário aqui ---
 // Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
 import ContactForm from "../ContatoForm/ContactForm";
-import { NewsPanel } from "../NewsPanel";
 import { getGeoIP } from "../../utils/geoip";
 
 // Ícones
@@ -100,7 +99,6 @@ const Nav = () => {
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isNewsOpen, onOpen: onNewsOpen, onClose: onNewsClose } = useDisclosure();
 
   const ls = localStorage.getItem("i18nConfig");
   const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
@@ -130,7 +128,7 @@ const Nav = () => {
     { label: "Mapa Esri", url: "/map", icon: FaGlobe },
     { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
     { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
-    { label: "Notícias IA", icon: MdOutlineNewspaper, isAction: true, action: onNewsOpen },
+    { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
   ];
 
   const handleLanguageChange = (langId) => {
@@ -242,8 +240,6 @@ const Nav = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      <NewsPanel isOpen={isNewsOpen} onClose={onNewsClose} />
 
     </AnimatePresence>
   );
