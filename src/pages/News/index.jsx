@@ -686,9 +686,10 @@ const NewsPage = () => {
 
   const heroSlides    = sorted.filter(a=>a.img).slice(0,6);
   const heroLinks     = new Set(heroSlides.map(a=>a.link));
+  // mini-cards mostram próximos 10 (excluindo carrossel)
   const miniCards     = sorted.filter(a=>!heroLinks.has(a.link)).slice(0,10);
-  const usedLinks     = new Set([...heroLinks,...miniCards.map(a=>a.link)]);
-  const catArticles   = sorted.filter(a=>!usedLinks.has(a.link));
+  // categorias excluem APENAS o carrossel, não os mini-cards (pool maior)
+  const catArticles   = sorted.filter(a=>!heroLinks.has(a.link));
   const catSources    = CATEGORIES.flatMap(c=>c.sources);
 
   return (
