@@ -6,8 +6,13 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import {
   BsBoxArrowUpRight, BsChevronLeft, BsChevronRight,
-  BsSortDown, BsClock, BsArrowLeft, BsArrowRight,
+  BsSortDown, BsClock, BsArrowRight,
 } from "react-icons/bs";
+import { IoMdRocket } from "react-icons/io";
+import { RiAliensFill } from "react-icons/ri";
+import { FaReact, FaGlobe } from "react-icons/fa";
+import { AiOutlineMail, AiOutlineLinkedin, AiOutlineGithub } from "react-icons/ai";
+import { BiCube } from "react-icons/bi";
 
 const GREEN     = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -581,53 +586,67 @@ const NewsPage = () => {
           </Tooltip>
         </Flex>
 
-        {/* Linha 2: nav + filtros */}
-        <Box borderBottom={`2px solid ${GREEN}`} px={{ base: 2, md: 8 }}
+        {/* Linha 2: nav idêntica ao portfólio + filtros */}
+        <Box borderBottom={`2px solid ${GREEN}`} px={{ base: 2, md: 4 }}
           overflowX="auto"
           css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
-          <HStack spacing={0} py="10px" minW="max-content">
-            {[
-              { label: "← Voltar", to: "/", accent: true },
-              { label: "Home",      to: "/" },
-              { label: "Sobre",     to: "/about" },
-              { label: "Projetos",  to: "/projects" },
-              { label: "Chat IA",   to: "/chat" },
-              { label: "Mapa",      to: "/map" },
-              { label: "Currículo", to: "/curriculo" },
-            ].map((item, i) => (
-              <HStack key={i} spacing={0}>
-                {i > 0 && <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={1} flexShrink={0} />}
-                <Link as={RouterLink} to={item.to}
-                  px={3} py={1} fontFamily="heading" fontSize="xs"
-                  fontWeight={item.accent ? "700" : "500"}
-                  color={item.accent ? GREEN : "whiteAlpha.600"}
-                  borderRadius="4px" whiteSpace="nowrap"
-                  _hover={{ color: "white", bg: "rgba(255,255,255,0.05)", textDecoration: "none" }}
-                  transition="all 0.15s"
-                  style={item.accent ? { textShadow: `0 0 8px ${GREEN}88` } : {}}>
-                  {item.label}
-                </Link>
-              </HStack>
-            ))}
+          <HStack spacing={0} py="8px" minW="max-content" justify="space-between" w="100%">
 
-            <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
+            {/* Itens do portfólio */}
+            <HStack spacing={0}>
+              {[
+                { label: "Home",        to: "/",                                          icon: IoMdRocket,        external: false },
+                { label: "Sobre",       to: "/about",                                     icon: RiAliensFill,      external: false },
+                { label: "Projetos",    to: "/projects",                                  icon: FaReact,           external: false },
+                { label: "Contato",     to: "/#contato",                                  icon: AiOutlineMail,     external: false },
+                { label: "Portfolio 3D",to: "https://brunokobi3d.netlify.app",            icon: BiCube,            external: true  },
+                { label: "Mapa Esri",   to: "/map",                                       icon: FaGlobe,           external: false },
+                { label: "Linkedin",    to: "https://www.linkedin.com/in/brunokobi/",    icon: AiOutlineLinkedin, external: true  },
+                { label: "Github",      to: "https://github.com/brunokobi",              icon: AiOutlineGithub,   external: true  },
+              ].map((item, i) => (
+                <Box key={i}>
+                  {item.external ? (
+                    <Link href={item.to} isExternal _hover={{ textDecoration: "none" }}>
+                      <HStack
+                        spacing={1} px={3} py={2} cursor="pointer"
+                        color="whiteAlpha.600" borderRadius="4px"
+                        _hover={{ color: GREEN, bg: `${GREEN}0d` }}
+                        transition="all 0.15s"
+                      >
+                        <Icon as={item.icon} boxSize="14px" />
+                        <Text fontFamily="heading" fontSize="xs" fontWeight="500"
+                          display={{ base: "none", md: "block" }} whiteSpace="nowrap">
+                          {item.label}
+                        </Text>
+                      </HStack>
+                    </Link>
+                  ) : (
+                    <Link as={RouterLink} to={item.to} _hover={{ textDecoration: "none" }}>
+                      <HStack
+                        spacing={1} px={3} py={2} cursor="pointer"
+                        color="whiteAlpha.600" borderRadius="4px"
+                        _hover={{ color: GREEN, bg: `${GREEN}0d` }}
+                        transition="all 0.15s"
+                      >
+                        <Icon as={item.icon} boxSize="14px" />
+                        <Text fontFamily="heading" fontSize="xs" fontWeight="500"
+                          display={{ base: "none", md: "block" }} whiteSpace="nowrap">
+                          {item.label}
+                        </Text>
+                      </HStack>
+                    </Link>
+                  )}
+                </Box>
+              ))}
+            </HStack>
 
-            <FilterBtn id="all"   label="Todos"     active={filter === "all"}   onClick={setFilter} />
-            <FilterBtn id="world" label="🌎 Mundo"  active={filter === "world"} onClick={setFilter} />
-            <FilterBtn id="br"    label="🇧🇷 Brasil" active={filter === "br"}    onClick={setFilter} />
-
-            <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={3} flexShrink={0} />
-            {[
-              { label: "URGENTE",   color: "#ff4444", icon: "🔥" },
-              { label: "DESTAQUE",  color: "#ffaa00", icon: "⚡" },
-              { label: "RELEVANTE", color: GREEN,     icon: "📌" },
-            ].map((l) => (
-              <HStack key={l.label} spacing={1} px={2} flexShrink={0}>
-                <Text fontSize="9px">{l.icon}</Text>
-                <Text fontSize="9px" fontFamily="heading" color={l.color} letterSpacing="0.06em"
-                  display={{ base: "none", md: "block" }}>{l.label}</Text>
-              </HStack>
-            ))}
+            {/* Filtros à direita */}
+            <HStack spacing={0} flexShrink={0}>
+              <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={2} />
+              <FilterBtn id="all"   label="Todos"     active={filter === "all"}   onClick={setFilter} />
+              <FilterBtn id="world" label="🌎"        active={filter === "world"} onClick={setFilter} />
+              <FilterBtn id="br"    label="🇧🇷"       active={filter === "br"}    onClick={setFilter} />
+            </HStack>
           </HStack>
         </Box>
       </Box>
