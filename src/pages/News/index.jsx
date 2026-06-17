@@ -13,6 +13,7 @@ import { RiAliensFill } from "react-icons/ri";
 import { FaReact, FaGlobe } from "react-icons/fa";
 import { AiOutlineMail, AiOutlineLinkedin, AiOutlineGithub } from "react-icons/ai";
 import { BiCube } from "react-icons/bi";
+import brazilFlag from "../../assets/img/brazil.png";
 
 const GREEN     = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -771,7 +772,18 @@ const NewsPage = () => {
               <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={2} />
               <FilterBtn id="all"   label="Todos" active={filter==="all"}   onClick={setFilter} />
               <FilterBtn id="world" label="🌎"    active={filter==="world"} onClick={setFilter} />
-              <FilterBtn id="br"    label="🇧🇷"   active={filter==="br"}    onClick={setFilter} />
+              <Box as="button" onClick={() => setFilter("br")}
+                px={2} py={1} borderRadius="4px"
+                bg={filter==="br"?`${GREEN}15`:"transparent"}
+                transition="all .15s" _hover={{ bg:`${GREEN}10` }}
+                display="flex" alignItems="center">
+                <img src={brazilFlag} alt="Brasil"
+                  style={{ width:"18px", height:"18px", borderRadius:"50%",
+                    filter: filter==="br" ? `drop-shadow(0 0 4px ${GREEN})` : "none",
+                    outline: filter==="br" ? `2px solid ${GREEN}88` : "none",
+                    outlineOffset: "1px",
+                  }} />
+              </Box>
             </HStack>
           </HStack>
         </Box>
