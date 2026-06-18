@@ -138,7 +138,8 @@ const CATEGORIES = [
   { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA — startups, pesquisas e impacto no mercado brasileiro.", sources:["SWEN.AI","AINEWS","Exame IA"],                                                                       accent:"#00c8ff" },
   { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily"],                         accent:"#a855f7" },
   { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS e MarkTechPost.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML"],                               accent:GREEN     },
-  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","Synced","fast.ai","TensorFlow","Towards AI"],                                                           accent:"#ff9d00" },
+  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","fast.ai","TensorFlow","Towards AI"],                                                           accent:"#ff9d00" },
+  { id:"asia",       title:"🌏 Pesquisa Asiática",    desc:"Inovação em IA de Singapura, Japão e centros asiáticos — AI Singapore, RIKEN e Synced Review.",                             sources:["AI Singapore","RIKEN AIP","Synced","NUS"],                                                                                       accent:"#00d4ff" },
 ];
 
 // ── Score importância ──────────────────────────────────────────────────────
@@ -199,6 +200,9 @@ const FEEDS = [
   { name:"AWS ML",        url:"https://aws.amazon.com/blogs/machine-learning/feed/",                  flag:"🌎", color:"#ff9900" },
   { name:"TensorFlow",    url:"https://blog.tensorflow.org/feeds/posts/default",                      flag:"🌎", color:"#ff6f00" },
   { name:"Towards AI",    url:"https://towardsai.net/ai/artificial-intelligence/feed",                flag:"🌎", color:"#7c3aed" },
+  { name:"Synced",        url:"https://syncedreview.com/feed/",                                         flag:"🌏", color:"#00d4ff" },
+  { name:"AI Singapore",  url:"https://aisingapore.org/feed/",                                          flag:"🌏", color:"#ef4444" },
+  { name:"RIKEN AIP",     url:"https://aip.riken.jp/feed/",                                             flag:"🌏", color:"#e11d48" },
 ];
 
 // ── RSS parsing ────────────────────────────────────────────────────────────
