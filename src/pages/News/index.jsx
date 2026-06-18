@@ -135,7 +135,7 @@ function MatrixLoader() {
 
 // ── Categorias ─────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA, tecnologia e mercado digital — portais e revistas brasileiras.", sources:["SWEN.AI","AINEWS","Exame IA","TabNews","Manual Usuário","MIT Tech BR","Tecnoblog","Brazil Journal"],  accent:"#00c8ff" },
+  { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA, tecnologia e mercado digital — portais e revistas brasileiras.", sources:["SWEN.AI","AINEWS","Exame IA","TabNews","Manual Usuário","MIT Tech BR","Tecnoblog","Brazil Journal","NeoFeed","Olhar Digital"],  accent:"#00c8ff" },
   { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily"],                         accent:"#a855f7" },
   { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS e MarkTechPost.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML"],                               accent:GREEN     },
   { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets, LangChain e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","fast.ai","TensorFlow","Towards AI","LangChain"],                                              accent:"#ff9d00" },
@@ -209,6 +209,8 @@ const FEEDS = [
   { name:"MIT Tech BR",   url:"https://mittechreview.com.br/feed/",                                     flag:"🇧🇷", color:"#00c8ff" },
   { name:"Tecnoblog",     url:"https://tecnoblog.net/feed/",                                             flag:"🇧🇷", color:"#00c8ff" },
   { name:"Brazil Journal",url:"https://braziljournal.com/feed/",                                        flag:"🇧🇷", color:"#00c8ff" },
+  { name:"NeoFeed",       url:"https://neofeed.com.br/feed/",                                           flag:"🇧🇷", color:"#00c8ff" },
+  { name:"Olhar Digital", url:"https://olhardigital.com.br/rss/",                                       flag:"🇧🇷", color:"#00c8ff" },
   { name:"Pragmatic Eng.",url:"https://blog.pragmaticengineer.com/rss/",                                flag:"🌎", color:"#f472b6" },
   { name:"Martin Fowler", url:"https://martinfowler.com/feed.atom",                                     flag:"🌎", color:"#f472b6" },
   { name:"Netflix Tech",  url:"https://netflixtechblog.medium.com/feed",                               flag:"🌎", color:"#e50914" },
