@@ -135,15 +135,16 @@ function MatrixLoader() {
 
 // ── Categorias ─────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA — startups, pesquisas e impacto no mercado brasileiro.", sources:["SWEN.AI","AINEWS","Exame IA"],                                                                       accent:"#00c8ff" },
+  { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA, tecnologia e mercado digital — portais e revistas brasileiras.", sources:["SWEN.AI","AINEWS","Exame IA","TabNews","Manual Usuário","MIT Tech BR","Tecnoblog","Brazil Journal"],  accent:"#00c8ff" },
   { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily"],                         accent:"#a855f7" },
   { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS e MarkTechPost.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML"],                               accent:GREEN     },
   { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","fast.ai","TensorFlow","Towards AI"],                                                           accent:"#ff9d00" },
   { id:"asia",       title:"🌏 Pesquisa Asiática",    desc:"Inovação em IA de Singapura, Japão e centros asiáticos — AI Singapore, RIKEN e Synced Review.",                             sources:["AI Singapore","RIKEN AIP","Synced","NUS"],                                                                                       accent:"#00d4ff" },
+  { id:"engenharia", title:"💻 Engenharia & Dev",     desc:"Arquitetura de software, boas práticas e bastidores técnicos — Pragmatic Engineer, Martin Fowler, Netflix, n8n e Supabase.", sources:["Pragmatic Eng.","Martin Fowler","Netflix Tech","n8n Blog","Supabase"],                                                             accent:"#f472b6" },
 ];
 
 // ── Score importância ──────────────────────────────────────────────────────
-const SOURCE_PRESTIGE = { "MIT Tech Rev":20,"MIT News":20,"Google Res.":18,"IEEE Spectrum":16,"BAIR":15,"The Gradient":14,"Wired AI":13,"The Verge":13,"TechCrunch":12,"HuggingFace":11,"AI News":10,"AI Insider":10,"AI Weekly":9,"Exame IA":9,"KDnuggets":8,"SWEN.AI":8,"AINEWS":8,"Synced":7 };
+const SOURCE_PRESTIGE = { "MIT Tech Rev":20,"MIT News":20,"Google Res.":18,"IEEE Spectrum":16,"BAIR":15,"The Gradient":14,"Wired AI":13,"The Verge":13,"TechCrunch":12,"HuggingFace":11,"AI News":10,"AI Insider":10,"Pragmatic Eng.":10,"Martin Fowler":10,"AI Weekly":9,"Exame IA":9,"MIT Tech BR":9,"KDnuggets":8,"SWEN.AI":8,"AINEWS":8,"Synced":7,"Tecnoblog":7,"Brazil Journal":7,"TabNews":6,"Netflix Tech":8,"Supabase":7,"n8n Blog":6,"Manual Usuário":6 };
 const KW_CRITICAL = ["agi","artificial general intelligence","superintelligence","breakthrough","ban","regulation","acquisition","merger","openai","anthropic","google deepmind","deepmind"];
 const KW_HIGH     = ["gpt","claude","gemini","llama","mistral","nvidia","sora","release","launch","lança","novo modelo","new model","meta ai","microsoft","apple intelligence"];
 const KW_MED      = ["model","machine learning","neural","research","billion","open source","safety","hallucination","robot","robô","chatbot","agent","agente","multimodal"];
@@ -203,6 +204,16 @@ const FEEDS = [
   { name:"Synced",        url:"https://syncedreview.com/feed/",                                         flag:"🌏", color:"#00d4ff" },
   { name:"AI Singapore",  url:"https://aisingapore.org/feed/",                                          flag:"🌏", color:"#ef4444" },
   { name:"RIKEN AIP",     url:"https://aip.riken.jp/feed/",                                             flag:"🌏", color:"#e11d48" },
+  { name:"TabNews",       url:"https://www.tabnews.com.br/recentes/rss",                                flag:"🇧🇷", color:"#00c8ff" },
+  { name:"Manual Usuário",url:"https://manualdousuario.net/feed/",                                      flag:"🇧🇷", color:"#00c8ff" },
+  { name:"MIT Tech BR",   url:"https://mittechreview.com.br/feed/",                                     flag:"🇧🇷", color:"#00c8ff" },
+  { name:"Tecnoblog",     url:"https://tecnoblog.net/feed/",                                             flag:"🇧🇷", color:"#00c8ff" },
+  { name:"Brazil Journal",url:"https://braziljournal.com/feed/",                                        flag:"🇧🇷", color:"#00c8ff" },
+  { name:"Pragmatic Eng.",url:"https://blog.pragmaticengineer.com/rss/",                                flag:"🌎", color:"#f472b6" },
+  { name:"Martin Fowler", url:"https://martinfowler.com/feed.atom",                                     flag:"🌎", color:"#f472b6" },
+  { name:"Netflix Tech",  url:"https://netflixtechblog.medium.com/feed",                               flag:"🌎", color:"#e50914" },
+  { name:"n8n Blog",      url:"https://blog.n8n.io/rss/",                                               flag:"🌎", color:"#ea4b71" },
+  { name:"Supabase",      url:"https://supabase.com/rss.xml",                                           flag:"🌎", color:"#3ecf8e" },
 ];
 
 // ── RSS parsing ────────────────────────────────────────────────────────────
