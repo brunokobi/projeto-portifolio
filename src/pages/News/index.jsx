@@ -6,7 +6,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import {
   BsChevronLeft, BsChevronRight,
-  BsSortDown, BsClock, BsArrowRight,
+  BsSortDown, BsClock, BsArrowRight, BsQuestionCircle,
 } from "react-icons/bs";
 import { IoMdRocket } from "react-icons/io";
 import { RiAliensFill } from "react-icons/ri";
@@ -136,9 +136,9 @@ function MatrixLoader() {
 // ── Categorias ─────────────────────────────────────────────────────────────
 const CATEGORIES = [
   { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA — startups, pesquisas e impacto no mercado brasileiro.", sources:["SWEN.AI","AINEWS","Exame IA"],                                                                       accent:"#00c8ff" },
-  { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR e The Gradient.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum"],                         accent:"#a855f7" },
-  { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — TechCrunch, The Verge, Wired e AI News.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly"],                               accent:GREEN     },
-  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas para desenvolvedores de IA.",                   sources:["HuggingFace","KDnuggets","MIRI","Synced"],                                                           accent:"#ff9d00" },
+  { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily"],                         accent:"#a855f7" },
+  { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS e MarkTechPost.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML"],                               accent:GREEN     },
+  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","Synced","fast.ai","TensorFlow","Towards AI"],                                                           accent:"#ff9d00" },
 ];
 
 // ── Score importância ──────────────────────────────────────────────────────
@@ -187,6 +187,18 @@ const FEEDS = [
   { name:"IEEE Spectrum", url:"https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss",    flag:"🌎", color:"#00629b" },
   { name:"BAIR",          url:"https://bair.berkeley.edu/blog/feed.xml",                               flag:"🌎", color:"#ffa500" },
   { name:"KDnuggets",     url:"https://kdnuggets.com/feed",                                            flag:"🌎", color:GREEN },
+  { name:"OpenAI",        url:"https://openai.com/news/rss.xml",                                      flag:"🌎", color:"#10a37f" },
+  { name:"DeepMind",      url:"https://deepmind.google/discover/blog/rss/",                           flag:"🌎", color:"#4285f4" },
+  { name:"arXiv AI",      url:"https://rss.arxiv.org/rss/cs.AI",                                     flag:"🌎", color:"#b31b1b" },
+  { name:"NVIDIA Blog",   url:"https://blogs.nvidia.com/blog/category/deep-learning/feed/",           flag:"🌎", color:"#76b900" },
+  { name:"Apple ML",      url:"https://machinelearning.apple.com/rss.xml",                            flag:"🌎", color:"#aaa" },
+  { name:"Stanford AI",   url:"https://ai.stanford.edu/blog/feed.xml",                               flag:"🌎", color:"#8c1515" },
+  { name:"MarkTechPost",  url:"https://www.marktechpost.com/feed/",                                   flag:"🌎", color:GREEN },
+  { name:"fast.ai",       url:"https://www.fast.ai/index.xml",                                        flag:"🌎", color:"#009fdf" },
+  { name:"ScienceDaily",  url:"https://www.sciencedaily.com/rss/computer_science/artificial_intelligence.xml", flag:"🌎", color:"#0077cc" },
+  { name:"AWS ML",        url:"https://aws.amazon.com/blogs/machine-learning/feed/",                  flag:"🌎", color:"#ff9900" },
+  { name:"TensorFlow",    url:"https://blog.tensorflow.org/feeds/posts/default",                      flag:"🌎", color:"#ff6f00" },
+  { name:"Towards AI",    url:"https://towardsai.net/ai/artificial-intelligence/feed",                flag:"🌎", color:"#7c3aed" },
 ];
 
 // ── RSS parsing ────────────────────────────────────────────────────────────
@@ -648,10 +660,11 @@ function FilterBtn({ id, label, active, onClick }) {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 const NewsPage = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [filter, setFilter]     = useState("all");
-  const [sortBy, setSortBy]     = useState("importance");
+  const [articles, setArticles]     = useState([]);
+  const [loading, setLoading]       = useState(false);
+  const [filter, setFilter]         = useState("all");
+  const [sortBy, setSortBy]         = useState("importance");
+  const [showSources, setShowSources] = useState(false);
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
@@ -723,19 +736,31 @@ const NewsPage = () => {
             </Box>
           </HStack>
 
-          <Tooltip label={sortBy==="importance"?"Ordenado por importância":"Ordenado por data"} hasArrow>
-            <Box as="button"
-              onClick={()=>setSortBy(s=>s==="importance"?"date":"importance")}
-              px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
-              display="flex" alignItems="center" gap={1}
-              color={sortBy==="importance"?"#ffaa00":"whiteAlpha.500"}
-              bg={sortBy==="importance"?"rgba(255,170,0,0.1)":"transparent"}
-              border={`1px solid ${sortBy==="importance"?"#ffaa0055":"rgba(255,255,255,0.12)"}`}
-              transition="all .2s" _hover={{borderColor:"#ffaa00",color:"#ffaa00"}}>
-              <Icon as={sortBy==="importance"?BsSortDown:BsClock} boxSize="11px" />
-              <Text as="span" ml={1}>{sortBy==="importance"?"Importância":"Data"}</Text>
-            </Box>
-          </Tooltip>
+          <HStack spacing={2}>
+            <Tooltip label={sortBy==="importance"?"Ordenado por importância":"Ordenado por data"} hasArrow>
+              <Box as="button"
+                onClick={()=>setSortBy(s=>s==="importance"?"date":"importance")}
+                px={3} py={1} borderRadius="full" fontSize="xs" fontFamily="heading"
+                display="flex" alignItems="center" gap={1}
+                color={sortBy==="importance"?"#ffaa00":"whiteAlpha.500"}
+                bg={sortBy==="importance"?"rgba(255,170,0,0.1)":"transparent"}
+                border={`1px solid ${sortBy==="importance"?"#ffaa0055":"rgba(255,255,255,0.12)"}`}
+                transition="all .2s" _hover={{borderColor:"#ffaa00",color:"#ffaa00"}}>
+                <Icon as={sortBy==="importance"?BsSortDown:BsClock} boxSize="11px" />
+                <Text as="span" ml={1}>{sortBy==="importance"?"Importância":"Data"}</Text>
+              </Box>
+            </Tooltip>
+            <Tooltip label={`${FEEDS.length} fontes ativas`} hasArrow>
+              <Box as="button" onClick={()=>setShowSources(true)}
+                w="28px" h="28px" borderRadius="full" flexShrink={0}
+                border={`1px solid rgba(255,255,255,0.18)`}
+                display="flex" alignItems="center" justifyContent="center"
+                color="whiteAlpha.500" transition="all .2s"
+                _hover={{borderColor:GREEN, color:GREEN, boxShadow:`0 0 10px ${GREEN}55`}}>
+                <Icon as={BsQuestionCircle} boxSize="13px" />
+              </Box>
+            </Tooltip>
+          </HStack>
         </Flex>
 
         {/* Linha 2 — nav */}
@@ -788,6 +813,104 @@ const NewsPage = () => {
           </HStack>
         </Box>
       </Box>
+
+      {/* ── Sources modal ── */}
+      {showSources && (
+        <Box position="fixed" inset={0} zIndex={9999} bg="rgba(0,0,0,0.88)"
+          display="flex" alignItems="center" justifyContent="center"
+          onClick={()=>setShowSources(false)}
+          style={{backdropFilter:"blur(6px)"}}>
+          <Box bg="#0a0a0a" border={`1px solid ${GREEN}44`} borderRadius="12px"
+            maxW="640px" w="92vw" maxH="82vh" overflow="hidden"
+            style={{boxShadow:`0 0 40px ${GREEN}22, 0 20px 60px rgba(0,0,0,0.8)`}}
+            onClick={e=>e.stopPropagation()}>
+
+            {/* Header */}
+            <Flex align="center" justify="space-between"
+              px={5} py={4} borderBottom={`1px solid rgba(255,255,255,0.07)`}>
+              <VStack align="flex-start" spacing={0}>
+                <Text fontFamily="heading" fontWeight="800" fontSize="md" color={GREEN}
+                  style={{textShadow:`0 0 12px ${GREEN}88`}}>
+                  Fontes de Feed
+                </Text>
+                <Text fontSize="10px" color="whiteAlpha.400" fontFamily="heading">
+                  {FEEDS.length} feeds ativos · atualizados a cada 5 min
+                </Text>
+              </VStack>
+              <Box as="button" onClick={()=>setShowSources(false)}
+                color="whiteAlpha.400" _hover={{color:"white"}} transition="color .15s"
+                fontSize="lg" lineHeight={1}>✕</Box>
+            </Flex>
+
+            {/* Body */}
+            <Box overflowY="auto" px={5} py={4}
+              css={{"&::-webkit-scrollbar":{width:"4px"},"&::-webkit-scrollbar-thumb":{background:`${GREEN}44`,borderRadius:"2px"}}}>
+              {CATEGORIES.map(cat=>{
+                const catFeeds=FEEDS.filter(f=>cat.sources.includes(f.name));
+                if(!catFeeds.length)return null;
+                return(
+                  <Box key={cat.id} mb={5}>
+                    <HStack mb={2} spacing={2}>
+                      <Box w="12px" h="12px" borderRadius="full" bg={cat.accent}
+                        style={{boxShadow:`0 0 6px ${cat.accent}`}} flexShrink={0}/>
+                      <Text fontFamily="heading" fontSize="xs" fontWeight="700" color={cat.accent}>
+                        {cat.title}
+                      </Text>
+                      <Text fontSize="9px" color="whiteAlpha.300" fontFamily="heading">
+                        {catFeeds.length} fontes
+                      </Text>
+                    </HStack>
+                    {catFeeds.map(f=>(
+                      <Flex key={f.name} align="center" gap={3} py="6px"
+                        borderBottom="1px solid rgba(255,255,255,0.04)">
+                        <Text fontSize="11px" fontFamily="heading" fontWeight="600"
+                          color="whiteAlpha.800" w="120px" flexShrink={0}>
+                          {f.flag} {f.name}
+                        </Text>
+                        <Link href={f.url} isExternal flex={1}
+                          fontSize="9px" color="whiteAlpha.350" fontFamily="monospace"
+                          _hover={{color:GREEN}} noOfLines={1} title={f.url}>
+                          {f.url}
+                        </Link>
+                      </Flex>
+                    ))}
+                  </Box>
+                );
+              })}
+              {/* Feeds fora das categorias */}
+              {(()=>{
+                const used=new Set(CATEGORIES.flatMap(c=>c.sources));
+                const others=FEEDS.filter(f=>!used.has(f.name));
+                if(!others.length)return null;
+                return(
+                  <Box mb={5}>
+                    <HStack mb={2} spacing={2}>
+                      <Box w="12px" h="12px" borderRadius="full" bg="whiteAlpha.300" flexShrink={0}/>
+                      <Text fontFamily="heading" fontSize="xs" fontWeight="700" color="whiteAlpha.500">
+                        🌐 Outras fontes
+                      </Text>
+                    </HStack>
+                    {others.map(f=>(
+                      <Flex key={f.name} align="center" gap={3} py="6px"
+                        borderBottom="1px solid rgba(255,255,255,0.04)">
+                        <Text fontSize="11px" fontFamily="heading" fontWeight="600"
+                          color="whiteAlpha.800" w="120px" flexShrink={0}>
+                          {f.flag} {f.name}
+                        </Text>
+                        <Link href={f.url} isExternal flex={1}
+                          fontSize="9px" color="whiteAlpha.350" fontFamily="monospace"
+                          _hover={{color:GREEN}} noOfLines={1} title={f.url}>
+                          {f.url}
+                        </Link>
+                      </Flex>
+                    ))}
+                  </Box>
+                );
+              })()}
+            </Box>
+          </Box>
+        </Box>
+      )}
 
       {loading ? <MatrixLoader /> : (
         <Box pb="60px">
