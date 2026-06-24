@@ -593,8 +593,42 @@ function CategoryCard({ title, link, img, date, source, score, desc, revealDelay
 
 // ── Scroll Row ─────────────────────────────────────────────────────────────
 function ScrollRow({ articles, CardComponent }) {
-  const ref = useRef(null);
-  const scroll = dir => ref.current?.scrollBy({ left:dir*300, behavior:"smooth" });
+  const ref       = useRef(null);
+  const dragging  = useRef(false);
+  const didDrag   = useRef(false);
+  const startX    = useRef(0);
+  const startLeft = useRef(0);
+
+  const scroll = dir => ref.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+
+  const onMouseDown = (e) => {
+    if (!ref.current) return;
+    dragging.current  = true;
+    didDrag.current   = false;
+    startX.current    = e.pageX - ref.current.offsetLeft;
+    startLeft.current = ref.current.scrollLeft;
+    ref.current.style.cursor = "grabbing";
+  };
+
+  const onMouseMove = (e) => {
+    if (!dragging.current || !ref.current) return;
+    e.preventDefault();
+    const x    = e.pageX - ref.current.offsetLeft;
+    const walk = (x - startX.current) * 1.4;
+    if (Math.abs(walk) > 4) didDrag.current = true;
+    ref.current.scrollLeft = startLeft.current - walk;
+  };
+
+  const stopDrag = () => {
+    dragging.current = false;
+    if (ref.current) ref.current.style.cursor = "grab";
+  };
+
+  // bloqueia clique nos links quando foi arrasto (não toque)
+  const onClickCapture = (e) => {
+    if (didDrag.current) { e.stopPropagation(); e.preventDefault(); didDrag.current = false; }
+  };
+
   if (!articles.length) return null;
 
   return (
@@ -609,12 +643,21 @@ function ScrollRow({ articles, CardComponent }) {
         </Box>
       </Box>
 
-      <div ref={ref} style={{
-        display:"flex", flexDirection:"row", gap:"12px",
-        overflowX:"auto", paddingBottom:"8px",
-        scrollbarWidth:"thin",
-        scrollbarColor:`${GREEN_DIM} transparent`,
-      }}>
+      <div ref={ref}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={stopDrag}
+        onMouseLeave={stopDrag}
+        onClickCapture={onClickCapture}
+        style={{
+          display:"flex", flexDirection:"row", gap:"12px",
+          overflowX:"auto", paddingBottom:"8px",
+          cursor:"grab",
+          scrollbarWidth:"thin",
+          scrollbarColor:`${GREEN_DIM} transparent`,
+          WebkitOverflowScrolling:"touch",
+          userSelect:"none",
+        }}>
         {articles.map((a,i) => <CardComponent key={i} {...a} revealDelay={i*60} />)}
       </div>
 
