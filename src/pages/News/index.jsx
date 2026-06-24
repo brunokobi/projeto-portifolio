@@ -149,6 +149,33 @@ const KW_CRITICAL = ["agi","artificial general intelligence","superintelligence"
 const KW_HIGH     = ["gpt","claude","gemini","llama","mistral","nvidia","sora","release","launch","lança","novo modelo","new model","meta ai","microsoft","apple intelligence"];
 const KW_MED      = ["model","machine learning","neural","research","billion","open source","safety","hallucination","robot","robô","chatbot","agent","agente","multimodal"];
 
+// Termos de propaganda/consumo que não têm relação com IA ou tech relevante
+const SPAM_WORDS = [
+  // promoções
+  "promoção","oferta","desconto","mais barato","preço caiu","cupom","cashback",
+  // celulares consumidor
+  "iphone 1","iphone 2","iphone se","galaxy s2","galaxy a","galaxy m","moto g","moto e",
+  "xiaomi redmi","realme","poco x","oneplus nord","tecno","infinix",
+  "melhor celular","top celular","celular bom","celular custo","celular barato",
+  // TV / home
+  "smart tv","televisão","televisao"," tv 4k"," tv 8k","qled","oled tv","monitor gamer",
+  "soundbar","home theater","caixa de som bluetooth",
+  // periféricos consumidor
+  "fone de ouvido","headphone","earphone","earbuds","airpods","tws fone",
+  "smartwatch","relógio inteligente","wearable fitness",
+  // câmeras
+  "câmera fotográfica","camera mirrorless","câmera dslr","action cam","gopro",
+  // games de consumo
+  "playstation 5","ps5","xbox series","nintendo switch","jogo para",
+  // eletrodomésticos
+  "geladeira","fogão","micro-ondas","ar-condicionado","purificador de água",
+];
+
+function isSpam(a) {
+  const t = (a.title || "").toLowerCase();
+  return SPAM_WORDS.some(w => t.includes(w));
+}
+
 function scoreArticle(a) {
   let s = SOURCE_PRESTIGE[a.source?.name] || 5;
   if (a.date && !isNaN(a.date)) {
@@ -749,6 +776,7 @@ const NewsPage = () => {
   useEffect(()=>{if(!fetchedRef.current){fetchedRef.current=true;fetchFeeds();}}, [fetchFeeds]);
 
   const filtered = articles.filter(a=>{
+    if(isSpam(a)) return false;
     if(filter==="br")    return a.source.flag==="🇧🇷";
     if(filter==="world") return a.source.flag==="🌎";
     return true;
