@@ -152,9 +152,11 @@ const KW_MED      = ["model","machine learning","neural","research","billion","o
 // Termos de propaganda/consumo que não têm relação com IA ou tech relevante
 const SPAM_WORDS = [
   // promoções
-  "promoção","oferta","desconto","mais barato","preço caiu","cupom","cashback",
+  "promoção","oferta","desconto","mais barato","menor preço","preço caiu","cupom","cashback",
+  "oportunidade:","sai por r$","sai com","aproveite",
   // celulares consumidor
   "iphone 1","iphone 2","iphone se","galaxy s2","galaxy a","galaxy m","moto g","moto e",
+  "motorola edge","motorola razr","motorola moto",
   "xiaomi redmi","realme","poco x","oneplus nord","tecno","infinix",
   "melhor celular","top celular","celular bom","celular custo","celular barato",
   // TV / home
