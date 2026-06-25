@@ -16,7 +16,7 @@ import {
 import { useMemo, useRef } from "react";
 import rock from "../../assets/img/rock.png"; // Imagem usada na seção de experiência
 import profilePhoto from "../../assets/img/profile.png"; // Foto de perfil do usuário
-import questionImg from "../../assets/img/int-icon.png"; // Ícone usado na seção "Sobre mim"
+import questionImg from "../../assets/img/questions.png"; // Ícone usado na seção "Sobre mim"
 
 import { container, item } from "./animationConfig"; // Configurações de animação
 
