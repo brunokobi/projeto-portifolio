@@ -744,7 +744,7 @@ function CategorySection({ title, desc, accent, articles }) {
         </Box>
 
         {/* Right */}
-        <Box flex={1} minW={0} overflow="hidden" px={{ base:0, md:4 }}>
+        <Box flex={1} minW={0} style={{ overflow:"clip" }} px={{ base:0, md:4 }}>
           <ScrollRow articles={articles} CardComponent={CategoryCard} />
         </Box>
       </Flex>
@@ -1027,7 +1027,7 @@ const NewsPage = () => {
 
           {miniCards.length>0 && (
             <Box px={{base:4,md:8}} py={6} bg="#080808" borderBottom="1px solid rgba(255,255,255,0.06)">
-              <Text fontFamily="heading" fontSize="xs" fontWeight="700" color="whiteAlpha.400"
+              <Text fontFamily="heading" fontSize="xs" fontWeight="700" color="whiteAlpha.600"
                 letterSpacing="0.15em" mb={4}>MAIS NOTÍCIAS</Text>
               <ScrollRow articles={miniCards} CardComponent={MiniCard} />
             </Box>
