@@ -653,6 +653,21 @@ function ScrollRow({ articles, CardComponent }) {
     if (ref.current) ref.current.style.cursor = "grab";
   };
 
+  // eventos de toque para mobile
+  const onTouchStart = (e) => {
+    if (!ref.current) return;
+    didDrag.current   = false;
+    startX.current    = e.touches[0].pageX - ref.current.offsetLeft;
+    startLeft.current = ref.current.scrollLeft;
+  };
+  const onTouchMove = (e) => {
+    if (!ref.current) return;
+    const x    = e.touches[0].pageX - ref.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    if (Math.abs(walk) > 4) didDrag.current = true;
+    ref.current.scrollLeft = startLeft.current - walk;
+  };
+
   // bloqueia clique nos links quando foi arrasto (não toque)
   const onClickCapture = (e) => {
     if (didDrag.current) { e.stopPropagation(); e.preventDefault(); didDrag.current = false; }
@@ -677,6 +692,8 @@ function ScrollRow({ articles, CardComponent }) {
         onMouseMove={onMouseMove}
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
         onClickCapture={onClickCapture}
         style={{
           display:"flex", flexDirection:"row", gap:"12px",
@@ -686,6 +703,7 @@ function ScrollRow({ articles, CardComponent }) {
           scrollbarColor:`${GREEN_DIM} transparent`,
           WebkitOverflowScrolling:"touch",
           userSelect:"none",
+          touchAction:"pan-x",
         }}>
         {articles.map((a,i) => <CardComponent key={i} {...a} revealDelay={i*60} />)}
       </div>
@@ -798,7 +816,7 @@ const NewsPage = () => {
   const catSources    = CATEGORIES.flatMap(c=>c.sources);
 
   return (
-    <Box minH="100vh" w="100vw" bg="#050505" color="white" overflowX="hidden">
+    <Box minH="100vh" w="100vw" bg="#050505" color="white" style={{ overflowX:"clip" }}>
       {/* Inject Matrix CSS once */}
       <style>{MATRIX_CSS}</style>
 
