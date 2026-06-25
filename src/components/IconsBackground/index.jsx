@@ -22,14 +22,14 @@ const ALL_ICONS = [
   FaCube, SiDocker, SiGithub,
 ];
 
-const STREAM_LENGTH = 9;    // ícones por coluna
-const ICON_SPACING  = 58;   // px entre ícones na trilha
-const COL_GAP       = 80;   // px entre colunas
-const NUM_COLS      = 18;   // colunas — suficiente para telas largas
+const STREAM_LENGTH = 7;    // ícones por coluna (menos denso)
+const ICON_SPACING  = 92;   // px entre ícones — mais espaçado
+const COL_GAP       = 88;   // px entre colunas
+const NUM_COLS      = 18;
 const FALL_KF       = "matrix-icon-fall";
 
-// Opacidade de topo (cauda) → base (cabeça) — cria o efeito de trilha
-const TRAIL = [0.03, 0.07, 0.13, 0.22, 0.36, 0.54, 0.72, 0.88, 1.0];
+// Opacidade cauda→cabeça para STREAM_LENGTH = 7
+const TRAIL = [0.05, 0.12, 0.25, 0.44, 0.65, 0.84, 1.0];
 
 const seededRng = (seed) => {
   let s = seed;
@@ -39,15 +39,34 @@ const seededRng = (seed) => {
   };
 };
 
+// Gera stream garantindo: sem ícone igual adjacente e distribuição
+// diferente por coluna (offset = col * 5 percorre o array de forma única)
+const buildStream = (rng, colIndex) => {
+  const result = [];
+  const poolOffset = (colIndex * 5) % ALL_ICONS.length;
+
+  for (let i = 0; i < STREAM_LENGTH; i++) {
+    const last       = result[result.length - 1];
+    const secondLast = result[result.length - 2];
+
+    // Remove último e penúltimo para evitar repetição adjacente e vizinha
+    const candidates = ALL_ICONS.filter(ic => ic !== last && ic !== secondLast);
+
+    // Base determinística por coluna + pequena variação aleatória
+    const baseIdx = (poolOffset + i * 7) % candidates.length;
+    const jitter  = Math.floor(rng() * 4);
+    result.push(candidates[(baseIdx + jitter) % candidates.length]);
+  }
+  return result;
+};
+
 // Configurações fixas — geradas uma vez fora do componente
 const COLS = Array.from({ length: NUM_COLS }, (_, col) => {
   const rng   = seededRng(col * 1000033 + 7919);
-  const speed = 8 + rng() * 10;                          // 8–18s por queda
-  const delay = -(rng() * 18);                           // inicia em ponto aleatório da animação
-  const size  = [28, 34, 40][Math.floor(rng() * 3)];    // 3 tamanhos de ícone
-  const icons = Array.from({ length: STREAM_LENGTH }, () =>
-    ALL_ICONS[Math.floor(rng() * ALL_ICONS.length)]
-  );
+  const speed = 11 + rng() * 9;                          // 11–20s por queda
+  const delay = -(rng() * 20);
+  const size  = [26, 32, 38][Math.floor(rng() * 3)];
+  const icons = buildStream(rng, col);
   return { x: col * COL_GAP + 8, speed, delay, size, icons };
 });
 
