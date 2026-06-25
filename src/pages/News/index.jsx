@@ -709,10 +709,27 @@ function CategorySection({ title, desc, accent, articles }) {
   if (!articles.length) return null;
 
   return (
-    <Box py={8} borderTop="1px solid rgba(255,255,255,0.06)" ref={ref}>
-      <Flex direction={{ base:"column", lg:"row" }} gap={{ base:4, lg:8 }} align="flex-start">
-        {/* Left */}
-        <Box flexShrink={0} w={{ base:"100%", lg:"220px" }}
+    <Box ref={ref} borderTop="1px solid rgba(255,255,255,0.06)">
+
+      {/* ── Mobile: layout compacto igual ao "Mais Notícias" ── */}
+      <Box display={{ base:"block", lg:"none" }} py={5}>
+        <Flex align="center" gap={2} mb={3}
+          style={{ animation:inView?"nwsHeroTxt .5s ease .05s both":"none" }}>
+          <Box w="3px" h="16px" bg={accent} borderRadius="full" flexShrink={0}
+            style={{ boxShadow:`0 0 8px ${accent}` }} />
+          <Text fontFamily="heading" fontSize="xs" fontWeight="800" color="white" letterSpacing="0.08em">
+            {title}
+          </Text>
+          <Text fontSize="9px" fontFamily="heading" color={accent} ml="auto" fontWeight="600" flexShrink={0}>
+            {articles.length} artigos
+          </Text>
+        </Flex>
+        <ScrollRow articles={articles} CardComponent={CategoryCard} />
+      </Box>
+
+      {/* ── Desktop: layout 2 colunas ── */}
+      <Flex display={{ base:"none", lg:"flex" }} py={8} gap={8} align="flex-start">
+        <Box flexShrink={0} w="220px"
           style={{ animation:inView?"nwsHeroTxt .5s ease .05s both":"none" }}>
           <Box w="32px" h="3px" bg={accent} borderRadius="full" mb={3}
             style={{ boxShadow:`0 0 10px ${accent}`, animation:inView?"nwsBarGrow .4s ease both":"none" }} />
@@ -724,12 +741,11 @@ function CategorySection({ title, desc, accent, articles }) {
             {articles.length} artigos
           </Text>
         </Box>
-
-        {/* Right */}
-        <Box flex={1} minW={0} px={{ base:0, md:4 }}>
+        <Box flex={1} minW={0} px={4}>
           <ScrollRow articles={articles} CardComponent={CategoryCard} />
         </Box>
       </Flex>
+
     </Box>
   );
 }
@@ -1015,7 +1031,7 @@ const NewsPage = () => {
           {heroSlides.length > 0 && <HeroCarousel articles={heroSlides} />}
 
           {miniCards.length>0 && (
-            <Box px={{base:4,md:8}} py={6} bg="#080808" borderBottom="1px solid rgba(255,255,255,0.06)">
+            <Box px={{base:4,md:8}} pt={{ base:8, md:6 }} pb={6} bg="#080808" borderBottom="1px solid rgba(255,255,255,0.06)">
               <Text fontFamily="heading" fontSize="xs" fontWeight="700" color="whiteAlpha.600"
                 letterSpacing="0.15em" mb={4}>MAIS NOTÍCIAS</Text>
               <ScrollRow articles={miniCards} CardComponent={MiniCard} />
