@@ -76,5 +76,7 @@
   "project13d": "Experimento educacional de Machine Learning que analisa o histórico completo da Mega-Sena (2.806 sorteios) com Gradient Boosting Classifier. Gera combinações com scores de probabilidade e exibe mapas de calor estatísticos.",
   "project14t": "chatBruno — Assistente Multi-Agente com RAG",
   "project14d": "Assistente virtual inteligente com arquitetura Multi-Agente + RAG, construído sobre n8n, LangChain, Supabase pgvector e Google Gemini. 8 agentes especializados (Perfil, Skills, Experiência, Educação, Projetos, Contato) roteados por Gemini 2.5 Flash. Base vetorial de 22 chunks no Supabase. Hospedado em instância própria na AWS EC2.",
+  "project15t": "Frota Realtime RJ — Monitoramento GPS de Alta Performance",
+  "project15d": "+4.000 ônibus do Rio de Janeiro em tempo real via API SPPO. Proxy serverless comprime o payload em 70%. Interpolação com requestAnimationFrame garante 60 FPS. Cores por velocidade processadas na GPU via MapLibre GL. Clustering automático por zoom e trail das últimas 10 posições. Fallback para localStorage em caso de falha da API.",
   "visitas": "VISITAS"
 }

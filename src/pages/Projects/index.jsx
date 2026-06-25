@@ -19,6 +19,7 @@ import bpfcheck from "../../assets/img/bpfcheck.png";
 import arkon from "../../assets/img/arkon.png";
 import loteria from "../../assets/img/loteria.png";
 import chatbruno from "../../assets/img/chatbruno.png";
+import frota from "../../assets/img/frota.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -34,6 +35,15 @@ const Projects = () => {
       description: intl.formatMessage({id: 'project14d'}),
       tags: ["#N8N", "#LANGCHAIN", "#RAG", "#SUPABASE", "#GOOGLE GEMINI", "#AWS EC2", "#MULTI-AGENTE"],
       code: "https://github.com/brunokobi/chatn8n",
+    },
+    {
+      title: intl.formatMessage({id: 'project15t'}),
+      link: "",
+      img: frota,
+      demo: "https://frotarealtime.netlify.app/",
+      description: intl.formatMessage({id: 'project15d'}),
+      tags: ["#JAVASCRIPT", "#MAPLIBRE GL", "#WEBGL", "#NODE.JS", "#NETLIFY FUNCTIONS", "#WEBGIS", "#PERFORMANCE"],
+      code: "https://github.com/brunokobi/frotarealtime",
     },
     {
       title: intl.formatMessage({id: 'project11t'}),

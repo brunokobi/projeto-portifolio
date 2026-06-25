@@ -69,5 +69,7 @@
   "project13d": "教育性机器学习实验，使用梯度提升分类器分析Mega-Sena彩票完整历史记录（2,806次抽奖）。生成带概率评分的组合和统计热图。",
   "project14t": "chatBruno — 多智能体RAG虚拟助手",
   "project14d": "基于n8n、LangChain、Supabase pgvector和Google Gemini的智能虚拟助手，采用多智能体+RAG架构。8个专业智能体由Gemini 2.5 Flash路由。22个向量知识块存于Supabase。部署于自托管AWS EC2实例。",
+  "project15t": "Frota Realtime RJ — 高性能GPS车队监控",
+  "project15d": "通过SPPO API实时追踪里约热内卢+4000辆公交车。Serverless代理将数据压缩70%。requestAnimationFrame插值确保60FPS流畅动画。速度颜色通过MapLibre GL在GPU处理。按缩放级别自动聚类，每辆车保留最近10个位置轨迹。API故障时回退至localStorage并显示数据时效。",
   "visitas": "访问量"
 }
