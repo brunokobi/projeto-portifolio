@@ -653,21 +653,6 @@ function ScrollRow({ articles, CardComponent }) {
     if (ref.current) ref.current.style.cursor = "grab";
   };
 
-  // eventos de toque para mobile
-  const onTouchStart = (e) => {
-    if (!ref.current) return;
-    didDrag.current   = false;
-    startX.current    = e.touches[0].pageX - ref.current.offsetLeft;
-    startLeft.current = ref.current.scrollLeft;
-  };
-  const onTouchMove = (e) => {
-    if (!ref.current) return;
-    const x    = e.touches[0].pageX - ref.current.offsetLeft;
-    const walk = (x - startX.current) * 1.2;
-    if (Math.abs(walk) > 4) didDrag.current = true;
-    ref.current.scrollLeft = startLeft.current - walk;
-  };
-
   // bloqueia clique nos links quando foi arrasto (não toque)
   const onClickCapture = (e) => {
     if (didDrag.current) { e.stopPropagation(); e.preventDefault(); didDrag.current = false; }
@@ -692,8 +677,6 @@ function ScrollRow({ articles, CardComponent }) {
         onMouseMove={onMouseMove}
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
         onClickCapture={onClickCapture}
         style={{
           display:"flex", flexDirection:"row", gap:"12px",
@@ -703,7 +686,6 @@ function ScrollRow({ articles, CardComponent }) {
           scrollbarColor:`${GREEN_DIM} transparent`,
           WebkitOverflowScrolling:"touch",
           userSelect:"none",
-          touchAction:"pan-x",
         }}>
         {articles.map((a,i) => <CardComponent key={i} {...a} revealDelay={i*60} />)}
       </div>
@@ -744,7 +726,7 @@ function CategorySection({ title, desc, accent, articles }) {
         </Box>
 
         {/* Right */}
-        <Box flex={1} minW={0} style={{ overflow:"clip" }} px={{ base:0, md:4 }}>
+        <Box flex={1} minW={0} px={{ base:0, md:4 }}>
           <ScrollRow articles={articles} CardComponent={CategoryCard} />
         </Box>
       </Flex>
@@ -795,6 +777,13 @@ const NewsPage = () => {
 
   useEffect(()=>{if(!fetchedRef.current){fetchedRef.current=true;fetchFeeds();}}, [fetchFeeds]);
 
+  // Impede scroll horizontal da página sem bloquear filhos com overflow-x: auto
+  useEffect(()=>{
+    const prev = document.body.style.overflowX;
+    document.body.style.overflowX = "hidden";
+    return () => { document.body.style.overflowX = prev; };
+  }, []);
+
   const filtered = articles.filter(a=>{
     if(isSpam(a)) return false;
     if(filter==="br")    return a.source.flag==="🇧🇷";
@@ -816,7 +805,7 @@ const NewsPage = () => {
   const catSources    = CATEGORIES.flatMap(c=>c.sources);
 
   return (
-    <Box minH="100vh" w="100vw" bg="#050505" color="white" style={{ overflowX:"clip" }}>
+    <Box minH="100vh" w="100vw" bg="#050505" color="white">
       {/* Inject Matrix CSS once */}
       <style>{MATRIX_CSS}</style>
 
