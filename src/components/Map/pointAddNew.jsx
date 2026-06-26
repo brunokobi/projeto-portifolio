@@ -93,10 +93,8 @@ const PointAddNew = (props) => {
         const basemap = new Basemap({
           baseLayers: [
             new TileLayer({
-              url:
-                "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/terrain_with_heavy_bathymetry/MapServer",
-              copyright:
-                'Bathymetry, topography and satellite imagery from <a href="https://visibleearth.nasa.gov/view_cat.php?categoryID=1484" target="_blank">NASA Visible Earth</a> | <a href="http://www.aag.org/global_ecosystems" target="_blank">World Ecological Land Units, AAG</a> | Oceans, glaciers and water bodies from <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a>',
+              url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
+              copyright: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics",
             }),
           ],
         })
