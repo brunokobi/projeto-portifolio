@@ -64,7 +64,7 @@ useEffect(() => {
             offsetX="-50%"
             transition="all 1s"
           >
-            <Image src={profile} w={{ base: 250, md: 300 }} />
+            <Image src={profile} w={{ base: 250, md: 300 }} style={{ mixBlendMode: "screen" }} />
             
           </Stack>
 
