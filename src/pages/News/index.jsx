@@ -244,7 +244,7 @@ const HERO_SCIENCE_BOOST = new Set([
   "BAIR","The Gradient","IEEE Spectrum","IEEE TV AI","DeepMind",
   "Stanford AI","arXiv AI","Apple ML","ScienceDaily","Reuters Inst.",
   "RIKEN AIP","AI Singapore","HuggingFace","OpenAI","NVIDIA Blog",
-  "ChinAI","SCMP Tech","Synced",
+  "ChinAI","SCMP Tech","Synced","AI News",
 ]);
 
 // Score dedicado ao carrossel: prestige + science boost + keywords + recência pesada
