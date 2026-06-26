@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Box, Icon } from "@chakra-ui/react";
 
 import {
@@ -11,8 +11,6 @@ import {
   SiDocker, SiGithub, SiN8N, SiChatwoot,
 } from "react-icons/si";
 import { DiProlog, DiPostgresql } from "react-icons/di";
-
-import fundo from "../../assets/img/fundo.mp4";
 
 const ALL_ICONS = [
   FaPhp, SiC, FaHtml5, FaCss3Alt, TbBrandJavascript,
@@ -71,8 +69,6 @@ const COLS = Array.from({ length: NUM_COLS }, (_, col) => {
 });
 
 const IconsBackground = () => {
-  const videoRef = useRef(null);
-
   // Injeta o keyframe e as regras de hover uma única vez
   useEffect(() => {
     const style = document.createElement("style");
@@ -97,48 +93,19 @@ const IconsBackground = () => {
     return () => document.head.removeChild(style);
   }, []);
 
-  // Adia o carregamento do vídeo para não bloquear o primeiro render
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const timer = setTimeout(() => {
-      v.muted = true;
-      v.src = v.querySelector("source").src;
-      v.load();
-      v.play().catch(() => {});
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <Box
       position="fixed"
       top={0} left={0} right={0} bottom={0}
       overflow="hidden"
-      zIndex={0}
+      zIndex={2}
       pointerEvents="none"
     >
-      {/* Vídeo de fundo */}
-      <video
-        ref={videoRef}
-        autoPlay loop muted playsInline preload="none"
-        style={{
-          position: "absolute",
-          top: 0, left: 0,
-          width: "100%", height: "100%",
-          objectFit: "cover",
-          display: "block",
-          opacity: 0.25,
-        }}
-      >
-        <source src={fundo} type="video/mp4" />
-      </video>
-
       {/* Overlay escuro para os ícones se destacarem */}
       <Box
         position="absolute"
         top={0} left={0} right={0} bottom={0}
-        bg="rgba(0, 0, 0, 0.55)"
+        bg="rgba(0, 0, 0, 0.45)"
       />
 
       {/* Colunas Matrix com ícones caindo */}

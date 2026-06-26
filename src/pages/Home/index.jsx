@@ -6,8 +6,9 @@ import profile from "../../assets/img/home-animation-removed.gif";
 import fundo from "../../assets/img/fundo.mp4";
 
 
-import IconsBackground from "../../components/IconsBackground";
+import VideoBackground from "../../components/VideoBackground";
 import GlobeBackground from "../../components/GlobeBackground";
+import IconsBackground from "../../components/IconsBackground";
 import { useIntl } from 'react-intl';
 import { useEffect } from 'react';
 import falar from "../../components/TextAudio";
@@ -37,7 +38,9 @@ useEffect(() => {
 
   return (
     <AnimatePresence>
-      <GlobeBackground />
+      <VideoBackground />   {/* z-index: 0 — camada mais baixa */}
+      <GlobeBackground />   {/* z-index: 1 — acima do vídeo */}
+      <IconsBackground />   {/* z-index: 2 — ícones + overlay */}
       <Flex
         minH="100vh"
         w={{ base: "90%", md: "60%", lg: "100%", sm: "100%" }}
