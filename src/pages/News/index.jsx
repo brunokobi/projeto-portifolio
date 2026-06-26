@@ -79,6 +79,10 @@ const MATRIX_CSS = `
 /* carousel */
 @keyframes nwsProgress { from{width:0%} to{width:100%} }
 .nws-carousel-slide { position:absolute; inset:0; transition:opacity .6s ease; }
+
+/* category drawer */
+@keyframes nwsDrawerIn  { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+@keyframes nwsOverlayIn { from{opacity:0} to{opacity:1} }
 `;
 
 // ── useInView hook ─────────────────────────────────────────────────────────
@@ -831,10 +835,118 @@ function ScrollRow({ articles, CardComponent }) {
   );
 }
 
+// ── Category Drawer ────────────────────────────────────────────────────────
+function DrawerArticleRow({ a, accent }) {
+  const [imgErr, setImgErr] = useState(false);
+  const lvl = importanceLevel(a.score ?? 0);
+  return (
+    <Link href={a.link} isExternal _hover={{ textDecoration:"none" }}>
+      <Flex px={5} py={4} gap={3} align="flex-start"
+        borderBottom="1px solid rgba(255,255,255,0.05)"
+        _hover={{ bg:"rgba(255,255,255,0.03)" }} transition="background .15s">
+        {a.img && !imgErr && (
+          <Box flexShrink={0} w="80px" h="56px" borderRadius="6px" overflow="hidden" bg="#111">
+            <Box as="img" src={a.img} w="100%" h="100%"
+              style={{ objectFit:"cover", display:"block" }}
+              onError={()=>setImgErr(true)} />
+          </Box>
+        )}
+        <Box flex={1} minW={0}>
+          <HStack mb="4px" spacing={2} wrap="wrap">
+            <Text fontSize="9px" fontFamily="heading" fontWeight="700" color={accent} flexShrink={0}>
+              {a.source?.flag} {a.source?.name}
+            </Text>
+            {lvl && (
+              <Text fontSize="8px" fontFamily="heading" fontWeight="700" color={lvl.color} flexShrink={0}>
+                {lvl.icon} {lvl.label}
+              </Text>
+            )}
+          </HStack>
+          <Text fontSize="xs" fontFamily="heading" fontWeight="600" color="whiteAlpha.900"
+            lineHeight="1.45" noOfLines={2} mb="4px">
+            {a.title}
+          </Text>
+          {a.date && (
+            <Text fontSize="9px" color="whiteAlpha.400" fontFamily="heading">
+              {timeAgo(a.date)} atrás
+            </Text>
+          )}
+        </Box>
+        <Icon as={BsArrowRight} color={accent} boxSize="12px" flexShrink={0} mt={1} opacity={0.6} />
+      </Flex>
+    </Link>
+  );
+}
+
+function CategoryDrawer({ cat, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  if (!cat) return null;
+  const sorted = [...cat.articles].sort((a,b) => heroScore(b) - heroScore(a));
+
+  return (
+    <Box position="fixed" inset={0} zIndex={9998}
+      display="flex" justifyContent="flex-end"
+      bg="rgba(0,0,0,0.65)"
+      style={{ animation:"nwsOverlayIn .2s ease both", backdropFilter:"blur(4px)" }}
+      onClick={onClose}>
+
+      <Box bg="#080808" w={{ base:"100vw", md:"500px" }} h="100vh"
+        display="flex" flexDirection="column"
+        borderLeft={`1px solid ${cat.accent}33`}
+        style={{ animation:"nwsDrawerIn .25s ease both", boxShadow:"-12px 0 48px rgba(0,0,0,0.85)" }}
+        onClick={e => e.stopPropagation()}>
+
+        {/* Header */}
+        <Flex align="center" justify="space-between" px={5} py={4} flexShrink={0}
+          borderBottom={`1px solid rgba(255,255,255,0.07)`}
+          style={{ background:`linear-gradient(135deg, ${cat.accent}08 0%, transparent 60%)` }}>
+          <VStack align="flex-start" spacing="2px">
+            <HStack spacing={2}>
+              <Box w="10px" h="10px" borderRadius="full" bg={cat.accent} flexShrink={0}
+                style={{ boxShadow:`0 0 8px ${cat.accent}` }} />
+              <Text fontFamily="heading" fontWeight="800" fontSize="md" color="white"
+                style={{ textShadow:`0 0 20px ${cat.accent}55` }}>
+                {cat.title}
+              </Text>
+            </HStack>
+            <Text fontSize="9px" color="whiteAlpha.400" fontFamily="heading" pl={5}>
+              {sorted.length} artigos · ordenados por relevância
+            </Text>
+          </VStack>
+          <Box as="button" onClick={onClose}
+            color="whiteAlpha.400" _hover={{ color:"white" }} transition="color .15s"
+            fontSize="lg" lineHeight={1} ml={4}>✕</Box>
+        </Flex>
+
+        {/* Body */}
+        <Box overflowY="auto" flex={1}
+          css={{ "&::-webkit-scrollbar":{ width:"4px" }, "&::-webkit-scrollbar-thumb":{ background:`${cat.accent}44`, borderRadius:"2px" } }}>
+          {sorted.map((a,i) => <DrawerArticleRow key={i} a={a} accent={cat.accent} />)}
+        </Box>
+
+        {/* Footer */}
+        <Flex justify="center" py={3} flexShrink={0}
+          borderTop="1px solid rgba(255,255,255,0.05)">
+          <Text fontSize="9px" color="whiteAlpha.300" fontFamily="heading">
+            {cat.desc}
+          </Text>
+        </Flex>
+      </Box>
+    </Box>
+  );
+}
+
 // ── Category Section ───────────────────────────────────────────────────────
-function CategorySection({ title, desc, accent, articles }) {
+function CategorySection({ title, desc, accent, articles, onOpenDrawer }) {
   const [ref, inView] = useInView(0.1);
   if (!articles.length) return null;
+
+  const openDrawer = () => onOpenDrawer?.({ title, desc, accent, articles });
 
   return (
     <Box ref={ref} borderTop="1px solid rgba(255,255,255,0.06)">
@@ -848,9 +960,12 @@ function CategorySection({ title, desc, accent, articles }) {
           <Text fontFamily="heading" fontSize="xs" fontWeight="800" color="white" letterSpacing="0.08em">
             {title}
           </Text>
-          <Text fontSize="9px" fontFamily="heading" color={accent} ml="auto" fontWeight="600" flexShrink={0}>
-            {articles.length} artigos
-          </Text>
+          <Box as="button" onClick={openDrawer} ml="auto" flexShrink={0}
+            _hover={{ opacity:0.7 }} transition="opacity .15s">
+            <Text fontSize="9px" fontFamily="heading" color={accent} fontWeight="600">
+              {articles.length} artigos →
+            </Text>
+          </Box>
         </Flex>
         <ScrollRow articles={articles} CardComponent={CategoryCard} />
       </Box>
@@ -865,9 +980,13 @@ function CategorySection({ title, desc, accent, articles }) {
             {title}
           </Text>
           <Text fontSize="xs" color="whiteAlpha.500" fontFamily="heading" lineHeight="1.6">{desc}</Text>
-          <Text fontSize="10px" fontFamily="heading" color={accent} mt={3} fontWeight="600">
-            {articles.length} artigos
-          </Text>
+          <Box as="button" onClick={openDrawer} mt={3}
+            _hover={{ opacity:0.7 }} transition="opacity .15s" display="block">
+            <Text fontSize="10px" fontFamily="heading" color={accent} fontWeight="700"
+              style={{ textShadow:`0 0 8px ${accent}66` }}>
+              {articles.length} artigos →
+            </Text>
+          </Box>
         </Box>
         <Box flex={1} minW={0} px={4}>
           <ScrollRow articles={articles} CardComponent={CategoryCard} />
@@ -899,6 +1018,7 @@ const NewsPage = () => {
   const [filter, setFilter]         = useState("all");
   const [sortBy, setSortBy]         = useState("importance");
   const [showSources, setShowSources] = useState(false);
+  const [drawerCat, setDrawerCat]     = useState(null);
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
@@ -1159,6 +1279,8 @@ const NewsPage = () => {
         </Box>
       )}
 
+      {drawerCat && <CategoryDrawer cat={drawerCat} onClose={()=>setDrawerCat(null)} />}
+
       {loading ? <MatrixLoader /> : (
         <Box pb="60px">
           {heroSlides.length > 0 && <HeroCarousel articles={heroSlides} />}
@@ -1174,13 +1296,15 @@ const NewsPage = () => {
           <Box px={{base:4,md:8}}>
             {CATEGORIES.map(cat=>(
               <CategorySection key={cat.id} {...cat}
-                articles={catArticles.filter(a=>cat.sources.includes(a.source.name))} />
+                articles={catArticles.filter(a=>cat.sources.includes(a.source.name))}
+                onOpenDrawer={setDrawerCat} />
             ))}
             {(()=>{
               const remaining=catArticles.filter(a=>!catSources.includes(a.source.name));
               if(!remaining.length)return null;
               return <CategorySection title="🌐 Outros" desc="Outras fontes de IA ao redor do mundo."
-                accent="rgba(255,255,255,0.35)" articles={remaining} />;
+                accent="rgba(255,255,255,0.35)" articles={remaining}
+                onOpenDrawer={setDrawerCat} />;
             })()}
           </Box>
         </Box>
