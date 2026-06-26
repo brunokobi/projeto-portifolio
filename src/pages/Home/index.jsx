@@ -1,46 +1,54 @@
-import { Flex, Heading, SlideFade, Stack} from "@chakra-ui/react";
+import { Flex, Heading, SlideFade, Stack } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from 'react';
 import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
-import fundo from "../../assets/img/fundo.mp4";
-
 
 import VideoBackground from "../../components/VideoBackground";
 import GlobeBackground from "../../components/GlobeBackground";
 import IconsBackground from "../../components/IconsBackground";
+import BigBangLoader from "../../components/BigBangLoader";
 import { useIntl } from 'react-intl';
-import { useEffect } from 'react';
 import falar from "../../components/TextAudio";
 
-
-
-
 const Home = () => {
-const intl = useIntl();
-const phrases = [intl.formatMessage({id: 'frase_1'}), intl.formatMessage({id: 'frase_2'})];
-const typedPhrase = useTypewriter(phrases);
+  const intl = useIntl();
+  const [showBigBang, setShowBigBang] = useState(true);
+  const phrases = [intl.formatMessage({ id: 'frase_1' }), intl.formatMessage({ id: 'frase_2' })];
+  const typedPhrase = useTypewriter(phrases);
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    falar(
-      intl.formatMessage({id: 'ola_mundo'})+
-      intl.formatMessage({id: 'eu_sou'})+
-      intl.formatMessage({id: 'meunome'})+
-      intl.formatMessage({id: 'frase_1'})+
-      intl.formatMessage({id: 'frase_2'})
-    );
-  }, 1000);
-  return () => clearTimeout(timer);
-// eslint-disable-next-line
-}, []);
-
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      falar(
+        intl.formatMessage({ id: 'ola_mundo' }) +
+        intl.formatMessage({ id: 'eu_sou' }) +
+        intl.formatMessage({ id: 'meunome' }) +
+        intl.formatMessage({ id: 'frase_1' }) +
+        intl.formatMessage({ id: 'frase_2' })
+      );
+    }, 1000);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line
+  }, []);
 
   return (
     <AnimatePresence>
-      <VideoBackground />   {/* z-index: 0 — camada mais baixa */}
-      <GlobeBackground />   {/* z-index: 1 — acima do vídeo */}
-      <IconsBackground />   {/* z-index: 2 — ícones + overlay */}
+      {/* z-index: 200 — Big Bang loading, acima de tudo */}
+      {showBigBang && (
+        <BigBangLoader key="bigbang" onDone={() => setShowBigBang(false)} />
+      )}
+
+      {/* z-index: 0 — vídeo de fundo */}
+      <VideoBackground />
+
+      {/* z-index: 1 — globo 3D */}
+      <GlobeBackground />
+
+      {/* z-index: 2 — ícones caindo + overlay */}
+      <IconsBackground />
+
+      {/* z-index: 10+ — conteúdo principal */}
       <Flex
         minH="100vh"
         w={{ base: "90%", md: "60%", lg: "100%", sm: "100%" }}
@@ -54,15 +62,12 @@ useEffect(() => {
         exit={{ opacity: 0 }}
         margin={'3%'}
       >
-        
-         
         <Stack
-          direction={{ base: "column", md: "row", lg: "row",sm:"column" }}
+          direction={{ base: "column", md: "row", lg: "row", sm: "column" }}
           spacing={5}
           display="flex"
           align="center"
         >
-          <IconsBackground />
           <Stack
             as={SlideFade}
             in={true}
@@ -72,7 +77,6 @@ useEffect(() => {
             zIndex={10}
           >
             <Image src={profile} w={{ base: 250, md: 300 }} />
-            
           </Stack>
 
           <div>
@@ -84,16 +88,14 @@ useEffect(() => {
                   fontSize={{ base: "xl", md: "5xl" }}
                   fontWeight={300}
                   mb={{ md: -1, lg: -2 }}
-                  onMouseOver={() => falar(intl.formatMessage({id: 'ola_mundo'}))}
+                  onMouseOver={() => falar(intl.formatMessage({ id: 'ola_mundo' }))}
                   textShadow={{
                     base: "0px 0px 20px rgb(0, 0, 0)",
                     md: "0px 0px 8px rgb(0, 0, 0)",
                     lg: "0px 0px 10px rgb(0, 0, 0)",
                   }}
-                >                
-                  {/* tradução texto */}
-                  {intl.formatMessage({id: 'ola_mundo'})},&nbsp;
-
+                >
+                  {intl.formatMessage({ id: 'ola_mundo' })},&nbsp;
                 </Heading>
                 <Heading
                   fontSize={{ base: "md", md: "xl" }}
@@ -101,15 +103,14 @@ useEffect(() => {
                   variant="span"
                   position="relative"
                   zIndex="999"
-                  onMouseOver={() => falar(intl.formatMessage({id: 'eu_sou'}))}
+                  onMouseOver={() => falar(intl.formatMessage({ id: 'eu_sou' }))}
                   textShadow={{
                     base: "0px 0px 20px rgb(0, 0, 0)",
                     md: "0px 0px 8px rgb(0, 0, 0)",
                     lg: "0px 0px 10px rgb(0, 0, 0)",
                   }}
                 >
-                   {/* tradução texto */}
-                  {intl.formatMessage({id: 'eu_sou'})}                
+                  {intl.formatMessage({ id: 'eu_sou' })}
                 </Heading>
               </div>
 
@@ -123,10 +124,10 @@ useEffect(() => {
                     md: "0px 0px 8px #42c920",
                     lg: "0px 0px 10px #42c920",
                   }}
-                  fontSize={{ base: "3xl", md: "3xl", lg: "5xl",sm:"3xl",xl:"6xl" }}
-                  onMouseOver={() => falar(intl.formatMessage({id: 'meunome'}))}
+                  fontSize={{ base: "3xl", md: "3xl", lg: "5xl", sm: "3xl", xl: "6xl" }}
+                  onMouseOver={() => falar(intl.formatMessage({ id: 'meunome' }))}
                 >
-                   {intl.formatMessage({id: 'meunome'})}
+                  {intl.formatMessage({ id: 'meunome' })}
                 </Heading>
               </div>
 
@@ -158,19 +159,19 @@ useEffect(() => {
                     md: "0px 0px 8px rgb(0, 0, 0)",
                     lg: "0px 0px 10px rgb(0, 0, 0)",
                   }}
-                  onMouseOver={() => falar(intl.formatMessage({id: 'frase_1'})
-                  +intl.formatMessage({id: 'frase_2'})
+                  onMouseOver={() => falar(
+                    intl.formatMessage({ id: 'frase_1' }) +
+                    intl.formatMessage({ id: 'frase_2' })
                   )}
-                >                 
+                >
                   <span style={{ borderRight: '2px solid #42c920' }}>{typedPhrase}</span>
                 </Heading>
               </div>
             </Stack>
           </div>
-        </Stack>       
+        </Stack>
       </Flex>
     </AnimatePresence>
-   
   );
 };
 
