@@ -2,8 +2,6 @@
 
 > **"Não é um portfólio. É um ecossistema digital inteligente em produção."**
 
-![Portfolio](portifolio.png)
-
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
@@ -12,9 +10,10 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Vite_5-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
-  <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
+  <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
@@ -33,7 +32,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação orientada a eventos com IA, mapa 3D geoespacial, feed de notícias em tempo real de 20 fontes globais, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação orientada a eventos com IA, mapa 3D geoespacial, feed de notícias em tempo real de 20+ fontes globais, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -43,7 +42,7 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   Browser (React 18)                    │
+│              Browser (React 18 + Vite 5)                │
 │  i18n · WeatherBar · NewsPanel · ArcGIS · TextToSpeech  │
 └────────────────────┬────────────────────────────────────┘
                      │ HTTPS
@@ -51,7 +50,7 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
         │                         │
         ▼                         ▼
  Netlify Functions          Supabase (BaaS)
- (TypeScript/Deno)          PostgreSQL + RLS
+ (TypeScript)               PostgreSQL + RLS
  - Proxy RSS feeds          JWT Auth
  - CORS resolver            Edge Functions
         │                         │
@@ -77,9 +76,10 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 | Camada | Tecnologia | Uso |
 |--------|-----------|-----|
 | Frontend | React 18 + Hooks | SPA com Context API |
-| UI | Chakra UI | Design system responsivo |
-| Animação | Framer Motion | Transições e stagger animations |
-| i18n | React-Intl | 9 idiomas |
+| Build | Vite 5 | Dev server HMR instantâneo, bundle otimizado |
+| UI | Chakra UI v2 | Design system responsivo |
+| Animação | Framer Motion v11 | Transições e stagger animations |
+| i18n | React-Intl | 9 idiomas + auto-detect por IP |
 | Voz | Web Speech API | Text-to-Speech nativo |
 | Backend | Supabase | PostgreSQL + Auth + RLS + Edge Functions |
 | Automação | n8n (self-hosted) | Workflows event-driven |
@@ -97,7 +97,7 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 ### Pré-requisitos
 
 - Node.js 18+
-- Yarn
+- npm 9+
 - Conta no [Supabase](https://supabase.com)
 - Conta no [Netlify](https://netlify.com) (para as functions)
 - Chave de API do [ESRI ArcGIS](https://developers.arcgis.com)
@@ -107,7 +107,7 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 ```bash
 git clone https://github.com/brunokobi/projeto-portifolio.git
 cd projeto-portifolio
-yarn install
+npm install
 ```
 
 ### Variáveis de ambiente
@@ -116,27 +116,28 @@ Crie um arquivo `.env.local` na raiz:
 
 ```env
 # Supabase
-REACT_APP_SUPABASE_URL=https://xxxx.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+VITE_SUPABASE_URL=https://xxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
 
 # ESRI ArcGIS
-REACT_APP_ESRI_API_KEY=AAPTxy8BH...
+VITE_ESRI_API_KEY=AAPTxy8BH...
 
-# n8n (webhook para o fluxo de contato)
+# Hugging Face (páginas de IA experimental)
+VITE_HUGGING_FACE_API_KEY=hf_xxxx
+
+# n8n (webhook para o fluxo de contato — usado na Netlify Function)
 N8N_WEBHOOK_URL=https://seu-n8n.com/webhook/contato
-
-# Resend (email)
-RESEND_API_KEY=re_xxxx
 ```
 
 ### Rodando
 
 ```bash
-yarn start          # Desenvolvimento
-yarn build          # Build de produção
+npm start          # Desenvolvimento (Vite dev server, porta 3000)
+npm run build      # Build de produção (saída em /dist)
+npm run preview    # Pré-visualizar build de produção localmente
 ```
 
-> Para testar as Netlify Functions localmente instale `netlify-cli` e use `netlify dev` no lugar de `yarn start`.
+> Para testar as Netlify Functions localmente, instale `netlify-cli` e use `netlify dev` no lugar de `npm start`.
 
 ---
 
@@ -144,13 +145,13 @@ yarn build          # Build de produção
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — CORS proxy serverless + RSS parsing multi-formato + tradução automática sem chave + cache + animação escalonada
 
-Este é um dos recursos tecnicamente mais densos do projeto. Um painel lateral (Drawer) que agrega **20 feeds RSS** de fontes globais de IA, traduz os títulos automaticamente para português e exibe thumbnails extraídos diretamente do XML dos feeds.
+Um painel completo que agrega **20+ feeds RSS** de fontes globais de IA, traduz títulos automaticamente para português e exibe thumbnails extraídos diretamente do XML dos feeds.
 
 ### Por que é complexo?
 
-Feeds RSS não podem ser consumidos diretamente pelo browser por restrições de **CORS** — os servidores RSS não incluem os headers necessários. A solução foi criar uma **Netlify Function em TypeScript** que atua como proxy: o frontend chama `/.netlify/functions/news?url=<feed>`, a function busca o XML no servidor e o retorna com os headers corretos.
+Feeds RSS não podem ser consumidos diretamente pelo browser por restrições de **CORS**. A solução foi criar uma **Netlify Function em TypeScript** que atua como proxy: o frontend chama `/.netlify/functions/news?url=<feed>`, a function busca o XML no servidor e o retorna com os headers corretos.
 
-Além disso, feeds RSS possuem formatos diferentes (RSS 2.0, Atom, Media RSS) e guardam imagens em campos distintos: `media:thumbnail`, `media:content`, `enclosure` ou dentro do HTML da descrição. O parser foi escrito para cobrir todos os casos.
+Além disso, feeds RSS possuem formatos diferentes (RSS 2.0, Atom, Media RSS) e guardam imagens em campos distintos: `media:thumbnail`, `media:content`, `enclosure` ou dentro do HTML da descrição.
 
 ### Fluxo completo
 
@@ -162,51 +163,38 @@ Browser
 Browser
   → parseRSS() extrai: título, link, data, imagem
   → translateArticles() traduz títulos EN→PT via Google Translate (sem chave)
+  → Filtra artigos de spam/propaganda automaticamente
   → Ordena por data decrescente
   → Exibe com animação stagger (50ms de delay por item)
   → Cache in-memory por 5 minutos
 ```
 
-### Como reproduzir — Netlify Function
-
-Crie `netlify/functions/news.ts`:
+### Netlify Function (proxy RSS)
 
 ```typescript
+// netlify/functions/news.ts
 import type { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event) => {
-  const url = event.queryStringParameters?.url;
-  if (!url) return { statusCode: 400, body: "url param required" };
+export const handler: Handler = async (event) => {
+  const feedUrl = event.queryStringParameters?.url;
+  if (!feedUrl) return { statusCode: 400, body: JSON.stringify({ error: "Missing url param" }) };
 
-  const res = await fetch(decodeURIComponent(url));
+  const res = await fetch(feedUrl, {
+    headers: { "User-Agent": "Mozilla/5.0", "Accept": "application/rss+xml, */*" },
+    signal: AbortSignal.timeout(8000),
+  });
+
   const xml = await res.text();
-
   return {
     statusCode: 200,
     headers: {
-      "Content-Type": "application/xml",
+      "Content-Type": "application/xml; charset=utf-8",
       "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "public, max-age=300",
     },
     body: xml,
   };
 };
-
-export { handler };
-```
-
-### Extração de imagens do RSS
-
-```javascript
-const img =
-  getAttr("media\\:thumbnail, thumbnail", "url") ||   // Media RSS
-  getAttr("media\\:content, content", "url") ||        // Media Content
-  getAttr("enclosure[type^='image']", "url") ||        // Enclosure
-  (() => {
-    // Fallback: extrai <img src> do HTML da descrição
-    const raw = getText("description") || getText("content\\:encoded");
-    const match = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
-    return match ? match[1] : "";
-  })();
 ```
 
 ### Tradução automática sem chave de API
@@ -220,84 +208,35 @@ async function translateTitle(text) {
 }
 ```
 
-> Esta endpoint pública do Google Translate não requer chave de API e suporta textos curtos — ideal para títulos de artigos.
+### Fontes ativas (20+)
 
-### 20 fontes ativas
+**Brasil 🇧🇷** — SWEN.AI · AINEWS · Exame IA · NeoFeed · Tecnoblog · Olhar Digital · TabNews
 
-**Brasil 🇧🇷**
-
-| Nome | Feed RSS |
-|------|----------|
-| SWEN.AI | `https://swen.ai/feed/` |
-| AINEWS | `https://ainews.com.br/feed/` |
-| Exame IA | `https://exame.com/inteligencia-artificial/feed/` |
-
-**Mundo 🌎**
-
-| Nome | Feed RSS |
-|------|----------|
-| AI Weekly | `https://aiweekly.co/issues.rss` |
-| AI Insider | `https://theaiinsider.tech/feed` |
-| MIT News AI | `https://news.mit.edu/rss/topic/artificial-intelligence` |
-| AI News | `https://www.artificialintelligence-news.com/feed/` |
-| The Verge AI | `https://www.theverge.com/ai-artificial-intelligence/rss/index.xml` |
-| TechCrunch AI | `https://techcrunch.com/category/artificial-intelligence/feed/` |
-| Wired AI | `https://www.wired.com/feed/tag/artificial-intelligence/` |
-| MIT Tech Review | `https://www.technologyreview.com/feed/` |
-| Google Research | `https://research.google/blog/rss/` |
-| BAIR (Berkeley) | `https://bair.berkeley.edu/blog/feed.xml` |
-| MIRI | `https://intelligence.org/feed` |
-| Meta Engineering | `https://engineering.fb.com/feed/` |
-| Hugging Face | `https://huggingface.co/blog/feed.xml` |
-| KDnuggets | `https://kdnuggets.com/feed` |
-| arXiv cs.AI | `https://export.arxiv.org/rss/cs.AI` |
-| The Gradient | `https://thegradient.pub/rss/` |
-| IEEE Spectrum | `https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss` |
-| Import AI | `https://jack-clark.net/feed` |
-| Synced | `https://syncedreview.com/feed` |
-| Analytics Vidhya | `https://www.analyticsvidhya.com/feed/` |
+**Mundo 🌎** — The Verge · TechCrunch · MIT Tech Review · MIT News AI · Wired · Google Research · BAIR (Berkeley) · Hugging Face · arXiv cs.AI · The Gradient · Import AI · OpenAI Blog · Anthropic · Google DeepMind · Meta Engineering
 
 ---
 
 ## 🌐 Feature: Internacionalização com Detecção Automática por IP
 
-> **Complexidade:** ⭐⭐⭐ — Geolocalização por IP + mapeamento país→idioma + persistência de preferência
+> **Complexidade:** ⭐⭐⭐ — Geolocalização por IP + mapeamento país→idioma + Context API sem reload
 
-Na primeira visita, sem nenhuma interação do usuário, o site já aparece **no idioma correto** para o país de origem do visitante. Isso é feito em 3 passos:
-
-### Como funciona
-
-**1. Detecta o país pelo IP** (via `ipapi.co`):
+Na primeira visita, o site já aparece **no idioma correto** para o país de origem do visitante. A troca de idioma ocorre via **React Context** — sem `window.location.reload()`, apenas um re-render imediato.
 
 ```javascript
-// src/utils/geoip.js — singleton para não chamar a API mais de uma vez
-let _promise = null;
-export const getGeoIP = () => {
-  if (!_promise) {
-    _promise = fetch("https://ipapi.co/json/").then(r => r.json()).catch(() => ({}));
-  }
-  return _promise;
+// src/contexts/LanguageContext.jsx
+export const LanguageProvider = ({ children }) => {
+  const [locale, setLocale] = useState(getStoredLang);
+
+  const setLanguage = useCallback((lang) => {
+    localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: lang }));
+    setLocale(lang); // re-render imediato, sem reload de página
+  }, []);
+
+  return <LanguageContext.Provider value={{ locale, setLanguage }}>{children}</LanguageContext.Provider>;
 };
 ```
 
-**2. Mapeia país → idioma** (cobre mais de 50 países):
-
-```javascript
-const COUNTRY_TO_LANG = {
-  BR: "pt", PT: "pt",
-  US: "en", GB: "en", AU: "en", CA: "en",
-  ES: "es", MX: "es", AR: "es", // + 14 países hispanófonos
-  FR: "fr", BE: "fr", CH: "fr",
-  DE: "de", AT: "de",
-  CN: "zh", TW: "zh", HK: "zh",
-  RU: "ru", BY: "ru",
-  SA: "ar", AE: "ar", EG: "ar", // + 12 países árabes
-};
-```
-
-**3. Salva no `localStorage`** — na segunda visita, a preferência é respeitada sem nova chamada à API.
-
-### Idiomas suportados
+### Idiomas suportados (9)
 
 | Idioma | Código | Cobertura |
 |--------|--------|-----------|
@@ -315,37 +254,14 @@ const COUNTRY_TO_LANG = {
 
 ## 🌤️ Feature: Clima em Tempo Real com Fallback GPS → IP
 
-> **Complexidade:** ⭐⭐⭐⭐ — Dual-source geolocation + API meteorológica + mapeamento de 22 códigos WMO
-
-O widget de clima exibido no canto superior direito usa uma estratégia de **dupla fonte de localização** para garantir a maior precisão possível:
-
-### Hierarquia de precisão
+> **Complexidade:** ⭐⭐⭐⭐ — Dual-source geolocation + API meteorológica + 22 códigos WMO
 
 ```
-1ª tentativa: navigator.geolocation (GPS do browser)
-    → precisão de metros
-    → requer permissão do usuário
-
-Fallback: ipapi.co (IP geolocation)
-    → precisão de 1–10 km (nível de cidade)
-    → sem necessidade de permissão
+1ª tentativa: navigator.geolocation (GPS do browser) → precisão de metros
+Fallback:      ipapi.co (IP geolocation) → precisão de 1–10 km, sem permissão
 ```
 
-### Fonte meteorológica
-
-As coordenadas são enviadas à [Open-Meteo API](https://open-meteo.com/) — **completamente gratuita e sem necessidade de chave de API**:
-
-```
-GET https://api.open-meteo.com/v1/forecast
-  ?latitude={lat}
-  &longitude={lon}
-  &current=temperature_2m,weather_code
-  &timezone=auto
-```
-
-### 22 condições meteorológicas mapeadas (padrão WMO)
-
-Todos os códigos WMO (World Meteorological Organization) de 0 a 99 estão mapeados para ícones e descrições em português — de "☀️ Limpo" a "⛈️ Tempestade com granizo".
+Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 condições WMO mapeadas para ícones e descrições em português.
 
 ---
 
@@ -353,27 +269,16 @@ Todos os códigos WMO (World Meteorological Organization) de 0 a 99 estão mapea
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — Trigger PostgreSQL → Edge Function → Webhook → n8n → Gemini AI → Email
 
-O formulário de contato não apenas salva a mensagem — ela dispara um **pipeline completo de automação inteligente**:
-
-### Fluxo detalhado
-
 ```
-1. Usuário preenche o formulário e clica em "Iniciar Transmissão"
-2. Frontend valida e chama supabase.from('contato').insert({...})
-3. PostgreSQL persiste o registro com segurança (RLS ativo)
-4. Trigger automático no banco ativa uma Edge Function (Deno)
-5. Edge Function dispara webhook para o n8n
-6. n8n orquestra o pipeline:
-   a. Recebe os dados da mensagem
-   b. Envia para Google Gemini AI para análise de sentimento e classificação
-   c. IA retorna: categoria, urgência e resumo
-   d. n8n formata e-mail personalizado com os insights da IA
-   e. Resend entrega o e-mail ao destinatário
+1. Usuário envia formulário
+2. Frontend → supabase.from('contato').insert({...})
+3. PostgreSQL persiste com RLS ativo
+4. Trigger SQL ativa Edge Function (Deno)
+5. Edge Function → webhook n8n
+6. n8n → Google Gemini (análise de sentimento + classificação)
+7. Gemini → n8n formata e-mail personalizado
+8. Resend entrega o e-mail
 ```
-
-### Como reproduzir — Supabase
-
-**Tabela `contato`:**
 
 ```sql
 create table contato (
@@ -384,68 +289,19 @@ create table contato (
   created_at timestamptz default now()
 );
 
--- Habilitar RLS
 alter table contato enable row level security;
-
--- Permitir apenas insert anônimo
 create policy "allow_insert" on contato for insert with check (true);
-```
-
-**Trigger que ativa o n8n:**
-
-```sql
-create or replace function notify_n8n()
-returns trigger language plpgsql as $$
-begin
-  perform net.http_post(
-    url := current_setting('app.n8n_webhook_url'),
-    body := row_to_json(new)::text,
-    headers := '{"Content-Type":"application/json"}'::jsonb
-  );
-  return new;
-end;
-$$;
-
-create trigger on_contato_insert
-  after insert on contato
-  for each row execute function notify_n8n();
 ```
 
 ---
 
 ## 📊 Feature: Contador de Visitas Atômico
 
-> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + Edge Functions + visual de placa enferrujada + Text-to-Speech
+> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + visual de placa enferrujada + Text-to-Speech
 
-O contador usa o **Supabase** como backend completo: a contagem é persistida em PostgreSQL e o incremento ocorre via **função RPC**, garantindo atomicidade sem race conditions entre visitantes simultâneos. O visual imita um placar industrial antigo com ferrugem, rebites, dígitos em verde matrix e scanlines — tudo em CSS puro com `@emotion/react`.
-
-### Arquitetura Supabase
-
-```
-Browser
-  → supabase.rpc("increment_views")          ← chamada direta via supabase-js
-  → PostgreSQL executa UPDATE atômico         ← sem race condition
-  → Retorna novo total                        ← exibido nos dígitos
-  → Edge Function (Deno) notifica n8n         ← pipeline de automação ativado
-```
-
-A **Edge Function** do Supabase fica escutando inserções na tabela e pode disparar webhooks para automações externas (n8n, alertas, analytics) sem nenhum servidor adicional.
-
-### Como reproduzir — Supabase
-
-**1. Tabela e RPC no PostgreSQL:**
+Contador persistido em PostgreSQL com incremento via **RPC atômica** — sem race conditions entre visitantes simultâneos. Visual de placar industrial com ferrugem, rebites, dígitos em verde matrix e scanlines em CSS puro.
 
 ```sql
--- Tabela de contagem (single-row)
-create table page_views (
-  id int primary key default 1,
-  count bigint default 0,
-  check (id = 1)
-);
-
-insert into page_views (id, count) values (1, 0);
-
--- Função RPC atômica
 create or replace function increment_views()
 returns bigint language sql as $$
   update page_views set count = count + 1 where id = 1
@@ -453,68 +309,49 @@ returns bigint language sql as $$
 $$;
 ```
 
-**2. Edge Function (Deno) — opcional para automações:**
-
-```typescript
-// supabase/functions/on-visit/index.ts
-import { serve } from "https://deno.land/std/http/server.ts";
-
-serve(async (req) => {
-  const payload = await req.json();
-  // Dispara webhook externo, notifica Slack, atualiza analytics, etc.
-  await fetch(Deno.env.get("N8N_WEBHOOK_URL")!, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-  return new Response("ok");
-});
-```
-
-Deploy: `supabase functions deploy on-visit`
-
-**3. Chamada no frontend:**
-
 ```javascript
 const { data } = await supabase.rpc("increment_views");
-setVisits(data); // retorna o novo total
+setVisits(data);
 ```
-
-### Text-to-Speech no hover
-
-Ao passar o mouse sobre o placar, o contador lê em voz alta a contagem no idioma atual (ex: _"42 VISITS"_ em inglês, _"42 VISITAS"_ em português) usando a Web Speech API nativa — nenhuma dependência extra.
 
 ---
 
 ## 🌍 Feature: Mapa 3D Geoespacial (ESRI ArcGIS)
 
-> **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading de módulos + WebGL 3D + fotos próprias nos marcadores
+> **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading + WebGL 3D + fotos próprias nos marcadores
 
-O módulo de mapa utiliza a **ESRI ArcGIS Maps SDK** carregada via `esri-loader` (lazy loading) para evitar impacto no bundle inicial. O mapa renderiza em WebGL com:
-
+Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
 - Terreno 3D interativo
 - Globo animado com nuvens (NASA textures)
 - Marcadores customizados com **fotos próprias** nos pontos turísticos
 - Geolocalização dinâmica do usuário
 
-### Como reproduzir
+---
 
-1. Crie uma chave de API gratuita em [developers.arcgis.com](https://developers.arcgis.com)
-2. Adicione `REACT_APP_ESRI_API_KEY=sua_chave` no `.env`
-3. Instale: `yarn add esri-loader esri-loader-hooks`
+## 🚌 Feature: Frota Realtime RJ (Projeto externo)
+
+> **[frotarealtime.netlify.app](https://frotarealtime.netlify.app/)** — rastreamento de +4.000 ônibus do Rio de Janeiro via API SPPO
+
+- **Serverless proxy** comprime os dados em 70% antes de enviar ao browser
+- **requestAnimationFrame** com interpolação garante animação a 60 FPS
+- Velocidade dos veículos calculada e colorizada via **MapLibre GL** (GPU)
+- Agrupamento automático por nível de zoom
+- Cada ônibus mantém as últimas 10 posições (rastro de trajetória)
+- Fallback para `localStorage` com indicação de data dos dados em caso de falha na API
 
 ---
 
-## ♿ Feature: Acessibilidade com Síntese de Voz
+## ♿ Acessibilidade com Síntese de Voz
 
-O portfólio implementa Text-to-Speech nativo via **Web Speech API** do browser — sem dependências externas, sem custos. Ao passar o mouse sobre qualquer texto (títulos, descrições, habilidades), o conteúdo é lido em voz alta no idioma selecionado.
+Text-to-Speech nativo via **Web Speech API** — zero dependências, zero custo. Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado.
 
 ```javascript
-// src/components/TextAudio/index.jsx
 const falar = (texto) => {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(texto);
-  window.speechSynthesis.speak(utterance);
+  const synth = window.speechSynthesis;
+  const word = new SpeechSynthesisUtterance(texto);
+  word.lang = langMap[selectedLang] || "pt-BR";
+  synth.cancel();
+  if (localStorage.getItem("Audio") === "on") synth.speak(word);
 };
 ```
 
@@ -522,14 +359,14 @@ const falar = (texto) => {
 
 ## 📱 Responsividade Mobile
 
-Todas as páginas foram otimizadas para dispositivos móveis com breakpoints do Chakra UI:
-
 | Componente | Ajuste |
 |-----------|--------|
-| ProjectCard | Largura fluida `95vw` no mobile, tags com `wrap` automático |
-| Modal de Contato | `size="full"` no mobile + `scrollBehavior="inside"` |
+| Carrossel hero (News) | Imagem como fundo com overlay — sem overflow |
+| Categorias de notícias | Layout compacto com scroll horizontal drag-to-scroll |
+| Carrossel de certificados | CSS nativo com dots e botões anterior/próximo |
+| ProjectCard | Largura fluida `95vw`, tags com `wrap` automático |
+| Modal de Contato | `size="full"` + `scrollBehavior="inside"` |
 | Menu de navegação | Scroll horizontal sem scrollbar visível |
-| NewsPanel | Drawer full-width com scroll interno |
 
 ---
 
@@ -539,9 +376,9 @@ Todas as páginas foram otimizadas para dispositivos móveis com breakpoints do 
 |--------|-----------|
 | Banco de dados | Row Level Security (RLS) no Supabase |
 | Autenticação | JWT via Supabase Auth |
-| Inputs | Sanitização no frontend + validação no banco |
-| Segredos | Variáveis de ambiente isoladas (nunca no bundle) |
+| Segredos | Variáveis `VITE_*` — nunca expostas no bundle de produção |
 | CORS | Controlado pelas Netlify Functions |
+| Error handling | ErrorBoundary global com tela de recuperação em PT |
 
 ---
 
@@ -550,24 +387,26 @@ Todas as páginas foram otimizadas para dispositivos móveis com breakpoints do 
 | Feature | Por que impressiona |
 |---------|-------------------|
 | 🔄 Pipeline Event-Driven | Trigger SQL → n8n → Gemini → Email, sem polling |
-| 📰 20 RSS Feeds + tradução | CORS proxy serverless + parser multi-formato + Google Translate sem chave |
-| 🌐 9 idiomas + auto-detect | Cobre 50+ países com detecção transparente por IP |
+| 📰 20+ RSS Feeds + tradução | CORS proxy serverless + parser multi-formato + Google Translate sem chave |
+| 🌐 9 idiomas + auto-detect | Cobre 50+ países, troca sem reload via Context API |
 | 🌤️ Clima GPS → IP fallback | Máxima precisão sem degradar UX |
 | 🗺️ Mapa 3D WebGL | ArcGIS em produção com lazy loading |
 | ♿ Text-to-Speech | Zero dependências, Web API nativa |
 | 🔒 RLS + JWT | Segurança no nível do banco, não só da aplicação |
 | ⚛️ RPC atômica | Contador sem race conditions |
+| 🚌 GPS Fleet 60 FPS | +4.000 veículos em tempo real com interpolação WebGL |
+| ⚡ Vite 5 | HMR instantâneo, build 3× mais rápido que CRA |
 
 ---
 
 ## 📈 Roadmap
 
-- [ ] Filtros por categoria no NewsPanel (Brasil / Mundo / Pesquisa / Produto)
-- [ ] Notificações push de breaking news (Service Worker)
+- [ ] Filtros interativos por categoria no painel de notícias
+- [ ] Notificações push de breaking news (Service Worker + PWA)
 - [ ] Dashboard de analytics com métricas de visitas
-- [ ] CI/CD automatizado com testes
+- [ ] CI/CD com testes automatizados
 - [ ] Observabilidade com Sentry
-- [ ] Deploy multi-região
+- [ ] Migração esri-loader → @arcgis/map-components
 
 ---
 
