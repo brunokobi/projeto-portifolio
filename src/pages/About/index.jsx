@@ -468,6 +468,7 @@ const About = () => {
                 borderRadius="md"
                 border="1px solid"
                 borderColor="whiteAlpha.200"
+                loading="lazy"
               />
               <HStack position="absolute" bottom={2} left={0} right={0} justify="center" spacing={2}>
                 {certifications.map((_, i) => (

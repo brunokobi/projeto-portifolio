@@ -83,7 +83,7 @@ const ProjectCard = ({
               //   scrolling="no"
               //   frameborder="0"
               // />
-              <Image src={img} alt={title} width="100%" height="100%"/>
+              <Image src={img} alt={title} width="100%" height="100%" loading="lazy" />
             )}
           </Flex>
         

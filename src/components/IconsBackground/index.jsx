@@ -97,10 +97,17 @@ const IconsBackground = () => {
     return () => document.head.removeChild(style);
   }, []);
 
-  // Garante reprodução do vídeo
+  // Adia o carregamento do vídeo para não bloquear o primeiro render
   useEffect(() => {
     const v = videoRef.current;
-    if (v) { v.muted = true; v.play().catch(() => {}); }
+    if (!v) return;
+    const timer = setTimeout(() => {
+      v.muted = true;
+      v.src = v.querySelector("source").src;
+      v.load();
+      v.play().catch(() => {});
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
