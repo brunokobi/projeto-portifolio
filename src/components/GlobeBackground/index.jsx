@@ -133,14 +133,25 @@ const GlobeBackground = () => {
           symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
         }))
 
-        // Rotação automática
+        // Rotação automática — pausa quando o usuário arrasta
+        let userInteracting = false
+        let resumeTimer = null
+
+        view.on("drag", () => {
+          userInteracting = true
+          clearTimeout(resumeTimer)
+          resumeTimer = setTimeout(() => { userInteracting = false }, 3000)
+        })
+
         view.when(() => {
           watchUtils.whenFalseOnce(view, "updating", () => {
             const rotate = () => {
               if (!mountedRef.current) return
-              const cam = view.camera.clone()
-              cam.position.longitude -= 0.15
-              view.goTo(cam, { animate: false })
+              if (!userInteracting) {
+                const cam = view.camera.clone()
+                cam.position.longitude -= 0.15
+                view.goTo(cam, { animate: false })
+              }
               requestAnimationFrame(rotate)
             }
             rotate()
@@ -164,7 +175,7 @@ const GlobeBackground = () => {
         top: 0, left: 0,
         width: '100vw', height: '100vh',
         zIndex: 1,
-        pointerEvents: 'none',
+        pointerEvents: 'auto',
         opacity: 0.45,
       }}
     />
