@@ -257,7 +257,7 @@ function heroScore(a) {
   KW_MED.forEach(k      => { if (t.includes(k)) s += 4;  });
   if (a.date && !isNaN(a.date)) {
     const h = (Date.now() - a.date) / 3_600_000;
-    s += h < 1 ? 60 : h < 3 ? 50 : h < 6 ? 40 : h < 12 ? 28 : h < 24 ? 16 : h < 48 ? 6 : 0;
+    s += h < 1 ? 30 : h < 3 ? 25 : h < 6 ? 20 : h < 12 ? 14 : h < 24 ? 8 : h < 48 ? 3 : 0;
   }
   return s;
 }
