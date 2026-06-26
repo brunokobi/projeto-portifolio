@@ -136,15 +136,15 @@ function MatrixLoader() {
 // ── Categorias ─────────────────────────────────────────────────────────────
 const CATEGORIES = [
   { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA, tecnologia e mercado digital — portais e revistas brasileiras.", sources:["SWEN.AI","AINEWS","Exame IA","TabNews","Manual Usuário","MIT Tech BR","Tecnoblog","Brazil Journal","NeoFeed","Olhar Digital"],  accent:"#00c8ff" },
-  { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily"],                         accent:"#a855f7" },
-  { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS e MarkTechPost.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML"],                               accent:GREEN     },
+  { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, ETH Zurich, TUM, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","IEEE TV AI","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily","ETH Zurich","TUM"],                         accent:"#a855f7" },
+  { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS, MarkTechPost e Reuters Institute.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML","Reuters Inst."],                               accent:GREEN     },
   { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets, LangChain e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","fast.ai","TensorFlow","Towards AI","LangChain"],                                              accent:"#ff9d00" },
-  { id:"asia",       title:"🌏 Pesquisa Asiática",    desc:"Inovação em IA de Singapura, Japão e centros asiáticos — AI Singapore, RIKEN e Synced Review.",                             sources:["AI Singapore","RIKEN AIP","Synced","NUS"],                                                                                       accent:"#00d4ff" },
+  { id:"asia",       title:"🌏 Pesquisa Asiática & China",    desc:"Inovação em IA da Ásia — AI Singapore, RIKEN, Synced Review, ChinAI Newsletter e SCMP Tech.",                             sources:["AI Singapore","RIKEN AIP","Synced","NUS","ChinAI","SCMP Tech"],                                                                                       accent:"#00d4ff" },
   { id:"engenharia", title:"💻 Engenharia & Dev",     desc:"Arquitetura de software, boas práticas e bastidores técnicos — Pragmatic Engineer, Martin Fowler, Netflix, n8n e Supabase.", sources:["Pragmatic Eng.","Martin Fowler","Netflix Tech","n8n Blog","Supabase"],                                                             accent:"#f472b6" },
 ];
 
 // ── Score importância ──────────────────────────────────────────────────────
-const SOURCE_PRESTIGE = { "MIT Tech Rev":20,"MIT News":20,"Google Res.":18,"IEEE Spectrum":16,"BAIR":15,"The Gradient":14,"Wired AI":13,"The Verge":13,"TechCrunch":12,"HuggingFace":11,"AI News":10,"AI Insider":10,"Pragmatic Eng.":10,"Martin Fowler":10,"AI Weekly":9,"Exame IA":9,"MIT Tech BR":9,"KDnuggets":8,"SWEN.AI":8,"AINEWS":8,"Synced":7,"Tecnoblog":7,"Brazil Journal":7,"TabNews":6,"Netflix Tech":8,"Supabase":7,"n8n Blog":6,"Manual Usuário":6 };
+const SOURCE_PRESTIGE = { "MIT Tech Rev":20,"MIT News":20,"Google Res.":18,"IEEE Spectrum":16,"ETH Zurich":16,"BAIR":15,"TUM":15,"The Gradient":14,"Reuters Inst.":13,"Wired AI":13,"The Verge":13,"TechCrunch":12,"HuggingFace":11,"AI News":10,"AI Insider":10,"ChinAI":10,"Pragmatic Eng.":10,"Martin Fowler":10,"AI Weekly":9,"Exame IA":9,"MIT Tech BR":9,"IEEE TV AI":9,"SCMP Tech":9,"KDnuggets":8,"SWEN.AI":8,"AINEWS":8,"Synced":7,"Tecnoblog":7,"Brazil Journal":7,"TabNews":6,"Netflix Tech":8,"Supabase":7,"n8n Blog":6,"Manual Usuário":6 };
 const KW_CRITICAL = ["agi","artificial general intelligence","superintelligence","breakthrough","ban","regulation","acquisition","merger","openai","anthropic","google deepmind","deepmind"];
 const KW_HIGH     = ["gpt","claude","gemini","llama","mistral","nvidia","sora","release","launch","lança","novo modelo","new model","meta ai","microsoft","apple intelligence"];
 const KW_MED      = ["model","machine learning","neural","research","billion","open source","safety","hallucination","robot","robô","chatbot","agent","agente","multimodal"];
@@ -184,6 +184,7 @@ const SPAM_WORDS = [
 const MIXED_SOURCES = new Set([
   "Tecnoblog","Olhar Digital","NeoFeed","Brazil Journal",
   "MIT Tech Rev","Manual Usuário","TabNews","KDnuggets",
+  "ETH Zurich","TUM","Reuters Inst.","SCMP Tech",
 ]);
 
 const AI_DEV_KEYWORDS = [
@@ -261,6 +262,7 @@ const FEEDS = [
   { name:"HuggingFace",   url:"https://huggingface.co/blog/feed.xml",                                  flag:"🌎", color:"#ff9d00" },
   { name:"The Gradient",  url:"https://thegradient.pub/rss/",                                          flag:"🌎", color:GREEN },
   { name:"IEEE Spectrum", url:"https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss",    flag:"🌎", color:"#00629b" },
+  { name:"IEEE TV AI",   url:"https://ieeetv.ieee.org/channel_rss/ai/rss",                             flag:"🌎", color:"#00629b" },
   { name:"BAIR",          url:"https://bair.berkeley.edu/blog/feed.xml",                               flag:"🌎", color:"#ffa500" },
   { name:"KDnuggets",     url:"https://kdnuggets.com/feed",                                            flag:"🌎", color:GREEN },
   { name:"OpenAI",        url:"https://openai.com/blog/rss.xml",                                      flag:"🌎", color:"#10a37f" },
@@ -269,6 +271,9 @@ const FEEDS = [
   { name:"NVIDIA Blog",   url:"https://blogs.nvidia.com/blog/category/deep-learning/feed/",           flag:"🌎", color:"#76b900" },
   { name:"Apple ML",      url:"https://machinelearning.apple.com/rss.xml",                            flag:"🌎", color:"#aaa" },
   { name:"Stanford AI",   url:"https://ai.stanford.edu/blog/feed.xml",                               flag:"🌎", color:"#8c1515" },
+  { name:"ETH Zurich",   url:"https://www.ethz.ch/en/news-und-veranstaltungen/eth-news/news/_jcr_content.feed.html", flag:"🌎", color:"#1565c0" },
+  { name:"TUM",          url:"https://www.tum.de/en/news.rss",                                        flag:"🌎", color:"#3070b3" },
+  { name:"Reuters Inst.",url:"https://podcasts.ox.ac.uk/feeds/e00174e6-4fa2-405d-a58c-17cbcff4ab65/audio.xml", flag:"🌎", color:"#7c3aed" },
   { name:"MarkTechPost",  url:"https://www.marktechpost.com/feed/",                                   flag:"🌎", color:GREEN },
   { name:"fast.ai",       url:"https://www.fast.ai/index.xml",                                        flag:"🌎", color:"#009fdf" },
   { name:"ScienceDaily",  url:"https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml", flag:"🌎", color:"#0077cc" },
@@ -278,6 +283,8 @@ const FEEDS = [
   { name:"Synced",        url:"https://syncedreview.com/feed/",                                         flag:"🌏", color:"#00d4ff" },
   { name:"AI Singapore",  url:"https://aisingapore.org/feed/",                                          flag:"🌏", color:"#ef4444" },
   { name:"RIKEN AIP",     url:"https://aip.riken.jp/feed/",                                             flag:"🌏", color:"#e11d48" },
+  { name:"ChinAI",       url:"https://feeds.type3.audio/chinai-newsletter.rss",                       flag:"🌏", color:"#ef4444" },
+  { name:"SCMP Tech",    url:"https://www.scmp.com/rss/320663/feed/",                                 flag:"🌏", color:"#d4a017" },
   { name:"TabNews",       url:"https://www.tabnews.com.br/recentes/rss",                                flag:"🇧🇷", color:"#00c8ff" },
   { name:"Manual Usuário",url:"https://manualdousuario.net/feed/",                                      flag:"🇧🇷", color:"#00c8ff" },
   { name:"MIT Tech BR",   url:"https://mittechreview.com.br/feed/",                                     flag:"🇧🇷", color:"#00c8ff" },
