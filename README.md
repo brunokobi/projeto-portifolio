@@ -2,6 +2,8 @@
 
 > **"Não é um portfólio. É um ecossistema digital inteligente em produção."**
 
+![Portfolio](portifolio.png)
+
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
