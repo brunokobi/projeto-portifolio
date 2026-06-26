@@ -7,6 +7,7 @@ import fundo from "../../assets/img/fundo.mp4";
 
 
 import VideoBackground from "../../components/VideoBackground";
+import BigBangLoader from "../../components/BigBangLoader";
 import GlobeBackground from "../../components/GlobeBackground";
 import IconsBackground from "../../components/IconsBackground";
 import { useIntl } from 'react-intl';
@@ -39,7 +40,8 @@ useEffect(() => {
   return (
     <AnimatePresence>
       <VideoBackground />   {/* z-index: 0 — camada mais baixa */}
-      <GlobeBackground />   {/* z-index: 1 — acima do vídeo */}
+      <BigBangLoader />     {/* z-index: 1 — enquanto globo não carrega */}
+      <GlobeBackground />   {/* z-index: 1 — substitui o BigBang após 3s */}
       <IconsBackground />   {/* z-index: 2 — ícones + overlay */}
       <Flex
         minH="100vh"
