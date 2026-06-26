@@ -1,8 +1,6 @@
-import { Flex, Heading, SlideFade, Stack} from "@chakra-ui/react";
-import { Image } from "@chakra-ui/react";
+import { Flex, Heading, Stack } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import useTypewriter from "../../hooks/useTypewriter";
-import profile from "../../assets/img/home-animation-removed.gif";
 import fundo from "../../assets/img/fundo.mp4";
 
 
@@ -58,16 +56,6 @@ useEffect(() => {
           align="center"
         >
           <IconsBackground />
-          <Stack
-            as={SlideFade}
-            in={true}
-            offsetX="-50%"
-            transition="all 1s"
-          >
-            <Image src={profile} w={{ base: 250, md: 300 }} />
-            
-          </Stack>
-
           <div>
             <Stack spacing={1}>
               <div display="flex" alignItems="flex-end">
