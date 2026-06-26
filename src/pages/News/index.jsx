@@ -238,9 +238,18 @@ function scoreArticle(a) {
   return s;
 }
 
-// Score dedicado ao carrossel: prestige + keywords + recência pesada (independe do sortBy)
+// Fontes científicas/internacionais que ganham bônus extra no carrossel
+const HERO_SCIENCE_BOOST = new Set([
+  "MIT News","MIT Tech Rev","Google Res.","ETH Zurich","TUM",
+  "BAIR","The Gradient","IEEE Spectrum","IEEE TV AI","DeepMind",
+  "Stanford AI","arXiv AI","Apple ML","ScienceDaily","Reuters Inst.",
+  "RIKEN AIP","AI Singapore","HuggingFace","OpenAI","NVIDIA Blog",
+]);
+
+// Score dedicado ao carrossel: prestige + science boost + keywords + recência pesada
 function heroScore(a) {
   let s = SOURCE_PRESTIGE[a.source?.name] || 5;
+  if (HERO_SCIENCE_BOOST.has(a.source?.name)) s += 25;
   const t = (a.title || "").toLowerCase();
   KW_CRITICAL.forEach(k => { if (t.includes(k)) s += 18; });
   KW_HIGH.forEach(k     => { if (t.includes(k)) s += 10; });
