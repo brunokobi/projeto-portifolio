@@ -895,7 +895,7 @@ function CategoryDrawer({ cat, onClose }) {
       style={{ animation:"nwsOverlayIn .2s ease both", backdropFilter:"blur(4px)" }}
       onClick={onClose}>
 
-      <Box bg="#080808" w={{ base:"100vw", md:"500px" }} h="100vh"
+      <Box bg="#080808" w={{ base:"100vw", md:"50vw" }} h="100vh"
         display="flex" flexDirection="column"
         borderLeft={`1px solid ${cat.accent}33`}
         style={{ animation:"nwsDrawerIn .25s ease both", boxShadow:"-12px 0 48px rgba(0,0,0,0.85)" }}
