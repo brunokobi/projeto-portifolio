@@ -238,6 +238,20 @@ function scoreArticle(a) {
   return s;
 }
 
+// Score dedicado ao carrossel: prestige + keywords + recência pesada (independe do sortBy)
+function heroScore(a) {
+  let s = SOURCE_PRESTIGE[a.source?.name] || 5;
+  const t = (a.title || "").toLowerCase();
+  KW_CRITICAL.forEach(k => { if (t.includes(k)) s += 18; });
+  KW_HIGH.forEach(k     => { if (t.includes(k)) s += 10; });
+  KW_MED.forEach(k      => { if (t.includes(k)) s += 4;  });
+  if (a.date && !isNaN(a.date)) {
+    const h = (Date.now() - a.date) / 3_600_000;
+    s += h < 1 ? 60 : h < 3 ? 50 : h < 6 ? 40 : h < 12 ? 28 : h < 24 ? 16 : h < 48 ? 6 : 0;
+  }
+  return s;
+}
+
 function importanceLevel(score) {
   if (score >= 65) return { label:"URGENTE",   color:"#ff4444", icon:"🔥" };
   if (score >= 45) return { label:"DESTAQUE",  color:"#ffaa00", icon:"⚡" };
@@ -917,7 +931,10 @@ const NewsPage = () => {
       :(b.date?.getTime()??0)-(a.date?.getTime()??0)
   );
 
-  const heroSlides    = sorted.filter(a=>a.img).slice(0,6);
+  const heroSlides    = [...filtered]
+    .filter(a => a.img)
+    .sort((a,b) => heroScore(b) - heroScore(a))
+    .slice(0, 6);
   const heroLinks     = new Set(heroSlides.map(a=>a.link));
   // mini-cards mostram próximos 10 (excluindo carrossel)
   const miniCards     = sorted.filter(a=>!heroLinks.has(a.link)).slice(0,10);
