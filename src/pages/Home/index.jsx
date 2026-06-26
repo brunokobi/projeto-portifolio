@@ -63,6 +63,8 @@ useEffect(() => {
             in={true}
             offsetX="-50%"
             transition="all 1s"
+            position="relative"
+            zIndex={10}
           >
             <Image src={profile} w={{ base: 250, md: 300 }} />
             
