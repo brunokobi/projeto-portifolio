@@ -7,6 +7,7 @@ import fundo from "../../assets/img/fundo.mp4";
 
 
 import IconsBackground from "../../components/IconsBackground";
+import GlobeBackground from "../../components/GlobeBackground";
 import { useIntl } from 'react-intl';
 import { useEffect } from 'react';
 import falar from "../../components/TextAudio";
@@ -35,7 +36,8 @@ useEffect(() => {
 
 
   return (
-    <AnimatePresence>        
+    <AnimatePresence>
+      <GlobeBackground />
       <Flex
         minH="100vh"
         w={{ base: "90%", md: "60%", lg: "100%", sm: "100%" }}
