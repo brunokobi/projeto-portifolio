@@ -138,8 +138,8 @@ const CATEGORIES = [
   { id:"brasil",     title:"🇧🇷 Brasil",             desc:"Cobertura nacional sobre IA, tecnologia e mercado digital — portais e revistas brasileiras.", sources:["SWEN.AI","AINEWS","Exame IA","TabNews","Manual Usuário","MIT Tech BR","Tecnoblog","Brazil Journal","NeoFeed","Olhar Digital"],  accent:"#00c8ff" },
   { id:"pesquisa",   title:"🔬 Pesquisa & Ciência",   desc:"Descobertas, papers e avanços de MIT, ETH Zurich, TUM, Google Research, IEEE, BAIR, arXiv, DeepMind, Stanford e Apple ML.", sources:["MIT News","MIT Tech Rev","Google Res.","BAIR","The Gradient","IEEE Spectrum","IEEE TV AI","DeepMind","arXiv AI","Apple ML","Stanford AI","ScienceDaily","ETH Zurich","TUM"],                         accent:"#a855f7" },
   { id:"industria",  title:"💼 Indústria & Tech",      desc:"Lançamentos e tendências do setor — OpenAI, NVIDIA, TechCrunch, The Verge, Wired, AWS, MarkTechPost e Reuters Institute.",         sources:["The Verge","TechCrunch","Wired AI","AI News","AI Insider","AI Weekly","OpenAI","NVIDIA Blog","MarkTechPost","AWS ML","Reuters Inst."],                               accent:GREEN     },
-  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets, LangChain e Towards AI.",                   sources:["HuggingFace","KDnuggets","MIRI","fast.ai","TensorFlow","Towards AI","LangChain"],                                              accent:"#ff9d00" },
-  { id:"asia",       title:"🌏 Pesquisa Asiática & China",    desc:"Inovação em IA da Ásia — AI Singapore, RIKEN, Synced Review, ChinAI Newsletter e SCMP Tech.",                             sources:["AI Singapore","RIKEN AIP","Synced","NUS","ChinAI","SCMP Tech"],                                                                                       accent:"#00d4ff" },
+  { id:"ferramentas",title:"🛠️ Modelos & Ferramentas", desc:"Novos modelos, datasets e ferramentas — HuggingFace, fast.ai, TensorFlow, KDnuggets, LangChain e Towards AI.",                   sources:["HuggingFace","KDnuggets","fast.ai","TensorFlow","Towards AI","LangChain"],                                              accent:"#ff9d00" },
+  { id:"asia",       title:"🌏 Pesquisa Asiática & China",    desc:"Inovação em IA da Ásia — AI Singapore, RIKEN, Synced Review, ChinAI Newsletter e SCMP Tech.",                             sources:["AI Singapore","RIKEN AIP","Synced","ChinAI","SCMP Tech"],                                                                                       accent:"#00d4ff" },
   { id:"engenharia", title:"💻 Engenharia & Dev",     desc:"Arquitetura de software, boas práticas e bastidores técnicos — Pragmatic Engineer, Martin Fowler, Netflix, n8n e Supabase.", sources:["Pragmatic Eng.","Martin Fowler","Netflix Tech","n8n Blog","Supabase"],                                                             accent:"#f472b6" },
 ];
 
@@ -1040,12 +1040,13 @@ const NewsPage = () => {
           onClick={()=>setShowSources(false)}
           style={{backdropFilter:"blur(6px)"}}>
           <Box bg="#0a0a0a" border={`1px solid ${GREEN}44`} borderRadius="12px"
-            maxW="640px" w="92vw" maxH="82vh" overflow="hidden"
+            maxW="640px" w="92vw" maxH="82vh"
+            display="flex" flexDirection="column"
             style={{boxShadow:`0 0 40px ${GREEN}22, 0 20px 60px rgba(0,0,0,0.8)`}}
             onClick={e=>e.stopPropagation()}>
 
             {/* Header */}
-            <Flex align="center" justify="space-between"
+            <Flex align="center" justify="space-between" flexShrink={0}
               px={5} py={4} borderBottom={`1px solid rgba(255,255,255,0.07)`}>
               <VStack align="flex-start" spacing={0}>
                 <Text fontFamily="heading" fontWeight="800" fontSize="md" color={GREEN}
@@ -1062,7 +1063,7 @@ const NewsPage = () => {
             </Flex>
 
             {/* Body */}
-            <Box overflowY="auto" px={5} py={4}
+            <Box overflowY="auto" flex={1} px={5} py={4}
               css={{"&::-webkit-scrollbar":{width:"4px"},"&::-webkit-scrollbar-thumb":{background:`${GREEN}44`,borderRadius:"2px"}}}>
               {CATEGORIES.map(cat=>{
                 const catFeeds=FEEDS.filter(f=>cat.sources.includes(f.name));
