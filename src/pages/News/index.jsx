@@ -171,11 +171,56 @@ const SPAM_WORDS = [
   "playstation 5","ps5","xbox series","nintendo switch","jogo para",
   // eletrodomésticos
   "geladeira","fogão","micro-ondas","ar-condicionado","purificador de água",
+  // reviews e propaganda de produtos
+  "vale a pena comprar","devo comprar o","devo comprar a",
+  "melhor notebook","melhor laptop","melhor tablet","melhor impressora",
+  "melhor câmera","melhor roteador","melhor monitor",
+  "unboxing do","unboxing da","unboxing:",
+  "testamos o novo","testamos a nova","avaliamos o novo","avaliamos a nova",
+  "primeiras impressões do","primeiras impressões da",
+];
+
+// Fontes que publicam conteúdo misto — só passam artigos com keywords de IA/dev
+const MIXED_SOURCES = new Set([
+  "Tecnoblog","Olhar Digital","NeoFeed","Brazil Journal",
+  "MIT Tech Rev","Manual Usuário","TabNews","KDnuggets",
+]);
+
+const AI_DEV_KEYWORDS = [
+  // IA/ML PT
+  "inteligência artificial","aprendizado de máquina","machine learning",
+  "deep learning","rede neural","modelo de linguagem","ia generativa",
+  "agente de ia","chatbot","llm",
+  // modelos e empresas IA
+  "gpt-","chatgpt","claude","gemini","llama","mistral","copilot","sora",
+  "dall-e","midjourney","stable diffusion","grok","openai","anthropic",
+  "deepmind","hugging face","huggingface","meta ai",
+  // termos técnicos ML/AI
+  "fine-tuning","embeddings","transformer","prompt engineer","retrieval-augmented",
+  "computer vision","processamento de linguagem","reconhecimento de voz",
+  // dev/software
+  "código aberto","open source","framework","kubernetes","docker",
+  "devops","computação em nuvem","cloud native","serverless",
+  "github","python","javascript","typescript","rust","golang","kotlin",
+  "banco de dados","microsserviços","api rest","graphql","backend",
+  // segurança digital
+  "cibersegurança","ransomware","phishing","malware","vazamento de dados",
+  "zero-day","ataque hacker","brecha de segurança",
+  // EN
+  "artificial intelligence","machine learning","deep learning","language model",
+  "neural network","generative ai","ai model","ai agent","ai safety",
+  "open source","cloud computing","cybersecurity","data breach",
+  "software engineering","developer","programming","kubernetes","docker",
 ];
 
 function isSpam(a) {
   const t = (a.title || "").toLowerCase();
   return SPAM_WORDS.some(w => t.includes(w));
+}
+
+function isRelevant(a) {
+  const text = ((a.title || "") + " " + (a.desc || "")).toLowerCase();
+  return AI_DEV_KEYWORDS.some(kw => text.includes(kw));
 }
 
 function scoreArticle(a) {
@@ -854,6 +899,7 @@ const NewsPage = () => {
 
   const filtered = articles.filter(a=>{
     if(isSpam(a)) return false;
+    if(MIXED_SOURCES.has(a.source?.name) && !isRelevant(a)) return false;
     if(filter==="br")    return a.source.flag==="🇧🇷";
     if(filter==="world") return a.source.flag==="🌎";
     return true;
