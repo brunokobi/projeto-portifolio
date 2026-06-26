@@ -65,7 +65,7 @@
   "project8t": "FaceApi.js Test",
   "project8d": "FaceApi.js Test Site, using the tensorflow.js API and implementing a series of convulsive neural networks (CNNs).",
   "project9t": "Portfolio — Bruno Kobi Valadares de Amorim",
-  "project9d": "Smart digital ecosystem built with React 18 + Chakra UI. 9 languages with automatic IP-based detection. AI News Panel with 20 global RSS feeds, automatic EN→PT translation and dynamic thumbnails. 3D interactive map with ESRI ArcGIS. Automation with n8n + Google Gemini + Supabase. Serverless deploy on Netlify. Accessibility with text-to-speech.",
+  "project9d": "Smart digital ecosystem built with React 18 + Vite 5 + Chakra UI. 9 languages with automatic IP-based detection via Context API — no page reload. AI News Panel with 51 global RSS feeds, relevance scoring, anti-spam filter, intelligent hero carousel and automatic EN→PT translation. 3D interactive map with ESRI ArcGIS. Event-driven automation with n8n + Google Gemini + Supabase RLS. Serverless deploy on Netlify with TypeScript Functions. Accessibility with native Web Speech API.",
   "project10t": "3D Portfolio: Alien Experience",
   "project10d": "Development of a gamified portfolio using React Three Fiber and Three.js. The project allows the user to control a UFO in a 3D environment to 'abduct' cows that represent my technological stacks.",
   "project11t": "Arkon: The Cluster Rift",

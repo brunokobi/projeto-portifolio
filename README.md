@@ -34,7 +34,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação orientada a eventos com IA, mapa 3D geoespacial, feed de notícias em tempo real de 20+ fontes globais, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação orientada a eventos com IA, mapa 3D geoespacial, feed de notícias em tempo real de **51 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -145,9 +145,9 @@ npm run preview    # Pré-visualizar build de produção localmente
 
 ## 📰 Feature: Painel de Notícias de IA em Tempo Real
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — CORS proxy serverless + RSS parsing multi-formato + tradução automática sem chave + cache + animação escalonada
+> **Complexidade:** ⭐⭐⭐⭐⭐ — CORS proxy serverless + RSS parsing multi-formato + scoring inteligente + filtro de relevância + tradução automática + carrossel adaptativo
 
-Um painel completo que agrega **20+ feeds RSS** de fontes globais de IA, traduz títulos automaticamente para português e exibe thumbnails extraídos diretamente do XML dos feeds.
+Um painel completo que agrega **51 feeds RSS** de fontes globais de IA, com sistema de pontuação por relevância, filtragem anti-spam, tradução automática para português e carrossel principal com seleção das melhores notícias do momento.
 
 ### Por que é complexo?
 
@@ -164,57 +164,71 @@ Browser
   → Retorna XML com headers CORS corretos
 Browser
   → parseRSS() extrai: título, link, data, imagem
+  → cleanDesc() remove boilerplate legal dos RSS (regex patterns)
   → translateArticles() traduz títulos EN→PT via Google Translate (sem chave)
-  → Filtra artigos de spam/propaganda automaticamente
-  → Ordena por data decrescente
-  → Exibe com animação stagger (50ms de delay por item)
-  → Cache in-memory por 5 minutos
+  → isSpam() filtra promoções, reviews de produtos, eletrônicos de consumo
+  → isRelevant() filtra fontes mistas: exige keyword de IA/dev/tech no conteúdo
+  → scoreArticle() pontua por prestige da fonte + keywords + recência
+  → heroScore() seleciona carrossel: recência pesada + importância (independe do sortBy)
+  → Ordena por importância ou data (escolha do usuário)
+  → Exibe com animação stagger + cache in-memory por 5 minutos
 ```
+
+### Sistema de scoring
+
+```javascript
+const SOURCE_PRESTIGE = {
+  "MIT Tech Rev": 20, "MIT News": 20, "Google Res.": 18,
+  "ETH Zurich": 16,   "IEEE Spectrum": 16, "BAIR": 15,
+  "TUM": 15,          "The Gradient": 14,  "Reuters Inst.": 13, ...
+};
+
+// Carrossel: recência pesada — artigos < 1h ganham +60 pts
+function heroScore(a) {
+  let s = SOURCE_PRESTIGE[a.source?.name] || 5;
+  const h = (Date.now() - a.date) / 3_600_000;
+  s += h < 1 ? 60 : h < 3 ? 50 : h < 6 ? 40 : h < 12 ? 28 : h < 24 ? 16 : 0;
+  // + keywords críticas (AGI, regulation, acquisition): +18 cada
+  // + keywords altas (GPT, Claude, NVIDIA, launch): +10 cada
+  return s;
+}
+```
+
+### Filtro de relevância por fonte
+
+Fontes mistas (Tecnoblog, NeoFeed, SCMP, ETH Zurich etc.) só exibem artigos que contenham ao menos uma keyword de IA/dev: `inteligência artificial`, `machine learning`, `llm`, `openai`, `kubernetes`, `cibersegurança`...
 
 ### Netlify Function (proxy RSS)
 
 ```typescript
 // netlify/functions/news.ts
-import type { Handler } from "@netlify/functions";
-
 export const handler: Handler = async (event) => {
   const feedUrl = event.queryStringParameters?.url;
-  if (!feedUrl) return { statusCode: 400, body: JSON.stringify({ error: "Missing url param" }) };
-
   const res = await fetch(feedUrl, {
     headers: { "User-Agent": "Mozilla/5.0", "Accept": "application/rss+xml, */*" },
     signal: AbortSignal.timeout(8000),
   });
-
-  const xml = await res.text();
   return {
     statusCode: 200,
-    headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, max-age=300",
-    },
-    body: xml,
+    headers: { "Content-Type": "application/xml", "Access-Control-Allow-Origin": "*", "Cache-Control": "public, max-age=300" },
+    body: await res.text(),
   };
 };
 ```
 
-### Tradução automática sem chave de API
+### Fontes ativas (51)
 
-```javascript
-async function translateTitle(text) {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=${encodeURIComponent(text)}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data[0]?.map((d) => d[0]).join("") || text;
-}
-```
+**Brasil 🇧🇷** — SWEN.AI · AINEWS · Exame IA · NeoFeed · Tecnoblog · Olhar Digital · TabNews · Manual Usuário · MIT Tech BR · Brazil Journal
 
-### Fontes ativas (20+)
+**Pesquisa 🔬** — MIT News · MIT Tech Rev · Google Research · BAIR · The Gradient · IEEE Spectrum · IEEE TV AI · DeepMind · arXiv cs.AI · Apple ML · Stanford AI · ScienceDaily · **ETH Zurich** · **TUM**
 
-**Brasil 🇧🇷** — SWEN.AI · AINEWS · Exame IA · NeoFeed · Tecnoblog · Olhar Digital · TabNews
+**Indústria 🌎** — The Verge · TechCrunch · Wired AI · AI News · AI Insider · AI Weekly · OpenAI · NVIDIA · MarkTechPost · AWS ML · **Reuters Inst. Oxford**
 
-**Mundo 🌎** — The Verge · TechCrunch · MIT Tech Review · MIT News AI · Wired · Google Research · BAIR (Berkeley) · Hugging Face · arXiv cs.AI · The Gradient · Import AI · OpenAI Blog · Anthropic · Google DeepMind · Meta Engineering
+**Modelos & Tools** — HuggingFace · KDnuggets · fast.ai · TensorFlow · Towards AI · LangChain
+
+**Ásia & China 🌏** — AI Singapore · RIKEN AIP · Synced · **ChinAI Newsletter** · **SCMP Tech**
+
+**Engenharia 💻** — Pragmatic Eng. · Martin Fowler · Netflix Tech · n8n Blog · Supabase
 
 ---
 
@@ -389,7 +403,7 @@ const falar = (texto) => {
 | Feature | Por que impressiona |
 |---------|-------------------|
 | 🔄 Pipeline Event-Driven | Trigger SQL → n8n → Gemini → Email, sem polling |
-| 📰 20+ RSS Feeds + tradução | CORS proxy serverless + parser multi-formato + Google Translate sem chave |
+| 📰 51 RSS Feeds + scoring | CORS proxy serverless + filtro relevância + heroScore() + Google Translate sem chave |
 | 🌐 9 idiomas + auto-detect | Cobre 50+ países, troca sem reload via Context API |
 | 🌤️ Clima GPS → IP fallback | Máxima precisão sem degradar UX |
 | 🗺️ Mapa 3D WebGL | ArcGIS em produção com lazy loading |
@@ -403,7 +417,9 @@ const falar = (texto) => {
 
 ## 📈 Roadmap
 
-- [ ] Filtros interativos por categoria no painel de notícias
+- [x] Filtros interativos por categoria no painel de notícias
+- [x] Carrossel principal com seleção inteligente (heroScore)
+- [x] Filtro de relevância por fonte (MIXED_SOURCES + AI_DEV_KEYWORDS)
 - [ ] Notificações push de breaking news (Service Worker + PWA)
 - [ ] Dashboard de analytics com métricas de visitas
 - [ ] CI/CD com testes automatizados
