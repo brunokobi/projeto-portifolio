@@ -267,6 +267,24 @@ function extractImage(item) {
   return null;
 }
 
+// Remove avisos legais e boilerplate que portais injetam nas descrições RSS
+const BOILERPLATE_PATTERNS = [
+  /este trecho é parte de conteúdo que pode ser compartilhado[^.]*\./gi,
+  /não reproduza o conteúdo d[oa][^.]*sem autorização\./gi,
+  /para ler a matéria completa[^.]*\./gi,
+  /leia mais em[^.]*\./gi,
+  /acesse o conteúdo completo[^.]*\./gi,
+  /veja o artigo completo[^.]*\./gi,
+  /clique aqui para ler[^.]*\./gi,
+  /the post .+ appeared first on .+/gi,
+];
+
+function cleanDesc(raw) {
+  let text = raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  for (const pat of BOILERPLATE_PATTERNS) text = text.replace(pat, "").trim();
+  return text.slice(0, 180);
+}
+
 function parseRSS(xml) {
   const doc=new DOMParser().parseFromString(xml,"text/xml");
   let items=Array.from(doc.querySelectorAll("item"));
@@ -279,7 +297,7 @@ function parseRSS(xml) {
     const date=gt("pubDate")||gt("published")||gt("updated")||gt("dc:date");
     const img=extractImage(item);
     const rawDesc=gt("description")||gt("summary")||gt("content");
-    const desc=rawDesc.replace(/<[^>]+>/g,"").trim().slice(0,180)||"";
+    const desc=cleanDesc(rawDesc);
     return{title,link,date:date?new Date(date):null,img:img||null,desc};
   }).filter(a=>a.title&&a.link);
 }
