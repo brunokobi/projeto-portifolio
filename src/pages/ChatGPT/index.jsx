@@ -1,6 +1,5 @@
 // teste de ia usando modelo de mistral
 import { useState } from "react";
-import axios from "axios";
 import "./InputTextArea.css";
 import robo from '../../assets/img/robot.png';
 import AnimatedStars from "../../components/AnimatedStars";
@@ -11,7 +10,7 @@ import falar from "../../components/TextAudio";
 
 
 const API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // 🔹 Substitua pelo seu modelo da Hugging Face
-const TOKEN = process.env.REACT_APP_HUGGING_FACE_API_KEY; // 🔹 Substitua pelo seu token da Hugging Face
+const TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // 🔹 Substitua pelo seu token da Hugging Face
 
 const LlamaChat = () => {
   const [input, setInput] = useState("");
@@ -30,17 +29,15 @@ const LlamaChat = () => {
     setResponse(null);
 
     try {
-      const { data } = await axios.post(
-        API_URL,
-        { inputs: input },
-        {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ inputs: input }),
+      });
+      const data = await res.json();
       setResponse(data[0]?.generated_text || "Nenhuma resposta.");
     } catch (error) {
       console.error("Erro na API:", error);

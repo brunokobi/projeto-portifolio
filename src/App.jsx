@@ -5,6 +5,7 @@ import { IntlProvider } from "react-intl";
 import VisitCounter from "./components/Contador/VisitCounter";
 import WeatherBar from "./components/WeatherBar";
 import { useLocation } from "react-router-dom";
+import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
 
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/locale-data/en";
@@ -39,33 +40,11 @@ const allMessages = {
   ar: arMessages,
 };
 
-const I18N_CONFIG_KEY = process.env.REACT_APP_I18N_CONFIG_KEY || "i18nConfig";
-
-const initialState = { selectedLang: "pt" };
-
-function getConfig() {
-  const ls = localStorage.getItem(I18N_CONFIG_KEY);
-  if (ls) {
-    try {
-      return JSON.parse(ls);
-    } catch (er) {
-      console.error(er);
-    }
-  }
-  return initialState;
-}
-
-export function setLanguage(lang) {
-  localStorage.setItem(I18N_CONFIG_KEY, JSON.stringify({ selectedLang: lang }));
-  window.location.reload();
-}
-
-function App() {
-  const lang    = getConfig();
-  const locale  = lang?.selectedLang ?? "pt";
-  const messages = allMessages[locale];
+function AppContent() {
+  const { locale } = useLanguage();
+  const messages = allMessages[locale] || allMessages.pt;
   const { pathname } = useLocation();
-  const isNews  = pathname.startsWith("/news");
+  const isNews = pathname.startsWith("/news");
 
   return (
     <>
@@ -76,6 +55,14 @@ function App() {
         <ToastContainer />
       </IntlProvider>
     </>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

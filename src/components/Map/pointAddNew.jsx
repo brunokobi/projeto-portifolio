@@ -53,7 +53,7 @@ const PointAddNew = (props) => {
         Mesh,
         watchUtils
       ]) => {
-        esriConfig.apiKey = process.env.REACT_APP_ESRI_API_KEY
+        esriConfig.apiKey = import.meta.env.VITE_ESRI_API_KEY
 
         const R = 6358137 // approximate radius of the Earth in m
         const offset = 300000 // offset from the ground used for the clouds

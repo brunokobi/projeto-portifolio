@@ -8,8 +8,8 @@ import { createClient } from "@supabase/supabase-js";
 import { FaSatelliteDish } from "react-icons/fa"; 
 import { RiAliensFill } from "react-icons/ri"; 
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 const signalWave = keyframes`

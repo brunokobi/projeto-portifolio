@@ -1,7 +1,8 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { Button, Icon } from '@chakra-ui/react';
+import ErrorBoundary from "../components/ErrorBoundary";
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import Nav from "../components/Nav";
 
@@ -13,6 +14,12 @@ const Curriculo = lazy(() => import("../pages/Curriculo"));
 const LlamaChat = lazy(() => import("../pages/ChatGPT/index"));
 const Mapa      = lazy(() => import("../pages/Map/index"));
 const News      = lazy(() => import("../pages/News/index"));
+
+const PageLoader = () => (
+  <Box h="100vh" display="flex" alignItems="center" justifyContent="center" bg="black">
+    <Spinner color="#42c920" size="xl" thickness="3px" />
+  </Box>
+);
 
 const Router = () => {
   const { pathname } = useLocation();
@@ -54,17 +61,19 @@ const Router = () => {
         </Box>
       )}
 
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/"         element={<Home />} />
-          <Route path="/about"    element={<About />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/chat"     element={<LlamaChat />} />
-          <Route path="/map"      element={<Mapa />} />
-          <Route path="/curriculo" element={<Curriculo />} />
-          <Route path="/news"     element={<News />} />
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/"         element={<Home />} />
+            <Route path="/about"    element={<About />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/chat"     element={<LlamaChat />} />
+            <Route path="/map"      element={<Mapa />} />
+            <Route path="/curriculo" element={<Curriculo />} />
+            <Route path="/news"     element={<News />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
 
       {!isNews && <Nav />}
     </Box>

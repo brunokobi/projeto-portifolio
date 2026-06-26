@@ -1,7 +1,7 @@
 import { Flex, Heading, SlideFade, Stack} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import Typewriter from "typewriter-effect";
+import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
 import fundo from "../../assets/img/fundo.mp4";
 
@@ -16,6 +16,8 @@ import falar from "../../components/TextAudio";
 
 const Home = () => {
 const intl = useIntl();
+const phrases = [intl.formatMessage({id: 'frase_1'}), intl.formatMessage({id: 'frase_2'})];
+const typedPhrase = useTypewriter(phrases);
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -117,14 +119,7 @@ useEffect(() => {
                   fontSize={{ base: "3xl", md: "3xl", lg: "5xl",sm:"3xl",xl:"6xl" }}
                   onMouseOver={() => falar(intl.formatMessage({id: 'meunome'}))}
                 >
-                   {intl.formatMessage({id: 'meunome'})}      
-                  <Typewriter
-                    options={{
-                      strings: [""],
-                      autoStart: true,
-                      loop: true,
-                    }}
-                  />
+                   {intl.formatMessage({id: 'meunome'})}
                 </Heading>
               </div>
 
@@ -160,16 +155,7 @@ useEffect(() => {
                   +intl.formatMessage({id: 'frase_2'})
                   )}
                 >                 
-                  <Typewriter
-                    options={{
-                      strings: [                        
-                        intl.formatMessage({id: 'frase_1'}),
-                        intl.formatMessage({id: 'frase_2'}),
-                      ],
-                      autoStart: true,
-                      loop: true,
-                    }}
-                  />
+                  <span style={{ borderRight: '2px solid #42c920' }}>{typedPhrase}</span>
                 </Heading>
               </div>
             </Stack>

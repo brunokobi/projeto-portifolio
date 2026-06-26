@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 
 const ObjectDetection = () => {
   const [image, setImage] = useState(null);
@@ -8,7 +7,7 @@ const ObjectDetection = () => {
   const [status, setStatus] = useState("");
   
   const API_URL = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50";
-  const API_TOKEN = process.env.REACT_APP_HUGGING_FACE_API_KEY; // Substitua pelo seu token
+  const API_TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // Substitua pelo seu token
 
   const handleImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -28,16 +27,17 @@ const ObjectDetection = () => {
     try {
       let response;
       while (true) {
-        response = await axios.post(API_URL, formData, {
-          headers: {
-            Authorization: `Bearer ${API_TOKEN}`,
-            "Content-Type": "multipart/form-data",
-          },
+        const fetchRes = await fetch(API_URL, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${API_TOKEN}` },
+          body: formData,
         });
+        const json = await fetchRes.json();
+        response = { data: json };
 
-        if (response.data.error && response.data.error.includes("currently loading")) {
-          setStatus(`Modelo carregando, aguardando ${response.data.estimated_time} segundos...`);
-          await new Promise(resolve => setTimeout(resolve, response.data.estimated_time * 1000));
+        if (json.error && json.error.includes("currently loading")) {
+          setStatus(`Modelo carregando, aguardando ${json.estimated_time} segundos...`);
+          await new Promise(resolve => setTimeout(resolve, json.estimated_time * 1000));
         } else {
           break;
         }

@@ -12,8 +12,10 @@ import {
   ScaleFade,
   Wrap,
   WrapItem,
+  HStack,
+  Button,
 } from "@chakra-ui/react";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import rock from "../../assets/img/rock.png"; // Imagem usada na seção de experiência
 import profilePhoto from "../../assets/img/profile.png"; // Foto de perfil do usuário
 import questionImg from "../../assets/img/questions.png"; // Ícone usado na seção "Sobre mim"
@@ -25,8 +27,6 @@ import { SlideFade } from "@chakra-ui/react"; // Animação de transição
 import { skills } from "./skills"; // Lista de habilidades
 import { motion, AnimatePresence } from "framer-motion"; // Biblioteca para animações avançadas
 
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Estilo do carrossel
-import { Carousel } from "react-responsive-carousel"; // Carrossel para exibição de certificados
 import falar from "../../components/TextAudio"; // Função para síntese de voz
 
 import kenzie from "../../assets/img/certificadoKenzie.jpg"; // Certificados
@@ -51,6 +51,8 @@ const About = () => {
   const aboutRef = useRef(null); // Referência para a seção "Sobre mim"
   const experienciaRef = useRef(null); // Referência para a seção de experiência
   const presentationRef = useRef(null); // Referência para a seção de apresentação
+
+  const [certIdx, setCertIdx] = useState(0);
 
   // Lista de certificados
   const certifications = useMemo(() => {
@@ -458,15 +460,47 @@ const About = () => {
                  {intl.formatMessage({ id: "quali" })}
               </Heading>
             </div>
-            <div maxW={{ base: "350px", md: "700px" }} zIndex="999">
-              <Carousel autoPlay infiniteLoop={true}>
-                {certifications.map((certfImg, i) => (
-                  <div key={i}>
-                    <img src={certfImg} alt="certification" />
-                  </div>
+            <Box position="relative" w="100%" maxW="500px" mx="auto">
+              <Image
+                src={certifications[certIdx]}
+                alt={`Certificado ${certIdx + 1}`}
+                w="100%"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="whiteAlpha.200"
+              />
+              <HStack position="absolute" bottom={2} left={0} right={0} justify="center" spacing={2}>
+                {certifications.map((_, i) => (
+                  <Box
+                    key={i}
+                    as="button"
+                    w={certIdx === i ? "20px" : "8px"}
+                    h="8px"
+                    borderRadius="full"
+                    bg={certIdx === i ? "#42c920" : "whiteAlpha.400"}
+                    transition="all 0.2s"
+                    onClick={() => setCertIdx(i)}
+                  />
                 ))}
-              </Carousel>
-            </div>
+              </HStack>
+              <HStack justify="space-between" mt={2}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  color="#42c920"
+                  _hover={{ bg: "whiteAlpha.100" }}
+                  onClick={() => setCertIdx(i => (i - 1 + certifications.length) % certifications.length)}
+                >← Anterior</Button>
+                <Text fontSize="xs" color="whiteAlpha.600">{certIdx + 1} / {certifications.length}</Text>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  color="#42c920"
+                  _hover={{ bg: "whiteAlpha.100" }}
+                  onClick={() => setCertIdx(i => (i + 1) % certifications.length)}
+                >Próximo →</Button>
+              </HStack>
+            </Box>
           </Stack>
           <Box
             as={motion.div}

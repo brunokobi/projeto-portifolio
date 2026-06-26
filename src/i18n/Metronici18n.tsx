@@ -1,7 +1,7 @@
 import React, { FC, createContext, useContext } from "react";
 import { WithChildren } from "../helpers/react18MigrationHelpers";
 
-const I18N_CONFIG_KEY = process.env.REACT_APP_I18N_CONFIG_KEY || "i18nConfig";
+const I18N_CONFIG_KEY = import.meta.env.VITE_I18N_CONFIG_KEY || "i18nConfig";
 
 type Props = {
   selectedLang: "en" | "es" | "pt" | "fr" | "de" | "ru" | "zh" | "ar" | "kl";

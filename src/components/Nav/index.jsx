@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useLanguage } from "../../contexts/LanguageContext";
 import {
   Breadcrumb, Flex, Stack, Box, HStack,
   Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure
@@ -100,18 +101,16 @@ const Nav = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const ls = localStorage.getItem("i18nConfig");
-  const langConfig = ls ? JSON.parse(ls) : { selectedLang: "pt" };
-  const currentLang = langConfig.selectedLang;
+  const { locale: currentLang, setLanguage } = useLanguage();
 
   // Detecta o país do visitante e define o idioma automaticamente na primeira visita
   useEffect(() => {
+    const ls = localStorage.getItem("i18nConfig");
     if (ls) return; // já tem preferência salva, não sobrescreve
     getGeoIP().then((data) => {
       const lang = COUNTRY_TO_LANG[data.country_code];
       if (lang && lang !== "pt") {
-        localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: lang }));
-        window.location.reload();
+        setLanguage(lang);
       }
     }).catch(() => {});
   // eslint-disable-next-line
@@ -132,9 +131,8 @@ const Nav = () => {
   ];
 
   const handleLanguageChange = (langId) => {
-    localStorage.setItem("i18nConfig", JSON.stringify({ selectedLang: langId }));
+    setLanguage(langId);
     navigate("/");
-    window.location.reload();
   };
 
   return (
