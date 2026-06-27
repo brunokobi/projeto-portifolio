@@ -11,33 +11,68 @@ const GREEN = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
 
 const FEEDS = [
+  // Pesquisa & Ciência
+  { name: "MIT News",     url: "https://news.mit.edu/rss/topic/artificial-intelligence",                 flag: "🌎", color: GREEN,      cat: "research" },
+  { name: "MIT Tech Rev", url: "https://www.technologyreview.com/feed/",                                 flag: "🌎", color: GREEN,      cat: "research" },
+  { name: "Google Res.",  url: "https://research.google/blog/rss/",                                      flag: "🌎", color: "#4285f4",  cat: "research" },
+  { name: "Stanford AI",  url: "https://ai.stanford.edu/feed",                                           flag: "🌎", color: "#8c1515",  cat: "research" },
+  { name: "BAIR",         url: "https://bair.berkeley.edu/blog/feed.xml",                                flag: "🌎", color: "#ffa500",  cat: "research" },
+  { name: "MIRI",         url: "https://intelligence.org/feed",                                          flag: "🌎", color: GREEN,      cat: "research" },
+  { name: "arXiv AI",     url: "https://export.arxiv.org/rss/cs.AI",                                    flag: "🌎", color: "#b31b1b",  cat: "research" },
+  { name: "The Gradient", url: "https://thegradient.pub/rss/",                                           flag: "🌎", color: GREEN,      cat: "research" },
+  { name: "Import AI",    url: "https://jack-clark.net/feed",                                            flag: "🌎", color: GREEN,      cat: "research" },
+  // Pesquisa Asiática & China
+  { name: "Synced",       url: "https://syncedreview.com/feed",                                         flag: "🌏", color: "#e63946",  cat: "asia" },
+  // Modelos & Ferramentas
+  { name: "HuggingFace",  url: "https://huggingface.co/blog/feed.xml",                                   flag: "🌎", color: "#ff9d00",  cat: "models" },
+  { name: "AI Weekly",    url: "https://aiweekly.co/issues.rss",                                         flag: "🌎", color: GREEN,      cat: "models" },
+  { name: "AI Insider",   url: "https://theaiinsider.tech/feed",                                         flag: "🌎", color: GREEN,      cat: "models" },
+  { name: "Analytics V.", url: "https://www.analyticsvidhya.com/feed/",                                 flag: "🌎", color: GREEN,      cat: "models" },
+  // Engenharia & Dev
+  { name: "Meta Eng.",    url: "https://engineering.fb.com/feed/",                                       flag: "🌎", color: "#0866ff",  cat: "dev" },
+  { name: "IEEE Spectrum", url: "https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss",    flag: "🌎", color: "#00629b",  cat: "dev" },
+  { name: "KDnuggets",    url: "https://kdnuggets.com/feed",                                             flag: "🌎", color: GREEN,      cat: "dev" },
   // Brasil
-  { name: "SWEN.AI",      url: "https://swen.ai/feed/",                                                  flag: "🇧🇷", color: "#00c8ff" },
-  { name: "AINEWS",       url: "https://ainews.com.br/feed/",                                            flag: "🇧🇷", color: "#00c8ff" },
-  { name: "Exame IA",     url: "https://exame.com/inteligencia-artificial/feed/",                        flag: "🇧🇷", color: "#00c8ff" },
-  // Mundo
-  { name: "AI Weekly",    url: "https://aiweekly.co/issues.rss",                                         flag: "🌎", color: GREEN },
-  { name: "AI Insider",   url: "https://theaiinsider.tech/feed",                                         flag: "🌎", color: GREEN },
-  { name: "MIT News",     url: "https://news.mit.edu/rss/topic/artificial-intelligence",                 flag: "🌎", color: GREEN },
-  { name: "AI News",      url: "https://www.artificialintelligence-news.com/feed/",                      flag: "🌎", color: GREEN },
-  { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",      flag: "🌎", color: GREEN },
-  { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",          flag: "🌎", color: GREEN },
-  { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",                flag: "🌎", color: GREEN },
-  { name: "MIT Tech Rev", url: "https://www.technologyreview.com/feed/",                                 flag: "🌎", color: GREEN },
-  { name: "Google Res.",  url: "https://research.google/blog/rss/",                                      flag: "🌎", color: "#4285f4" },
-  { name: "Stanford AI",  url: "https://ai.stanford.edu/feed",                                           flag: "🌎", color: "#8c1515" },
-  { name: "BAIR",         url: "https://bair.berkeley.edu/blog/feed.xml",                                flag: "🌎", color: "#ffa500" },
-  { name: "MIRI",         url: "https://intelligence.org/feed",                                          flag: "🌎", color: GREEN },
-  { name: "Meta Eng.",    url: "https://engineering.fb.com/feed/",                                       flag: "🌎", color: "#0866ff" },
-  { name: "HuggingFace",  url: "https://huggingface.co/blog/feed.xml",                                   flag: "🌎", color: "#ff9d00" },
-  { name: "KDnuggets",    url: "https://kdnuggets.com/feed",                                             flag: "🌎", color: GREEN },
-  { name: "arXiv AI",     url: "https://export.arxiv.org/rss/cs.AI",                                    flag: "🌎", color: "#b31b1b" },
-  { name: "The Gradient", url: "https://thegradient.pub/rss/",                                           flag: "🌎", color: GREEN },
-  { name: "IEEE Spectrum", url: "https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss",    flag: "🌎", color: "#00629b" },
-  { name: "Import AI",    url: "https://jack-clark.net/feed",                                            flag: "🌎", color: GREEN },
-  { name: "Synced",       url: "https://syncedreview.com/feed",                                         flag: "🌎", color: GREEN },
-  { name: "Analytics V.", url: "https://www.analyticsvidhya.com/feed/",                                 flag: "🌎", color: GREEN },
+  { name: "SWEN.AI",      url: "https://swen.ai/feed/",                                                  flag: "🇧🇷", color: "#00c8ff", cat: "brasil" },
+  { name: "AINEWS",       url: "https://ainews.com.br/feed/",                                            flag: "🇧🇷", color: "#00c8ff", cat: "brasil" },
+  { name: "Exame IA",     url: "https://exame.com/inteligencia-artificial/feed/",                        flag: "🇧🇷", color: "#00c8ff", cat: "brasil" },
+  // Indústria & Tech
+  { name: "The Verge",    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",      flag: "🌎", color: GREEN,      cat: "industry" },
+  { name: "TechCrunch",   url: "https://techcrunch.com/category/artificial-intelligence/feed/",          flag: "🌎", color: GREEN,      cat: "industry" },
+  { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",                flag: "🌎", color: GREEN,      cat: "industry" },
+  { name: "AI News",      url: "https://www.artificialintelligence-news.com/feed/",                      flag: "🌎", color: GREEN,      cat: "industry" },
 ];
+
+const CATEGORIES = [
+  { id: "top",      label: "📡 MAIS NOTÍCIAS",          color: GREEN },
+  { id: "research", label: "🔬 Pesquisa & Ciência",      color: "#4285f4" },
+  { id: "asia",     label: "🌏 Pesquisa Asiática & China", color: "#e63946" },
+  { id: "models",   label: "🤖 Modelos & Ferramentas",   color: "#ff9d00" },
+  { id: "dev",      label: "⚙️ Engenharia & Dev",        color: "#0866ff" },
+  { id: "brasil",   label: "🇧🇷 Brasil",                  color: "#00c8ff" },
+  { id: "industry", label: "🏭 Indústria & Tech",         color: GREEN },
+];
+
+const SectionHeader = ({ label, color }) => (
+  <Box pt={4} pb={2}>
+    <HStack spacing={2} align="center">
+      <Box flex={1} h="1px" bg={`${color}33`} />
+      <Text
+        fontSize="10px"
+        fontFamily="'Courier New', monospace"
+        fontWeight="900"
+        letterSpacing="0.18em"
+        color={color}
+        textTransform="uppercase"
+        style={{ textShadow: `0 0 6px ${color}66` }}
+        flexShrink={0}
+      >
+        {label}
+      </Text>
+      <Box flex={1} h="1px" bg={`${color}33`} />
+    </HStack>
+  </Box>
+);
 
 const PROXY = "/.netlify/functions/news?url=";
 
@@ -311,29 +346,39 @@ export const NewsPanel = ({ isOpen, onClose }) => {
                 </Text>
               </VStack>
             </Flex>
+          ) : articles.length === 0 ? (
+            <Text fontSize="sm" color="whiteAlpha.400" textAlign="center" mt={8} fontFamily="heading">
+              Nenhuma notícia encontrada.
+            </Text>
           ) : (
-            <VStack spacing={3} align="stretch">
-              {articles.length === 0 && (
-                <Text fontSize="sm" color="whiteAlpha.400" textAlign="center" mt={8} fontFamily="heading">
-                  Nenhuma notícia encontrada.
-                </Text>
-              )}
-              <AnimatePresence>
-                {articles.map((a, i) => (
+            <AnimatePresence>
+              {CATEGORIES.map((cat) => {
+                const items = cat.id === "top"
+                  ? articles.slice(0, 8)
+                  : articles.filter((a) => a.source.cat === cat.id);
+                if (!items.length) return null;
+                return (
                   <motion.div
-                    key={`${a.source.name}-${i}`}
-                    initial={{ opacity: 0, y: 40 }}
+                    key={cat.id}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.05, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                   >
-                    <ArticleCard {...a} />
-                    {i < articles.length - 1 && (
-                      <Divider borderColor="rgba(255,255,255,0.05)" mt={3} />
-                    )}
+                    <SectionHeader label={cat.label} color={cat.color} />
+                    <VStack spacing={0} align="stretch">
+                      {items.map((a, i) => (
+                        <Box key={`${cat.id}-${a.source.name}-${i}`}>
+                          <ArticleCard {...a} />
+                          {i < items.length - 1 && (
+                            <Divider borderColor="rgba(255,255,255,0.04)" my={2} />
+                          )}
+                        </Box>
+                      ))}
+                    </VStack>
                   </motion.div>
-                ))}
-              </AnimatePresence>
-            </VStack>
+                );
+              })}
+            </AnimatePresence>
           )}
         </DrawerBody>
       </DrawerContent>
