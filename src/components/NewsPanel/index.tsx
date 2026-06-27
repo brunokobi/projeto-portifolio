@@ -6,6 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { BsNewspaper, BsBoxArrowUpRight } from "react-icons/bs";
 import falar from "../TextAudio";
+import { parseRSS, timeAgo, translateTitle, translateArticles, PROXY, CACHE_TTL } from "../../utils/rss";
 
 const GREEN = "#42c920";
 const GREEN_DIM = "rgba(66,201,32,0.15)";
@@ -74,57 +75,6 @@ const SectionHeader = ({ label, color }) => (
   </Box>
 );
 
-const PROXY = "/.netlify/functions/news?url=";
-
-function parseRSS(xml) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(xml, "text/xml");
-
-  // RSS 2.0
-  let items = Array.from(doc.querySelectorAll("item"));
-  // Atom fallback
-  if (!items.length) items = Array.from(doc.querySelectorAll("entry"));
-
-  return items.slice(0, 6).map((item) => {
-    const getText = (sel) =>
-      item.querySelector(sel)?.textContent?.trim() ?? "";
-    const getAttr = (sel, attr) =>
-      item.querySelector(sel)?.getAttribute(attr) ?? "";
-
-    const title = getText("title");
-    const link =
-      getText("link") ||
-      getAttr("link[rel='alternate']", "href") ||
-      getAttr("link", "href");
-    const date =
-      getText("pubDate") ||
-      getText("published") ||
-      getText("updated") ||
-      getText("dc\\:date");
-
-    // Extrai thumbnail: media:thumbnail → media:content → enclosure → <img> na descrição
-    const img =
-      getAttr("media\\:thumbnail, thumbnail", "url") ||
-      getAttr("media\\:content, content", "url") ||
-      getAttr("enclosure[type^='image']", "url") ||
-      (() => {
-        const raw = getText("description") || getText("content\\:encoded") || getText("content");
-        const match = raw.match(/<img[^>]+src=["']([^"']+)["']/i);
-        return match ? match[1] : "";
-      })();
-
-    return { title, link, date: date ? new Date(date) : null, img: img || null };
-  }).filter((a) => a.title && a.link);
-}
-
-function timeAgo(date) {
-  if (!date || isNaN(date)) return "";
-  const diff = (Date.now() - date.getTime()) / 1000;
-  if (diff < 3600) return `${Math.floor(diff / 60)}min atrás`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h atrás`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d atrás`;
-  return date.toLocaleDateString("pt-BR");
-}
 
 const ArticleCard = ({ title, link, date, source, img }) => (
   <Box
@@ -205,50 +155,8 @@ const ArticleCard = ({ title, link, date, source, img }) => (
   </Box>
 );
 
-// Cache de traduções permanente por sessão
-const translationCache = new Map();
-
-async function translateTitle(text) {
-  if (translationCache.has(text)) return translationCache.get(text);
-  try {
-    const url =
-      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` +
-      encodeURIComponent(text);
-    const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
-    const data = await res.json();
-    const translated = data[0]?.map((d) => d[0]).join("") || text;
-    translationCache.set(text, translated);
-    return translated;
-  } catch {
-    return text;
-  }
-}
-
-// Traduz apenas os primeiros 40 artigos internacionais para não sobrecarregar a API
-async function translateArticles(articles) {
-  const result = articles.map((a) => ({ ...a }));
-  const intlIdxs = result
-    .map((a, i) => (a.source.flag === "🌎" ? i : -1))
-    .filter((i) => i >= 0)
-    .slice(0, 40);
-
-  const BATCH = 5;
-  for (let b = 0; b < intlIdxs.length; b += BATCH) {
-    await Promise.all(
-      intlIdxs.slice(b, b + BATCH).map(async (idx) => {
-        result[idx] = {
-          ...result[idx],
-          title: await translateTitle(result[idx].title),
-        };
-      })
-    );
-  }
-  return result;
-}
-
 // Cache in-memory para evitar refetch desnecessário
-const cache = { data: null, ts: 0 };
-const CACHE_TTL = 5 * 60 * 1000; // 5 min
+const cache = { data: null as any, ts: 0 };
 
 export const NewsPanel = ({ isOpen, onClose }) => {
   const [articles, setArticles] = useState([]);

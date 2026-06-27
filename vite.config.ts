@@ -16,6 +16,20 @@ export default defineConfig({
     }),
   ],
   server: { port: 3000, open: true },
-  build: { outDir: 'dist', sourcemap: false },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'chakra': ['@chakra-ui/react', '@emotion/react', '@emotion/styled'],
+          'framer': ['framer-motion'],
+          'supabase': ['@supabase/supabase-js'],
+          'intl': ['react-intl'],
+        },
+      },
+    },
+  },
   define: { global: 'window' },
 })
