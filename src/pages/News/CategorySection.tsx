@@ -342,6 +342,7 @@ function CategoryDrawer({ cat, onClose }: CategoryDrawerProps) {
             </Text>
           </VStack>
           <Box as="button" onClick={onClose}
+            aria-label="Fechar painel"
             color="whiteAlpha.400" _hover={{ color: "white" }} transition="color .15s"
             fontSize="lg" lineHeight={1} ml={4}>✕</Box>
         </Flex>

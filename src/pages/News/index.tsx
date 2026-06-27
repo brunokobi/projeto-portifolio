@@ -20,9 +20,13 @@ import {
 import { isSpam, isRelevant, scoreArticle, heroScore, MIXED_SOURCES } from "./newsFunctions";
 import { HeroCarousel } from "./HeroCarousel";
 import { ScrollRow, MiniCard, CategorySection, CategoryDrawer } from "./CategorySection";
+import type { Article, NewsCategory } from "../../types";
+
+type ScoredArticle = Article & { score: number };
+type DrawerCat = NewsCategory & { articles: ScoredArticle[] };
 
 // ── Cache in-memory ────────────────────────────────────────────────────────
-const cache: { data: any; ts: number } = { data: null, ts: 0 };
+const cache: { data: ScoredArticle[] | null; ts: number } = { data: null, ts: 0 };
 
 // ── Matrix rain loader ─────────────────────────────────────────────────────
 function MatrixLoader() {
@@ -65,6 +69,7 @@ function FilterBtn({ id, label, active, onClick }: {
 }) {
   return (
     <Box as="button" onClick={() => onClick(id)}
+      aria-pressed={active}
       px={3} py={1} borderRadius="4px" fontSize="xs" fontFamily="heading"
       fontWeight={active ? "700" : "500"} color={active ? GREEN : "whiteAlpha.600"}
       bg={active ? `${GREEN}15` : "transparent"} transition="all .15s"
@@ -77,12 +82,12 @@ function FilterBtn({ id, label, active, onClick }: {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 const NewsPage = () => {
-  const [articles, setArticles]       = useState<any[]>([]);
+  const [articles, setArticles]       = useState<ScoredArticle[]>([]);
   const [loading, setLoading]         = useState(false);
-  const [filter, setFilter]           = useState("all");
-  const [sortBy, setSortBy]           = useState("importance");
+  const [filter, setFilter]           = useState<"all" | "br" | "world">("all");
+  const [sortBy, setSortBy]           = useState<"importance" | "date">("importance");
   const [showSources, setShowSources] = useState(false);
-  const [drawerCat, setDrawerCat]     = useState<any>(null);
+  const [drawerCat, setDrawerCat]     = useState<DrawerCat | null>(null);
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
@@ -95,10 +100,12 @@ const NewsPage = () => {
           .then(xml => parseRSS(xml).map(a => ({ ...a, source: feed })))
       )
     );
-    const raw = results.filter(r => r.status === "fulfilled").flatMap(r => (r as any).value)
-      .sort((a: any, b: any) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
+    const raw = results
+      .filter((r): r is PromiseFulfilledResult<Article[]> => r.status === "fulfilled")
+      .flatMap(r => r.value)
+      .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
     const translated = await translateArticles(raw);
-    const scored = translated.map((a: any) => ({ ...a, score: scoreArticle(a) }));
+    const scored: ScoredArticle[] = translated.map(a => ({ ...a, score: scoreArticle(a) }));
     cache.data = scored; cache.ts = Date.now();
     setArticles(scored); setLoading(false);
   }, []);
@@ -129,7 +136,7 @@ const NewsPage = () => {
     .filter(a => a.img)
     .sort((a, b) => heroScore(b) - heroScore(a))
     .slice(0, 6);
-  const heroLinks   = new Set(heroSlides.map((a: any) => a.link));
+  const heroLinks   = new Set(heroSlides.map(a => a.link));
   // mini-cards mostram próximos 10 (excluindo carrossel)
   const miniCards   = sorted.filter(a => !heroLinks.has(a.link)).slice(0, 10);
   // categorias excluem APENAS o carrossel, não os mini-cards (pool maior)
@@ -270,6 +277,7 @@ const NewsPage = () => {
                 </Text>
               </VStack>
               <Box as="button" onClick={() => setShowSources(false)}
+                aria-label="Fechar lista de fontes"
                 color="whiteAlpha.400" _hover={{ color: "white" }} transition="color .15s"
                 fontSize="lg" lineHeight={1}>✕</Box>
             </Flex>

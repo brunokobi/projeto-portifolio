@@ -160,13 +160,17 @@ function HeroCarousel({ articles }: HeroCarouselProps) {
   return (
     <Box bg="#0a0a0a" borderBottom="1px solid rgba(255,255,255,0.07)"
       position="relative"
+      role="region"
+      aria-label="Carrossel de notícias em destaque"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}>
 
       {/* Slides stack */}
-      <Box position="relative" minH={{ base: "300px", md: "420px" }}>
+      <Box position="relative" minH={{ base: "300px", md: "420px" }}
+        aria-live="polite" aria-atomic="true">
         {articles.map((article, i) => (
           <Box key={article.link} className="nws-carousel-slide"
+            aria-hidden={current !== i}
             opacity={current === i ? 1 : 0}
             zIndex={current === i ? 1 : 0}
             pointerEvents={current === i ? "auto" : "none"}
@@ -178,6 +182,7 @@ function HeroCarousel({ articles }: HeroCarouselProps) {
         {/* Arrow left */}
         {total > 1 && (
           <Box as="button" onClick={() => go(-1)}
+            aria-label="Notícia anterior"
             position="absolute" left={{ base: 2, md: 4 }} top="50%" transform="translateY(-50%)" zIndex={10}
             w={{ base: "32px", md: "40px" }} h={{ base: "32px", md: "40px" }}
             display="flex" alignItems="center" justifyContent="center"
@@ -192,6 +197,7 @@ function HeroCarousel({ articles }: HeroCarouselProps) {
         {/* Arrow right */}
         {total > 1 && (
           <Box as="button" onClick={() => go(1)}
+            aria-label="Próxima notícia"
             position="absolute" right={{ base: 2, md: 4 }} top="50%" transform="translateY(-50%)" zIndex={10}
             w={{ base: "32px", md: "40px" }} h={{ base: "32px", md: "40px" }}
             display="flex" alignItems="center" justifyContent="center"
@@ -216,8 +222,10 @@ function HeroCarousel({ articles }: HeroCarouselProps) {
       {/* Dot indicators */}
       {total > 1 && (
         <Flex justify="center" gap={2} py={3}>
-          {articles.map((_, i) => (
+          {articles.map((article, i) => (
             <Box key={i} as="button" onClick={() => setCurrent(i)}
+              aria-label={`Ir para notícia ${i + 1}: ${article.title}`}
+              aria-current={current === i ? "true" : undefined}
               w={current === i ? "20px" : "6px"} h="6px" borderRadius="full"
               bg={current === i ? GREEN : "rgba(255,255,255,0.25)"}
               transition="all .3s ease"

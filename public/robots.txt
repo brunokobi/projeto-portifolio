@@ -1,4 +1,6 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /.netlify/
+
+Sitemap: https://brunokobi.netlify.app/sitemap.xml
 
