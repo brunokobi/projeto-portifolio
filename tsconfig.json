@@ -14,7 +14,8 @@
     "strict": false,
     "allowJs": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]

@@ -232,8 +232,8 @@ const NewsPage = () => {
 
             <HStack spacing={0} flexShrink={0}>
               <Box w="1px" h="14px" bg="rgba(255,255,255,0.1)" mx={2} />
-              <FilterBtn id="all"   label="Todos" active={filter === "all"}   onClick={setFilter} />
-              <FilterBtn id="world" label="🌎"    active={filter === "world"} onClick={setFilter} />
+              <FilterBtn id="all"   label="Todos" active={filter === "all"}   onClick={(id) => setFilter(id as typeof filter)} />
+              <FilterBtn id="world" label="🌎"    active={filter === "world"} onClick={(id) => setFilter(id as typeof filter)} />
               <Box as="button" onClick={() => setFilter("br")}
                 px={2} py={1} borderRadius="4px"
                 bg={filter === "br" ? `${GREEN}15` : "transparent"}
