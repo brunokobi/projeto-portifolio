@@ -241,7 +241,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
     const raw = results
       .filter((r) => r.status === "fulfilled")
       .flatMap((r) => r.value)
-      .filter((a) => !a.date || a.date.getTime() >= oneYearAgo)
+      .filter((a) => a.date && !isNaN(a.date) && a.date.getTime() >= oneYearAgo)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
 
     const translated = await translateArticles(raw);
