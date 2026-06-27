@@ -13,7 +13,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { theme } from "./styles";
 
 // Cria a raiz do React no elemento HTML com o ID "root"
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 // Renderiza a aplicação dentro do elemento root
 root.render(

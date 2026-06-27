@@ -1,12 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 
-const useTypewriter = (strings, speed = 70, deleteSpeed = 40, pauseMs = 1800) => {
+interface TypewriterState {
+  idx: number;
+  pos: number;
+  deleting: boolean;
+}
+
+const useTypewriter = (
+  strings: string[],
+  speed = 70,
+  deleteSpeed = 40,
+  pauseMs = 1800
+): string => {
   const [displayText, setDisplayText] = useState('');
-  const stateRef = useRef({ idx: 0, pos: 0, deleting: false });
+  const stateRef = useRef<TypewriterState>({ idx: 0, pos: 0, deleting: false });
 
   useEffect(() => {
     if (!strings.length) return;
-    let timeout;
+    let timeout: ReturnType<typeof setTimeout>;
 
     const tick = () => {
       const { idx, pos, deleting } = stateRef.current;

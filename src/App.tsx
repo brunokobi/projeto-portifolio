@@ -28,7 +28,7 @@ import ruMessages from "../src/i18n/messages/ru.json";
 import klMessages from "../src/i18n/messages/kl.json";
 import arMessages from "../src/i18n/messages/ar.json";
 
-const allMessages = {
+const allMessages: Record<string, Record<string, string>> = {
   en: enMessages,
   es: esMessages,
   pt: ptMessages,

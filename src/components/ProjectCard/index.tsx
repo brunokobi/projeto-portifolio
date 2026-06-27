@@ -25,6 +25,15 @@ const ProjectCard = ({
   code,
   img,
   i,
+}: {
+  link?: string;
+  title: string;
+  description: string;
+  tags?: string[];
+  demo?: string;
+  code?: string;
+  img?: string;
+  i: number;
 }) => {
   const cardRef = useRef(null);
   

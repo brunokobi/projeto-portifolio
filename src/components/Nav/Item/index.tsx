@@ -22,7 +22,7 @@ const Item = ({ label, url, icon }) => {
 
   return (
     <BreadcrumbItem
-      as={motion.div}
+      as={motion.div as any}
       initial="rest"
       whileHover="hover"
       animate="rest"
@@ -33,7 +33,6 @@ const Item = ({ label, url, icon }) => {
         <BreadcrumbLink
           href={url}
           target="_blank"
-          state={{ prevPath: location.pathname }}
           ref={navLink}
           rounded="md"
           _hover={{ color: "#42c920" }}
@@ -43,10 +42,10 @@ const Item = ({ label, url, icon }) => {
         >
           <Stack
             align="center"
-            direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
+            direction={{ base: "row", md: "column" , sm: "column", lg: "row"}}
             px={{ base: 1, md: 0, sm: 0}}
           >
-            <div as={motion.div} variants={iconMotion}>
+            <div>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </div>
             <Text
@@ -73,10 +72,10 @@ const Item = ({ label, url, icon }) => {
         >
           <Stack
             align="center"
-            direction={{ base: "row ", md: "column" , sm: "column", lg: "row"}}
+            direction={{ base: "row", md: "column" , sm: "column", lg: "row"}}
             px={{ base: 1, md: 5 }}
           >
-            <div as={motion.div} variants={iconMotion}>
+            <div>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
             </div>
             <Text

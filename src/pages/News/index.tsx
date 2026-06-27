@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   Box, Flex, Grid, Text, Badge, Link, Spinner,
   VStack, HStack, Icon, Tooltip,
@@ -232,7 +232,7 @@ function isRelevant(a) {
 function scoreArticle(a) {
   let s = SOURCE_PRESTIGE[a.source?.name] || 5;
   if (a.date && !isNaN(a.date)) {
-    const h = (Date.now() - a.date) / 3_600_000;
+    const h = (Date.now() - (a.date as unknown as number)) / 3_600_000;
     s += h<2?40:h<6?33:h<12?25:h<24?16:h<48?8:h<96?3:0;
   }
   const t = (a.title||"").toLowerCase();
@@ -261,7 +261,7 @@ function heroScore(a) {
   KW_HIGH.forEach(k     => { if (t.includes(k)) s += 10; });
   KW_MED.forEach(k      => { if (t.includes(k)) s += 4;  });
   if (a.date && !isNaN(a.date)) {
-    const h = (Date.now() - a.date) / 3_600_000;
+    const h = (Date.now() - (a.date as unknown as number)) / 3_600_000;
     s += h < 1 ? 30 : h < 3 ? 25 : h < 6 ? 20 : h < 12 ? 14 : h < 24 ? 8 : h < 48 ? 3 : 0;
   }
   return s;
@@ -384,7 +384,7 @@ function parseRSS(xml) {
 }
 
 function timeAgo(date) {
-  if(!date||isNaN(date))return"";
+  if(!date||isNaN(date as any))return"";
   const d=(Date.now()-date)/1000;
   if(d<3600) return`${Math.floor(d/60)}min`;
   if(d<86400)return`${Math.floor(d/3600)}h`;
@@ -642,7 +642,7 @@ function MiniCard({ title, link, img, date, source, score, revealDelay=0 }) {
   const lvl = importanceLevel(score ?? 0);
 
   return (
-    <div ref={ref} style={{
+    <div ref={ref as React.RefObject<HTMLDivElement>} style={{
       flexShrink: 0, width: "200px",
       opacity: inView ? 1 : 0,
       animation: inView ? `nwsCardIn .45s ease ${revealDelay}ms both` : "none",
@@ -653,7 +653,7 @@ function MiniCard({ title, link, img, date, source, score, revealDelay=0 }) {
           border="1px solid rgba(255,255,255,0.08)"
           _hover={{ borderColor:`${source.color}77`, transform:"translateY(-3px)" }}
           transition="border-color .2s, transform .2s, box-shadow .2s"
-          style={{ "--hover-shadow":`0 0 20px ${source.color}33` }}
+          style={{ "--hover-shadow":`0 0 20px ${source.color}33` } as React.CSSProperties}
           h="100%"
         >
           <Corners />
@@ -693,7 +693,7 @@ function CategoryCard({ title, link, img, date, source, score, desc, revealDelay
   const lvl = importanceLevel(score ?? 0);
 
   return (
-    <div ref={ref} style={{
+    <div ref={ref as React.RefObject<HTMLDivElement>} style={{
       flexShrink: 0, width: "260px",
       opacity: inView ? 1 : 0,
       animation: inView ? `nwsCardIn .5s ease ${revealDelay}ms both` : "none",
@@ -950,7 +950,7 @@ function CategorySection({ title, desc, accent, articles, onOpenDrawer }) {
   const openDrawer = () => onOpenDrawer?.({ title, desc, accent, articles });
 
   return (
-    <Box ref={ref} borderTop="1px solid rgba(255,255,255,0.06)">
+    <Box ref={ref as React.RefObject<HTMLDivElement>} borderTop="1px solid rgba(255,255,255,0.06)">
 
       {/* ── Mobile: layout compacto igual ao "Mais Notícias" ── */}
       <Box display={{ base:"block", lg:"none" }} py={5}>

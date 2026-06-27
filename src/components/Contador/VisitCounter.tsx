@@ -19,7 +19,7 @@ const digitPulse = keyframes`
   50%       { text-shadow: 0 0 8px #42c920, 0 0 20px #39ff14, 0 0 36px #2ab800; }
 `;
 
-const Rivet = ({ top, left, right, bottom }) => (
+const Rivet = ({ top, left, right, bottom }: { top?: string; left?: string; right?: string; bottom?: string }) => (
   <Box
     position="absolute"
     top={top} left={left} right={right} bottom={bottom}

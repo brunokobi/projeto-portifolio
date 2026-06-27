@@ -1,7 +1,8 @@
-// Singleton: ipapi.co é chamado uma única vez, resultado compartilhado
-let _promise = null;
+import type { GeoIPData } from "../types";
 
-export const getGeoIP = () => {
+let _promise: Promise<GeoIPData> | null = null;
+
+export const getGeoIP = (): Promise<GeoIPData> => {
   if (!_promise) {
     _promise = fetch("https://ipapi.co/json/")
       .then((r) => r.json())

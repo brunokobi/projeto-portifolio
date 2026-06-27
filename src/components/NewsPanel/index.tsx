@@ -119,7 +119,7 @@ function parseRSS(xml) {
 
 function timeAgo(date) {
   if (!date || isNaN(date)) return "";
-  const diff = (Date.now() - date) / 1000;
+  const diff = (Date.now() - date.getTime()) / 1000;
   if (diff < 3600) return `${Math.floor(diff / 60)}min atrás`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h atrás`;
   if (diff < 604800) return `${Math.floor(diff / 86400)}d atrás`;
@@ -174,7 +174,7 @@ const ArticleCard = ({ title, link, date, source, img }) => (
               src={img}
               alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              onError={(e) => { e.target.parentElement.style.display = "none"; }}
+              onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = "none"; }}
             />
           </Box>
         )}
@@ -276,7 +276,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
     const raw = results
       .filter((r) => r.status === "fulfilled")
       .flatMap((r) => r.value)
-      .filter((a) => a.date && !isNaN(a.date) && a.date.getTime() >= oneYearAgo)
+      .filter((a) => a.date && !isNaN(a.date as any) && a.date.getTime() >= oneYearAgo)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
 
     const translated = await translateArticles(raw);

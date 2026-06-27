@@ -1,5 +1,5 @@
 // teste de ia usando modelo de mistral
-import { useState } from "react";
+import React, { useState } from "react";
 import "./InputTextArea.css";
 import robo from '../../assets/img/robot.png';
 import AnimatedStars from "../../components/AnimatedStars";
@@ -83,7 +83,7 @@ const LlamaChat = () => {
     <AnimatedStars />
     <Box w={"90%"} h={"100%"} mt={5}
       overflow={"auto"}
-      style={{ "-webkit-overflow-scrolling": "touch", "scrollbar-width": "none", "msOverflowStyle": "none" }}
+      style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
     >
       <div style={{ padding: "20px", maxWidth: "800px", margin: "auto", overflow: "auto" }}>
         <h1>CHAT por IA  (em teste)</h1>

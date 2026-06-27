@@ -1,7 +1,7 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Box, Heading, Text, Button } from "@chakra-ui/react";
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends Component<{ children: React.ReactNode }> {
   state = { hasError: false };
 
   static getDerivedStateFromError() {

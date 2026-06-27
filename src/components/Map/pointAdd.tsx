@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {loadModules, setDefaultOptions} from 'esri-loader'
 import LoadingGlobo from '../Loading/index.jsx'
 
@@ -10,20 +10,20 @@ const PointAdd = (props) => {
     container: {
       height: '70vh',
       position: 'relative',
-    },
+    } as React.CSSProperties,
     mapDiv: {
       height: '69vh',
       border: '1px solid #42c920',
       background: 'transparent',
       borderRadius: '5px',
-    },
+    } as React.CSSProperties,
     loadingWrapper: {
       position: 'absolute',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       zIndex: 10,
-    }
+    } as React.CSSProperties,
   }
 
   useEffect(() => {

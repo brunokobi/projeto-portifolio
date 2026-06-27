@@ -36,7 +36,7 @@ const GREEN_GLOW = "0 0 8px rgba(66,201,32,0.55)";
 
 // Busca coordenadas: tenta geolocalização do browser, cai no ipapi.co
 const getCoords = () =>
-  new Promise((resolve) => {
+  new Promise<{ lat: number | null; lon: number | null; city: string | null; country?: string | null }>((resolve) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, city: null }),

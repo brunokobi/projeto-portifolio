@@ -1,20 +1,18 @@
-const falar = (text) => {
+const falar = (text: string): void => {
   const synth = window.speechSynthesis;
-  const som = localStorage.getItem("Audio"); // Obtém o estado do áudio: "on" ou "off"
+  const som = localStorage.getItem("Audio");
   const i18nConfig = JSON.parse(localStorage.getItem("i18nConfig") || "{}");
-  const selectedLang = i18nConfig.selectedLang || "pt"; // Padrão: "pt"
+  const selectedLang: string = i18nConfig.selectedLang || "pt";
 
   if (!text) return;
 
-  // Ajuste de pronúncia para palavras específicas
-  const pronunciationAdjustments = {
+  const pronunciationAdjustments: Record<string, string> = {
     Github: "Git Hub",
   };
-  
+
   text = pronunciationAdjustments[text] || text;
 
-  // Mapeamento de idiomas suportados
-  const langMap = {
+  const langMap: Record<string, string> = {
     en: "en-US",
     es: "es-ES",
     pt: "pt-BR",

@@ -131,10 +131,10 @@ const locations = [
 ];
 
 function Mapa() {
-  const [latitudei, setLatitudei] = useState("");
-  const [longitudei, setLongitudei] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [latitudei, setLatitudei] = useState<number | string>("");
+  const [longitudei, setLongitudei] = useState<number | string>("");
+  const [latitude, setLatitude] = useState<number | string>("");
+  const [longitude, setLongitude] = useState<number | string>("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const wrapperRef = useRef(null);

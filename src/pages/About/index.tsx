@@ -123,14 +123,14 @@ const About = () => {
             maxW={{ base: "100%", md: "700px" }}
           >
             {/* Foto de perfil */}
-            <div
-              as={SlideFade}
+            <Box
+              as={SlideFade as any}
               in={presentationViewPort}
               offsetX="-50%"
               transition="all 1s"
             >
               <Image src={profilePhoto} w={300} ref={presentationRef} />
-            </div>
+            </Box>
             <Divider
               orientation="vertical"
               bgColor="white"
@@ -138,9 +138,9 @@ const About = () => {
               display={{ base: "none", md: "block" }}
             />
             {/* Texto "Sobre mim" */}
-            <div
+            <Box
               maxW="350px"
-              as={SlideFade}
+              as={SlideFade as any}
               in={presentationViewPort}
               offsetY="-50%"
               transition="all 1s"
@@ -184,7 +184,7 @@ const About = () => {
                 <br />
                 {intl.formatMessage({ id: "sobre3" })}
               </Text>
-            </div>
+            </Box>
           </Stack>
           {/* Ícone de navegação para a próxima seção */}
           <Box
@@ -213,9 +213,9 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <div
+            <Box
               maxW="350px"
-              as={ScaleFade}
+              as={ScaleFade as any}
               initialScale={0.6}
               in={aboutViewPort}
               transition="all 1s"
@@ -232,19 +232,19 @@ const About = () => {
               onMouseOver={() => falar(intl.formatMessage({ id: "educacao1" }))}
               >
               {intl.formatMessage({ id: "educacao1" })}
-              </Text>             
-            </div>
+              </Text>
+            </Box>
 
-            <div
+            <Box
               mt={-24}
               textAlign="center"
-              as={SlideFade}
+              as={SlideFade as any}
               in={aboutViewPort}
               offsetX="50%"
               transition="all 1s"
-            >             
+            >
               <Image src={questionImg} w={700} ref={aboutRef} />
-            </div>
+            </Box>
           </Stack>
 
 
@@ -273,19 +273,18 @@ const About = () => {
             w="100%"
             maxW={{ base: "100%", md: "700px" }}
           >
-            <div
+            <Box
               textAlign="center"
-              as={SlideFade}
+              as={SlideFade as any}
               in={experienciaViewPort}
               offsetX="-50%"
               transition="all 1s"
             >
-             
               <Image src={rock} w={400} ref={experienciaRef} />
-            </div>
-            <div
+            </Box>
+            <Box
               maxW="350px"
-              as={SlideFade}
+              as={SlideFade as any}
               in={experienciaViewPort}
               offsetX="50%"
               transition="all 1s"
@@ -339,7 +338,7 @@ const About = () => {
               {intl.formatMessage({ id: "experiencia6d" })}<br/>
               {intl.formatMessage({ id: "competencias" })}: CodeIgniter · PHP · MySQL · HTML · CSS · JavaScript
               </Text>
-            </div>
+            </Box>
           </Stack>
          
           <Box

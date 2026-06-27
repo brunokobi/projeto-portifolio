@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
@@ -128,7 +128,7 @@ const BigBangLoader = () => {
               '--bop': b.opacity,
               animation: `bb-beam 1.3s ease-out ${b.delay}s forwards`,
               opacity: 0,
-            }} />
+            } as React.CSSProperties} />
           ))}
 
           {/* Partículas */}
@@ -143,7 +143,7 @@ const BigBangLoader = () => {
               '--pd': p.dist,
               animation: `bb-particle 1.1s cubic-bezier(0.2,0.8,0.3,1) ${p.delay}s forwards`,
               opacity: 0,
-            }} />
+            } as React.CSSProperties} />
           ))}
 
           {/* Estrelas pulsando */}
