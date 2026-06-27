@@ -25,6 +25,7 @@ const FEEDS = [
   { name: "Wired AI",     url: "https://www.wired.com/feed/tag/artificial-intelligence/",                flag: "🌎", color: GREEN },
   { name: "MIT Tech Rev", url: "https://www.technologyreview.com/feed/",                                 flag: "🌎", color: GREEN },
   { name: "Google Res.",  url: "https://research.google/blog/rss/",                                      flag: "🌎", color: "#4285f4" },
+  { name: "Stanford AI",  url: "https://ai.stanford.edu/feed",                                           flag: "🌎", color: "#8c1515" },
   { name: "BAIR",         url: "https://bair.berkeley.edu/blog/feed.xml",                                flag: "🌎", color: "#ffa500" },
   { name: "MIRI",         url: "https://intelligence.org/feed",                                          flag: "🌎", color: GREEN },
   { name: "Meta Eng.",    url: "https://engineering.fb.com/feed/",                                       flag: "🌎", color: "#0866ff" },
