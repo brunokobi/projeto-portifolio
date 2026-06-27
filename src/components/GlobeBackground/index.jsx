@@ -107,7 +107,7 @@ const GlobeBackground = () => {
           {
             size: { width: 2 * R, depth: 2 * R, height: 2 * R },
             densificationFactor: 4,
-            material: { color: [0, 140, 180, 0.6], metallic: 0.9, roughness: 0.8, doubleSided: false },
+            material: { color: [0, 140, 180, 1], metallic: 0.9, roughness: 0.8, doubleSided: false },
           }
         )
         view.graphics.add(new Graphic({
@@ -176,7 +176,7 @@ const GlobeBackground = () => {
         width: '100vw', height: '100vh',
         zIndex: 1,
         pointerEvents: 'auto',
-        opacity: 0.45,
+        opacity: 1,
       }}
     />
   )
