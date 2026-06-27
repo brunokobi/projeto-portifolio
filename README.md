@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-36%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
 <p align="center">
@@ -137,6 +139,9 @@ N8N_WEBHOOK_URL=https://seu-n8n.com/webhook/contato
 npm start          # Desenvolvimento (Vite dev server, porta 3000)
 npm run build      # Build de produção (saída em /dist)
 npm run preview    # Pré-visualizar build de produção localmente
+npm test           # Testes em modo watch
+npm run test:run   # Testes CI (execução única)
+npm run coverage   # Cobertura de testes (relatório HTML)
 ```
 
 > Para testar as Netlify Functions localmente, instale `netlify-cli` e use `netlify dev` no lugar de `npm start`.
@@ -357,6 +362,33 @@ Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 ---
 
+## 🧪 Testes Automatizados
+
+> **36 testes passando** com Vitest + Testing Library + jsdom
+
+| Suite | Cobertura |
+|-------|-----------|
+| `ErrorBoundary` | Render normal, captura de erro, botão de retry, reset de estado |
+| `LanguageContext` | Locale padrão, leitura do localStorage, `setLanguage`, persistência, erro fora do Provider |
+| `useTypewriter` | Digitação de caracteres com fake timers, múltiplas strings, array vazio |
+| `newsFunctions` | `isSpam`, `isRelevant`, `scoreArticle` (recência + imagem + keywords), `importanceLevel` (todos os níveis) |
+| `utils/rss` | `timeAgo` (min/h/d), `cleanDesc` (HTML + boilerplate), `parseRSS` (RSS 2.0, Atom, inválido) |
+
+```bash
+npm run test:run   # execução única (CI)
+npm run coverage   # relatório de cobertura HTML
+```
+
+### CI/CD — GitHub Actions
+
+A cada push ou Pull Request para `main`:
+
+1. `npx tsc --noEmit` — verifica tipos TypeScript sem build
+2. `vitest run` — roda os 36 testes
+3. `vite build` — garante que o bundle de produção não quebrou
+
+---
+
 ## ♿ Acessibilidade com Síntese de Voz
 
 Text-to-Speech nativo via **Web Speech API** — zero dependências, zero custo. Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado.
@@ -420,9 +452,15 @@ const falar = (texto) => {
 - [x] Filtros interativos por categoria no painel de notícias
 - [x] Carrossel principal com seleção inteligente (heroScore)
 - [x] Filtro de relevância por fonte (MIXED_SOURCES + AI_DEV_KEYWORDS)
+- [x] Migração completa para TypeScript (strict: false + allowJs)
+- [x] Refactoring News/index.tsx: 1317 → ~250 linhas (HeroCarousel, CategorySection, newsConstants, newsFunctions, utils/rss)
+- [x] Testes automatizados — 36 testes com Vitest + Testing Library
+- [x] CI/CD — GitHub Actions (tsc + vitest + build em cada push/PR)
+- [x] bundle manualChunks — bundle principal 753kB → 195kB
+- [x] SEO: sitemap.xml + robots.txt + JSON-LD Schema.org Person
+- [x] Acessibilidade: aria-pressed, aria-label, aria-live no carrossel
 - [ ] Notificações push de breaking news (Service Worker + PWA)
 - [ ] Dashboard de analytics com métricas de visitas
-- [ ] CI/CD com testes automatizados
 - [ ] Observabilidade com Sentry
 - [ ] Migração esri-loader → @arcgis/map-components
 
