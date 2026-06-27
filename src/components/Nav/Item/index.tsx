@@ -1,3 +1,4 @@
+import React from "react";
 import { BreadcrumbItem, BreadcrumbLink, Stack, Text, Icon } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -5,7 +6,13 @@ import { linkMotion, iconMotion } from "../animationsConfig";
 import { Link, useLocation } from "react-router-dom";
 import falar from "../../../components/TextAudio";
 
-const Item = ({ label, url, icon }) => {
+interface ItemProps {
+  label: string;
+  url: string;
+  icon: React.ElementType;
+}
+
+const Item = ({ label, url, icon }: ItemProps) => {
   const navLink = useRef(null);
   const location = useLocation();
 

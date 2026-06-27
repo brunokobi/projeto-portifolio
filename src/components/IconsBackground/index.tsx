@@ -29,7 +29,7 @@ const FALL_KF       = "matrix-icon-fall";
 // Opacidade cauda→cabeça para STREAM_LENGTH = 7
 const TRAIL = [0.05, 0.12, 0.25, 0.44, 0.65, 0.84, 1.0];
 
-const seededRng = (seed) => {
+const seededRng = (seed: number) => {
   let s = seed;
   return () => {
     s = (Math.imul(1664525, s) + 1013904223) | 0;
@@ -39,8 +39,8 @@ const seededRng = (seed) => {
 
 // Gera stream garantindo: sem ícone igual adjacente e distribuição
 // diferente por coluna (offset = col * 5 percorre o array de forma única)
-const buildStream = (rng, colIndex) => {
-  const result = [];
+const buildStream = (rng: () => number, colIndex: number) => {
+  const result: typeof ALL_ICONS[number][] = [];
   const poolOffset = (colIndex * 5) % ALL_ICONS.length;
 
   for (let i = 0; i < STREAM_LENGTH; i++) {

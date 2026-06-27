@@ -14,9 +14,9 @@ const TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // 🔹 Substitua pelo 
 
 const LlamaChat = () => {
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (response) falar(response);

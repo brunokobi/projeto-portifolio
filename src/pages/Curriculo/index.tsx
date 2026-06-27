@@ -20,12 +20,12 @@ import { useIntl } from "react-intl"; // Biblioteca para internacionalização
 
 const Curriculo = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [title, setTitle] = useState("Curriculo Pag 1");
-  const wrapperRef = useRef(null); // Referência para o container principal
+  const wrapperRef = useRef<HTMLDivElement>(null); // Referência para o container principal
   const intl = useIntl(); // Objeto para acessar mensagens traduzidas
 
-  const handleImageClick = (imageSrc) => {   
+  const handleImageClick = (imageSrc: string) => {
    if (imageSrc === curriculo1) {
       setTitle("Curriculo Página 1");
       falar(intl.formatMessage({ id: "educacao1" }));
@@ -139,7 +139,7 @@ const Curriculo = () => {
 
 
           >
-            <Image src={selectedImage} w={"80%"} />
+            <Image src={selectedImage ?? undefined} w={"80%"} />
           </ModalBody>
         </ModalContent>
       </Modal>

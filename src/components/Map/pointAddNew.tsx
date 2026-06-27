@@ -3,7 +3,7 @@ import {loadModules, setDefaultOptions} from 'esri-loader'
 
 
 
-const PointAddNew = (props) => { 
+const PointAddNew = () => {
   setDefaultOptions({css: true})
   const styles = {
   container: {
@@ -64,7 +64,7 @@ const PointAddNew = (props) => {
             exaggerationBathymetry: null,
           },
 
-          load: function() {
+          load() {
             this._elevation = new ElevationLayer({
               url:
                 "https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/TopoBathy3D/ImageServer",
@@ -72,9 +72,9 @@ const PointAddNew = (props) => {
             this.addResolvingPromise(this._elevation.load())
           },
 
-          fetchTile: function(level, row, col) {
+          fetchTile(level: unknown, row: unknown, col: unknown) {
             return this._elevation.fetchTile(level, row, col).then(
-              function(data) {
+              (data: { values: number[] }) => {
                 for (let i = 0; i < data.values.length; i++) {
                   if (data.values[i] >= 0) {
                     data.values[i] =
@@ -85,7 +85,7 @@ const PointAddNew = (props) => {
                   }
                 }
                 return data
-              }.bind(this)
+              }
             )
           },
         })

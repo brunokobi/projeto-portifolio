@@ -43,8 +43,8 @@ const GlobeBackground = () => {
             })
             this.addResolvingPromise(this._elevation.load())
           },
-          fetchTile(level, row, col) {
-            return this._elevation.fetchTile(level, row, col).then(data => {
+          fetchTile(level: unknown, row: unknown, col: unknown) {
+            return this._elevation.fetchTile(level, row, col).then((data: { values: number[] }) => {
               for (let i = 0; i < data.values.length; i++) {
                 data.values[i] = data.values[i] >= 0
                   ? data.values[i] * this.exaggerationTopography
@@ -135,11 +135,11 @@ const GlobeBackground = () => {
 
         // Rotação automática — pausa quando o usuário arrasta
         let userInteracting = false
-        let resumeTimer = null
+        let resumeTimer: ReturnType<typeof setTimeout> | null = null
 
         view.on("drag", () => {
           userInteracting = true
-          clearTimeout(resumeTimer)
+          clearTimeout(resumeTimer ?? undefined)
           resumeTimer = setTimeout(() => { userInteracting = false }, 3000)
         })
 

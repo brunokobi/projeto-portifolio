@@ -15,7 +15,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
   <img src="https://img.shields.io/badge/Vite_5-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript_strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
   <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
@@ -444,6 +444,7 @@ const falar = (texto) => {
 | ⚛️ RPC atômica | Contador sem race conditions |
 | 🚌 GPS Fleet 60 FPS | +4.000 veículos em tempo real com interpolação WebGL |
 | ⚡ Vite 5 | HMR instantâneo, build 3× mais rápido que CRA |
+| 🔷 TypeScript strict | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end |
 
 ---
 
@@ -453,6 +454,7 @@ const falar = (texto) => {
 - [x] Carrossel principal com seleção inteligente (heroScore)
 - [x] Filtro de relevância por fonte (MIXED_SOURCES + AI_DEV_KEYWORDS)
 - [x] Migração completa para TypeScript (strict: false + allowJs)
+- [x] TypeScript `strict: true` — 108 erros corrigidos em 22 arquivos (noImplicitAny, strictNullChecks, noImplicitThis)
 - [x] Refactoring News/index.tsx: 1317 → ~250 linhas (HeroCarousel, CategorySection, newsConstants, newsFunctions, utils/rss)
 - [x] Testes automatizados — 36 testes com Vitest + Testing Library
 - [x] CI/CD — GitHub Actions (tsc + vitest + build em cada push/PR)

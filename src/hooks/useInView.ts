@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-export function useInView(threshold = 0.12): [React.RefObject<HTMLDivElement>, boolean] {
+export function useInView(threshold = 0.12): [React.RefObject<HTMLDivElement | null>, boolean] {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 

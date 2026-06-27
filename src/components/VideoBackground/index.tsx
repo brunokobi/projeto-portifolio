@@ -3,14 +3,15 @@ import { Box } from "@chakra-ui/react";
 import fundo from "../../assets/img/fundo.mp4";
 
 const VideoBackground = () => {
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
     const timer = setTimeout(() => {
+      const src = v.querySelector("source")?.getAttribute("src");
+      if (src) v.src = src;
       v.muted = true;
-      v.src = v.querySelector("source").src;
       v.load();
       v.play().catch(() => {});
     }, 2000);

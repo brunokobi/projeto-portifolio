@@ -3,7 +3,7 @@ import { Box, HStack, Text, Divider } from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
 import falar from "../TextAudio";
 
-const WMO = {
+const WMO: Record<number, { icon: string; label: string }> = {
   0:  { icon: "☀️",  label: "Limpo" },
   1:  { icon: "🌤️", label: "Quase limpo" },
   2:  { icon: "⛅",  label: "Parcialmente nublado" },
@@ -40,15 +40,17 @@ const getCoords = () =>
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, city: null }),
-        () => getGeoIP().then((g) => resolve({ lat: g.latitude, lon: g.longitude, city: g.city, country: g.country_code }))
+        () => getGeoIP().then((g) => resolve({ lat: g.latitude ?? null, lon: g.longitude ?? null, city: g.city ?? null, country: g.country_code ?? null }))
       );
     } else {
-      getGeoIP().then((g) => resolve({ lat: g.latitude, lon: g.longitude, city: g.city, country: g.country_code }));
+      getGeoIP().then((g) => resolve({ lat: g.latitude ?? null, lon: g.longitude ?? null, city: g.city ?? null, country: g.country_code ?? null }));
     }
   });
 
+type WeatherData = { temp: number; code: number; city: string | null };
+
 const WeatherBar = () => {
-  const [data, setData] = useState(null); // null = carregando, false = erro, objeto = ok
+  const [data, setData] = useState<WeatherData | null | false>(null); // null = carregando, false = erro, objeto = ok
 
   useEffect(() => {
     let cancelled = false;
@@ -73,8 +75,8 @@ const WeatherBar = () => {
         let displayCountry = country;
         if (!displayCity) {
           const geo = await getGeoIP();
-          displayCity = geo.city;
-          displayCountry = geo.country_code;
+          displayCity = geo.city ?? null;
+          displayCountry = geo.country_code ?? null;
         }
 
         setData({

@@ -17,19 +17,31 @@ const pickColor = () => {
   return PALETTE[0].color;
 };
 
+type Star = {
+  x: number; y: number; radius: number; color: string;
+  baseAlpha: number; twinkleAmp: number; twinkleFreq: number;
+  twinklePhase: number; glow: boolean;
+};
+type TrailPoint = { x: number; y: number };
+type Shooter = {
+  x: number; y: number; vx: number; vy: number;
+  trail: TrailPoint[]; life: number; decay: number;
+};
+
 const AnimatedStars = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    let animId;
-    let stars = [];
-    let shooters = [];
+    let animId: number;
+    let stars: Star[] = [];
+    let shooters: Shooter[] = [];
     let t = 0;
-    let lastTs = null;
+    let lastTs: number | null = null;
     let lastShoot = 0;
     let nextShoot = 9000 + Math.random() * 14000;
 
@@ -78,7 +90,7 @@ const AnimatedStars = () => {
       });
     };
 
-    const draw = (ts) => {
+    const draw = (ts: number) => {
       if (lastTs === null) lastTs = ts;
       const dt = Math.min((ts - lastTs) / 1000, 0.05);
       lastTs = ts;

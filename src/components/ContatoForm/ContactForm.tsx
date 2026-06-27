@@ -24,7 +24,7 @@ const blink = keyframes`
 `;
 
 // 1. Recebemos a função 'onClose' aqui nas props
-const ContactForm = ({ onClose }) => {
+const ContactForm = ({ onClose }: { onClose?: () => void }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -34,11 +34,11 @@ const ContactForm = ({ onClose }) => {
     mensagem: ""
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 

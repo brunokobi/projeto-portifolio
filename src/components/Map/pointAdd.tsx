@@ -2,7 +2,16 @@ import React, {useEffect, useState} from 'react'
 import {loadModules, setDefaultOptions} from 'esri-loader'
 import LoadingGlobo from '../Loading/index.jsx'
 
-const PointAdd = (props) => { 
+interface PointAddProps {
+  longitude: number | string;
+  latitude: number | string;
+  name?: string;
+  description?: string;
+  zoom?: number;
+  duration?: number;
+}
+
+const PointAdd = (props: PointAddProps) => {
   setDefaultOptions({css: true})
   const [isLoading, setIsLoading] = useState(true)
 

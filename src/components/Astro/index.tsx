@@ -1,3 +1,4 @@
+import { RefObject } from "react";
 import { Box } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
@@ -11,7 +12,7 @@ const spin = keyframes`
 
 const animation = `${spin} infinite 10s linear`;
 
-const Astro = ({ wrapper }) => {
+const Astro = ({ wrapper }: { wrapper: RefObject<HTMLElement | null> }) => {
   return (
     <Box
       as={motion.div}

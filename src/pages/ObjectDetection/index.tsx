@@ -1,15 +1,15 @@
 import { useState } from "react";
 
 const ObjectDetection = () => {
-  const [image, setImage] = useState(null);
-  const [result, setResult] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [result, setResult] = useState<object[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   
   const API_URL = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50";
   const API_TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // Substitua pelo seu token
 
-  const handleImageChange = (event) => {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
     }

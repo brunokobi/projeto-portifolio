@@ -139,7 +139,7 @@ function Mapa() {
   const [descricao, setDescricao] = useState("");
   const wrapperRef = useRef(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLatitude(latitudei);
     setLongitude(longitudei);

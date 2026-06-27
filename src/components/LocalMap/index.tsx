@@ -1,7 +1,15 @@
 // import React from 'react';
 // import { falar } from '../../services/falar';
 
-const LocalMap = ({ Latitude, Longitude, Nome, Descricao,image}) => {
+interface LocalMapProps {
+  Latitude?: number;
+  Longitude?: number;
+  Nome?: string;
+  Descricao?: string;
+  image?: string;
+}
+
+const LocalMap = ({ Latitude, Longitude, Nome, Descricao, image }: LocalMapProps) => {
   // const [latitudei, setLatitudei] = React.useState(Latitude);
   // const [longitudei, setLongitudei] = React.useState(Longitude);
   // const [nome, setNome] = React.useState(Nome);

@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import type { Article } from "../../types";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton,
@@ -54,7 +55,7 @@ const CATEGORIES = [
   { id: "industry", label: "🏭 Indústria & Tech",         color: GREEN },
 ];
 
-const SectionHeader = ({ label, color }) => (
+const SectionHeader = ({ label, color }: { label: string; color: string }) => (
   <Box pt={4} pb={2}>
     <HStack spacing={2} align="center">
       <Box flex={1} h="1px" bg={`${color}33`} />
@@ -76,7 +77,7 @@ const SectionHeader = ({ label, color }) => (
 );
 
 
-const ArticleCard = ({ title, link, date, source, img }) => (
+const ArticleCard = ({ title, link, date, source, img }: Pick<Article, "title" | "link" | "date" | "source" | "img">) => (
   <Box
     borderLeft={`2px solid ${source.color}`}
     pl={3}
@@ -156,10 +157,12 @@ const ArticleCard = ({ title, link, date, source, img }) => (
 );
 
 // Cache in-memory para evitar refetch desnecessário
-const cache = { data: null as any, ts: 0 };
+const cache: { data: Article[] | null; ts: number } = { data: null, ts: 0 };
 
-export const NewsPanel = ({ isOpen, onClose }) => {
-  const [articles, setArticles] = useState([]);
+interface NewsPanelProps { isOpen: boolean; onClose: () => void; }
+
+export const NewsPanel = ({ isOpen, onClose }: NewsPanelProps) => {
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const fetchedRef = useRef(false);
 
@@ -175,14 +178,14 @@ export const NewsPanel = ({ isOpen, onClose }) => {
         fetch(`${PROXY}${encodeURIComponent(feed.url)}`, { signal: AbortSignal.timeout(10000) })
           .then((r) => r.text())
           .then((xml) =>
-            parseRSS(xml).map((a) => ({ ...a, source: feed }))
+            parseRSS(xml).map((a) => ({ ...a, source: feed } as Article))
           )
       )
     );
 
     const oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
     const raw = results
-      .filter((r) => r.status === "fulfilled")
+      .filter((r): r is PromiseFulfilledResult<Article[]> => r.status === "fulfilled")
       .flatMap((r) => r.value)
       .filter((a) => a.date && !isNaN(a.date as any) && a.date.getTime() >= oneYearAgo)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
@@ -295,7 +298,7 @@ export const NewsPanel = ({ isOpen, onClose }) => {
 };
 
 // Botão flutuante de atalho (usado no Nav)
-export const NewsPanelButton = ({ onClick }) => (
+export const NewsPanelButton = ({ onClick }: { onClick: () => void }) => (
   <Box
     as="button"
     onClick={onClick}

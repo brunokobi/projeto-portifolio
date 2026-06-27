@@ -47,7 +47,7 @@ const languages = [
 ];
 
 // Mapeamento país → idioma
-const COUNTRY_TO_LANG = {
+const COUNTRY_TO_LANG: Record<string, string> = {
   BR: "pt",
   PT: "pt",
   US: "en", GB: "en", AU: "en", CA: "en", NZ: "en", IE: "en", ZA: "en",
@@ -68,7 +68,14 @@ const activeStyle = {
   transform: "scale(1.1)",
 };
 
-const LanguageButton = ({ lang, currentLang, onLanguageChange, intl }) => {
+interface LanguageButtonProps {
+  lang: { id: string; img: string; label: string };
+  currentLang: string;
+  onLanguageChange: (id: string) => void;
+  intl: { formatMessage: (descriptor: { id: string }) => string };
+}
+
+const LanguageButton = ({ lang, currentLang, onLanguageChange, intl }: LanguageButtonProps) => {
   const isSelected = currentLang === lang.id;
 
   return (
@@ -108,7 +115,7 @@ const Nav = () => {
     const ls = localStorage.getItem("i18nConfig");
     if (ls) return; // já tem preferência salva, não sobrescreve
     getGeoIP().then((data) => {
-      const lang = COUNTRY_TO_LANG[data.country_code];
+      const lang = COUNTRY_TO_LANG[data.country_code ?? ""];
       if (lang && lang !== "pt") {
         setLanguage(lang);
       }
@@ -130,7 +137,7 @@ const Nav = () => {
     { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
   ];
 
-  const handleLanguageChange = (langId) => {
+  const handleLanguageChange = (langId: string) => {
     setLanguage(langId);
     navigate("/");
   };
@@ -187,7 +194,7 @@ const Nav = () => {
                 return (
                   <Item
                     label={section.label}
-                    url={section.url}
+                    url={section.url ?? "#"}
                     icon={section.icon}
                     key={i}
                   />

@@ -1,7 +1,8 @@
 import { Box, Icon } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { IconType } from "react-icons";
 
-const AnimatedIcon = ({ reactIcon }) => {
+const AnimatedIcon = ({ reactIcon }: { reactIcon: IconType }) => {
   return (
     <Box color="rgba(255,255,255,0.08)" as={motion.div} userSelect="none">
       <Icon

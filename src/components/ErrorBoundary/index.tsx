@@ -8,7 +8,7 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }> {
     return { hasError: true };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("ErrorBoundary caught:", error, info);
   }
 

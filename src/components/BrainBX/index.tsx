@@ -1,4 +1,4 @@
-const brainBX = (text) => {
+const brainBX = (text: string) => {
   console.log("brainBX1", text);
   let texto = text.toLowerCase().trim();
   console.log("brainBX2", texto);
