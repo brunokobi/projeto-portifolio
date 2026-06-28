@@ -58,7 +58,7 @@
   "project8t": "FaceApi Test.js",
   "project8d": "FaceApi.js 测试站点，使用 tensorflow.js API 并实现一系列惊厥神经网络 (CNN)。",
   "project9t": "作品集 — Bruno Kobi Valadares de Amorim",
-  "project9d": "基于 React 18 + Chakra UI 构建的智能数字生态系统。支持 9 种语言并自动根据 IP 检测。AI 新闻面板聚合 20 个全球 RSS 源，自动翻译 EN→PT 并展示动态缩略图。ESRI ArcGIS 3D 交互地图。n8n + Google Gemini + Supabase 自动化。部署于 Netlify 无服务器平台。文字转语音无障碍支持。",
+  "project9d": "基于 React 18 + Vite 5 + TypeScript strict（零错误）构建的数字生态系统。支持 9 种语言自动 IP 检测。AI 新闻面板聚合 51 个全球 RSS 源，相关性评分、反垃圾过滤和自动 EN→PT 翻译。ESRI ArcGIS 3D 地图。chatBruno 多智能体 RAG（LangChain + pgvector + AWS EC2）。62 个 Vitest 自动化测试（71% 覆盖率）+ Playwright E2E。ESLint 9 + Prettier 零错误。CI/CD GitHub Actions。Netlify 无服务器部署。",
   "project10t": "3D 作品集：Alien Experience",
   "project10d": "使用 React Three Fiber 和 Three.js 开发的游戏化作品集。该项目允许用户在 3D 环境中控制 UFO，以「绑架」代表我技术栈的奶牛。",
   "project11t": "Arkon：星团裂隙",

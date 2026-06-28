@@ -59,7 +59,7 @@
   "project8t": "FaceApi Test.js",
   "project8d": "موقع اختبار FaceApi.js ، باستخدام واجهة برمجة تطبيقات tensorflow.js وتنفيذ سلسلة من الشبكات العصبية المتشنجة (CNNs).",
   "project9t": "ملف أعمال — Bruno Kobi Valadares de Amorim",
-  "project9d": "نظام رقمي ذكي مبني بـ React 18 + Chakra UI. 9 لغات مع كشف تلقائي عبر IP. لوحة أخبار الذكاء الاصطناعي مع 20 مصدر RSS عالمي، ترجمة تلقائية EN→PT وصور مصغرة ديناميكية. خريطة 3D مع ESRI ArcGIS. أتمتة بـ n8n + Google Gemini + Supabase. نشر Serverless على Netlify. إمكانية الوصول بتحويل النص إلى كلام.",
+  "project9d": "نظام رقمي مبني بـ React 18 + Vite 5 + TypeScript strict (صفر أخطاء). 9 لغات مع كشف تلقائي عبر IP. لوحة أخبار الذكاء الاصطناعي مع 51 مصدر RSS عالمي، تصنيف الأهمية، فلتر مضاد للبريد العشوائي وترجمة تلقائية EN→PT. خريطة 3D ESRI ArcGIS. chatBruno متعدد الوكلاء RAG (LangChain + pgvector + AWS EC2). 62 اختبار Vitest (71% تغطية) + Playwright E2E. ESLint 9 + Prettier بدون أخطاء. CI/CD GitHub Actions. نشر Serverless على Netlify.",
   "project10t": "معرض أعمال ثلاثي الأبعاد: تجربة فضائية",
   "project10d": "تطوير معرض أعمال بأسلوب الألعاب باستخدام React Three Fiber و Three.js. يتيح المشروع للمستخدم التحكم في جسم غامض (UFO) في بيئة ثلاثية الأبعاد لـ 'اختطاف' الأبقار التي تمثل مهاراتي التكنولوجية.",
   "project11t": "أركون: شق التجمع",

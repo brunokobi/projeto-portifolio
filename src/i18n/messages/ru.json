@@ -59,7 +59,7 @@
   "project8t": "FaceApi Test.js",
   "project8d": "Тестовый сайт FaceApi.js, использующий API tensorflow.js и реализующий серию конвульсивных нейронных сетей (CNN)",
   "project9t": "Портфолио — Bruno Kobi Valadares de Amorim",
-  "project9d": "Умная цифровая экосистема на React 18 + Chakra UI. 9 языков с автоматическим определением по IP. Панель новостей ИИ с 20 мировыми RSS-лентами, автопереводом EN→PT и динамическими превью. 3D-карта ESRI ArcGIS. Автоматизация n8n + Google Gemini + Supabase. Serverless-деплой на Netlify. Доступность с синтезом речи.",
+  "project9d": "Цифровая экосистема на React 18 + Vite 5 + TypeScript strict (ноль ошибок). 9 языков с автоматическим определением по IP. Панель новостей ИИ с 51 мировой RSS-лентой, скорингом, анти-спамом и автопереводом EN→PT. 3D-карта ESRI ArcGIS. chatBruno Мультиагентный RAG (LangChain + pgvector + AWS EC2). 62 автотеста Vitest (71% покрытие) + Playwright E2E. ESLint 9 + Prettier, ноль ошибок. CI/CD GitHub Actions. Serverless Netlify.",
   "project10t": "3D-портфолио: Alien Experience",
   "project10d": "Разработка геймифицированного портфолио с использованием React Three Fiber и Three.js. Проект позволяет пользователю управлять НЛО в трехмерной среде, чтобы «похищать» коров, которые представляют мой технологический стек.",
   "project11t": "Arkon: Трещина Кластера",

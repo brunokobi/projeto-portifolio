@@ -59,7 +59,7 @@
   "project8t": "FaceApi Test.js",
   "project8d": "Site de test FaceApi.js, utilisant l'API tensorflow.js et implémentant une série de réseaux de neurones convulsifs (CNN).",
   "project9t": "Portfolio — Bruno Kobi Valadares de Amorim",
-  "project9d": "Écosystème numérique intelligent avec React 18 + Chakra UI. 9 langues avec détection automatique par IP. Panneau d'actualités IA avec 20 flux RSS mondiaux, traduction automatique EN→PT et miniatures dynamiques. Carte 3D avec ESRI ArcGIS. Automatisation avec n8n + Google Gemini + Supabase. Déploiement serverless sur Netlify. Accessibilité avec synthèse vocale.",
+  "project9d": "Écosystème numérique avec React 18 + Vite 5 + TypeScript strict (zéro erreur). 9 langues avec détection automatique par IP. Panneau d'actualités IA avec 51 flux RSS mondiaux, scoring, anti-spam et traduction automatique EN→PT. Carte 3D ESRI ArcGIS. chatBruno Multi-Agent RAG (LangChain + pgvector + AWS EC2). 62 tests automatisés Vitest (71% couverture) + Playwright E2E. ESLint 9 + Prettier sans erreurs. CI/CD GitHub Actions. Déploiement serverless Netlify.",
   "project10t": "Portfolio 3D : Alien Experience",
   "project10d": "Développement d'un portfolio ludique utilisant React Three Fiber et Three.js. Le projet permet à l'utilisateur de contrôler un OVNI dans un environnement 3D pour 'enlever' des vaches qui représentent mes compétences technologiques.",
   "project11t": "Arkon : La Faille de l'Amas",
