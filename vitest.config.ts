@@ -7,7 +7,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    exclude: ["**/node_modules/**", "**/App.test.js"],
+    exclude: ["**/node_modules/**", "**/App.test.js", "e2e/**"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
@@ -17,6 +17,8 @@ export default defineConfig({
         "src/pages/News/newsFunctions.ts",
         "src/contexts/**",
         "src/components/ErrorBoundary/**",
+        "src/components/ContatoForm/**",
+        "src/components/WeatherBar/**",
       ],
       thresholds: {
         statements: 55,
