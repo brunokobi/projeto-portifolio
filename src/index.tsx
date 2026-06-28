@@ -17,7 +17,7 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 
 // Renderiza a aplicação dentro do elemento root
 root.render(
-  <React.StrictMode> 
+  <React.StrictMode>
     {/* Envolve a aplicação no Router para habilitar a navegação entre rotas */}
     <Router>
       {/* Envolve a aplicação no ChakraProvider para aplicar o tema e estilização do Chakra UI */}

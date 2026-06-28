@@ -42,12 +42,12 @@ describe("isRelevant", () => {
 describe("scoreArticle", () => {
   it("artigo recente tem score maior que artigo antigo", () => {
     const recent = makeArticle({ date: new Date(Date.now() - 1 * 60 * 60 * 1000) }); // 1h atrás
-    const old    = makeArticle({ date: new Date(Date.now() - 100 * 60 * 60 * 1000) }); // 100h atrás
+    const old = makeArticle({ date: new Date(Date.now() - 100 * 60 * 60 * 1000) }); // 100h atrás
     expect(scoreArticle(recent)).toBeGreaterThan(scoreArticle(old));
   });
 
   it("artigo com imagem tem score maior que sem imagem (mesmas condições)", () => {
-    const withImg    = makeArticle({ img: "https://example.com/img.jpg" });
+    const withImg = makeArticle({ img: "https://example.com/img.jpg" });
     const withoutImg = makeArticle({ img: null });
     expect(scoreArticle(withImg)).toBeGreaterThan(scoreArticle(withoutImg));
   });

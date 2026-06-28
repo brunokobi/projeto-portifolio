@@ -7,8 +7,8 @@ const StarsBg = () => {
       position="fixed"
       top="0"
       left="0"
-      width="100vw"   // Garante largura da viewport
-      height="100vh"  // Garante altura da viewport
+      width="100vw" // Garante largura da viewport
+      height="100vh" // Garante altura da viewport
       zIndex="-999"
       overflow="hidden" // Evita barras de rolagem indesejadas
     >

@@ -25,7 +25,9 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }> {
           color="white"
           gap={4}
         >
-          <Heading color="#42c920" fontSize="2xl">Algo deu errado</Heading>
+          <Heading color="#42c920" fontSize="2xl">
+            Algo deu errado
+          </Heading>
           <Text color="gray.400" textAlign="center" maxW="400px">
             Ocorreu um erro inesperado. Tente recarregar a página.
           </Text>

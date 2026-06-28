@@ -36,7 +36,6 @@ const ProjectCard = ({
   i: number;
 }) => {
   const cardRef = useRef(null);
-  
 
   const { inViewport: cardViewport } = useObserver(cardRef);
 
@@ -64,44 +63,35 @@ const ProjectCard = ({
         justify="center"
         textAlign="center"
       >
-        
-          <Heading fontSize={"2xl"} fontFamily={"body"}
-          onMouseOver={() => falar(title)}
-          >
-            {title}
-          </Heading>
-        
-        
-          <Flex flex={1} bg="blue.200">
-            {link ? (
-              <Box
-                as={"iframe"}
-                src={link}
-                width="100%"
-                overflow="hidden"
-                h={{ base: "200px", md: "300px" }}
-                title={title}
-                scrolling="no"
-              />
-            ) : (
-              // <iframe
-              //   src={link}
-              //   width="100%"
-              //   height="300px"
-              //   frameborder="0"
-              //   scrolling="no"
-              //   frameborder="0"
-              // />
-              <Image src={img} alt={title} width="100%" height="100%" loading="lazy" />
-            )}
-          </Flex>
-        
-        <Stack
-          flex={1}
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Heading fontSize={"2xl"} fontFamily={"body"} onMouseOver={() => falar(title)}>
+          {title}
+        </Heading>
+
+        <Flex flex={1} bg="blue.200">
+          {link ? (
+            <Box
+              as={"iframe"}
+              src={link}
+              width="100%"
+              overflow="hidden"
+              h={{ base: "200px", md: "300px" }}
+              title={title}
+              scrolling="no"
+            />
+          ) : (
+            // <iframe
+            //   src={link}
+            //   width="100%"
+            //   height="300px"
+            //   frameborder="0"
+            //   scrolling="no"
+            //   frameborder="0"
+            // />
+            <Image src={img} alt={title} width="100%" height="100%" loading="lazy" />
+          )}
+        </Flex>
+
+        <Stack flex={1} flexDirection="column" justifyContent="center" alignItems="center">
           <Text
             textAlign={"center"}
             color={useColorModeValue("rgb(196, 196, 196)", "gray.400")}

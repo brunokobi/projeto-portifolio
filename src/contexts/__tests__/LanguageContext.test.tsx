@@ -8,7 +8,9 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("useLanguage", () => {
-  beforeEach(() => { localStorage.clear(); });
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   it("retorna locale padrão 'pt' quando não há nada no localStorage", () => {
     const { result } = renderHook(() => useLanguage(), { wrapper });
@@ -23,13 +25,17 @@ describe("useLanguage", () => {
 
   it("atualiza o locale ao chamar setLanguage", () => {
     const { result } = renderHook(() => useLanguage(), { wrapper });
-    act(() => { result.current.setLanguage("fr"); });
+    act(() => {
+      result.current.setLanguage("fr");
+    });
     expect(result.current.locale).toBe("fr");
   });
 
   it("persiste o novo idioma no localStorage", () => {
     const { result } = renderHook(() => useLanguage(), { wrapper });
-    act(() => { result.current.setLanguage("de"); });
+    act(() => {
+      result.current.setLanguage("de");
+    });
     const stored = JSON.parse(localStorage.getItem("i18nConfig") || "{}");
     expect(stored.selectedLang).toBe("de");
   });

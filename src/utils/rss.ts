@@ -46,7 +46,10 @@ export function extractImage(item: Element): string | null {
 
 // ── Limpa descrição de boilerplate ────────────────────────────────────────
 export function cleanDesc(raw: string): string {
-  let text = raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  let text = raw
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   for (const pat of BOILERPLATE_PATTERNS) text = text.replace(pat, "").trim();
   return text.slice(0, 180);
 }
@@ -56,20 +59,23 @@ export function parseRSS(xml: string): Array<Omit<import("../types").Article, "s
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   let items = Array.from(doc.querySelectorAll("item"));
   if (!items.length) items = Array.from(doc.querySelectorAll("entry"));
-  return items.slice(0, 8).map(item => {
-    const gt = (tag: string) => item.getElementsByTagName(tag)[0]?.textContent?.trim() ?? "";
-    const title = gt("title");
-    let link = gt("link");
-    if (!link) {
-      const el = item.querySelector("link[rel='alternate']") || item.querySelector("link");
-      link = el?.getAttribute("href") || el?.textContent?.trim() || "";
-    }
-    const date = gt("pubDate") || gt("published") || gt("updated") || gt("dc:date");
-    const img = extractImage(item);
-    const rawDesc = gt("description") || gt("summary") || gt("content");
-    const desc = cleanDesc(rawDesc);
-    return { title, link, date: date ? new Date(date) : null, img: img || null, desc };
-  }).filter(a => a.title && a.link);
+  return items
+    .slice(0, 8)
+    .map((item) => {
+      const gt = (tag: string) => item.getElementsByTagName(tag)[0]?.textContent?.trim() ?? "";
+      const title = gt("title");
+      let link = gt("link");
+      if (!link) {
+        const el = item.querySelector("link[rel='alternate']") || item.querySelector("link");
+        link = el?.getAttribute("href") || el?.textContent?.trim() || "";
+      }
+      const date = gt("pubDate") || gt("published") || gt("updated") || gt("dc:date");
+      const img = extractImage(item);
+      const rawDesc = gt("description") || gt("summary") || gt("content");
+      const desc = cleanDesc(rawDesc);
+      return { title, link, date: date ? new Date(date) : null, img: img || null, desc };
+    })
+    .filter((a) => a.title && a.link);
 }
 
 // ── Tempo relativo ────────────────────────────────────────────────────────
@@ -104,14 +110,14 @@ export async function translateTitle(text: string): Promise<string> {
 export async function translateArticles<T extends { title: string; source: Feed }>(
   articles: T[]
 ): Promise<T[]> {
-  const result = articles.map(a => ({ ...a }));
+  const result = articles.map((a) => ({ ...a }));
   const idxs = result
     .map((a, i) => (a.source.flag === "🌎" ? i : -1))
-    .filter(i => i >= 0)
+    .filter((i) => i >= 0)
     .slice(0, 40);
   for (let b = 0; b < idxs.length; b += 5) {
     await Promise.all(
-      idxs.slice(b, b + 5).map(async idx => {
+      idxs.slice(b, b + 5).map(async (idx) => {
         result[idx] = { ...result[idx], title: await translateTitle(result[idx].title) };
       })
     );

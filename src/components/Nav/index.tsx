@@ -1,8 +1,17 @@
 import React, { useEffect } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import {
-  Breadcrumb, Flex, Stack, Box, HStack,
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure
+  Breadcrumb,
+  Flex,
+  Stack,
+  Box,
+  HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Image } from "@chakra-ui/react";
@@ -50,16 +59,65 @@ const languages = [
 const COUNTRY_TO_LANG: Record<string, string> = {
   BR: "pt",
   PT: "pt",
-  US: "en", GB: "en", AU: "en", CA: "en", NZ: "en", IE: "en", ZA: "en",
-  ES: "es", MX: "es", AR: "es", CL: "es", CO: "es", PE: "es", VE: "es",
-  UY: "es", PY: "es", BO: "es", EC: "es", CR: "es", PA: "es", DO: "es",
-  GT: "es", HN: "es", SV: "es", NI: "es", CU: "es",
-  FR: "fr", BE: "fr", CH: "fr", LU: "fr", MC: "fr", SN: "fr", CI: "fr",
-  DE: "de", AT: "de",
-  CN: "zh", TW: "zh", HK: "zh", MO: "zh", SG: "zh",
-  RU: "ru", BY: "ru", KZ: "ru",
-  SA: "ar", AE: "ar", EG: "ar", MA: "ar", DZ: "ar", TN: "ar", LY: "ar",
-  JO: "ar", LB: "ar", SY: "ar", IQ: "ar", KW: "ar", QA: "ar", BH: "ar", OM: "ar", YE: "ar",
+  US: "en",
+  GB: "en",
+  AU: "en",
+  CA: "en",
+  NZ: "en",
+  IE: "en",
+  ZA: "en",
+  ES: "es",
+  MX: "es",
+  AR: "es",
+  CL: "es",
+  CO: "es",
+  PE: "es",
+  VE: "es",
+  UY: "es",
+  PY: "es",
+  BO: "es",
+  EC: "es",
+  CR: "es",
+  PA: "es",
+  DO: "es",
+  GT: "es",
+  HN: "es",
+  SV: "es",
+  NI: "es",
+  CU: "es",
+  FR: "fr",
+  BE: "fr",
+  CH: "fr",
+  LU: "fr",
+  MC: "fr",
+  SN: "fr",
+  CI: "fr",
+  DE: "de",
+  AT: "de",
+  CN: "zh",
+  TW: "zh",
+  HK: "zh",
+  MO: "zh",
+  SG: "zh",
+  RU: "ru",
+  BY: "ru",
+  KZ: "ru",
+  SA: "ar",
+  AE: "ar",
+  EG: "ar",
+  MA: "ar",
+  DZ: "ar",
+  TN: "ar",
+  LY: "ar",
+  JO: "ar",
+  LB: "ar",
+  SY: "ar",
+  IQ: "ar",
+  KW: "ar",
+  QA: "ar",
+  BH: "ar",
+  OM: "ar",
+  YE: "ar",
 };
 
 const activeStyle = {
@@ -114,26 +172,36 @@ const Nav = () => {
   useEffect(() => {
     const ls = localStorage.getItem("i18nConfig");
     if (ls) return; // já tem preferência salva, não sobrescreve
-    getGeoIP().then((data) => {
-      const lang = COUNTRY_TO_LANG[data.country_code ?? ""];
-      if (lang && lang !== "pt") {
-        setLanguage(lang);
-      }
-    }).catch(() => {});
-  // eslint-disable-next-line
+    getGeoIP()
+      .then((data) => {
+        const lang = COUNTRY_TO_LANG[data.country_code ?? ""];
+        if (lang && lang !== "pt") {
+          setLanguage(lang);
+        }
+      })
+      .catch(() => {});
+    // eslint-disable-next-line
   }, []);
 
   const sections = [
     { label: intl.formatMessage({ id: "home" }), url: `/`, icon: IoMdRocket },
     { label: intl.formatMessage({ id: "sobre" }), url: `/about`, icon: RiAliensFill },
     { label: intl.formatMessage({ id: "projetos" }), url: `/projects`, icon: FaReact },
-    
+
     { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
     { label: "Portfolio 3D", url: "https://brunokobi3d.netlify.app", icon: BiCube },
-    
+
     { label: "Mapa Esri", url: "/map", icon: FaGlobe },
-    { label: intl.formatMessage({ id: "linkedin" }), url: "https://www.linkedin.com/in/brunokobi/", icon: AiOutlineLinkedin },
-    { label: intl.formatMessage({ id: "github" }), url: "https://github.com/brunokobi", icon: AiOutlineGithub },
+    {
+      label: intl.formatMessage({ id: "linkedin" }),
+      url: "https://www.linkedin.com/in/brunokobi/",
+      icon: AiOutlineLinkedin,
+    },
+    {
+      label: intl.formatMessage({ id: "github" }),
+      url: "https://github.com/brunokobi",
+      icon: AiOutlineGithub,
+    },
     { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
   ];
 
@@ -179,18 +247,13 @@ const Nav = () => {
               {sections.map((section, i) => {
                 if (section.isAction) {
                   return (
-                    <Box
-                      key={i}
-                      onClick={section.action}
-                      cursor="pointer"
-                      display="inline-flex"
-                    >
+                    <Box key={i} onClick={section.action} cursor="pointer" display="inline-flex">
                       {/* Reutilizamos o visual do Item, mas passamos url="#" para não navegar */}
                       <Item label={section.label} url="#" icon={section.icon} />
                     </Box>
                   );
                 }
-                
+
                 return (
                   <Item
                     label={section.label}
@@ -208,7 +271,11 @@ const Nav = () => {
           w={{ base: "100%", lg: "auto" }}
           overflowX={{ base: "auto", lg: "visible" }}
           maxW="100vw"
-          css={{ "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none", "-ms-overflow-style": "none" }}
+          css={{
+            "&::-webkit-scrollbar": { display: "none" },
+            scrollbarWidth: "none",
+            "-ms-overflow-style": "none",
+          }}
         >
           <HStack
             spacing={3}
@@ -230,9 +297,21 @@ const Nav = () => {
         </Box>
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size={{ base: "full", md: "xl" }} scrollBehavior="inside">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        size={{ base: "full", md: "xl" }}
+        scrollBehavior="inside"
+      >
         <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
-        <ModalContent bg="transparent" boxShadow="none" border="none" maxH={{ base: "100dvh", md: "90vh" }} my={{ base: 0, md: 4 }}>
+        <ModalContent
+          bg="transparent"
+          boxShadow="none"
+          border="none"
+          maxH={{ base: "100dvh", md: "90vh" }}
+          my={{ base: 0, md: 4 }}
+        >
           <ModalCloseButton
             color="#39ff14"
             zIndex={10}
@@ -245,7 +324,6 @@ const Nav = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
     </AnimatePresence>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 interface TypewriterState {
   idx: number;
@@ -6,13 +6,8 @@ interface TypewriterState {
   deleting: boolean;
 }
 
-const useTypewriter = (
-  strings: string[],
-  speed = 70,
-  deleteSpeed = 40,
-  pauseMs = 1800
-): string => {
-  const [displayText, setDisplayText] = useState('');
+const useTypewriter = (strings: string[], speed = 70, deleteSpeed = 40, pauseMs = 1800): string => {
+  const [displayText, setDisplayText] = useState("");
   const stateRef = useRef<TypewriterState>({ idx: 0, pos: 0, deleting: false });
 
   useEffect(() => {

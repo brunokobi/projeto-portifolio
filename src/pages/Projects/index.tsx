@@ -1,6 +1,6 @@
 import { Box, Flex, Link, Icon } from "@chakra-ui/react";
 import ProjectCard from "../../components/ProjectCard";
-import {useIntl} from 'react-intl';
+import { useIntl } from "react-intl";
 
 import { BsChevronDoubleUp } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
@@ -26,150 +26,181 @@ const Projects = () => {
   const intl = useIntl();
 
   // Memoriza a lista para não ser recriada a cada renderização
-  const projects = useMemo(() => [
-    {
-      title: intl.formatMessage({id: 'project14t'}),
-      link: "",
-      img: chatbruno,
-      demo: "https://brunokobi.netlify.app/",
-      description: intl.formatMessage({id: 'project14d'}),
-      tags: ["#N8N", "#LANGCHAIN", "#RAG", "#SUPABASE", "#GOOGLE GEMINI", "#AWS EC2", "#MULTI-AGENTE"],
-      code: "https://github.com/brunokobi/chatn8n",
-    },
-    {
-      title: intl.formatMessage({id: 'project15t'}),
-      link: "",
-      img: frota,
-      demo: "https://frotarealtime.netlify.app/",
-      description: intl.formatMessage({id: 'project15d'}),
-      tags: ["#JAVASCRIPT", "#MAPLIBRE GL", "#WEBGL", "#NODE.JS", "#NETLIFY FUNCTIONS", "#WEBGIS", "#PERFORMANCE"],
-      code: "https://github.com/brunokobi/frotarealtime",
-    },
-    {
-      title: intl.formatMessage({id: 'project11t'}),
-      link: "",
-      img: arkon,
-      demo: "https://arkonkobi.netlify.app",
-      description: intl.formatMessage({id: 'project11d'}),
-      tags: ["#REACT", "#PHASER 4", "#SUPABASE", "#MULTIPLAYER", "#GAME"],
-      code: "https://github.com/brunokobi/arkon-game",
-    },
-    {
-      title: intl.formatMessage({id: 'project13t'}),
-      link: "",
-      img: loteria,
-      demo: "https://loteriabruno.netlify.app/",
-      description: intl.formatMessage({id: 'project13d'}),
-      tags: ["#PYTHON", "#MACHINE LEARNING", "#GRADIENT BOOSTING", "#IA", "#SCIKIT-LEARN"],
-      code: "https://github.com/brunokobi/Loteria_Mega",
-    },
-    {
-      title: intl.formatMessage({id: 'project12t'}),
-      link: "",
-      img: bpfcheck,
-      demo: "https://bpfcheck.netlify.app/",
-      description: intl.formatMessage({id: 'project12d'}),
-      tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
-      code: "https://github.com/brunokobi/bpfcheck",
-    },
-    {
-      title: intl.formatMessage({id: 'project10t'}),
-      link: "",
-      img: portifolio3d,
-      demo: "https://brunokobi3d.netlify.app",
-      description: intl.formatMessage({id: 'project10d'}),
-      tags: ["#REACT", "#THREE.JS", "#REACT THREE FIBER", "#3D", "#GAME"],
-      code: "https://github.com/brunokobi",
-    },
-    {
-      title: intl.formatMessage({id: 'project1t'}),
-      link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6772979792737296384?compact=1",
-      demo: "https://presencenowreconhecimento.netlify.app/",
-      description: intl.formatMessage({id: 'project1d'}),     
-      tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
-      code: "https://github.com/brunokobi/tccreconhecimento",
-    },
-    
-    {
-      title: intl.formatMessage({id: 'project9t'}),
-      link: "",
-      img:portifolio,
-      demo: "https://brunokobi.netlify.app",
-      description: intl.formatMessage({id: 'project9d'}),
-      tags: ["#REACT 18", "#VITE 5", "#CHAKRA UI", "#FRAMER MOTION", "#SUPABASE", "#N8N", "#GEMINI AI", "#ARCGIS", "#NETLIFY FUNCTIONS", "#MULTILINGUAGEM", "#RSS", "#SERVERLESS"],
-      code: "https://github.com/brunokobi/projeto-portifolio",
-    },
-    
-    {
-      title: intl.formatMessage({id: 'project2t'}),
-      link: "",
-      img:guia,
-      demo: "https://www.youtube.com/embed/8VxPXpS-qHg",
-      description: intl.formatMessage({id: 'project2d'}),
-      tags: ["#REACT NATIVE", "#EXPO", "#ANDROID", "#NUTRIÇÃO"],
-      code: "https://play.google.com/store/apps/details?id=com.guiaalimentar.guiaalimentarbr",
-    },
-    
-  
-    {
-      title: intl.formatMessage({id: 'project3t'}),
-      link: "",
-      img:etica,
-      demo: "https://www.youtube.com/watch?v=euJuoEGtpnU&ab_channel=BrunoKobi",
-      description: intl.formatMessage({id: 'project3d'}),
-      tags: ["#JAVA", "#ANDROID", "#ÉTICA"],
-      code: "https://github.com/brunokobi/QuizdaEtica",
-    },
+  const projects = useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: "project14t" }),
+        link: "",
+        img: chatbruno,
+        demo: "https://brunokobi.netlify.app/",
+        description: intl.formatMessage({ id: "project14d" }),
+        tags: [
+          "#N8N",
+          "#LANGCHAIN",
+          "#RAG",
+          "#SUPABASE",
+          "#GOOGLE GEMINI",
+          "#AWS EC2",
+          "#MULTI-AGENTE",
+        ],
+        code: "https://github.com/brunokobi/chatn8n",
+      },
+      {
+        title: intl.formatMessage({ id: "project15t" }),
+        link: "",
+        img: frota,
+        demo: "https://frotarealtime.netlify.app/",
+        description: intl.formatMessage({ id: "project15d" }),
+        tags: [
+          "#JAVASCRIPT",
+          "#MAPLIBRE GL",
+          "#WEBGL",
+          "#NODE.JS",
+          "#NETLIFY FUNCTIONS",
+          "#WEBGIS",
+          "#PERFORMANCE",
+        ],
+        code: "https://github.com/brunokobi/frotarealtime",
+      },
+      {
+        title: intl.formatMessage({ id: "project11t" }),
+        link: "",
+        img: arkon,
+        demo: "https://arkonkobi.netlify.app",
+        description: intl.formatMessage({ id: "project11d" }),
+        tags: ["#REACT", "#PHASER 4", "#SUPABASE", "#MULTIPLAYER", "#GAME"],
+        code: "https://github.com/brunokobi/arkon-game",
+      },
+      {
+        title: intl.formatMessage({ id: "project13t" }),
+        link: "",
+        img: loteria,
+        demo: "https://loteriabruno.netlify.app/",
+        description: intl.formatMessage({ id: "project13d" }),
+        tags: ["#PYTHON", "#MACHINE LEARNING", "#GRADIENT BOOSTING", "#IA", "#SCIKIT-LEARN"],
+        code: "https://github.com/brunokobi/Loteria_Mega",
+      },
+      {
+        title: intl.formatMessage({ id: "project12t" }),
+        link: "",
+        img: bpfcheck,
+        demo: "https://bpfcheck.netlify.app/",
+        description: intl.formatMessage({ id: "project12d" }),
+        tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
+        code: "https://github.com/brunokobi/bpfcheck",
+      },
+      {
+        title: intl.formatMessage({ id: "project10t" }),
+        link: "",
+        img: portifolio3d,
+        demo: "https://brunokobi3d.netlify.app",
+        description: intl.formatMessage({ id: "project10d" }),
+        tags: ["#REACT", "#THREE.JS", "#REACT THREE FIBER", "#3D", "#GAME"],
+        code: "https://github.com/brunokobi",
+      },
+      {
+        title: intl.formatMessage({ id: "project1t" }),
+        link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6772979792737296384?compact=1",
+        demo: "https://presencenowreconhecimento.netlify.app/",
+        description: intl.formatMessage({ id: "project1d" }),
+        tags: ["#REACT", "#NODE", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
+        code: "https://github.com/brunokobi/tccreconhecimento",
+      },
 
-    {
-      title: intl.formatMessage({id: 'project8t'}),
-      link: "",
-      img:face,
-      demo: "https://testerfbrunokobi.netlify.app/",
-      description: intl.formatMessage({id: 'project8d'}),     
-      tags: ["#HTML", "#CSS","#JAVASCRIPT", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
-      code: "https://github.com/brunokobi/TesteFaceApiJS",
-    },   
-  
-    {
-      title: intl.formatMessage({id: 'project4t'}),
-      link: "",
-      img: placas,
-      demo: "https://jogodasplacas.netlify.app/",
-      description: intl.formatMessage({id: 'project4d'}),
-      tags: ["#HTML5", "#CSS3", "#JAVASCRIPT"],
-      code: "https://github.com/brunokobi/JogoMemoriaPlacas",
-    },
-  
-    {
-      title: intl.formatMessage({id: 'project5t'}),
-      link: "",
-      img: bio,
-      demo: "https://biomedicina.netlify.app/",
-      description: intl.formatMessage({id: 'project5d'}),
-      tags: ["#REACT"],
-      code: "https://github.com/brunokobi/biomedicina",
-    },
+      {
+        title: intl.formatMessage({ id: "project9t" }),
+        link: "",
+        img: portifolio,
+        demo: "https://brunokobi.netlify.app",
+        description: intl.formatMessage({ id: "project9d" }),
+        tags: [
+          "#REACT 18",
+          "#VITE 5",
+          "#CHAKRA UI",
+          "#FRAMER MOTION",
+          "#SUPABASE",
+          "#N8N",
+          "#GEMINI AI",
+          "#ARCGIS",
+          "#NETLIFY FUNCTIONS",
+          "#MULTILINGUAGEM",
+          "#RSS",
+          "#SERVERLESS",
+        ],
+        code: "https://github.com/brunokobi/projeto-portifolio",
+      },
 
-    {
-      title: intl.formatMessage({id: 'project6t'}),
-      link: "",
-      img: mestrado,
-      demo: "https://humane-neon-20a.notion.site/Mestrado-Computa-o-Aplicada-IFES-64a075f439f740c4be96345c615f97c9",
-      description: intl.formatMessage({id: 'project6d'}),
-      tags: ["#PYTHON","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
-      code: "https://github.com/brunokobi",
-    },
+      {
+        title: intl.formatMessage({ id: "project2t" }),
+        link: "",
+        img: guia,
+        demo: "https://www.youtube.com/embed/8VxPXpS-qHg",
+        description: intl.formatMessage({ id: "project2d" }),
+        tags: ["#REACT NATIVE", "#EXPO", "#ANDROID", "#NUTRIÇÃO"],
+        code: "https://play.google.com/store/apps/details?id=com.guiaalimentar.guiaalimentarbr",
+      },
 
-    {
-      title: intl.formatMessage({id: 'project7t'}),
-      link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6961453558051291136?compact=1",
-      demo: "",
-      description: intl.formatMessage({id: 'project7d'}),     
-      tags: ["#JAVA","#MACHINE LEARNING","#ARTIFICIAL INTELLIGENCE"],
-      code: "https://github.com/brunokobi",
-    },
-  ], [intl]);
+      {
+        title: intl.formatMessage({ id: "project3t" }),
+        link: "",
+        img: etica,
+        demo: "https://www.youtube.com/watch?v=euJuoEGtpnU&ab_channel=BrunoKobi",
+        description: intl.formatMessage({ id: "project3d" }),
+        tags: ["#JAVA", "#ANDROID", "#ÉTICA"],
+        code: "https://github.com/brunokobi/QuizdaEtica",
+      },
+
+      {
+        title: intl.formatMessage({ id: "project8t" }),
+        link: "",
+        img: face,
+        demo: "https://testerfbrunokobi.netlify.app/",
+        description: intl.formatMessage({ id: "project8d" }),
+        tags: ["#HTML", "#CSS", "#JAVASCRIPT", "#FACEAPI.JS", "#RECONHECIMENTO FACIAL"],
+        code: "https://github.com/brunokobi/TesteFaceApiJS",
+      },
+
+      {
+        title: intl.formatMessage({ id: "project4t" }),
+        link: "",
+        img: placas,
+        demo: "https://jogodasplacas.netlify.app/",
+        description: intl.formatMessage({ id: "project4d" }),
+        tags: ["#HTML5", "#CSS3", "#JAVASCRIPT"],
+        code: "https://github.com/brunokobi/JogoMemoriaPlacas",
+      },
+
+      {
+        title: intl.formatMessage({ id: "project5t" }),
+        link: "",
+        img: bio,
+        demo: "https://biomedicina.netlify.app/",
+        description: intl.formatMessage({ id: "project5d" }),
+        tags: ["#REACT"],
+        code: "https://github.com/brunokobi/biomedicina",
+      },
+
+      {
+        title: intl.formatMessage({ id: "project6t" }),
+        link: "",
+        img: mestrado,
+        demo: "https://humane-neon-20a.notion.site/Mestrado-Computa-o-Aplicada-IFES-64a075f439f740c4be96345c615f97c9",
+        description: intl.formatMessage({ id: "project6d" }),
+        tags: ["#PYTHON", "#MACHINE LEARNING", "#ARTIFICIAL INTELLIGENCE"],
+        code: "https://github.com/brunokobi",
+      },
+
+      {
+        title: intl.formatMessage({ id: "project7t" }),
+        link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6961453558051291136?compact=1",
+        demo: "",
+        description: intl.formatMessage({ id: "project7d" }),
+        tags: ["#JAVA", "#MACHINE LEARNING", "#ARTIFICIAL INTELLIGENCE"],
+        code: "https://github.com/brunokobi",
+      },
+    ],
+    [intl]
+  );
 
   return (
     <AnimatePresence>
@@ -220,16 +251,9 @@ const Projects = () => {
             maxW={{ base: "100%", md: "700px" }}
             gap={{ base: 4, md: 8 }}
           >
-           
-            {projects.map(
-              (project, i) => (
-                <ProjectCard
-                  key={i}
-                  i={i}
-                  {...project}
-                />
-              )
-            )}
+            {projects.map((project, i) => (
+              <ProjectCard key={i} i={i} {...project} />
+            ))}
           </Flex>
           <Box
             position="relative"
@@ -241,12 +265,7 @@ const Projects = () => {
             }}
           >
             <Link href="#top">
-              <Icon
-                as={BsChevronDoubleUp}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleUp} fontSize={24} my={1} color="#42c920" />
             </Link>
           </Box>
           <AnimatedStars />

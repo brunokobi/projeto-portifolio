@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { timeAgo, cleanDesc, parseRSS, BOILERPLATE_PATTERNS } from "../rss";
+import { describe, it, expect } from "vitest";
+import { timeAgo, cleanDesc, parseRSS } from "../rss";
 
 describe("timeAgo", () => {
   it("retorna string vazia para null", () => {

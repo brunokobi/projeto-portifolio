@@ -22,7 +22,7 @@ export const handler: Handler = async (event) => {
     const res = await fetch(feedUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (compatible; BrunoKobiPortfolio/1.0)",
-        "Accept": "application/rss+xml, application/xml, text/xml, */*",
+        Accept: "application/rss+xml, application/xml, text/xml, */*",
       },
       signal: AbortSignal.timeout(8000),
     });

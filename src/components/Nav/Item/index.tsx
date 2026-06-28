@@ -1,8 +1,8 @@
 import React from "react";
 import { BreadcrumbItem, BreadcrumbLink, Stack, Text, Icon } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
-import { linkMotion, iconMotion } from "../animationsConfig";
+import { linkMotion } from "../animationsConfig";
 import { Link, useLocation } from "react-router-dom";
 import falar from "../../../components/TextAudio";
 
@@ -16,16 +16,7 @@ const Item = ({ label, url, icon }: ItemProps) => {
   const navLink = useRef(null);
   const location = useLocation();
 
-  const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    if (location.pathname === url) {
-      return setIsActive(true);
-    }
-    setIsActive(false);
-  }, [location.pathname, url]);
-
- 
+  const isActive = location.pathname === url;
 
   return (
     <BreadcrumbItem
@@ -45,12 +36,12 @@ const Item = ({ label, url, icon }: ItemProps) => {
           _hover={{ color: "#42c920" }}
           style={{
             ...(isActive ? { color: "#42c920" } : ""),
-          }}        
+          }}
         >
           <Stack
             align="center"
-            direction={{ base: "row", md: "column" , sm: "column", lg: "row"}}
-            px={{ base: 1, md: 0, sm: 0}}
+            direction={{ base: "row", md: "column", sm: "column", lg: "row" }}
+            px={{ base: 1, md: 0, sm: 0 }}
           >
             <div>
               <Icon as={icon} fontSize={24} color="white.500" rounded="full" />
@@ -79,7 +70,7 @@ const Item = ({ label, url, icon }: ItemProps) => {
         >
           <Stack
             align="center"
-            direction={{ base: "row", md: "column" , sm: "column", lg: "row"}}
+            direction={{ base: "row", md: "column", sm: "column", lg: "row" }}
             px={{ base: 1, md: 5 }}
           >
             <div>

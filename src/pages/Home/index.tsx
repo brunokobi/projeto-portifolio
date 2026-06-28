@@ -1,7 +1,7 @@
 import { Flex, Heading, SlideFade, Stack } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from "react";
 import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
 
@@ -9,31 +9,31 @@ import VideoBackground from "../../components/VideoBackground";
 import BigBangLoader from "../../components/BigBangLoader";
 import GlobeBackground from "../../components/GlobeBackground";
 import IconsBackground from "../../components/IconsBackground";
-import { useIntl } from 'react-intl';
+import { useIntl } from "react-intl";
 import falar from "../../components/TextAudio";
 
 const Home = () => {
   const intl = useIntl();
 
-  const phrases = useMemo(() => [
-    intl.formatMessage({ id: 'frase_1' }),
-    intl.formatMessage({ id: 'frase_2' }),
-  ], [intl]);
+  const phrases = useMemo(
+    () => [intl.formatMessage({ id: "frase_1" }), intl.formatMessage({ id: "frase_2" })],
+    [intl]
+  );
 
   const typedPhrase = useTypewriter(phrases);
 
-  const falarBoasVindas = useCallback(() => falar(intl.formatMessage({ id: 'ola_mundo' })), [intl]);
-  const falarEuSou     = useCallback(() => falar(intl.formatMessage({ id: 'eu_sou' })),     [intl]);
-  const falarNome      = useCallback(() => falar(intl.formatMessage({ id: 'meunome' })),    [intl]);
-  const falarFrases    = useCallback(() => falar(phrases.join(' ')),                         [phrases]);
+  const falarBoasVindas = useCallback(() => falar(intl.formatMessage({ id: "ola_mundo" })), [intl]);
+  const falarEuSou = useCallback(() => falar(intl.formatMessage({ id: "eu_sou" })), [intl]);
+  const falarNome = useCallback(() => falar(intl.formatMessage({ id: "meunome" })), [intl]);
+  const falarFrases = useCallback(() => falar(phrases.join(" ")), [phrases]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       falar(
-        intl.formatMessage({ id: 'ola_mundo' }) +
-        intl.formatMessage({ id: 'eu_sou' }) +
-        intl.formatMessage({ id: 'meunome' }) +
-        phrases.join(' ')
+        intl.formatMessage({ id: "ola_mundo" }) +
+          intl.formatMessage({ id: "eu_sou" }) +
+          intl.formatMessage({ id: "meunome" }) +
+          phrases.join(" ")
       );
     }, 1000);
     return () => clearTimeout(timer);
@@ -84,7 +84,7 @@ const Home = () => {
                 onMouseOver={falarBoasVindas}
                 textShadow="0px 0px 10px rgb(0,0,0)"
               >
-                {intl.formatMessage({ id: 'ola_mundo' })},&nbsp;
+                {intl.formatMessage({ id: "ola_mundo" })},&nbsp;
               </Heading>
               <Heading
                 fontSize={{ base: "md", md: "xl" }}
@@ -92,7 +92,7 @@ const Home = () => {
                 onMouseOver={falarEuSou}
                 textShadow="0px 0px 10px rgb(0,0,0)"
               >
-                {intl.formatMessage({ id: 'eu_sou' })}
+                {intl.formatMessage({ id: "eu_sou" })}
               </Heading>
             </Flex>
 
@@ -102,7 +102,7 @@ const Home = () => {
               onMouseOver={falarNome}
               textShadow="0px 0px 10px #42c920"
             >
-              {intl.formatMessage({ id: 'meunome' })}
+              {intl.formatMessage({ id: "meunome" })}
             </Heading>
 
             <Heading
@@ -120,7 +120,7 @@ const Home = () => {
               onMouseOver={falarFrases}
               textShadow="0px 0px 10px rgb(0,0,0)"
             >
-              <span style={{ borderRight: '2px solid #42c920' }}>{typedPhrase}</span>
+              <span style={{ borderRight: "2px solid #42c920" }}>{typedPhrase}</span>
             </Heading>
           </Stack>
         </Stack>

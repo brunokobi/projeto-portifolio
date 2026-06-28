@@ -20,13 +20,12 @@ export const handler: Handler = async (event) => {
     }
 
     const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: event.body,
-      }
-    );
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: event.body,
+    });
 
     const text = await response.text();
 

@@ -9,15 +9,12 @@ interface LocalMapProps {
   image?: string;
 }
 
-const LocalMap = ({ Latitude, Longitude, Nome, Descricao, image }: LocalMapProps) => {
+const LocalMap = (_props: LocalMapProps) => {
   // const [latitudei, setLatitudei] = React.useState(Latitude);
   // const [longitudei, setLongitudei] = React.useState(Longitude);
   // const [nome, setNome] = React.useState(Nome);
   // const [descricao, setDescricao] = React.useState(Descricao);
   // const [imagem, setImagem] = React.useState(image);
-
-
-
   // return (
   //   <button onClick={() => {
   //     setLatitudei(-20.329444);

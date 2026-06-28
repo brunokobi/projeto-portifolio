@@ -1,13 +1,12 @@
 // teste de ia usando modelo de mistral
 import React, { useState } from "react";
 import "./InputTextArea.css";
-import robo from '../../assets/img/robot.png';
+import robo from "../../assets/img/robot.png";
 import AnimatedStars from "../../components/AnimatedStars";
-import {Box,Flex,Button,Spinner} from "@chakra-ui/react";
+import { Box, Flex, Button, Spinner } from "@chakra-ui/react";
 import { motion } from "framer-motion"; // Biblioteca para animações avançadas
 import { useRef, useEffect } from "react";
 import falar from "../../components/TextAudio";
-
 
 const API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // 🔹 Substitua pelo seu modelo da Hugging Face
 const TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // 🔹 Substitua pelo seu token da Hugging Face
@@ -48,80 +47,90 @@ const LlamaChat = () => {
   };
 
   return (
-    <Box
-    as={motion.div}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-  >
-     <Flex
-             gap={5}
-             h="100vh"
-             w="100%"
-             align="center"
-             overflowY="auto"
-             py={24}
-             overflowX="hidden"
-             flexDirection="column"
-             position="relative"
-             scrollBehavior="smooth"
-             ref={wrapperRef}
-             css={{
-               "&::-webkit-scrollbar": {
-                 width: "5px", // Customização da barra de rolagem
-                 height: "10px",
-               },
-               "&::-webkit-scrollbar-track": {
-                 width: "6px",
-               },
-               "&::-webkit-scrollbar-thumb": {
-                 background: "#42c920",
-                 borderRadius: "24px",
-               },
-             }}
-           >
-    <AnimatedStars />
-    <Box w={"90%"} h={"100%"} mt={5}
-      overflow={"auto"}
-      style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
-    >
-      <div style={{ padding: "20px", maxWidth: "800px", margin: "auto", overflow: "auto" }}>
-        <h1>CHAT por IA  (em teste)</h1>
-        <img src={robo} alt="robo" style={{ width: "200px", display: "block", margin: "auto" }} />
-        <div className="input-container">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && queryLlama()}
-            rows={2}
-            className="input-text"
-            placeholder="Pergunte algo..." />
-          <div className="input-border"></div>
-        </div>
-        <Button onClick={queryLlama} isDisabled={loading} mt={5}
-        color={"#fff"} background={"#42c920"} _hover={{ background: "#256a10" }}           
+    <Box as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <Flex
+        gap={5}
+        h="100vh"
+        w="100%"
+        align="center"
+        overflowY="auto"
+        py={24}
+        overflowX="hidden"
+        flexDirection="column"
+        position="relative"
+        scrollBehavior="smooth"
+        ref={wrapperRef}
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "5px", // Customização da barra de rolagem
+            height: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#42c920",
+            borderRadius: "24px",
+          },
+        }}
+      >
+        <AnimatedStars />
+        <Box
+          w={"90%"}
+          h={"100%"}
+          mt={5}
+          overflow={"auto"}
+          style={
+            {
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            } as React.CSSProperties
+          }
         >
-       {loading ? (
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <Spinner size="sm" /> <span>Carregando...</span>
-  </div>
-) : (
-  "Enviar"
-)}
-        </Button>
-        {response && (
-          <div style={{ marginTop: "5px" }}>
-            <h3>Resposta:</h3>
-            <textarea
-              value={response}
-              rows={20}
-              className="input-text2"
-              readOnly />
+          <div style={{ padding: "20px", maxWidth: "800px", margin: "auto", overflow: "auto" }}>
+            <h1>CHAT por IA (em teste)</h1>
+            <img
+              src={robo}
+              alt="robo"
+              style={{ width: "200px", display: "block", margin: "auto" }}
+            />
+            <div className="input-container">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && queryLlama()}
+                rows={2}
+                className="input-text"
+                placeholder="Pergunte algo..."
+              />
+              <div className="input-border"></div>
+            </div>
+            <Button
+              onClick={queryLlama}
+              isDisabled={loading}
+              mt={5}
+              color={"#fff"}
+              background={"#42c920"}
+              _hover={{ background: "#256a10" }}
+            >
+              {loading ? (
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Spinner size="sm" /> <span>Carregando...</span>
+                </div>
+              ) : (
+                "Enviar"
+              )}
+            </Button>
+            {response && (
+              <div style={{ marginTop: "5px" }}>
+                <h3>Resposta:</h3>
+                <textarea value={response} rows={20} className="input-text2" readOnly />
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </Box>
-    </Flex>
+        </Box>
+      </Flex>
     </Box>
   );
 };

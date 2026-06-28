@@ -1,17 +1,23 @@
-import { IoLogoJavascript, IoLogoHtml5, IoLogoCss3, IoLogoReact, IoLogoNodejs } from "react-icons/io5";
+import {
+  IoLogoJavascript,
+  IoLogoHtml5,
+  IoLogoCss3,
+  IoLogoReact,
+  IoLogoNodejs,
+} from "react-icons/io5";
 
-import { 
-  SiPhp, 
-  SiMysql, 
-  SiTypescript, 
-  SiC, 
-  SiLatex, 
-  SiSupabase, 
-  SiLaravel, 
-  SiDocker, 
+import {
+  SiPhp,
+  SiMysql,
+  SiTypescript,
+  SiC,
+  SiLatex,
+  SiSupabase,
+  SiLaravel,
+  SiDocker,
   SiGithub,
   SiChatwoot, // Ícone oficial do Chatwoot
-  SiN8N       // Ícone oficial do n8n
+  SiN8N, // Ícone oficial do n8n
 } from "react-icons/si";
 
 import { TbBrandVscode } from "react-icons/tb";
@@ -36,7 +42,7 @@ export const skills = [
   {
     label: "TypeScript",
     icon: SiTypescript,
-  },   
+  },
   {
     label: "Python",
     icon: FaPython,
@@ -44,10 +50,10 @@ export const skills = [
   {
     label: "React.js",
     icon: IoLogoReact,
-  },  
+  },
   {
     label: "Three.js",
-    icon: FaCube, 
+    icon: FaCube,
   },
   {
     label: "Node.js",
@@ -64,7 +70,7 @@ export const skills = [
   {
     label: "PostgreSQL",
     icon: DiPostgresql,
-  }, 
+  },
   {
     label: "MySQL",
     icon: SiMysql,
@@ -96,17 +102,17 @@ export const skills = [
   {
     label: "C",
     icon: SiC,
-  }, 
+  },
   {
     label: "Prolog",
     icon: DiProlog,
-  }, 
+  },
   {
     label: "LaTeX",
     icon: SiLatex,
-  },  
+  },
   {
     label: "VS Code",
-    icon: TbBrandVscode, 
-  },  
+    icon: TbBrandVscode,
+  },
 ];

@@ -1,4 +1,3 @@
-
 import {
   Text,
   Flex,
@@ -81,12 +80,7 @@ const About = () => {
   return (
     <AnimatePresence>
       {/* Container principal com animação de entrada e saída */}
-      <Box
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
+      <Box as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <Flex
           gap={5}
           h="100vh"
@@ -123,12 +117,7 @@ const About = () => {
             maxW={{ base: "100%", md: "700px" }}
           >
             {/* Foto de perfil */}
-            <Box
-              as={SlideFade as any}
-              in={presentationViewPort}
-              offsetX="-50%"
-              transition="all 1s"
-            >
+            <Box as={SlideFade as any} in={presentationViewPort} offsetX="-50%" transition="all 1s">
               <Image src={profilePhoto} w={300} ref={presentationRef} />
             </Box>
             <Divider
@@ -149,9 +138,7 @@ const About = () => {
                 color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2, md: -24 }}
-                onMouseOver={() =>
-                  falar(intl.formatMessage({ id: "sobre_mim" }))
-                }
+                onMouseOver={() => falar(intl.formatMessage({ id: "sobre_mim" }))}
               >
                 {intl.formatMessage({ id: "sobre_mim" })}
               </Text>
@@ -165,19 +152,14 @@ const About = () => {
               <Text
                 mb={2}
                 fontSize={{ base: "sm", md: "md" }}
-                onMouseOver={() =>
-                  falar(intl.formatMessage({ id: "sobre1" }))
-                }
+                onMouseOver={() => falar(intl.formatMessage({ id: "sobre1" }))}
               >
                 {intl.formatMessage({ id: "sobre1" })}
               </Text>
               <Text
                 fontSize={{ base: "xs", md: "sm" }}
                 onMouseOver={() =>
-                  falar(
-                    intl.formatMessage({ id: "sobre2" }) +
-                      intl.formatMessage({ id: "sobre3" })
-                  )
+                  falar(intl.formatMessage({ id: "sobre2" }) + intl.formatMessage({ id: "sobre3" }))
                 }
               >
                 {intl.formatMessage({ id: "sobre2" })}
@@ -196,15 +178,10 @@ const About = () => {
             }}
           >
             <Link href="#about">
-              <Icon
-                as={BsChevronDoubleDown}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleDown} fontSize={24} my={1} color="#42c920" />
             </Link>
           </Box>
-         
+
           <Stack
             id="about"
             direction={{ base: "column-reverse", md: "row" }}
@@ -221,17 +198,19 @@ const About = () => {
               transition="all 1s"
             >
               <Text
-              color={"#42c920"}
+                color={"#42c920"}
                 textShadow="0px 0px 10px #42c920"
                 mt={{ base: 2 }}
                 onMouseOver={() => falar(intl.formatMessage({ id: "educacao" }))}
               >
-                 {intl.formatMessage({ id: "educacao" })}
+                {intl.formatMessage({ id: "educacao" })}
               </Text>
-              <Text fontSize={{ base: "xs", md: "sm" }} mb={2}
-              onMouseOver={() => falar(intl.formatMessage({ id: "educacao1" }))}
+              <Text
+                fontSize={{ base: "xs", md: "sm" }}
+                mb={2}
+                onMouseOver={() => falar(intl.formatMessage({ id: "educacao1" }))}
               >
-              {intl.formatMessage({ id: "educacao1" })}
+                {intl.formatMessage({ id: "educacao1" })}
               </Text>
             </Box>
 
@@ -247,7 +226,6 @@ const About = () => {
             </Box>
           </Stack>
 
-
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
@@ -257,12 +235,7 @@ const About = () => {
             }}
           >
             <Link href="#experiencia">
-              <Icon
-                as={BsChevronDoubleDown}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleDown} fontSize={24} my={1} color="#42c920" />
             </Link>
           </Box>
           <Stack
@@ -289,58 +262,75 @@ const About = () => {
               offsetX="50%"
               transition="all 1s"
             >
-             <Text
-              color={"#42c920"}
-                textShadow="0px 0px 10px #42c920"
-                mt={{ base: 3 }}
-              >
+              <Text color={"#42c920"} textShadow="0px 0px 10px #42c920" mt={{ base: 3 }}>
                 {intl.formatMessage({ id: "experiencia" })}
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
-              <b> {intl.formatMessage({ id: "experiencia5t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia5e" })}<br/>
-              {intl.formatMessage({ id: "experiencia5d" })} <br/>
-              {intl.formatMessage({ id: "competencias" })}: React · Node.js · IA · LangChain · Claude · Chatwoot · n8n · Automação · TypeScript · JavaScript
+                <b> {intl.formatMessage({ id: "experiencia5t" })} </b>
+                <br />
+                {intl.formatMessage({ id: "experiencia5e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia5d" })} <br />
+                {intl.formatMessage({ id: "competencias" })}: React · Node.js · IA · LangChain ·
+                Claude · Chatwoot · n8n · Automação · TypeScript · JavaScript
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
-              <b> {intl.formatMessage({ id: "experiencia4t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia4e" })}<br/>
-              {intl.formatMessage({ id: "experiencia4d" })} <br/>
-              {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) · Laravel · PHP · PostgreSQL · Scrum
+                <b> {intl.formatMessage({ id: "experiencia4t" })} </b>
+                <br />
+                {intl.formatMessage({ id: "experiencia4e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia4d" })} <br />
+                {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) ·
+                Laravel · PHP · PostgreSQL · Scrum
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4} mt={2}>
-              <b> {intl.formatMessage({ id: "experiencia1t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia1e" })}<br/>
-              {intl.formatMessage({ id: "experiencia1d" })} <br/>
-              {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) · API REST · Git · Scrum
+                <b> {intl.formatMessage({ id: "experiencia1t" })} </b>
+                <br />
+                {intl.formatMessage({ id: "experiencia1e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia1d" })} <br />
+                {intl.formatMessage({ id: "competencias" })}: React · TypeScript · ArcGIS (Esri) ·
+                API REST · Git · Scrum
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>
-              <b>{intl.formatMessage({ id: "experiencia2t" })}</b><br/>
-              {intl.formatMessage({ id: "experiencia2e" })}<br/>
-              {intl.formatMessage({ id: "experiencia2d" })}<br/>
-              {intl.formatMessage({ id: "competencias" })}: Node.js · MySQL · React · React Native · TypeScript · Expo · Scrum
+                <b>{intl.formatMessage({ id: "experiencia2t" })}</b>
+                <br />
+                {intl.formatMessage({ id: "experiencia2e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia2d" })}
+                <br />
+                {intl.formatMessage({ id: "competencias" })}: Node.js · MySQL · React · React Native
+                · TypeScript · Expo · Scrum
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }} mb={4}>
-              <b>{intl.formatMessage({ id: "experiencia3t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia3e" })}<br/>
-              {intl.formatMessage({ id: "experiencia3d" })}<br/>
-              {intl.formatMessage({ id: "competencias" })}: AngularJS · PostgreSQL · Leaflet · Scrum
+                <b>{intl.formatMessage({ id: "experiencia3t" })} </b>
+                <br />
+                {intl.formatMessage({ id: "experiencia3e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia3d" })}
+                <br />
+                {intl.formatMessage({ id: "competencias" })}: AngularJS · PostgreSQL · Leaflet ·
+                Scrum
               </Text>
 
               <Text fontSize={{ base: "xs", md: "sm" }}>
-              <b>{intl.formatMessage({ id: "experiencia6t" })} </b><br/>
-              {intl.formatMessage({ id: "experiencia6e" })}<br/>
-              {intl.formatMessage({ id: "experiencia6d" })}<br/>
-              {intl.formatMessage({ id: "competencias" })}: CodeIgniter · PHP · MySQL · HTML · CSS · JavaScript
+                <b>{intl.formatMessage({ id: "experiencia6t" })} </b>
+                <br />
+                {intl.formatMessage({ id: "experiencia6e" })}
+                <br />
+                {intl.formatMessage({ id: "experiencia6d" })}
+                <br />
+                {intl.formatMessage({ id: "competencias" })}: CodeIgniter · PHP · MySQL · HTML · CSS
+                · JavaScript
               </Text>
             </Box>
           </Stack>
-         
+
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
@@ -350,14 +340,9 @@ const About = () => {
             }}
           >
             <Link href="#skills">
-              <Icon
-                as={BsChevronDoubleDown}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleDown} fontSize={24} my={1} color="#42c920" />
             </Link>
-          </Box> 
+          </Box>
 
           <Stack
             spacing={8}
@@ -374,7 +359,7 @@ const About = () => {
                 textAlign="center"
                 onMouseOver={() => falar(intl.formatMessage({ id: "skills" }))}
               >
-               {intl.formatMessage({ id: "skills" })}
+                {intl.formatMessage({ id: "skills" })}
               </Heading>
             </div>
             <div>
@@ -408,15 +393,11 @@ const About = () => {
                       textShadow: "-1.5px -1.5px #42c920",
                     }}
                   >
-                    <Icon
-                      as={icon}
-                      fontSize={{ base: 36, md: 28 }}
-                      rounded="full"
-                    />
+                    <Icon as={icon} fontSize={{ base: 36, md: 28 }} rounded="full" />
 
-                    <Text display={{ base: "none", md: "block" }}
-                    onMouseOver={() => falar(label)}
-                    >{label}</Text>
+                    <Text display={{ base: "none", md: "block" }} onMouseOver={() => falar(label)}>
+                      {label}
+                    </Text>
                   </WrapItem>
                 ))}
               </Wrap>
@@ -432,12 +413,7 @@ const About = () => {
             mt={6}
           >
             <Link href="#qualifications">
-              <Icon
-                as={BsChevronDoubleDown}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleDown} fontSize={24} my={1} color="#42c920" />
             </Link>
           </Box>
 
@@ -456,7 +432,7 @@ const About = () => {
                 textAlign="center"
                 onMouseOver={() => falar(intl.formatMessage({ id: "quali" }))}
               >
-                 {intl.formatMessage({ id: "quali" })}
+                {intl.formatMessage({ id: "quali" })}
               </Heading>
             </div>
             <Box position="relative" w="100%" maxW="500px" mx="auto">
@@ -469,7 +445,14 @@ const About = () => {
                 borderColor="whiteAlpha.200"
                 loading="lazy"
               />
-              <HStack position="absolute" bottom={2} left={0} right={0} justify="center" spacing={2}>
+              <HStack
+                position="absolute"
+                bottom={2}
+                left={0}
+                right={0}
+                justify="center"
+                spacing={2}
+              >
                 {certifications.map((_, i) => (
                   <Box
                     key={i}
@@ -489,16 +472,24 @@ const About = () => {
                   variant="ghost"
                   color="#42c920"
                   _hover={{ bg: "whiteAlpha.100" }}
-                  onClick={() => setCertIdx(i => (i - 1 + certifications.length) % certifications.length)}
-                >← Anterior</Button>
-                <Text fontSize="xs" color="whiteAlpha.600">{certIdx + 1} / {certifications.length}</Text>
+                  onClick={() =>
+                    setCertIdx((i) => (i - 1 + certifications.length) % certifications.length)
+                  }
+                >
+                  ← Anterior
+                </Button>
+                <Text fontSize="xs" color="whiteAlpha.600">
+                  {certIdx + 1} / {certifications.length}
+                </Text>
                 <Button
                   size="sm"
                   variant="ghost"
                   color="#42c920"
                   _hover={{ bg: "whiteAlpha.100" }}
-                  onClick={() => setCertIdx(i => (i + 1) % certifications.length)}
-                >Próximo →</Button>
+                  onClick={() => setCertIdx((i) => (i + 1) % certifications.length)}
+                >
+                  Próximo →
+                </Button>
               </HStack>
             </Box>
           </Stack>
@@ -511,12 +502,7 @@ const About = () => {
             }}
           >
             <Link href="#top">
-              <Icon
-                as={BsChevronDoubleUp}
-                fontSize={24}
-                my={1}
-                color="#42c920"
-              />
+              <Icon as={BsChevronDoubleUp} fontSize={24} my={1} color="#42c920" />
             </Link>
           </Box>
           <AnimatedStars />

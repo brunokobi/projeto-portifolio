@@ -79,26 +79,26 @@ Google Translate API (tradução)
 
 ## 🛠️ Stack Completa
 
-| Camada | Tecnologia | Uso |
-|--------|-----------|-----|
-| Frontend | React 18 + Hooks | SPA com Context API |
-| Build | Vite 5 | Dev server HMR instantâneo, bundle otimizado |
-| UI | Chakra UI v2 | Design system responsivo |
-| Animação | Framer Motion v11 | Transições e stagger animations |
-| i18n | React-Intl | 9 idiomas + auto-detect por IP |
-| Voz | Web Speech API | Text-to-Speech nativo |
-| Backend | Supabase | PostgreSQL + Auth + RLS + Edge Functions |
-| Automação | n8n (self-hosted, AWS EC2) | Workflows event-driven + orquestração Multi-Agente |
-| IA — LLM | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato |
-| IA — Embeddings | Google Gemini Embedding 001 | Vetorização base de conhecimento (768 dim) |
-| RAG Pipeline | LangChain Tools (via n8n) | Busca semântica autônoma por agente |
-| Banco Vetorial | Supabase pgvector (ivfflat) | Similaridade cosseno em 22 chunks |
-| Email | Resend | Transacional |
-| Infra | AWS EC2 | Hospedagem self-hosted do n8n |
-| Deploy | Netlify | CI/CD + Serverless Functions |
-| GIS | ESRI ArcGIS | Mapas 3D interativos |
-| Clima | Open-Meteo | API gratuita, sem chave |
-| Geoloc. | ipapi.co | IP → país/cidade/coords |
+| Camada          | Tecnologia                   | Uso                                                |
+| --------------- | ---------------------------- | -------------------------------------------------- |
+| Frontend        | React 18 + Hooks             | SPA com Context API                                |
+| Build           | Vite 5                       | Dev server HMR instantâneo, bundle otimizado       |
+| UI              | Chakra UI v2                 | Design system responsivo                           |
+| Animação        | Framer Motion v11            | Transições e stagger animations                    |
+| i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
+| Voz             | Web Speech API               | Text-to-Speech nativo                              |
+| Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
+| Automação       | n8n (self-hosted, AWS EC2)   | Workflows event-driven + orquestração Multi-Agente |
+| IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
+| IA — Embeddings | Google Gemini Embedding 001  | Vetorização base de conhecimento (768 dim)         |
+| RAG Pipeline    | LangChain Tools (via n8n)    | Busca semântica autônoma por agente                |
+| Banco Vetorial  | Supabase pgvector (ivfflat)  | Similaridade cosseno em 22 chunks                  |
+| Email           | Resend                       | Transacional                                       |
+| Infra           | AWS EC2                      | Hospedagem self-hosted do n8n                      |
+| Deploy          | Netlify                      | CI/CD + Serverless Functions                       |
+| GIS             | ESRI ArcGIS                  | Mapas 3D interativos                               |
+| Clima           | Open-Meteo                   | API gratuita, sem chave                            |
+| Geoloc.         | ipapi.co                     | IP → país/cidade/coords                            |
 
 ---
 
@@ -216,12 +216,16 @@ Fontes mistas (Tecnoblog, NeoFeed, SCMP, ETH Zurich etc.) só exibem artigos que
 export const handler: Handler = async (event) => {
   const feedUrl = event.queryStringParameters?.url;
   const res = await fetch(feedUrl, {
-    headers: { "User-Agent": "Mozilla/5.0", "Accept": "application/rss+xml, */*" },
+    headers: { "User-Agent": "Mozilla/5.0", Accept: "application/rss+xml, */*" },
     signal: AbortSignal.timeout(8000),
   });
   return {
     statusCode: 200,
-    headers: { "Content-Type": "application/xml", "Access-Control-Allow-Origin": "*", "Cache-Control": "public, max-age=300" },
+    headers: {
+      "Content-Type": "application/xml",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "public, max-age=300",
+    },
     body: await res.text(),
   };
 };
@@ -259,23 +263,25 @@ export const LanguageProvider = ({ children }) => {
     setLocale(lang); // re-render imediato, sem reload de página
   }, []);
 
-  return <LanguageContext.Provider value={{ locale, setLanguage }}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={{ locale, setLanguage }}>{children}</LanguageContext.Provider>
+  );
 };
 ```
 
 ### Idiomas suportados (9)
 
-| Idioma | Código | Cobertura |
-|--------|--------|-----------|
-| Português | `pt` | Brasil, Portugal |
-| Inglês | `en` | EUA, UK, Austrália, Canadá + outros |
-| Espanhol | `es` | 17 países |
-| Francês | `fr` | França, Bélgica, Suíça + outros |
-| Alemão | `de` | Alemanha, Áustria |
-| Chinês | `zh` | China, Taiwan, HK, Macau, Singapura |
-| Russo | `ru` | Rússia, Bielorrússia, Cazaquistão |
-| Árabe | `ar` | 14 países do Oriente Médio e Norte da África |
-| Klingon | `kl` | 🖖 |
+| Idioma    | Código | Cobertura                                    |
+| --------- | ------ | -------------------------------------------- |
+| Português | `pt`   | Brasil, Portugal                             |
+| Inglês    | `en`   | EUA, UK, Austrália, Canadá + outros          |
+| Espanhol  | `es`   | 17 países                                    |
+| Francês   | `fr`   | França, Bélgica, Suíça + outros              |
+| Alemão    | `de`   | Alemanha, Áustria                            |
+| Chinês    | `zh`   | China, Taiwan, HK, Macau, Singapura          |
+| Russo     | `ru`   | Rússia, Bielorrússia, Cazaquistão            |
+| Árabe     | `ar`   | 14 países do Oriente Médio e Norte da África |
+| Klingon   | `kl`   | 🖖                                           |
 
 ---
 
@@ -330,10 +336,10 @@ Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes es
 
 ### Por que Multi-Agente + RAG?
 
-| Abordagem | Limitação |
-|-----------|-----------|
-| System prompt estático | Contexto fixo, sem atualização dinâmica, tokens desperdiçados |
-| Agente único com RAG | Responde tudo sem especialização por domínio |
+| Abordagem                 | Limitação                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| System prompt estático    | Contexto fixo, sem atualização dinâmica, tokens desperdiçados                |
+| Agente único com RAG      | Responde tudo sem especialização por domínio                                 |
 | **Multi-Agente + RAG** ✅ | Cada agente busca autonomamente apenas o contexto relevante para seu domínio |
 
 ### Fluxo completo
@@ -351,15 +357,15 @@ Usuário
 
 ### Agentes Especializados (7 + Roteador)
 
-| Agente | Domínio |
-|--------|---------|
-| 🧑 Perfil | História, filosofia, transição de carreira |
-| ⚙️ Skills | Stack tecnológico completo |
-| 💼 Experiência | Empresas, cargos, períodos, responsabilidades |
-| 🎓 Educação | Formação, mestrado em computação aplicada, pesquisas |
-| 🚀 Projetos | Portfólio, detalhes técnicos, impacto |
-| 📬 Contato | Links, e-mail, redes sociais |
-| 🔄 Geral | Fallback para questões transversais |
+| Agente         | Domínio                                              |
+| -------------- | ---------------------------------------------------- |
+| 🧑 Perfil      | História, filosofia, transição de carreira           |
+| ⚙️ Skills      | Stack tecnológico completo                           |
+| 💼 Experiência | Empresas, cargos, períodos, responsabilidades        |
+| 🎓 Educação    | Formação, mestrado em computação aplicada, pesquisas |
+| 🚀 Projetos    | Portfólio, detalhes técnicos, impacto                |
+| 📬 Contato     | Links, e-mail, redes sociais                         |
+| 🔄 Geral       | Fallback para questões transversais                  |
 
 ### Base de Conhecimento Vetorial
 
@@ -412,6 +418,7 @@ setVisits(data);
 > **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading + WebGL 3D + fotos próprias nos marcadores
 
 Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
+
 - Terreno 3D interativo
 - Globo animado com nuvens (NASA textures)
 - Marcadores customizados com **fotos próprias** nos pontos turísticos
@@ -423,13 +430,13 @@ Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 > **36 testes passando** com Vitest + Testing Library + jsdom
 
-| Suite | Cobertura |
-|-------|-----------|
-| `ErrorBoundary` | Render normal, captura de erro, botão de retry, reset de estado |
-| `LanguageContext` | Locale padrão, leitura do localStorage, `setLanguage`, persistência, erro fora do Provider |
-| `useTypewriter` | Digitação de caracteres com fake timers, múltiplas strings, array vazio |
-| `newsFunctions` | `isSpam`, `isRelevant`, `scoreArticle` (recência + imagem + keywords), `importanceLevel` (todos os níveis) |
-| `utils/rss` | `timeAgo` (min/h/d), `cleanDesc` (HTML + boilerplate), `parseRSS` (RSS 2.0, Atom, inválido) |
+| Suite             | Cobertura                                                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `ErrorBoundary`   | Render normal, captura de erro, botão de retry, reset de estado                                            |
+| `LanguageContext` | Locale padrão, leitura do localStorage, `setLanguage`, persistência, erro fora do Provider                 |
+| `useTypewriter`   | Digitação de caracteres com fake timers, múltiplas strings, array vazio                                    |
+| `newsFunctions`   | `isSpam`, `isRelevant`, `scoreArticle` (recência + imagem + keywords), `importanceLevel` (todos os níveis) |
+| `utils/rss`       | `timeAgo` (min/h/d), `cleanDesc` (HTML + boilerplate), `parseRSS` (RSS 2.0, Atom, inválido)                |
 
 ```bash
 npm run test:run   # execução única (CI)
@@ -464,45 +471,45 @@ const falar = (texto) => {
 
 ## 📱 Responsividade Mobile
 
-| Componente | Ajuste |
-|-----------|--------|
-| Carrossel hero (News) | Imagem como fundo com overlay — sem overflow |
-| Categorias de notícias | Layout compacto com scroll horizontal drag-to-scroll |
-| Carrossel de certificados | CSS nativo com dots e botões anterior/próximo |
-| ProjectCard | Largura fluida `95vw`, tags com `wrap` automático |
-| Modal de Contato | `size="full"` + `scrollBehavior="inside"` |
-| Menu de navegação | Scroll horizontal sem scrollbar visível |
+| Componente                | Ajuste                                               |
+| ------------------------- | ---------------------------------------------------- |
+| Carrossel hero (News)     | Imagem como fundo com overlay — sem overflow         |
+| Categorias de notícias    | Layout compacto com scroll horizontal drag-to-scroll |
+| Carrossel de certificados | CSS nativo com dots e botões anterior/próximo        |
+| ProjectCard               | Largura fluida `95vw`, tags com `wrap` automático    |
+| Modal de Contato          | `size="full"` + `scrollBehavior="inside"`            |
+| Menu de navegação         | Scroll horizontal sem scrollbar visível              |
 
 ---
 
 ## 🔐 Segurança
 
-| Camada | Mecanismo |
-|--------|-----------|
-| Banco de dados | Row Level Security (RLS) no Supabase |
-| Autenticação | JWT via Supabase Auth |
-| Segredos | Variáveis `VITE_*` — nunca expostas no bundle de produção |
-| CORS | Controlado pelas Netlify Functions |
-| Error handling | ErrorBoundary global com tela de recuperação em PT |
+| Camada         | Mecanismo                                                 |
+| -------------- | --------------------------------------------------------- |
+| Banco de dados | Row Level Security (RLS) no Supabase                      |
+| Autenticação   | JWT via Supabase Auth                                     |
+| Segredos       | Variáveis `VITE_*` — nunca expostas no bundle de produção |
+| CORS           | Controlado pelas Netlify Functions                        |
+| Error handling | ErrorBoundary global com tela de recuperação em PT        |
 
 ---
 
 ## 🧬 Diferenciais que fazem diferença
 
-| Feature | Por que impressiona |
-|---------|-------------------|
-| 🔄 Pipeline Event-Driven | Trigger SQL → n8n → Gemini → Email, sem polling |
-| 📰 51 RSS Feeds + scoring | CORS proxy serverless + filtro relevância + heroScore() + Google Translate sem chave |
-| 🌐 9 idiomas + auto-detect | Cobre 50+ países, troca sem reload via Context API |
-| 🌤️ Clima GPS → IP fallback | Máxima precisão sem degradar UX |
-| 🗺️ Mapa 3D WebGL | ArcGIS em produção com lazy loading |
-| ♿ Text-to-Speech | Zero dependências, Web API nativa |
-| 🔒 RLS + JWT | Segurança no nível do banco, não só da aplicação |
-| ⚛️ RPC atômica | Contador sem race conditions |
-| 🚌 GPS Fleet 60 FPS | +4.000 veículos em tempo real com interpolação WebGL |
-| ⚡ Vite 5 | HMR instantâneo, build 3× mais rápido que CRA |
-| 🤖 chatBruno Multi-Agente + RAG | 8 agentes especializados + pgvector + LangChain Tools + n8n Chat UI nativo |
-| 🔷 TypeScript strict | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end |
+| Feature                         | Por que impressiona                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| 🔄 Pipeline Event-Driven        | Trigger SQL → n8n → Gemini → Email, sem polling                                      |
+| 📰 51 RSS Feeds + scoring       | CORS proxy serverless + filtro relevância + heroScore() + Google Translate sem chave |
+| 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                   |
+| 🌤️ Clima GPS → IP fallback      | Máxima precisão sem degradar UX                                                      |
+| 🗺️ Mapa 3D WebGL                | ArcGIS em produção com lazy loading                                                  |
+| ♿ Text-to-Speech               | Zero dependências, Web API nativa                                                    |
+| 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                     |
+| ⚛️ RPC atômica                  | Contador sem race conditions                                                         |
+| 🚌 GPS Fleet 60 FPS             | +4.000 veículos em tempo real com interpolação WebGL                                 |
+| ⚡ Vite 5                       | HMR instantâneo, build 3× mais rápido que CRA                                        |
+| 🤖 chatBruno Multi-Agente + RAG | 8 agentes especializados + pgvector + LangChain Tools + n8n Chat UI nativo           |
+| 🔷 TypeScript strict            | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end                |
 
 ---
 

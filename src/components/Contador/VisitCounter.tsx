@@ -19,11 +19,25 @@ const digitPulse = keyframes`
   50%       { text-shadow: 0 0 8px #42c920, 0 0 20px #39ff14, 0 0 36px #2ab800; }
 `;
 
-const Rivet = ({ top, left, right, bottom }: { top?: string; left?: string; right?: string; bottom?: string }) => (
+const Rivet = ({
+  top,
+  left,
+  right,
+  bottom,
+}: {
+  top?: string;
+  left?: string;
+  right?: string;
+  bottom?: string;
+}) => (
   <Box
     position="absolute"
-    top={top} left={left} right={right} bottom={bottom}
-    w="7px" h="7px"
+    top={top}
+    left={left}
+    right={right}
+    bottom={bottom}
+    w="7px"
+    h="7px"
     borderRadius="full"
     bg="linear-gradient(135deg, #7a4a2a 0%, #3d1e0a 50%, #5c3317 100%)"
     boxShadow="inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 1px rgba(255,180,80,0.15)"
@@ -105,9 +119,9 @@ const VisitCounter = () => {
         }}
       >
         {/* Rebites nos cantos */}
-        <Rivet top="5px"  left="5px"  />
-        <Rivet top="5px"  right="5px" />
-        <Rivet bottom="5px" left="5px"  />
+        <Rivet top="5px" left="5px" />
+        <Rivet top="5px" right="5px" />
+        <Rivet bottom="5px" left="5px" />
         <Rivet bottom="5px" right="5px" />
 
         {/* Label estêncil */}
@@ -153,7 +167,8 @@ const VisitCounter = () => {
             content: '""',
             position: "absolute",
             inset: 0,
-            background: "repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
+            background:
+              "repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
             pointerEvents: "none",
           }}
         >

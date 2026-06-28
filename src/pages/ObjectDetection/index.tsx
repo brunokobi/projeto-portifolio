@@ -5,7 +5,7 @@ const ObjectDetection = () => {
   const [result, setResult] = useState<object[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
-  
+
   const API_URL = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50";
   const API_TOKEN = import.meta.env.VITE_HUGGING_FACE_API_KEY; // Substitua pelo seu token
 
@@ -23,7 +23,6 @@ const ObjectDetection = () => {
     const formData = new FormData();
     formData.append("image", image);
 
-
     try {
       let response;
       while (true) {
@@ -37,7 +36,7 @@ const ObjectDetection = () => {
 
         if (json.error && json.error.includes("currently loading")) {
           setStatus(`Modelo carregando, aguardando ${json.estimated_time} segundos...`);
-          await new Promise(resolve => setTimeout(resolve, json.estimated_time * 1000));
+          await new Promise((resolve) => setTimeout(resolve, json.estimated_time * 1000));
         } else {
           break;
         }
