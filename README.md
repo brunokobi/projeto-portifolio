@@ -298,36 +298,6 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ---
 
-## 🛰️ Feature: Contato com Automação IA (Event-Driven)
-
-> **Complexidade:** ⭐⭐⭐⭐⭐ — Trigger PostgreSQL → Edge Function → Webhook → n8n → Gemini AI → Email
-
-```
-1. Usuário envia formulário
-2. Frontend → supabase.from('contato').insert({...})
-3. PostgreSQL persiste com RLS ativo
-4. Trigger SQL ativa Edge Function (Deno)
-5. Edge Function → webhook n8n
-6. n8n → Google Gemini (análise de sentimento + classificação)
-7. Gemini → n8n formata e-mail personalizado
-8. Resend entrega o e-mail
-```
-
-```sql
-create table contato (
-  id uuid primary key default gen_random_uuid(),
-  nome text not null,
-  email text not null,
-  mensagem text not null,
-  created_at timestamptz default now()
-);
-
-alter table contato enable row level security;
-create policy "allow_insert" on contato for insert with check (true);
-```
-
----
-
 ## 🤖 Feature: chatBruno — Assistente Virtual Multi-Agente com RAG
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + AWS EC2 Self-Hosted
@@ -506,7 +476,6 @@ const falar = (texto) => {
 | ♿ Text-to-Speech               | Zero dependências, Web API nativa                                                    |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                     |
 | ⚛️ RPC atômica                  | Contador sem race conditions                                                         |
-| 🚌 GPS Fleet 60 FPS             | +4.000 veículos em tempo real com interpolação WebGL                                 |
 | ⚡ Vite 5                       | HMR instantâneo, build 3× mais rápido que CRA                                        |
 | 🤖 chatBruno Multi-Agente + RAG | 8 agentes especializados + pgvector + LangChain Tools + n8n Chat UI nativo           |
 | 🔷 TypeScript strict            | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end                |
