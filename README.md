@@ -419,19 +419,6 @@ Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 ---
 
-## 🚌 Feature: Frota Realtime RJ (Projeto externo)
-
-> **[frotarealtime.netlify.app](https://frotarealtime.netlify.app/)** — rastreamento de +4.000 ônibus do Rio de Janeiro via API SPPO
-
-- **Serverless proxy** comprime os dados em 70% antes de enviar ao browser
-- **requestAnimationFrame** com interpolação garante animação a 60 FPS
-- Velocidade dos veículos calculada e colorizada via **MapLibre GL** (GPU)
-- Agrupamento automático por nível de zoom
-- Cada ônibus mantém as últimas 10 posições (rastro de trajetória)
-- Fallback para `localStorage` com indicação de data dos dados em caso de falha na API
-
----
-
 ## 🧪 Testes Automatizados
 
 > **36 testes passando** com Vitest + Testing Library + jsdom
