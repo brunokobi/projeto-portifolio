@@ -18,9 +18,11 @@
   <img src="https://img.shields.io/badge/TypeScript_strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
   <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
-  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase_pgvector-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" />
+  <img src="https://img.shields.io/badge/LangChain_RAG-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" />
   <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
 </p>
 
@@ -36,7 +38,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação orientada a eventos com IA, mapa 3D geoespacial, feed de notícias em tempo real de **51 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** hospedado em AWS EC2, mapa 3D geoespacial, feed de notícias em tempo real de **51 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -48,27 +50,27 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 ┌─────────────────────────────────────────────────────────┐
 │              Browser (React 18 + Vite 5)                │
 │  i18n · WeatherBar · NewsPanel · ArcGIS · TextToSpeech  │
-└────────────────────┬────────────────────────────────────┘
-                     │ HTTPS
-        ┌────────────┴────────────┐
-        │                         │
-        ▼                         ▼
- Netlify Functions          Supabase (BaaS)
- (TypeScript)               PostgreSQL + RLS
- - Proxy RSS feeds          JWT Auth
- - CORS resolver            Edge Functions
-        │                         │
-        │                    Postgres Trigger
-        │                         │
-        │                    n8n Webhook
-        │                         │
-        │                    Google Gemini AI
-        │                         │
-        │                    Resend (Email)
-        │
- Open-Meteo API (clima)
- ipapi.co (geolocalização)
- Google Translate API (tradução)
+└──────────────────┬──────────────────────────────────────┘
+                   │ HTTPS
+      ┌────────────┼────────────────┐
+      │            │                │
+      ▼            ▼                ▼
+Netlify Fn     Supabase (BaaS)   AWS EC2 (n8n self-hosted)
+TypeScript     PostgreSQL + RLS  ┌──────────────────────┐
+- Proxy RSS    JWT Auth          │  chatBruno           │
+- CORS         Edge Functions    │  Multi-Agente + RAG  │
+               │                 │  LangChain + Gemini  │
+               Postgres Trigger  │  pgvector search     │
+               │                 └──────────────────────┘
+               n8n Webhook ──────────────────────────────┐
+               │                                         │
+               Google Gemini AI               Supabase pgvector
+               │                              (base vetorial)
+               Resend (Email)
+
+Open-Meteo API (clima)
+ipapi.co (geolocalização)
+Google Translate API (tradução)
 ```
 
 **Princípios adotados:** Clean Architecture · Event-Driven · Serverless First · BaaS · Modularização por domínio
@@ -86,9 +88,13 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 | i18n | React-Intl | 9 idiomas + auto-detect por IP |
 | Voz | Web Speech API | Text-to-Speech nativo |
 | Backend | Supabase | PostgreSQL + Auth + RLS + Edge Functions |
-| Automação | n8n (self-hosted) | Workflows event-driven |
-| IA | Google Gemini AI | Análise e classificação de mensagens |
+| Automação | n8n (self-hosted, AWS EC2) | Workflows event-driven + orquestração Multi-Agente |
+| IA — LLM | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato |
+| IA — Embeddings | Google Gemini Embedding 001 | Vetorização base de conhecimento (768 dim) |
+| RAG Pipeline | LangChain Tools (via n8n) | Busca semântica autônoma por agente |
+| Banco Vetorial | Supabase pgvector (ivfflat) | Similaridade cosseno em 22 chunks |
 | Email | Resend | Transacional |
+| Infra | AWS EC2 | Hospedagem self-hosted do n8n |
 | Deploy | Netlify | CI/CD + Serverless Functions |
 | GIS | ESRI ArcGIS | Mapas 3D interativos |
 | Clima | Open-Meteo | API gratuita, sem chave |
@@ -316,6 +322,70 @@ create policy "allow_insert" on contato for insert with check (true);
 
 ---
 
+## 🤖 Feature: chatBruno — Assistente Virtual Multi-Agente com RAG
+
+> **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + AWS EC2 Self-Hosted
+
+Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes especializados** orquestrados por um Agente Roteador, base de conhecimento vetorial em **Supabase pgvector** e interface de chat nativa do n8n — zero frontend customizado.
+
+### Por que Multi-Agente + RAG?
+
+| Abordagem | Limitação |
+|-----------|-----------|
+| System prompt estático | Contexto fixo, sem atualização dinâmica, tokens desperdiçados |
+| Agente único com RAG | Responde tudo sem especialização por domínio |
+| **Multi-Agente + RAG** ✅ | Cada agente busca autonomamente apenas o contexto relevante para seu domínio |
+
+### Fluxo completo
+
+```
+Usuário
+  → n8n Chat UI (frontend nativo via URL pública do workflow — zero config)
+  → Agente Roteador (Gemini 2.5 Flash Lite) classifica intenção
+  → Switch → 7 rotas: PERFIL | SKILLS | EXPERIENCIA | EDUCACAO | PROJETOS | CONTATO | GERAL
+  → Agente Especialista aciona Tool "buscar_conhecimento_bruno"
+  → Supabase pgvector vetoriza query + busca semântica por cosseno
+  → 5 chunks mais relevantes injetados como contexto
+  → Resposta contextualizada + memória de sessão (Window Buffer, 10 trocas)
+```
+
+### Agentes Especializados (7 + Roteador)
+
+| Agente | Domínio |
+|--------|---------|
+| 🧑 Perfil | História, filosofia, transição de carreira |
+| ⚙️ Skills | Stack tecnológico completo |
+| 💼 Experiência | Empresas, cargos, períodos, responsabilidades |
+| 🎓 Educação | Formação, mestrado em computação aplicada, pesquisas |
+| 🚀 Projetos | Portfólio, detalhes técnicos, impacto |
+| 📬 Contato | Links, e-mail, redes sociais |
+| 🔄 Geral | Fallback para questões transversais |
+
+### Base de Conhecimento Vetorial
+
+22 chunks semânticos (identidade, skills, 5 experiências, 6 projetos, 5 formações, certificações, contato) — vetorizados com `gemini-embedding-001` (768 dimensões) e indexados com `ivfflat` para busca eficiente por cosseno.
+
+```sql
+-- Função RPC de busca semântica no Supabase
+CREATE OR REPLACE FUNCTION match_documents(
+  query_embedding VECTOR(768),
+  match_count     INT DEFAULT 5
+) RETURNS TABLE (id BIGINT, content TEXT, metadata JSONB, similarity FLOAT) AS $$
+  SELECT id, content, metadata,
+         1 - (embedding <=> query_embedding) AS similarity
+  FROM documents
+  ORDER BY embedding <=> query_embedding
+  LIMIT match_count;
+$$ LANGUAGE sql;
+```
+
+### Infraestrutura
+
+- **AWS EC2 (self-hosted)** — controle total, sem limites de plano SaaS
+- **Keep-alive automático** — n8n Schedule a cada 3 dias previne congelamento do Supabase Free Tier
+
+---
+
 ## 📊 Feature: Contador de Visitas Atômico
 
 > **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + visual de placa enferrujada + Text-to-Speech
@@ -444,6 +514,7 @@ const falar = (texto) => {
 | ⚛️ RPC atômica | Contador sem race conditions |
 | 🚌 GPS Fleet 60 FPS | +4.000 veículos em tempo real com interpolação WebGL |
 | ⚡ Vite 5 | HMR instantâneo, build 3× mais rápido que CRA |
+| 🤖 chatBruno Multi-Agente + RAG | 8 agentes especializados + pgvector + LangChain Tools + n8n Chat UI nativo |
 | 🔷 TypeScript strict | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end |
 
 ---
@@ -455,6 +526,7 @@ const falar = (texto) => {
 - [x] Filtro de relevância por fonte (MIXED_SOURCES + AI_DEV_KEYWORDS)
 - [x] Migração completa para TypeScript (strict: false + allowJs)
 - [x] TypeScript `strict: true` — 108 erros corrigidos em 22 arquivos (noImplicitAny, strictNullChecks, noImplicitThis)
+- [x] chatBruno — Assistente Multi-Agente + RAG (n8n + LangChain + Supabase pgvector + Gemini + AWS EC2)
 - [x] Refactoring News/index.tsx: 1317 → ~250 linhas (HeroCarousel, CategorySection, newsConstants, newsFunctions, utils/rss)
 - [x] Testes automatizados — 36 testes com Vitest + Testing Library
 - [x] CI/CD — GitHub Actions (tsc + vitest + build em cada push/PR)
