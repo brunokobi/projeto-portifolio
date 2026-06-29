@@ -1,5 +1,11 @@
 import type { Handler } from "@netlify/functions";
 
+interface FormPayload {
+  nome?: string;
+  email?: string;
+  mensagem?: string;
+}
+
 export const handler: Handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -13,51 +19,98 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  const webhookUrl = process.env.N8N_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error("[chat] N8N_WEBHOOK_URL não configurada");
+  const resendKey = process.env.RESEND_API_KEY;
+  const toEmail = process.env.CONTACT_TO_EMAIL ?? "brunokobi2@hotmail.com";
+
+  if (!resendKey) {
+    console.error("[chat] RESEND_API_KEY não configurada");
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "N8N_WEBHOOK_URL not configured" }),
+      body: JSON.stringify({ error: "RESEND_API_KEY not configured" }),
     };
   }
 
+  let payload: FormPayload = {};
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    payload = JSON.parse(event.body ?? "{}");
+  } catch {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
+  }
 
-    const response = await fetch(webhookUrl, {
+  const { nome = "—", email = "—", mensagem = "—" } = payload;
+
+  try {
+    // Notificação para Bruno
+    const notifyRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: event.body,
-      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "OrbitGeo Portfolio <onboarding@resend.dev>",
+        to: [toEmail],
+        subject: `📡 Novo contato de ${nome}`,
+        html: `
+          <div style="font-family:monospace;background:#000;color:#00ff41;padding:24px;border:1px solid #00ff41;border-radius:8px;">
+            <h2 style="color:#00ff41;letter-spacing:4px;">▌ NOVA TRANSMISSÃO ▐</h2>
+            <p><strong>Nome:</strong> ${nome}</p>
+            <p><strong>Email:</strong> <a href="mailto:${email}" style="color:#00ff41;">${email}</a></p>
+            <p><strong>Mensagem:</strong></p>
+            <blockquote style="border-left:3px solid #00ff41;padding-left:12px;color:#aaffaa;">${mensagem.replace(/\n/g, "<br>")}</blockquote>
+          </div>
+        `,
+      }),
     });
 
-    clearTimeout(timeout);
-
-    const text = await response.text();
-
-    if (!response.ok) {
-      console.error(`[chat] n8n retornou ${response.status}: ${text}`);
+    if (!notifyRes.ok) {
+      const err = await notifyRes.text();
+      console.error("[chat] Resend notificação falhou:", err);
+      return {
+        statusCode: 500,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify({ error: "Email notification failed", detail: err }),
+      };
     }
 
+    // Auto-resposta para quem enviou
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "OrbitGeo Portfolio <onboarding@resend.dev>",
+        to: [email],
+        subject: "Transmissão recebida ✅",
+        html: `
+          <div style="font-family:monospace;background:#000;color:#00ff41;padding:24px;border:1px solid #00ff41;border-radius:8px;">
+            <h2 style="color:#00ff41;letter-spacing:4px;">▌ SINAL RECEBIDO ▐</h2>
+            <p>Olá, <strong>${nome}</strong>!</p>
+            <p>Sua mensagem foi recebida. Entrarei em contato em breve.</p>
+            <hr style="border-color:#003300;"/>
+            <p style="color:#aaffaa;font-size:12px;">OrbitGeo Portfolio — brunokobi.netlify.app</p>
+          </div>
+        `,
+      }),
+    });
+
     return {
-      statusCode: response.status,
+      statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-      body: text,
+      body: JSON.stringify({ ok: true }),
     };
   } catch (error: unknown) {
-    const isAbort =
-      error instanceof Error && error.name === "AbortError";
-    console.error("[chat] Erro ao chamar n8n:", error);
+    console.error("[chat] Erro inesperado:", error);
     return {
-      statusCode: 504,
+      statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({
-        error: isAbort ? "n8n timeout" : "Proxy error",
+        error: "Unexpected error",
         message: error instanceof Error ? error.message : String(error),
       }),
     };
