@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import { Box, Text, Skeleton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
-import { createClient } from "@supabase/supabase-js";
 import { useIntl } from "react-intl";
 import falar from "../TextAudio";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+import { supabase } from "../../lib/supabase";
 
 const flicker = keyframes`
   0%, 89%, 91%, 93%, 100% { opacity: 1; }

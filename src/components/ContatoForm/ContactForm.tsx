@@ -15,14 +15,10 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { MdClose } from "react-icons/md";
-import { keyframes } from "@emotion/react"; // Mantendo a correção do erro anterior
-import { createClient } from "@supabase/supabase-js";
+import { keyframes } from "@emotion/react";
 import { FaSatelliteDish } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+import { supabase } from "../../lib/supabase";
 
 const signalWave = keyframes`
   0% { transform: scale(1); opacity: 0.8; border-color: #39ff14; }
