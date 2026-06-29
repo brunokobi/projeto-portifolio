@@ -19,7 +19,7 @@ test.describe("Home page", () => {
     await page.goto("/");
     await page.waitForLoadState("domcontentloaded");
 
-    const nav = page.locator("nav");
+    const nav = page.locator("nav").first();
     await expect(nav).toBeVisible();
   });
 
@@ -47,7 +47,7 @@ test.describe("Home page", () => {
     await page.waitForLoadState("domcontentloaded");
 
     // App ainda deve renderizar (React Router em SPA)
-    const nav = page.locator("nav");
+    const nav = page.locator("nav").first();
     await expect(nav).toBeVisible();
   });
 });
