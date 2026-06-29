@@ -48,7 +48,7 @@ export const handler: Handler = async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "OrbitGeo Portfolio <onboarding@resend.dev>",
+        from: "Portifólio Bruno Kobi <onboarding@resend.dev>",
         to: [toEmail],
         subject: `📡 Novo contato de ${nome}`,
         html: `

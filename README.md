@@ -19,6 +19,7 @@
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
   <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
   <img src="https://img.shields.io/badge/Supabase_pgvector-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
   <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" />
@@ -52,25 +53,22 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 │  i18n · WeatherBar · NewsPanel · ArcGIS · TextToSpeech  │
 └──────────────────┬──────────────────────────────────────┘
                    │ HTTPS
-      ┌────────────┼────────────────┐
-      │            │                │
-      ▼            ▼                ▼
-Netlify Fn     Supabase (BaaS)   AWS EC2 (n8n self-hosted)
-TypeScript     PostgreSQL + RLS  ┌──────────────────────┐
-- Proxy RSS    JWT Auth          │  chatBruno           │
-- CORS         Edge Functions    │  Multi-Agente + RAG  │
-               │                 │  LangChain + Gemini  │
-               Postgres Trigger  │  pgvector search     │
-               │                 └──────────────────────┘
-               n8n Webhook ──────────────────────────────┐
-               │                                         │
-               Google Gemini AI               Supabase pgvector
-               │                              (base vetorial)
-               Resend (Email)
+      ┌────────────┼────────────────────┐
+      │            │                    │
+      ▼            ▼                    ▼
+Netlify Fn     Supabase (BaaS)      AWS EC2 (n8n self-hosted)
+TypeScript     PostgreSQL + RLS     ┌──────────────────────┐
+- Proxy RSS    JWT Auth             │  chatBruno           │
+- Contato      Shared Client        │  Multi-Agente + RAG  │
+  → Resend API (notif. direta)      │  LangChain + Gemini  │
+               │                    │  pgvector search     │
+               Supabase pgvector    └──────────────────────┘
+               (base vetorial)
 
 Open-Meteo API (clima)
 ipapi.co (geolocalização)
 Google Translate API (tradução automática)
+Resend API (email transacional)
 ```
 
 **Princípios adotados:** Clean Architecture · Event-Driven · Serverless First · BaaS · Modularização por domínio
@@ -131,7 +129,8 @@ VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
 VITE_ESRI_API_KEY=AAPTxy8BH...
 VITE_HUGGING_FACE_API_KEY=hf_xxxx
-N8N_WEBHOOK_URL=https://seu-n8n.com/webhook/contato
+RESEND_API_KEY=re_xxxx          # Netlify env var — envio de email do formulário de contato
+CONTACT_TO_EMAIL=seu@email.com  # Netlify env var — destino das notificações (opcional)
 ```
 
 ### Comandos
@@ -321,29 +320,30 @@ export const handler: Handler = async (event) => {
 
 ---
 
-## ⚡ Feature: Pipeline Event-Driven — Contato com Automação IA
+## ⚡ Feature: Formulário de Contato com Email Transacional
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — SQL Trigger → n8n → Gemini → Resend, sem polling
+> **Complexidade:** ⭐⭐⭐⭐ — Two-step submit: Supabase INSERT (audit) + Netlify Function → Resend API
 
-Quando um visitante envia uma mensagem pelo formulário de contato, um **Postgres Trigger** dispara automaticamente um webhook no n8n. O workflow classifica a mensagem com Gemini, gera uma resposta personalizada e envia o e-mail transacional via Resend — tudo sem polling, sem cron job, sem intervenção manual.
+Quando um visitante envia o formulário, o fluxo ocorre em dois passos independentes: primeiro persiste no banco (audit trail garantido), depois a Netlify Function chama a **Resend API** diretamente para enviar a notificação.
 
 ```
 Formulário (React)
-  → Supabase INSERT (tabela contatos, RLS ativo)
-  → Postgres Trigger dispara webhook n8n
-  → n8n Workflow:
-      1. Recebe payload com nome, e-mail, mensagem
-      2. Gemini analisa intenção e tom da mensagem
-      3. Gera resposta contextualizada em PT-BR
-      4. Resend envia e-mail transacional com resposta
+  → Passo 1: Supabase INSERT (tabela contatos, RLS ativo) — audit trail
+  → Passo 2: POST /.netlify/functions/chat
+      → Netlify Function (TypeScript)
+          → Resend API — envia notificação HTML para o dono do portfólio
+  → Feedback ao usuário:
+      · Banco OK + email OK  → toast "SINAL RECEBIDO" (verde)
+      · Banco OK + email fail → toast "SINAL PARCIAL" (aviso)
+      · Banco fail            → toast "FALHA NA TRANSMISSÃO" (erro)
 ```
 
-### Por que Event-Driven e não polling?
+### Por que two-step e não tudo na function?
 
-| Abordagem    | Custo                            | Latência  |
-| ------------ | -------------------------------- | --------- |
-| Polling      | Requisições constantes, CPU wake | Alta      |
-| **Trigger** ✅ | Zero overhead quando inativo   | Imediata  |
+| Abordagem              | Vantagem                                                    |
+| ---------------------- | ----------------------------------------------------------- |
+| Só Netlify Function    | Mensagem perdida se function falhar                         |
+| **Two-step** ✅         | Dado sempre persistido; email é melhor esforço com feedback |
 
 ---
 
@@ -442,9 +442,9 @@ Na primeira visita, o site já aparece **no idioma correto** para o país de ori
 
 ## 📊 Feature: Contador de Visitas Atômico
 
-> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + visual de placa enferrujada + Text-to-Speech
+> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + visual estilo Matrix + Text-to-Speech
 
-Contador persistido em PostgreSQL com incremento via **RPC atômica** — sem race conditions entre visitantes simultâneos. Visual de placar industrial com ferrugem, rebites, dígitos em verde matrix e scanlines em CSS puro.
+Contador persistido em PostgreSQL com incremento via **RPC atômica** — sem race conditions entre visitantes simultâneos. Visual de placa industrial estilo Matrix: fundo preto, rebites metálicos verdes, dígitos `#00ff41` com glow pulsante, scanlines animadas em CSS puro e efeito flicker ocasional.
 
 ```sql
 create or replace function increment_views()
@@ -497,7 +497,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | ------------------------------- | ------------------------------------------------------------------------------------- |
 | 🤖 chatBruno Multi-Agente + RAG | 8 agentes + pgvector + LangChain Tools + n8n + AWS EC2 em produção real               |
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless + scoring tiered por fonte + keywords com cap + recência dominante   |
-| ⚡ Pipeline Event-Driven        | SQL Trigger → n8n → Gemini → Email, zero polling, latência imediata                  |
+| ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, feedback diferenciado ao usuário      |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
@@ -517,6 +517,9 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 - [x] Feed Anthropic adicionado (52 fontes)
 - [x] Filtro de artigos anteriores a 2025 em todas as seções
 - [x] Tradução com prioridade para candidatos do hero (título + desc)
+- [x] Formulário de contato two-step: Supabase INSERT + Netlify Function → Resend API
+- [x] Cliente Supabase compartilhado (instância única, sem GoTrueClient duplicado)
+- [x] Contador de visitas redesenhado — estilo Matrix (verde neon, scanlines, glow pulsante)
 - [x] TypeScript `strict: true` — 108 erros corrigidos em 22 arquivos
 - [x] chatBruno — Multi-Agente + RAG (n8n + LangChain + pgvector + Gemini + AWS EC2)
 - [x] Refactoring News/index.tsx: 1317 → ~250 linhas (HeroCarousel, CategorySection, newsConstants, newsFunctions)
