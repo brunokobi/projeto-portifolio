@@ -4,7 +4,8 @@ import { useIntl } from "react-intl";
 
 import { BsChevronDoubleUp } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
-import { useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
+import { track } from "../../utils/track";
 import { motion, AnimatePresence } from "framer-motion";
 
 import placas from "../../assets/img/placas.png";
@@ -24,6 +25,8 @@ import frota from "../../assets/img/frota.png";
 const Projects = () => {
   const constraintsRef = useRef(null);
   const intl = useIntl();
+
+  useEffect(() => { track({ event: "pageview", page: "/projects" }); }, []);
 
   // Memoriza a lista para não ser recriada a cada renderização
   const projects = useMemo(

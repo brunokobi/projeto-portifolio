@@ -4,8 +4,10 @@ import Router from "./routes";
 import { IntlProvider } from "react-intl";
 import VisitCounter from "./components/Contador/VisitCounter";
 import WeatherBar from "./components/WeatherBar";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
+import { trackClick } from "./utils/track";
 
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/locale-data/en";
@@ -45,6 +47,19 @@ function AppContent() {
   const messages = allMessages[locale] || allMessages.pt;
   const { pathname } = useLocation();
   const isNews = pathname.startsWith("/news");
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest("a");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href") ?? "";
+      if (!href || href === "#" || href.startsWith("javascript")) return;
+      const label = (anchor.textContent ?? "").trim().slice(0, 50) || href;
+      trackClick({ event: "link_click", page: href, extra: label });
+    };
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
 
   return (
     <>

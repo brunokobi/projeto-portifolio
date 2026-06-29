@@ -14,7 +14,8 @@ import {
   HStack,
   Button,
 } from "@chakra-ui/react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { track } from "../../utils/track";
 import rock from "../../assets/img/rock.png"; // Imagem usada na seção de experiência
 import profilePhoto from "../../assets/img/profile.png"; // Foto de perfil do usuário
 import questionImg from "../../assets/img/questions.png"; // Ícone usado na seção "Sobre mim"
@@ -45,11 +46,13 @@ import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrela
 import { useIntl } from "react-intl"; // Biblioteca para internacionalização
 
 const About = () => {
-  const intl = useIntl(); // Objeto para acessar mensagens traduzidas
-  const skillsRef = useRef(null); // Referência para a seção de habilidades
+  const intl = useIntl();
+  const skillsRef = useRef(null);
   const aboutRef = useRef(null); // Referência para a seção "Sobre mim"
   const experienciaRef = useRef(null); // Referência para a seção de experiência
   const presentationRef = useRef(null); // Referência para a seção de apresentação
+
+  useEffect(() => { track({ event: "pageview", page: "/about" }); }, []);
 
   const [certIdx, setCertIdx] = useState(0);
 

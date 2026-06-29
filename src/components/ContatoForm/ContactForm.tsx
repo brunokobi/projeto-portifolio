@@ -19,6 +19,7 @@ import { keyframes } from "@emotion/react";
 import { FaSatelliteDish } from "react-icons/fa";
 import { RiAliensFill } from "react-icons/ri";
 import { supabase } from "../../lib/supabase";
+import { track } from "../../utils/track";
 
 const signalWave = keyframes`
   0% { transform: scale(1); opacity: 0.8; border-color: #39ff14; }
@@ -130,6 +131,7 @@ const ContactForm = ({ onClose }: { onClose?: () => void }) => {
       });
     }
 
+    track({ event: "contact_sent", extra: `${formData.nome} <${formData.email}>` });
     setLoading(false);
     setFormData({ nome: "", email: "", mensagem: "" });
     setTimeout(() => { if (onClose) onClose(); }, 2000);

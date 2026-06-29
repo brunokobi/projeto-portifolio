@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useCallback } from "react";
 import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
+import { track } from "../../utils/track";
 
 import VideoBackground from "../../components/VideoBackground";
 import BigBangLoader from "../../components/BigBangLoader";
@@ -26,6 +27,10 @@ const Home = () => {
   const falarEuSou = useCallback(() => falar(intl.formatMessage({ id: "eu_sou" })), [intl]);
   const falarNome = useCallback(() => falar(intl.formatMessage({ id: "meunome" })), [intl]);
   const falarFrases = useCallback(() => falar(phrases.join(" ")), [phrases]);
+
+  useEffect(() => {
+    track({ event: "pageview", page: "/" });
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -23,6 +23,7 @@ import falar from "../TextAudio";
 // Ajuste o caminho se necessário, baseando-se na sua estrutura anterior
 import ContactForm from "../ContatoForm/ContactForm";
 import { getGeoIP } from "../../utils/geoip";
+import { track } from "../../utils/track";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
@@ -187,7 +188,7 @@ const Nav = () => {
     { label: intl.formatMessage({ id: "sobre" }), url: `/about`, icon: RiAliensFill },
     { label: intl.formatMessage({ id: "projetos" }), url: `/projects`, icon: FaReact },
 
-    { label: "Contato", icon: AiOutlineMail, isAction: true, action: onOpen },
+    { label: "Contato", icon: AiOutlineMail, isAction: true, action: () => { onOpen(); track({ event: "contact_opened" }); } },
     { label: "Portfolio 3D", url: "https://brunokobi3d.netlify.app", icon: BiCube },
 
     { label: "Mapa Esri", url: "/map", icon: FaGlobe },
