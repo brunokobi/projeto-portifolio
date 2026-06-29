@@ -30,9 +30,9 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  let payload: FormPayload = {};
+  let payload: FormPayload;
   try {
-    payload = JSON.parse(event.body ?? "{}");
+    payload = JSON.parse(event.body ?? "{}") as FormPayload;
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
