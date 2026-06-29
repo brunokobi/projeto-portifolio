@@ -189,8 +189,11 @@ const NewsPage = () => {
     .sort((a, b) => heroScore(b) - heroScore(a))
     .slice(0, 6);
   const heroLinks = new Set(heroSlides.map((a) => a.link));
-  // mini-cards mostram próximos 10 (excluindo carrossel)
-  const miniCards = sorted.filter((a) => !heroLinks.has(a.link)).slice(0, 10);
+  // mini-cards: todas as seções, apenas filtro de tempo, mais recentes primeiro
+  const miniCards = [...filtered]
+    .filter((a) => !heroLinks.has(a.link))
+    .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0))
+    .slice(0, 20);
   // categorias excluem APENAS o carrossel, não os mini-cards (pool maior)
   const catArticles = sorted.filter((a) => !heroLinks.has(a.link));
   const catSources = CATEGORIES.flatMap((c) => c.sources);
