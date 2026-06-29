@@ -10,7 +10,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
@@ -312,13 +311,6 @@ const Nav = () => {
           maxH={{ base: "100dvh", md: "90vh" }}
           my={{ base: 0, md: 4 }}
         >
-          <ModalCloseButton
-            color="#39ff14"
-            zIndex={10}
-            bg="black"
-            border="1px solid #39ff14"
-            _hover={{ bg: "#39ff14", color: "black" }}
-          />
           <ModalBody p={{ base: 2, md: 0 }} overflowY="auto">
             <ContactForm onClose={onClose} />
           </ModalBody>

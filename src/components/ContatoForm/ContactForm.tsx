@@ -12,7 +12,9 @@ import {
   Icon,
   Flex,
   Text,
+  IconButton,
 } from "@chakra-ui/react";
+import { MdClose } from "react-icons/md";
 import { keyframes } from "@emotion/react"; // Mantendo a correção do erro anterior
 import { createClient } from "@supabase/supabase-js";
 import { FaSatelliteDish } from "react-icons/fa";
@@ -63,7 +65,9 @@ const ContactForm = ({ onClose }: { onClose?: () => void }) => {
       });
       return;
     }
-    const { error } = await supabase.from("contato").insert([
+
+    // 1. Persiste no banco (audit trail)
+    const { error: dbError } = await supabase.from("contato").insert([
       {
         nome: formData.nome,
         email: formData.email,
@@ -71,9 +75,8 @@ const ContactForm = ({ onClose }: { onClose?: () => void }) => {
       },
     ]);
 
-    setLoading(false);
-
-    if (error) {
+    if (dbError) {
+      setLoading(false);
       toast({
         title: "FALHA NA TRANSMISSÃO",
         description: "Interferência detectada. Tente novamente.",
@@ -83,25 +86,57 @@ const ContactForm = ({ onClose }: { onClose?: () => void }) => {
         position: "top",
         variant: "subtle",
       });
-    } else {
-      toast({
-        title: "SINAL RECEBIDO",
-        description: "Transmissão concluída. Fechando link...",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-        variant: "solid",
-        containerStyle: { border: "1px solid #39ff14" },
+      return;
+    }
+
+    // 2. Dispara automação n8n → Gemini → Resend e aguarda resposta
+    try {
+      const res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        signal: AbortSignal.timeout(15000),
       });
 
-      setFormData({ nome: "", email: "", mensagem: "" });
-
-      // 2. Espera 2 segundos e fecha o Modal automaticamente
-      setTimeout(() => {
-        if (onClose) onClose();
-      }, 2000);
+      if (!res.ok) {
+        // Dado salvo mas automação falhou — avisa sem bloquear
+        toast({
+          title: "SINAL PARCIAL",
+          description: "Mensagem recebida, mas o sistema de resposta automática falhou. Entrarei em contato em breve.",
+          status: "warning",
+          duration: 7000,
+          isClosable: true,
+          position: "top",
+          variant: "subtle",
+        });
+      } else {
+        toast({
+          title: "SINAL RECEBIDO",
+          description: "Transmissão concluída. Você receberá uma resposta em breve.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+          variant: "solid",
+          containerStyle: { border: "1px solid #39ff14" },
+        });
+      }
+    } catch {
+      // Timeout ou rede — dado já salvo no banco
+      toast({
+        title: "SINAL PARCIAL",
+        description: "Mensagem recebida, mas o sistema de resposta automática está indisponível. Entrarei em contato em breve.",
+        status: "warning",
+        duration: 7000,
+        isClosable: true,
+        position: "top",
+        variant: "subtle",
+      });
     }
+
+    setLoading(false);
+    setFormData({ nome: "", email: "", mensagem: "" });
+    setTimeout(() => { if (onClose) onClose(); }, 2000);
   };
 
   const arcadeGreen = "#39ff14";
@@ -122,6 +157,24 @@ const ContactForm = ({ onClose }: { onClose?: () => void }) => {
       overflowY="auto"
       maxH={{ base: "85vh", md: "none" }}
     >
+      {onClose && (
+        <IconButton
+          aria-label="Fechar"
+          icon={<Icon as={MdClose} boxSize={5} />}
+          onClick={onClose}
+          position="absolute"
+          top={3}
+          right={3}
+          size="sm"
+          variant="ghost"
+          color={arcadeGreen}
+          border="1px solid"
+          borderColor={arcadeGreen}
+          bg="black"
+          _hover={{ bg: arcadeGreen, color: "black" }}
+          zIndex={10}
+        />
+      )}
       <Flex direction="column" align="center" mb={6}>
         <Box position="relative" mb={4}>
           <Box
