@@ -20,7 +20,7 @@ export const handler: Handler = async (event) => {
   }
 
   const resendKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CONTACT_TO_EMAIL ?? "brunokobi2@hotmail.com";
+  const toEmail = process.env.CONTACT_TO_EMAIL ?? "brunokobi@gmail.com";
 
   if (!resendKey) {
     console.error("[chat] RESEND_API_KEY não configurada");
@@ -72,29 +72,6 @@ export const handler: Handler = async (event) => {
         body: JSON.stringify({ error: "Email notification failed", detail: err }),
       };
     }
-
-    // Auto-resposta para quem enviou
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "OrbitGeo Portfolio <onboarding@resend.dev>",
-        to: [email],
-        subject: "Transmissão recebida ✅",
-        html: `
-          <div style="font-family:monospace;background:#000;color:#00ff41;padding:24px;border:1px solid #00ff41;border-radius:8px;">
-            <h2 style="color:#00ff41;letter-spacing:4px;">▌ SINAL RECEBIDO ▐</h2>
-            <p>Olá, <strong>${nome}</strong>!</p>
-            <p>Sua mensagem foi recebida. Entrarei em contato em breve.</p>
-            <hr style="border-color:#003300;"/>
-            <p style="color:#aaffaa;font-size:12px;">OrbitGeo Portfolio — brunokobi.netlify.app</p>
-          </div>
-        `,
-      }),
-    });
 
     return {
       statusCode: 200,
