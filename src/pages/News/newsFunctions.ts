@@ -11,6 +11,14 @@ import {
   GREEN,
 } from "./newsConstants";
 
+const CUTOFF_2025 = new Date("2025-01-01").getTime();
+export const HERO_MAX_AGE_MS = 7 * 24 * 3_600_000;
+
+export function isTooOld(a: Article, cutoffMs = CUTOFF_2025): boolean {
+  if (!a.date) return false;
+  return a.date.getTime() < cutoffMs;
+}
+
 export function isSpam(a: Article): boolean {
   const t = (a.title || "").toLowerCase();
   return SPAM_WORDS.some((w) => t.includes(w));

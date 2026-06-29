@@ -11,7 +11,7 @@ import brazilFlag from "../../assets/img/brazil.png";
 
 import { parseRSS, translateArticles, PROXY, CACHE_TTL } from "../../utils/rss";
 import { GREEN, MATRIX_CSS, MCHARS, CATEGORIES, FEEDS } from "./newsConstants";
-import { isSpam, isRelevant, scoreArticle, heroScore, MIXED_SOURCES } from "./newsFunctions";
+import { isSpam, isRelevant, scoreArticle, heroScore, isTooOld, HERO_MAX_AGE_MS, MIXED_SOURCES } from "./newsFunctions";
 import { HeroCarousel } from "./HeroCarousel";
 import { ScrollRow, MiniCard, CategorySection, CategoryDrawer } from "./CategorySection";
 import type { Article, NewsCategory } from "../../types";
@@ -134,7 +134,17 @@ const NewsPage = () => {
       .filter((r): r is PromiseFulfilledResult<Article[]> => r.status === "fulfilled")
       .flatMap((r) => r.value)
       .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
-    const translated = await translateArticles(raw);
+
+    // Pré-identifica candidatos ao hero para dar prioridade na tradução
+    const heroLinkSet = new Set(
+      [...raw]
+        .filter((a) => a.img && a.source.flag !== "🇧🇷" && !isSpam(a))
+        .sort((a, b) => heroScore(b) - heroScore(a))
+        .slice(0, 8)
+        .map((a) => a.link)
+    );
+
+    const translated = await translateArticles(raw, heroLinkSet);
     const scored: ScoredArticle[] = translated.map((a) => ({ ...a, score: scoreArticle(a) }));
     cache.data = scored;
     cache.ts = Date.now();
@@ -160,6 +170,7 @@ const NewsPage = () => {
 
   const filtered = articles.filter((a) => {
     if (isSpam(a)) return false;
+    if (isTooOld(a)) return false;
     if (MIXED_SOURCES.has(a.source?.name) && !isRelevant(a)) return false;
     if (filter === "br") return a.source.flag === "🇧🇷";
     if (filter === "world") return a.source.flag === "🌎";
@@ -172,7 +183,7 @@ const NewsPage = () => {
   );
 
   const heroSlides = [...filtered]
-    .filter((a) => a.img)
+    .filter((a) => a.img && !isTooOld(a, Date.now() - HERO_MAX_AGE_MS))
     .sort((a, b) => heroScore(b) - heroScore(a))
     .slice(0, 6);
   const heroLinks = new Set(heroSlides.map((a) => a.link));

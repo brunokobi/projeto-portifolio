@@ -91,15 +91,15 @@ export function timeAgo(date: Date | null): string {
 // ── Cache de traduções (sessão) ──────────────────────────────────────────
 export const translationCache = new Map<string, string>();
 
-export async function translateTitle(text: string): Promise<string> {
+export async function translateText(text: string): Promise<string> {
   if (translationCache.has(text)) return translationCache.get(text)!;
   try {
     const url =
-      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pt-BR&dt=t&q=` +
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=pt-BR&dt=t&q=` +
       encodeURIComponent(text);
     const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
     const data = await res.json();
-    const out = data[0]?.map((d: [string]) => d[0]).join("") || text;
+    const out = (data[0]?.map((d: [string]) => d[0]).join("") || text) as string;
     translationCache.set(text, out);
     return out;
   } catch {
@@ -107,20 +107,43 @@ export async function translateTitle(text: string): Promise<string> {
   }
 }
 
-export async function translateArticles<T extends { title: string; source: Feed }>(
-  articles: T[]
+/** @deprecated use translateText */
+export const translateTitle = translateText;
+
+export async function translateArticles<T extends { title: string; desc?: string; link: string; source: Feed }>(
+  articles: T[],
+  priorityLinks: Set<string> = new Set()
 ): Promise<T[]> {
   const result = articles.map((a) => ({ ...a }));
-  const idxs = result
-    .map((a, i) => (a.source.flag === "🌎" ? i : -1))
-    .filter((i) => i >= 0)
-    .slice(0, 40);
-  for (let b = 0; b < idxs.length; b += 5) {
+
+  // Todos os artigos não-BR precisam de tradução (inclui 🌎 e 🌏)
+  const toTranslate = result
+    .map((a, i) => (a.source.flag !== "🇧🇷" ? i : -1))
+    .filter((i): i is number => i >= 0);
+
+  // Candidatos do hero vão para o primeiro lote
+  const priorityIdxs = toTranslate.filter((i) => priorityLinks.has(result[i].link));
+  const restIdxs = toTranslate
+    .filter((i) => !priorityLinks.has(result[i].link))
+    .slice(0, 80);
+
+  const ordered = [...priorityIdxs, ...restIdxs];
+
+  for (let b = 0; b < ordered.length; b += 5) {
     await Promise.all(
-      idxs.slice(b, b + 5).map(async (idx) => {
-        result[idx] = { ...result[idx], title: await translateTitle(result[idx].title) };
+      ordered.slice(b, b + 5).map(async (idx) => {
+        result[idx] = { ...result[idx], title: await translateText(result[idx].title) };
       })
     );
   }
+
+  // Traduz desc dos artigos do hero (exibido no carrossel)
+  await Promise.all(
+    priorityIdxs.map(async (idx) => {
+      const d = result[idx].desc;
+      if (d) result[idx] = { ...result[idx], desc: await translateText(d) };
+    })
+  );
+
   return result;
 }
