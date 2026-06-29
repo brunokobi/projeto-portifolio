@@ -705,31 +705,46 @@ export const AI_DEV_KEYWORDS = [
   "docker",
 ];
 
-// ── Fontes científicas/internacionais com bônus extra no carrossel ────────
-export const HERO_SCIENCE_BOOST = new Set([
-  "MIT News",
-  "MIT Tech Rev",
-  "Google Res.",
-  "ETH Zurich",
-  "TUM",
-  "BAIR",
-  "The Gradient",
-  "IEEE Spectrum",
-  "IEEE TV AI",
-  "DeepMind",
-  "Stanford AI",
-  "arXiv AI",
-  "Apple ML",
-  "ScienceDaily",
-  "Reuters Inst.",
-  "RIKEN AIP",
-  "AI Singapore",
-  "HuggingFace",
-  "OpenAI",
-  "Anthropic",
-  "NVIDIA Blog",
-  "ChinAI",
-  "SCMP Tech",
-  "Synced",
-  "AI News",
-]);
+// ── Bônus tiered por fonte exclusivo para o hero carousel ────────────────
+// (substitui HERO_SCIENCE_BOOST — agora com pesos diferenciados)
+export const HERO_SOURCE_BONUS: Record<string, number> = {
+  // Labs primários — anúncios deles sempre são destaque
+  Anthropic: 32,
+  OpenAI: 32,
+  // Grandes players de pesquisa e hardware
+  DeepMind: 28,
+  "Google Res.": 24,
+  "NVIDIA Blog": 22,
+  // Jornalismo especializado de alto alcance
+  "MIT Tech Rev": 18,
+  HuggingFace: 16,
+  "Stanford AI": 14,
+  "MIT News": 14,
+  "IEEE Spectrum": 13,
+  TechCrunch: 13,
+  "The Verge": 13,
+  "Wired AI": 13,
+  BAIR: 12,
+  "AI News": 11,
+  "Apple ML": 10,
+  Synced: 10,
+  "SCMP Tech": 9,
+  "AI Insider": 9,
+};
+
+// ── Keywords de lançamento/anúncio para hero (máx 2 matches, +22 cada) ───
+export const HERO_KW_LAUNCH = [
+  "launch", "lança", "releases", "release", "announces", "anuncia", "unveiled",
+  "nova versão", "new version", "update", "atualização", "novo modelo", "new model",
+  "gpt-5", "claude 4", "gemini 2", "gemini ultra", "grok 3", "o3", "o4",
+  "deepseek r", "qwen 3",
+];
+
+// ── Spotlight de empresas/modelos de alto impacto (máx 2 matches, +14 cada) ─
+export const HERO_KW_SPOTLIGHT = [
+  "openai", "anthropic", "deepseek", "xai", "grok",
+  "deepmind", "google ai", "meta ai", "nvidia",
+  "chatgpt", "gpt", "claude", "gemini", "llama",
+  "agi", "superintelligence", "artificial general",
+  "breakthrough", "regulação", "regulation", "acquisition",
+];

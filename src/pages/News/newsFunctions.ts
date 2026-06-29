@@ -7,7 +7,9 @@ import {
   SPAM_WORDS,
   MIXED_SOURCES,
   AI_DEV_KEYWORDS,
-  HERO_SCIENCE_BOOST,
+  HERO_SOURCE_BONUS,
+  HERO_KW_LAUNCH,
+  HERO_KW_SPOTLIGHT,
   GREEN,
 } from "./newsConstants";
 
@@ -31,41 +33,47 @@ export function isRelevant(a: Article): boolean {
 
 export function scoreArticle(a: Article): number {
   let s = SOURCE_PRESTIGE[a.source?.name] || 5;
-  if (a.date && !isNaN(a.date as unknown as number)) {
-    const h = (Date.now() - (a.date as unknown as number)) / 3_600_000;
+  if (a.date) {
+    const h = (Date.now() - a.date.getTime()) / 3_600_000;
     s += h < 2 ? 40 : h < 6 ? 33 : h < 12 ? 25 : h < 24 ? 16 : h < 48 ? 8 : h < 96 ? 3 : 0;
   }
   const t = (a.title || "").toLowerCase();
-  KW_CRITICAL.forEach((k) => {
-    if (t.includes(k)) s += 18;
-  });
-  KW_HIGH.forEach((k) => {
-    if (t.includes(k)) s += 10;
-  });
-  KW_MED.forEach((k) => {
-    if (t.includes(k)) s += 4;
-  });
+  KW_CRITICAL.forEach((k) => { if (t.includes(k)) s += 18; });
+  KW_HIGH.forEach((k) => { if (t.includes(k)) s += 10; });
+  KW_MED.forEach((k) => { if (t.includes(k)) s += 4; });
   if (a.img) s += 6;
   return s;
 }
 
 export function heroScore(a: Article): number {
-  let s = SOURCE_PRESTIGE[a.source?.name] || 5;
-  if (HERO_SCIENCE_BOOST.has(a.source?.name)) s += 25;
+  // Base tiered por fonte — diferencia labs primários de blogs acadêmicos
+  let s = HERO_SOURCE_BONUS[a.source?.name] ?? SOURCE_PRESTIGE[a.source?.name] ?? 3;
+
   const t = (a.title || "").toLowerCase();
-  KW_CRITICAL.forEach((k) => {
-    if (t.includes(k)) s += 18;
-  });
-  KW_HIGH.forEach((k) => {
-    if (t.includes(k)) s += 10;
-  });
-  KW_MED.forEach((k) => {
-    if (t.includes(k)) s += 4;
-  });
-  if (a.date && !isNaN(a.date as unknown as number)) {
-    const h = (Date.now() - (a.date as unknown as number)) / 3_600_000;
-    s += h < 1 ? 30 : h < 3 ? 25 : h < 6 ? 20 : h < 12 ? 14 : h < 24 ? 8 : h < 48 ? 3 : 0;
+
+  // Palavras de lançamento/anúncio (cap 2 = máx +44)
+  let launchHits = 0;
+  for (const k of HERO_KW_LAUNCH) {
+    if (launchHits >= 2) break;
+    if (t.includes(k)) { s += 22; launchHits++; }
   }
+
+  // Spotlight de empresa/modelo de alto impacto (cap 2 = máx +28)
+  let spotHits = 0;
+  for (const k of HERO_KW_SPOTLIGHT) {
+    if (spotHits >= 2) break;
+    if (t.includes(k)) { s += 14; spotHits++; }
+  }
+
+  // Recência forte — breaking news deve dominar o carrossel
+  if (a.date) {
+    const h = (Date.now() - a.date.getTime()) / 3_600_000;
+    s += h < 2 ? 55 : h < 6 ? 44 : h < 12 ? 33 : h < 24 ? 20 : h < 48 ? 8 : 0;
+  }
+
+  // Tem descrição (melhor experiência visual no slide)
+  if (a.desc && a.desc.length > 40) s += 4;
+
   return s;
 }
 
