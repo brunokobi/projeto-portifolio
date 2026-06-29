@@ -115,6 +115,7 @@ const NewsPage = () => {
   const [sortBy, setSortBy] = useState<"importance" | "date">("importance");
   const [showSources, setShowSources] = useState(false);
   const [drawerCat, setDrawerCat] = useState<DrawerCat | null>(null);
+  const [heroCutoffMs, setHeroCutoffMs] = useState(0);
   const fetchedRef = useRef(false);
 
   const fetchFeeds = useCallback(async () => {
@@ -148,6 +149,7 @@ const NewsPage = () => {
     const scored: ScoredArticle[] = translated.map((a) => ({ ...a, score: scoreArticle(a) }));
     cache.data = scored;
     cache.ts = Date.now();
+    setHeroCutoffMs(Date.now() - HERO_MAX_AGE_MS);
     setArticles(scored);
     setLoading(false);
   }, []);
@@ -183,7 +185,7 @@ const NewsPage = () => {
   );
 
   const heroSlides = [...filtered]
-    .filter((a) => a.img && !isTooOld(a, Date.now() - HERO_MAX_AGE_MS))
+    .filter((a) => a.img && !isTooOld(a, heroCutoffMs))
     .sort((a, b) => heroScore(b) - heroScore(a))
     .slice(0, 6);
   const heroLinks = new Set(heroSlides.map((a) => a.link));
