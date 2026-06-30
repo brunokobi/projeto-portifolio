@@ -509,33 +509,6 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 
 ---
 
-## 📈 Roadmap
-
-- [x] Filtros interativos por categoria no painel de notícias
-- [x] Carrossel principal com scoring tiered (heroScore refatorado)
-- [x] Filtro de relevância por fonte (MIXED_SOURCES + AI_DEV_KEYWORDS)
-- [x] Feed Anthropic adicionado (52 fontes)
-- [x] Filtro de artigos anteriores a 2025 em todas as seções
-- [x] Tradução com prioridade para candidatos do hero (título + desc)
-- [x] Formulário de contato two-step: Supabase INSERT + Netlify Function → Resend API
-- [x] Cliente Supabase compartilhado (instância única, sem GoTrueClient duplicado)
-- [x] Contador de visitas redesenhado — estilo Matrix (verde neon, scanlines, glow pulsante)
-- [x] TypeScript `strict: true` — 108 erros corrigidos em 22 arquivos
-- [x] chatBruno — Multi-Agente + RAG (n8n + LangChain + pgvector + Gemini + AWS EC2)
-- [x] Refactoring News/index.tsx: 1317 → ~250 linhas (HeroCarousel, CategorySection, newsConstants, newsFunctions)
-- [x] 62 testes automatizados — Vitest + Testing Library + Playwright E2E
-- [x] CI/CD — GitHub Actions (tsc + lint + vitest + build + playwright + lighthouse)
-- [x] ESLint 9 flat config + Prettier — zero erros, regras react-hooks/purity
-- [x] Bundle otimizado — manualChunks: 753kB → 195kB
-- [x] SEO: sitemap.xml + robots.txt + JSON-LD Schema.org Person
-- [x] Acessibilidade: aria-pressed, aria-label, aria-live no carrossel
-- [ ] Notificações push de breaking news (Service Worker + PWA)
-- [ ] Dashboard de analytics com métricas de visitas
-- [ ] Observabilidade com Sentry
-- [ ] Migração esri-loader → @arcgis/map-components
-
----
-
 ## 🛸 Sobre Bruno Kobi
 
 Full Stack Developer & AI Systems Engineer especializado em transformar complexidade técnica em produtos que funcionam em produção.

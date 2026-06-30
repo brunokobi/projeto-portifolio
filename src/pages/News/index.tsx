@@ -5,7 +5,7 @@ import { BsSortDown, BsClock, BsQuestionCircle } from "react-icons/bs";
 import { IoMdRocket } from "react-icons/io";
 import { RiAliensFill } from "react-icons/ri";
 import { FaReact, FaGlobe } from "react-icons/fa";
-import { AiOutlineMail, AiOutlineLinkedin, AiOutlineGithub } from "react-icons/ai";
+import { AiOutlineLinkedin, AiOutlineGithub } from "react-icons/ai";
 import { BiCube } from "react-icons/bi";
 import brazilFlag from "../../assets/img/brazil.png";
 
@@ -324,7 +324,6 @@ const NewsPage = () => {
                 { label: "Home", to: "/", icon: IoMdRocket, external: false },
                 { label: "Sobre", to: "/about", icon: RiAliensFill, external: false },
                 { label: "Projetos", to: "/projects", icon: FaReact, external: false },
-                { label: "Contato", to: "/#contato", icon: AiOutlineMail, external: false },
                 {
                   label: "Portfolio 3D",
                   to: "https://brunokobi3d.netlify.app",
