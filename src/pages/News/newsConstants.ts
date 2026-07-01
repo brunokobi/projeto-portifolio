@@ -141,10 +141,11 @@ export const CATEGORIES: NewsCategory[] = [
   {
     id: "industria",
     title: "💼 Indústria & Tech",
-    desc: "Lançamentos e tendências do setor — OpenAI, Anthropic, NVIDIA, TechCrunch, The Verge, VentureBeat, Wired, AWS, MarkTechPost e Reuters Institute.",
+    desc: "Lançamentos e tendências do setor — OpenAI, Anthropic, NVIDIA, TechCrunch, The Verge, VentureBeat, Forbes, Wired, AWS, MarkTechPost e Reuters Institute.",
     sources: [
       "The Verge",
       "VentureBeat",
+      "Forbes AI",
       "TechCrunch",
       "Wired AI",
       "AI News",
@@ -196,6 +197,12 @@ export const FEEDS: Feed[] = [
     url: "https://venturebeat.com/category/ai/feed/",
     flag: "🌎",
     color: GREEN,
+  },
+  {
+    name: "Forbes AI",
+    url: "https://www.forbes.com/innovation/feed2",
+    flag: "🌎",
+    color: "#c9a227",
   },
   {
     name: "TechCrunch",
@@ -355,6 +362,7 @@ export const SOURCE_PRESTIGE: Record<string, number> = {
   "Wired AI": 13,
   "The Verge": 13,
   VentureBeat: 13,
+  "Forbes AI": 12,
   TechCrunch: 12,
   HuggingFace: 11,
   "ScienceDaily": 10,
@@ -605,6 +613,7 @@ export const MIXED_SOURCES = new Set([
   "TUM",
   "Reuters Inst.",
   "SCMP Tech",
+  "Forbes AI",
 ]);
 
 // ── Keywords de IA/dev para filtrar fontes mistas ─────────────────────────
@@ -732,6 +741,7 @@ export const HERO_SOURCE_BONUS: Record<string, number> = {
   TechCrunch: 13,
   "The Verge": 13,
   VentureBeat: 13,
+  "Forbes AI": 12,
   "Wired AI": 13,
   BAIR: 12,
   "AI News": 11,
