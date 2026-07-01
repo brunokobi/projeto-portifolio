@@ -1,4 +1,5 @@
 import type { Handler } from "@netlify/functions";
+import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
 
 interface FormPayload {
   nome?: string;
@@ -39,8 +40,24 @@ export const handler: Handler = async (event) => {
 
   const { nome = "—", email = "—", mensagem = "—" } = payload;
 
+  const tracer = getTracer("chat");
+  const span = tracer?.startSpan("chat.contact", {
+    attributes: {
+      "contact.has_name": nome !== "—",
+      "contact.has_email": email !== "—",
+      "contact.message_length": mensagem.length,
+    },
+  });
+
   try {
-    // Notificação para Bruno
+    const subject = `📡 Novo contato de ${nome}`;
+    const emailSpan = tracer?.startSpan("resend.sendEmail", {
+      attributes: {
+        "email.subject": subject,
+        "messaging.system": "resend",
+      },
+    });
+
     const notifyRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -50,7 +67,7 @@ export const handler: Handler = async (event) => {
       body: JSON.stringify({
         from: "Portifólio Bruno Kobi <onboarding@resend.dev>",
         to: [toEmail],
-        subject: `📡 Novo contato de ${nome}`,
+        subject,
         html: `
           <div style="font-family:monospace;background:#000;color:#00ff41;padding:24px;border:1px solid #00ff41;border-radius:8px;">
             <h2 style="color:#00ff41;letter-spacing:4px;">▌ NOVA TRANSMISSÃO ▐</h2>
@@ -66,12 +83,23 @@ export const handler: Handler = async (event) => {
     if (!notifyRes.ok) {
       const err = await notifyRes.text();
       console.error("[chat] Resend notificação falhou:", err);
+      emailSpan?.setAttribute("http.response_status_code", notifyRes.status);
+      emailSpan?.setStatus({ code: SpanStatusCode.ERROR, message: err });
+      emailSpan?.end();
+      span?.setStatus({ code: SpanStatusCode.ERROR });
+      span?.end();
+      await flushOtel();
       return {
         statusCode: 500,
         headers: { "Access-Control-Allow-Origin": "*" },
         body: JSON.stringify({ error: "Email notification failed", detail: err }),
       };
     }
+
+    emailSpan?.setAttribute("http.response_status_code", 200);
+    emailSpan?.setStatus({ code: SpanStatusCode.OK });
+    emailSpan?.end();
+    span?.setStatus({ code: SpanStatusCode.OK });
 
     return {
       statusCode: 200,
@@ -83,6 +111,8 @@ export const handler: Handler = async (event) => {
     };
   } catch (error: unknown) {
     console.error("[chat] Erro inesperado:", error);
+    span?.recordException(error as Error);
+    span?.setStatus({ code: SpanStatusCode.ERROR });
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
@@ -91,5 +121,8 @@ export const handler: Handler = async (event) => {
         message: error instanceof Error ? error.message : String(error),
       }),
     };
+  } finally {
+    span?.end();
+    await flushOtel();
   }
 };

@@ -1,4 +1,5 @@
 import type { Handler } from "@netlify/functions";
+import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
 
 interface TrackPayload {
   event: string;
@@ -48,32 +49,52 @@ export const handler: Handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const emoji = EMOJIS[payload.event] ?? "📊";
-  const now = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-
-  const lines = [
-    `${emoji} *${payload.event.replace(/_/g, " ").toUpperCase()}*`,
-    payload.page ? `📄 \`${payload.page}\`` : null,
-    payload.city || payload.country_code
-      ? `🌍 ${[payload.city, payload.country_code].filter(Boolean).join(" — ")}`
-      : null,
-    payload.extra ? `💬 ${payload.extra}` : null,
-    `⏰ ${now}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const tracer = getTracer("track");
+  const span = tracer?.startSpan("track.handle", {
+    attributes: {
+      "track.event": payload.event,
+      "track.page": payload.page ?? "",
+      "track.country_code": payload.country_code ?? "",
+      "track.city": payload.city ?? "",
+    },
+  });
 
   try {
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: lines,
-        parse_mode: "Markdown",
-      }),
+    const emoji = EMOJIS[payload.event] ?? "📊";
+    const now = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+
+    const lines = [
+      `${emoji} *${payload.event.replace(/_/g, " ").toUpperCase()}*`,
+      payload.page ? `📄 \`${payload.page}\`` : null,
+      payload.city || payload.country_code
+        ? `🌍 ${[payload.city, payload.country_code].filter(Boolean).join(" — ")}`
+        : null,
+      payload.extra ? `💬 ${payload.extra}` : null,
+      `⏰ ${now}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const telegramSpan = tracer?.startSpan("telegram.sendMessage", {
+      attributes: { "messaging.system": "telegram" },
     });
 
+    try {
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: lines, parse_mode: "Markdown" }),
+      });
+      telegramSpan?.setStatus({ code: SpanStatusCode.OK });
+    } catch (err) {
+      telegramSpan?.recordException(err as Error);
+      telegramSpan?.setStatus({ code: SpanStatusCode.ERROR });
+      throw err;
+    } finally {
+      telegramSpan?.end();
+    }
+
+    span?.setStatus({ code: SpanStatusCode.OK });
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },
@@ -81,10 +102,15 @@ export const handler: Handler = async (event) => {
     };
   } catch (err) {
     console.error("[track] Telegram error:", err);
+    span?.recordException(err as Error);
+    span?.setStatus({ code: SpanStatusCode.ERROR });
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ error: "Failed to send" }),
     };
+  } finally {
+    span?.end();
+    await flushOtel();
   }
 };

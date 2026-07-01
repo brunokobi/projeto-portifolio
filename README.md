@@ -131,6 +131,12 @@ VITE_ESRI_API_KEY=AAPTxy8BH...
 VITE_HUGGING_FACE_API_KEY=hf_xxxx
 RESEND_API_KEY=re_xxxx          # Netlify env var — envio de email do formulário de contato
 CONTACT_TO_EMAIL=seu@email.com  # Netlify env var — destino das notificações (opcional)
+TELEGRAM_BOT_TOKEN=123456:ABC   # Netlify env var — bot de alertas em tempo real
+TELEGRAM_CHAT_ID=-100xxxx       # Netlify env var — chat/grupo que recebe os alertas
+
+# OpenTelemetry (opcional — se não configurado, tracing é desativado silenciosamente)
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-0.grafana.net/otlp
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic xxxx  # token do Grafana Cloud / Honeycomb
 ```
 
 ### Comandos
@@ -501,6 +507,47 @@ Frontend → POST /api/track { event, page, city, country_code }
 | ----------------------- | --------------------------------------- |
 | `TELEGRAM_BOT_TOKEN` | Token gerado pelo @BotFather |
 | `TELEGRAM_CHAT_ID` | ID do chat/grupo que recebe os alertas |
+
+---
+
+## 🔭 Feature: Observabilidade com OpenTelemetry
+
+> **Complexidade:** ⭐⭐⭐ — Distributed tracing nas Netlify Functions via OTLP/HTTP
+
+Todas as Netlify Functions são instrumentadas com **OpenTelemetry** (SDK v2 para Node.js). Cada invocação gera traces exportados via **OTLP/HTTP** para qualquer backend compatível (Grafana Cloud, Honeycomb, Jaeger, etc.). Se `OTEL_EXPORTER_OTLP_ENDPOINT` não estiver configurado, o tracing é desativado silenciosamente — sem impacto em produção.
+
+### Spans por função
+
+| Function | Span raiz | Spans filhos | Atributos capturados |
+| --------- | -------------- | ------------------ | --------------------------------------------------- |
+| `track.ts` | `track.handle` | `telegram.sendMessage` | `track.event`, `track.page`, `track.country_code`, `track.city` |
+| `chat.ts` | `chat.contact` | `resend.sendEmail` | `contact.message_length`, `email.subject`, `http.response_status_code` |
+| `news.ts` | `news.proxy` | — | `rss.feed_url`, `http.response_status_code`, `rss.response_bytes` |
+
+### Arquitetura
+
+```
+Netlify Function invocada
+        ↓
+_otel.ts — singleton NodeTracerProvider (inicializado uma vez por warm instance)
+        ↓
+SimpleSpanProcessor → OTLPTraceExporter (HTTP/protobuf)
+        ↓
+provider.forceFlush() antes de cada return — garante envio em ambiente serverless
+        ↓
+Backend OTLP (Grafana Cloud / Honeycomb / Jaeger)
+```
+
+### Por que `SimpleSpanProcessor` e não `BatchSpanProcessor`?
+
+Em ambientes serverless o processo pode encerrar a qualquer momento após o `return`. O `BatchSpanProcessor` acumula spans em buffer e os envia assincronamente — o que significa que spans podem ser perdidos antes do flush. O `SimpleSpanProcessor` envia cada span imediatamente, garantindo que `forceFlush()` seja efetivo.
+
+### Variáveis de ambiente
+
+| Variável | Descrição |
+| -------------------------------- | --------------------------------------------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | URL do collector (ex: `https://otlp-gateway-prod-eu-west-0.grafana.net/otlp`) |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Headers de autenticação no formato `key=value,key2=value2` |
 
 ---
 
