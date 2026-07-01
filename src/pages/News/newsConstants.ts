@@ -141,9 +141,10 @@ export const CATEGORIES: NewsCategory[] = [
   {
     id: "industria",
     title: "💼 Indústria & Tech",
-    desc: "Lançamentos e tendências do setor — OpenAI, Anthropic, NVIDIA, TechCrunch, The Verge, Wired, AWS, MarkTechPost e Reuters Institute.",
+    desc: "Lançamentos e tendências do setor — OpenAI, Anthropic, NVIDIA, TechCrunch, The Verge, VentureBeat, Wired, AWS, MarkTechPost e Reuters Institute.",
     sources: [
       "The Verge",
+      "VentureBeat",
       "TechCrunch",
       "Wired AI",
       "AI News",
@@ -186,7 +187,13 @@ export const FEEDS: Feed[] = [
   },
   {
     name: "The Verge",
-    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
+    url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+    flag: "🌎",
+    color: GREEN,
+  },
+  {
+    name: "VentureBeat",
+    url: "https://venturebeat.com/category/ai/feed/",
     flag: "🌎",
     color: GREEN,
   },
@@ -347,6 +354,7 @@ export const SOURCE_PRESTIGE: Record<string, number> = {
   "Reuters Inst.": 13,
   "Wired AI": 13,
   "The Verge": 13,
+  VentureBeat: 13,
   TechCrunch: 12,
   HuggingFace: 11,
   "ScienceDaily": 10,
@@ -723,6 +731,7 @@ export const HERO_SOURCE_BONUS: Record<string, number> = {
   "IEEE Spectrum": 13,
   TechCrunch: 13,
   "The Verge": 13,
+  VentureBeat: 13,
   "Wired AI": 13,
   BAIR: 12,
   "AI News": 11,
