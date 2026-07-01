@@ -456,6 +456,54 @@ $$;
 
 ---
 
+## 📲 Feature: Alertas em Tempo Real via Telegram Bot
+
+> **Complexidade:** ⭐⭐⭐ — Netlify Function + Telegram Bot API + rastreamento de eventos
+
+Cada ação relevante do visitante dispara uma notificação instantânea no Telegram via **Netlify Function serverless** (`/netlify/functions/track.ts`), sem expor o token do bot no frontend.
+
+### Eventos rastreados
+
+| Evento | Emoji | Descrição |
+| ---------------------- | ----- | ----------------------------------------- |
+| `pageview` | 👁 | Visita a qualquer página |
+| `contact_opened` | 📬 | Abertura do formulário de contato |
+| `contact_sent` | ✅ | Envio bem-sucedido do formulário |
+| `chat_opened` | 🤖 | Início de sessão com o chatBruno |
+| `map_opened` | 🗺️ | Acesso ao mapa 3D ESRI |
+| `news_opened` | 📰 | Abertura do painel de notícias |
+| `link_click` | 🔗 | Clique em link externo (LinkedIn, GitHub…) |
+
+### Fluxo
+
+```
+Frontend → POST /api/track { event, page, city, country_code }
+              ↓
+        Netlify Function
+              ↓
+     Telegram Bot API (sendMessage)
+              ↓
+  Notificação no chat com hora em America/Sao_Paulo
+```
+
+### Exemplo de alerta recebido
+
+```
+📰 NEWS OPENED
+📄 `/noticias`
+🌍 São Paulo — BR
+⏰ 01/07/2026, 14:32:08
+```
+
+### Variáveis de ambiente necessárias
+
+| Variável | Descrição |
+| ----------------------- | --------------------------------------- |
+| `TELEGRAM_BOT_TOKEN` | Token gerado pelo @BotFather |
+| `TELEGRAM_CHAT_ID` | ID do chat/grupo que recebe os alertas |
+
+---
+
 ## ♿ Feature: Acessibilidade com Síntese de Voz
 
 > **Complexidade:** ⭐⭐ — Web Speech API nativa, zero dependências
