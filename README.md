@@ -549,6 +549,61 @@ Em ambientes serverless o processo pode encerrar a qualquer momento após o `ret
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | URL do collector (ex: `https://otlp-gateway-prod-eu-west-0.grafana.net/otlp`) |
 | `OTEL_EXPORTER_OTLP_HEADERS` | Headers de autenticação no formato `key=value,key2=value2` |
 
+### Como obter as credenciais
+
+Escolha um dos backends abaixo — todos têm plano gratuito e suportam OTLP nativamente.
+
+---
+
+#### Opção 1 — Grafana Cloud (recomendado, free tier generoso)
+
+1. Crie conta em **grafana.com** → New Stack → escolha uma região
+2. No painel: **Connections → Add new connection → OpenTelemetry**
+3. Selecione **"Send OpenTelemetry data"** e copie os valores gerados:
+
+```env
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-0.grafana.net/otlp
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <base64(instanceID:apiToken)>
+```
+
+> O `base64(instanceID:apiToken)` é gerado automaticamente pela UI do Grafana — basta copiar. A região no endpoint (`prod-eu-west-0`, `prod-us-east-0`, etc.) depende da que você escolheu.
+
+---
+
+#### Opção 2 — Honeycomb (mais simples de configurar)
+
+1. Crie conta em **honeycomb.io** → Settings → API Keys → Create API Key
+2. Copie o valor da chave (ex: `abc123def456`)
+
+```env
+OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io
+OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=abc123def456
+```
+
+> Datasets são criados automaticamente com o nome do `service.name` (`portifolio-brunokobi`). Não precisa configurar nada além da API key.
+
+---
+
+#### Opção 3 — New Relic (free tier até 100 GB/mês)
+
+1. Crie conta em **newrelic.com** → API Keys → Create key → tipo **License**
+2. Copie a chave (formato `NRAK-...`)
+
+```env
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp.nr-data.net
+OTEL_EXPORTER_OTLP_HEADERS=api-key=NRAK-xxxxxxxxxxxx
+```
+
+---
+
+#### Adicionando no Netlify
+
+As variáveis devem ser configuradas no painel do Netlify (não no `.env.local`, que não é lido pelas Functions em produção):
+
+1. **Netlify Dashboard → Site → Environment variables**
+2. Adicione `OTEL_EXPORTER_OTLP_ENDPOINT` e `OTEL_EXPORTER_OTLP_HEADERS`
+3. Deploy → as Functions já exportam traces automaticamente
+
 ---
 
 ## ♿ Feature: Acessibilidade com Síntese de Voz
