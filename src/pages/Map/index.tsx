@@ -20,6 +20,7 @@ import eiffelImg from "../../assets/img/torre_eiffel.jpg";
 import { PointAddNew } from "../../components/Map/pointAddNew.jsx";
 import { PointAdd } from "../../components/Map/pointAdd";
 import AnimatedStars from "../../components/AnimatedStars";
+import StarmanOrbit from "../../components/StarmanOrbit";
 import falar from "../../components/TextAudio";
 
 const locations = [
@@ -164,6 +165,7 @@ function Mapa() {
       overflow="hidden"
     >
       <AnimatedStars />
+      <StarmanOrbit />
 
       {/* Main Container UI */}
       <Box
