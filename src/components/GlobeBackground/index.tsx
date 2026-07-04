@@ -19,20 +19,33 @@ const CITIES = [
   { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 },
   { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
   // América do Norte
+  { name: "Mexico City", lat: 19.4326, lon: -99.1332 },
+  { name: "Chicago", lat: 41.8781, lon: -87.6298 },
   { name: "New York", lat: 40.7128, lon: -74.006 },
   { name: "San Francisco", lat: 37.7749, lon: -122.4194 },
   // Europa
+  { name: "Madrid", lat: 40.4168, lon: -3.7038 },
   { name: "London", lat: 51.5074, lon: -0.1278 },
   { name: "Paris", lat: 48.8566, lon: 2.3522 },
-  // Ásia
-  { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
-  { name: "Dubai", lat: 25.2048, lon: 55.2708 },
-  // África
+  { name: "Berlin", lat: 52.52, lon: 13.405 },
+  { name: "Moscow", lat: 55.7558, lon: 37.6173 },
+  // Oriente Médio / África
+  { name: "Istanbul", lat: 41.0151, lon: 28.9795 },
+  { name: "Nairobi", lat: -1.2921, lon: 36.8219 },
   { name: "Cairo", lat: 30.0444, lon: 31.2357 },
   { name: "Lagos", lat: 6.5244, lon: 3.3792 },
-  // Oceania
+  { name: "Dubai", lat: 25.2048, lon: 55.2708 },
+  // Ásia
+  { name: "Mumbai", lat: 19.076, lon: 72.8777 },
+  { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
+  { name: "Singapore", lat: 1.3521, lon: 103.8198 },
+  { name: "Beijing", lat: 39.9042, lon: 116.4074 },
+  { name: "Seoul", lat: 37.5665, lon: 126.978 },
+  { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
+  // Oceania / Pacífico
   { name: "Sydney", lat: -33.8688, lon: 151.2093 },
   { name: "Auckland", lat: -36.8485, lon: 174.7633 },
+  { name: "Honolulu", lat: 21.3069, lon: -157.8583 },
 ];
 
 interface ClickInfo {
