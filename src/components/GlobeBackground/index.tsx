@@ -1,14 +1,45 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadModules, setDefaultOptions } from "esri-loader";
+
+const CITIES = [
+  { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
+  { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 },
+  { name: "Rio de Janeiro", lat: -22.9068, lon: -43.1729 },
+  { name: "Brasília", lat: -15.7801, lon: -47.9292 },
+];
+
+interface ClickInfo {
+  x: number;
+  y: number;
+  text: string;
+}
 
 const GlobeBackground = () => {
   setDefaultOptions({ css: true });
   const mountedRef = useRef(true);
+  const viewRef = useRef<any>(null);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [nightMode, setNightMode] = useState(false);
+  const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
+
+  // Aplicar modo dia/noite na view já carregada
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    try {
+      const env = view.environment.clone();
+      const d = new Date();
+      if (nightMode) d.setHours(d.getHours() + 12);
+      env.lighting.date = d;
+      view.environment = env;
+    } catch {
+      // view ainda não pronta
+    }
+  }, [nightMode]);
 
   useEffect(() => {
     mountedRef.current = true;
 
-    // Adia 3s para não bloquear o render inicial da Home
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
 
@@ -102,18 +133,21 @@ const GlobeBackground = () => {
               },
               environment: {
                 background: { type: "color", color: [0, 0, 0, 0] },
-                starsEnabled: false,
-                atmosphereEnabled: false,
+                starsEnabled: true,
+                atmosphereEnabled: true,
+                atmosphere: { quality: "high" },
                 lighting: {
                   directShadowsEnabled: false,
-                  date: "Sun Jun 23 2019 19:19:18 GMT+0200 (Central European Summer Time)",
+                  date: new Date(),
                 },
               },
               constraints: {
-                altitude: { min: 10000000, max: 25000000 },
+                altitude: { min: 4000000, max: 25000000 },
               },
-              ui: { components: [] }, // Remove todos os controles de UI
+              ui: { components: [] },
             });
+
+            viewRef.current = view;
 
             // Camada oceano
             const oceanMesh = Mesh.createSphere(new Point({ x: 0, y: -90, z: -(2 * R) }), {
@@ -166,8 +200,19 @@ const GlobeBackground = () => {
               }, 3000);
             });
 
+            // Clique → coordenadas no mapa
+            view.on("click", (evt: any) => {
+              if (!evt.mapPoint) return;
+              const lat = evt.mapPoint.latitude.toFixed(3);
+              const lon = evt.mapPoint.longitude.toFixed(3);
+              clearTimeout(clickTimerRef.current ?? undefined);
+              setClickInfo({ x: evt.x, y: evt.y, text: `${lat}°, ${lon}°` });
+              clickTimerRef.current = setTimeout(() => setClickInfo(null), 3500);
+            });
+
             view.when(() => {
               watchUtils.whenFalseOnce(view, "updating", () => {
+                // Loop de rotação
                 const rotate = () => {
                   if (!mountedRef.current) return;
                   if (!userInteracting) {
@@ -178,6 +223,81 @@ const GlobeBackground = () => {
                   requestAnimationFrame(rotate);
                 };
                 rotate();
+
+                // Canvas overlay — pins das cidades com pulso
+                const canvas = document.getElementById(
+                  "globeOverlay"
+                ) as HTMLCanvasElement | null;
+                if (!canvas) return;
+
+                const dpr = window.devicePixelRatio || 1;
+                const setupCanvas = () => {
+                  canvas.width = window.innerWidth * dpr;
+                  canvas.height = window.innerHeight * dpr;
+                  const c = canvas.getContext("2d");
+                  if (c) c.scale(dpr, dpr);
+                };
+                setupCanvas();
+
+                const ctx = canvas.getContext("2d");
+                if (!ctx) return;
+
+                const cityPoints = CITIES.map(
+                  (c) => new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
+                );
+
+                let frame = 0;
+                const drawPins = () => {
+                  if (!mountedRef.current) return;
+                  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+                  cityPoints.forEach((pt, i) => {
+                    try {
+                      const sp = view.toScreen(pt);
+                      if (!sp) return;
+
+                      const pulse = (Math.sin(frame * 0.04 + i * 2.1) + 1) / 2;
+
+                      // Anel externo pulsante
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 6 + pulse * 10, 0, Math.PI * 2);
+                      ctx.strokeStyle = `rgba(0,255,65,${0.5 - pulse * 0.38})`;
+                      ctx.lineWidth = 1.5;
+                      ctx.stroke();
+
+                      // Anel interno fixo
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                      ctx.strokeStyle = "rgba(0,255,65,0.7)";
+                      ctx.lineWidth = 1;
+                      ctx.stroke();
+
+                      // Ponto central com glow
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 2.5, 0, Math.PI * 2);
+                      ctx.fillStyle = "#00ff41";
+                      ctx.shadowBlur = 7;
+                      ctx.shadowColor = "#00ff41";
+                      ctx.fill();
+                      ctx.shadowBlur = 0;
+
+                      // Label
+                      ctx.font = "11px monospace";
+                      ctx.fillStyle = "rgba(0,255,65,0.85)";
+                      ctx.fillText(CITIES[i].name, sp.x + 9, sp.y + 4);
+                    } catch {
+                      // ponto fora do campo de visão
+                    }
+                  });
+
+                  frame++;
+                  requestAnimationFrame(drawPins);
+                };
+                drawPins();
+
+                window.addEventListener("resize", () => {
+                  setupCanvas();
+                });
               });
             });
           }
@@ -188,23 +308,87 @@ const GlobeBackground = () => {
     return () => {
       mountedRef.current = false;
       clearTimeout(timer);
+      clearTimeout(clickTimerRef.current ?? undefined);
     };
   }, []);
 
   return (
-    <div
-      id="globeBgDiv"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        zIndex: 1,
-        pointerEvents: "auto",
-        opacity: 1,
-      }}
-    />
+    <>
+      <div
+        id="globeBgDiv"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 1,
+          pointerEvents: "auto",
+          opacity: 1,
+        }}
+      />
+
+      {/* Canvas para pins das cidades */}
+      <canvas
+        id="globeOverlay"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 2,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Botão dia / noite */}
+      <button
+        onClick={() => setNightMode((p) => !p)}
+        title={nightMode ? "Modo dia" : "Modo noite"}
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          left: "24px",
+          zIndex: 10,
+          background: "rgba(0,0,0,0.8)",
+          border: "1px solid #00ff41",
+          borderRadius: "6px",
+          color: "#00ff41",
+          fontFamily: "monospace",
+          fontSize: "12px",
+          padding: "6px 12px",
+          cursor: "pointer",
+          letterSpacing: "1px",
+        }}
+      >
+        {nightMode ? "☀ DIA" : "☾ NOITE"}
+      </button>
+
+      {/* Popup de coordenadas ao clicar */}
+      {clickInfo && (
+        <div
+          style={{
+            position: "fixed",
+            left: Math.min(clickInfo.x + 14, window.innerWidth - 210),
+            top: Math.max(clickInfo.y - 34, 8),
+            zIndex: 20,
+            background: "rgba(0,0,0,0.88)",
+            border: "1px solid #00ff41",
+            borderRadius: "4px",
+            padding: "5px 10px",
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#00ff41",
+            pointerEvents: "none",
+            boxShadow: "0 0 10px rgba(0,255,65,0.25)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          📍 {clickInfo.text}
+        </div>
+      )}
+    </>
   );
 };
 
