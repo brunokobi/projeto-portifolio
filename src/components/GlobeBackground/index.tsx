@@ -13,6 +13,41 @@ const isFacing = (camLat: number, camLon: number, ptLat: number, ptLon: number):
   return dot > 0.1; // margem para evitar flickering na borda
 };
 
+// Interpolação esférica entre dois pontos na superfície do globo
+const slerpPoint = (
+  lat1: number, lon1: number,
+  lat2: number, lon2: number,
+  t: number
+): { lat: number; lon: number } => {
+  const r = Math.PI / 180;
+  const φ1 = lat1 * r, λ1 = lon1 * r;
+  const φ2 = lat2 * r, λ2 = lon2 * r;
+  const x1 = Math.cos(φ1) * Math.cos(λ1), y1 = Math.cos(φ1) * Math.sin(λ1), z1 = Math.sin(φ1);
+  const x2 = Math.cos(φ2) * Math.cos(λ2), y2 = Math.cos(φ2) * Math.sin(λ2), z2 = Math.sin(φ2);
+  const dot = Math.max(-1, Math.min(1, x1*x2 + y1*y2 + z1*z2));
+  const angle = Math.acos(dot);
+  if (angle < 0.0001) return { lat: lat1, lon: lon1 };
+  const s = Math.sin(angle);
+  const w1 = Math.sin((1 - t) * angle) / s;
+  const w2 = Math.sin(t * angle) / s;
+  return {
+    lat: Math.asin(Math.max(-1, Math.min(1, w1 * z1 + w2 * z2))) / r,
+    lon: Math.atan2(w1 * y1 + w2 * y2, w1 * x1 + w2 * x2) / r,
+  };
+};
+
+const HOME = { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 };
+
+interface ArcState {
+  points: any[];
+  fromName: string;
+  progress: number;
+  phase: "drawing" | "holding" | "fading";
+  startTime: number;
+  fadeStart: number;
+  opacity: number;
+}
+
 const CITIES = [
   // América do Sul
   { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
@@ -67,6 +102,10 @@ const GlobeBackground = () => {
   const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userLocRef = useRef<UserLoc | null>(null);
   const userPtRef = useRef<any>(null);
+  const activeArcRef = useRef<ArcState | null>(null);
+  const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
+    new Array(CITIES.length).fill(null)
+  );
   const [nightMode, setNightMode] = useState(false);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
 
@@ -277,8 +316,36 @@ const GlobeBackground = () => {
               }, 3000);
             });
 
-            // Clique → coordenadas no mapa
+            // Clique → arco de voo para Vitória-ES (ou coordenadas se não for pin)
             view.on("click", (evt: any) => {
+              const RADIUS = 18;
+              const positions = cityScreenPosRef.current;
+              for (let i = 0; i < positions.length; i++) {
+                const cp = positions[i];
+                if (!cp) continue;
+                const dx = evt.x - cp.x, dy = evt.y - cp.y;
+                if (Math.sqrt(dx * dx + dy * dy) < RADIUS) {
+                  const city = CITIES[i];
+                  if (city.name === HOME.name) return;
+                  const N = 80;
+                  const arcPts = Array.from({ length: N + 1 }, (_, j) => {
+                    const t = j / N;
+                    const mid = slerpPoint(city.lat, city.lon, HOME.lat, HOME.lon, t);
+                    const alt = Math.sin(t * Math.PI) * 1200000;
+                    return new Point({ longitude: mid.lon, latitude: mid.lat, z: alt });
+                  });
+                  activeArcRef.current = {
+                    points: arcPts,
+                    fromName: city.name,
+                    progress: 0,
+                    phase: "drawing",
+                    startTime: performance.now(),
+                    fadeStart: 0,
+                    opacity: 1,
+                  };
+                  return;
+                }
+              }
               if (!evt.mapPoint) return;
               const lat = evt.mapPoint.latitude.toFixed(3);
               const lon = evt.mapPoint.longitude.toFixed(3);
@@ -330,10 +397,12 @@ const GlobeBackground = () => {
 
                   const cam = view.camera.position;
                   cityPoints.forEach((pt, i) => {
+                    cityScreenPosRef.current[i] = null;
                     try {
                       if (!isFacing(cam.latitude, cam.longitude, CITIES[i].lat, CITIES[i].lon)) return;
                       const sp = view.toScreen(pt);
                       if (!sp) return;
+                      cityScreenPosRef.current[i] = { x: sp.x, y: sp.y };
 
                       const pulse = (Math.sin(frame * 0.04 + i * 2.1) + 1) / 2;
 
@@ -414,6 +483,68 @@ const GlobeBackground = () => {
                       }
                     } catch {
                       // ponto fora do campo de visão
+                    }
+                  }
+
+                  // Arco de voo animado
+                  const arc = activeArcRef.current;
+                  if (arc) {
+                    const now = performance.now();
+                    const elapsed = now - arc.startTime;
+                    const DRAW_MS = 2800, HOLD_MS = 1800, FADE_MS = 900;
+
+                    if (arc.phase === "drawing") {
+                      arc.progress = Math.min(1, elapsed / DRAW_MS);
+                      if (arc.progress >= 1) arc.phase = "holding";
+                    } else if (arc.phase === "holding") {
+                      if (elapsed - DRAW_MS > HOLD_MS) { arc.phase = "fading"; arc.fadeStart = now; }
+                    } else {
+                      arc.opacity = Math.max(0, 1 - (now - arc.fadeStart) / FADE_MS);
+                      if (arc.opacity <= 0) { activeArcRef.current = null; }
+                    }
+
+                    if (arc.opacity > 0) {
+                      const count = Math.floor(arc.progress * arc.points.length);
+                      const spts: Array<{ x: number; y: number }> = [];
+                      for (let j = 0; j <= count && j < arc.points.length; j++) {
+                        try {
+                          const sp = view.toScreen(arc.points[j]);
+                          if (sp) spts.push({ x: sp.x, y: sp.y });
+                        } catch { /* fora do campo */ }
+                      }
+
+                      if (spts.length > 1) {
+                        ctx.save();
+                        ctx.globalAlpha = arc.opacity;
+                        ctx.strokeStyle = "#ff9900";
+                        ctx.lineWidth = 2;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = "#ff9900";
+                        ctx.beginPath();
+                        ctx.moveTo(spts[0].x, spts[0].y);
+                        for (let j = 1; j < spts.length; j++) ctx.lineTo(spts[j].x, spts[j].y);
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+
+                        // Ponta do "avião"
+                        const tip = spts[spts.length - 1];
+                        ctx.beginPath();
+                        ctx.arc(tip.x, tip.y, 5, 0, Math.PI * 2);
+                        ctx.fillStyle = "#ff9900";
+                        ctx.shadowBlur = 12;
+                        ctx.shadowColor = "#ff9900";
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Label no meio do arco
+                        const mid = spts[Math.floor(spts.length / 2)];
+                        if (mid) {
+                          ctx.font = "bold 11px monospace";
+                          ctx.fillStyle = "#ff9900";
+                          ctx.fillText(`✈ ${arc.fromName} → Vitória-ES`, mid.x + 10, mid.y - 8);
+                        }
+                        ctx.restore();
+                      }
                     }
                   }
 
