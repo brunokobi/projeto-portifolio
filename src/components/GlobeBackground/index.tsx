@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { loadModules, setDefaultOptions } from "esri-loader";
 
+// Checa se lat/lon está na metade visível do globo em relação à câmera
+const isFacing = (camLat: number, camLon: number, ptLat: number, ptLon: number): boolean => {
+  const r = Math.PI / 180;
+  const cLat = camLat * r, cLon = camLon * r;
+  const pLat = ptLat  * r, pLon = ptLon  * r;
+  const dot =
+    Math.cos(cLat) * Math.cos(cLon) * Math.cos(pLat) * Math.cos(pLon) +
+    Math.cos(cLat) * Math.sin(cLon) * Math.cos(pLat) * Math.sin(pLon) +
+    Math.sin(cLat) * Math.sin(pLat);
+  return dot > 0.1; // margem para evitar flickering na borda
+};
+
 const CITIES = [
   // América do Sul
   { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
@@ -303,8 +315,10 @@ const GlobeBackground = () => {
                   if (!mountedRef.current) return;
                   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+                  const cam = view.camera.position;
                   cityPoints.forEach((pt, i) => {
                     try {
+                      if (!isFacing(cam.latitude, cam.longitude, CITIES[i].lat, CITIES[i].lon)) return;
                       const sp = view.toScreen(pt);
                       if (!sp) return;
 
@@ -344,7 +358,7 @@ const GlobeBackground = () => {
 
                   // Pin do visitante (geolocalização)
                   const userLoc = userLocRef.current;
-                  if (userLoc) {
+                  if (userLoc && isFacing(cam.latitude, cam.longitude, userLoc.lat, userLoc.lon)) {
                     if (!userPtRef.current) {
                       userPtRef.current = new Point({
                         longitude: userLoc.lon,
