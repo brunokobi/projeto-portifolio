@@ -2,10 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { loadModules, setDefaultOptions } from "esri-loader";
 
 const CITIES = [
+  // América do Sul
   { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
-  { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 },
-  { name: "Rio de Janeiro", lat: -22.9068, lon: -43.1729 },
-  { name: "Brasília", lat: -15.7801, lon: -47.9292 },
+  { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
+  // América do Norte
+  { name: "New York", lat: 40.7128, lon: -74.006 },
+  { name: "San Francisco", lat: 37.7749, lon: -122.4194 },
+  // Europa
+  { name: "London", lat: 51.5074, lon: -0.1278 },
+  { name: "Paris", lat: 48.8566, lon: 2.3522 },
+  // Ásia
+  { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
+  { name: "Dubai", lat: 25.2048, lon: 55.2708 },
+  // África
+  { name: "Cairo", lat: 30.0444, lon: 31.2357 },
+  { name: "Lagos", lat: 6.5244, lon: 3.3792 },
+  // Oceania
+  { name: "Sydney", lat: -33.8688, lon: 151.2093 },
+  { name: "Auckland", lat: -36.8485, lon: 174.7633 },
 ];
 
 interface ClickInfo {
