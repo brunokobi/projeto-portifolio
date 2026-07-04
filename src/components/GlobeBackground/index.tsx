@@ -29,13 +29,50 @@ interface ClickInfo {
   text: string;
 }
 
+interface UserLoc {
+  name: string;
+  lat: number;
+  lon: number;
+}
+
 const GlobeBackground = () => {
   setDefaultOptions({ css: true });
   const mountedRef = useRef(true);
   const viewRef = useRef<any>(null);
   const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userLocRef = useRef<UserLoc | null>(null);
+  const userPtRef = useRef<any>(null);
   const [nightMode, setNightMode] = useState(false);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
+
+  // Geolocalização do visitante → pin especial no globo
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+            { headers: { "Accept-Language": "pt-BR,pt;q=0.9" } }
+          );
+          const data = await res.json();
+          const city =
+            data.address?.city ||
+            data.address?.town ||
+            data.address?.village ||
+            data.address?.county ||
+            "Você";
+          userLocRef.current = { name: city, lat: latitude, lon: longitude };
+        } catch {
+          userLocRef.current = { name: "Você", lat: latitude, lon: longitude };
+        }
+      },
+      () => {
+        // permissão negada — sem pin
+      }
+    );
+  }, []);
 
   // Aplicar modo dia/noite na view já carregada
   useEffect(() => {
@@ -304,6 +341,54 @@ const GlobeBackground = () => {
                       // ponto fora do campo de visão
                     }
                   });
+
+                  // Pin do visitante (geolocalização)
+                  const userLoc = userLocRef.current;
+                  if (userLoc) {
+                    if (!userPtRef.current) {
+                      userPtRef.current = new Point({
+                        longitude: userLoc.lon,
+                        latitude: userLoc.lat,
+                        z: 50000,
+                      });
+                    }
+                    try {
+                      const sp = view.toScreen(userPtRef.current);
+                      if (sp) {
+                        const blink = (Math.sin(frame * 0.08) + 1) / 2;
+
+                        // Anel pulsante amarelo
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 7 + blink * 9, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(255,220,0,${0.55 - blink * 0.42})`;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Anel fixo
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+                        ctx.strokeStyle = "rgba(255,220,0,0.8)";
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+
+                        // Core
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = "#ffdc00";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = "#ffdc00";
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Label
+                        ctx.font = "bold 11px monospace";
+                        ctx.fillStyle = "#ffdc00";
+                        ctx.fillText(`📍 ${userLoc.name}`, sp.x + 10, sp.y + 4);
+                      }
+                    } catch {
+                      // ponto fora do campo de visão
+                    }
+                  }
 
                   frame++;
                   requestAnimationFrame(drawPins);
