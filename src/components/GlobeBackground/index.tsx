@@ -4,6 +4,7 @@ import { loadModules, setDefaultOptions } from "esri-loader";
 const CITIES = [
   // América do Sul
   { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
+  { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 },
   { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
   // América do Norte
   { name: "New York", lat: 40.7128, lon: -74.006 },
