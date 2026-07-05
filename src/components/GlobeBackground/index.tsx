@@ -242,7 +242,7 @@ const GlobeBackground = () => {
             });
             const nightLayer = new WebTileLayer({
               urlTemplate:
-                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible/{level}/{row}/{col}.jpg",
+                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{level}/{row}/{col}.jpg",
               copyright: "NASA GIBS / Black Marble",
               visible: isNightSaved,
             });
