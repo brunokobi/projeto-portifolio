@@ -41,6 +41,8 @@ const HOME = { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 };
 interface ArcState {
   points: any[];
   fromName: string;
+  fromLat: number;
+  fromLon: number;
   progress: number;
   phase: "drawing" | "holding" | "fading";
   startTime: number;
@@ -337,6 +339,8 @@ const GlobeBackground = () => {
                   activeArcRef.current = {
                     points: arcPts,
                     fromName: city.name,
+                    fromLat: city.lat,
+                    fromLon: city.lon,
                     progress: 0,
                     phase: "drawing",
                     startTime: performance.now(),
@@ -361,7 +365,17 @@ const GlobeBackground = () => {
                   if (!mountedRef.current) return;
                   if (!userInteracting) {
                     const cam = view.camera.clone();
-                    cam.position.longitude -= 0.15;
+                    const arc = activeArcRef.current;
+                    if (arc && (arc.phase === "drawing" || arc.phase === "holding")) {
+                      // Segue a ponta do arco (posição do "avião")
+                      const t = arc.phase === "drawing" ? arc.progress : 1;
+                      const tip = slerpPoint(arc.fromLat, arc.fromLon, HOME.lat, HOME.lon, t);
+                      const diff = ((tip.lon - cam.position.longitude + 540) % 360) - 180;
+                      cam.position.longitude += diff * 0.025;
+                      cam.position.latitude += (tip.lat - cam.position.latitude) * 0.015;
+                    } else {
+                      cam.position.longitude -= 0.15;
+                    }
                     view.goTo(cam, { animate: false });
                   }
                   requestAnimationFrame(rotate);
