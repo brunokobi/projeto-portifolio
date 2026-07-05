@@ -353,11 +353,78 @@ Formulário (React)
 
 ---
 
+## 🌐 Feature: Globo 3D Interativo — Background da Home
+
+> **Complexidade:** ⭐⭐⭐⭐⭐ — ESRI SceneView 3D + Canvas overlay + slerp + geolocalização + câmera dinâmica
+
+O globo 3D que serve como plano de fundo da Home é muito mais do que uma animação decorativa — é um sistema geoespacial interativo completo construído sobre a **ESRI ArcGIS Maps SDK**.
+
+### Configuração visual
+
+- Satélite imagery (`World_Imagery`) como basemap
+- Elevação exagerada: montanhas ×40, batimetria ×60 — relevo visível do espaço
+- Camada de nuvens com textura NASA real (`clouds-nasa.png`)
+- Esfera oceânica metálica azul como fundo dos oceanos
+- Atmosfera realista `quality: "high"` — glow azul nas bordas do planeta
+- Estrelas (`starsEnabled: true`) — fundo espacial ao redor do globo
+- Iluminação solar baseada na data/hora atual — posição real do sol no céu
+- Zoom de 4 Mm a 25 Mm de altitude (scroll do mouse)
+
+### 26 Pins de Cidades Globais
+
+26 cidades distribuídas para garantir sempre ao menos 2–3 pins visíveis independente da rotação do globo:
+
+| Continente | Cidades |
+|---|---|
+| América do Sul | São Paulo, Vitória-ES, Buenos Aires |
+| América do Norte | Mexico City, Chicago, New York, San Francisco |
+| Europa | Madrid, London, Paris, Berlin, Moscow |
+| Oriente Médio / África | Istanbul, Nairobi, Cairo, Lagos, Dubai |
+| Ásia | Mumbai, Bangkok, Singapore, Beijing, Seoul, Tokyo |
+| Oceania / Pacífico | Sydney, Auckland, Honolulu |
+
+**Visibilidade inteligente** via produto escalar câmera × cidade — pins aparecem apenas no lado visível do globo, sem atravessar a esfera. **Canvas overlay** animado via `requestAnimationFrame`: anel verde Matrix pulsante + glow nos pins. **Cursor pointer** ao passar o mouse sobre qualquer pin (detectado via `pointer-move` do ESRI).
+
+### Pin do Visitante (Geolocalização)
+
+Ao aceitar a permissão de localização, um **pin amarelo pulsante** aparece na posição real do visitante. O nome da cidade é obtido via **Nominatim (OpenStreetMap)** — gratuito, sem API key.
+
+### Arcos de Voo Animados
+
+Clique em qualquer pin verde → arco **laranja animado** traçando a rota até Vitória-ES pelo grande círculo terrestre:
+
+```
+Clique no pin
+  → slerp(fromCity, Vitória-ES, t) — interpolação esférica em 81 pontos
+  → altitude parabólica (pico de 1.200 km acima da superfície)
+  → canvas desenha o arco frame a frame (2,8 s de traçado)
+  → ponto laranja na ponta simula o "avião"
+  → label "✈ Tokyo → Vitória-ES" no meio do arco
+  → arco some após ~5,5 s (desenho + hold + fade)
+```
+
+### Câmera Dinâmica
+
+| Fase | Comportamento |
+|---|---|
+| Rotação normal | Auto-rotação contínua (−0,15°/frame) |
+| Arco `drawing` | Câmera segue a ponta do arco com lerp suave |
+| Arco `holding` | Câmera estabiliza sobre Vitória-ES |
+| Arco `fading` | Auto-rotação retoma automaticamente |
+| Drag do usuário | Pausa a rotação por 3 s, depois retoma |
+
+### Controles
+
+- **Clique no globo** → popup com coordenadas lat/lon do ponto clicado
+- **Botão ☾ NOITE / ☀ DIA** — rotaciona o sol 12 h, mostrando o lado noturno do globo
+
+---
+
 ## 🌍 Feature: Mapa 3D Geoespacial (ESRI ArcGIS)
 
 > **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading + WebGL 3D + fotos próprias nos marcadores
 
-Módulo de mapa com a **ESRI ArcGIS Maps SDK** em WebGL:
+Módulo de mapa dedicado (`/map`) com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 - Terreno 3D interativo com globo animado e nuvens (NASA textures)
 - Marcadores customizados com **fotos próprias** nos pontos turísticos
@@ -649,6 +716,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless + scoring tiered por fonte + keywords com cap + recência dominante   |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, feedback diferenciado ao usuário      |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
+| 🌐 Globo 3D interativo          | 26 pins globais + arcos de voo slerp + câmera dinâmica + geolocalização + modo noite |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🧪 62 testes + E2E              | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
