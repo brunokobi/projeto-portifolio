@@ -108,6 +108,8 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
+  const dayLayerRef = useRef<any>(null);
+  const nightLayerRef = useRef<any>(null);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
 
   // Geolocalização do visitante → pin especial no globo
@@ -153,6 +155,12 @@ const GlobeBackground = () => {
       } catch {
         // view ainda não pronta
       }
+      const dayL = dayLayerRef.current;
+      const nightL = nightLayerRef.current;
+      if (dayL && nightL) {
+        dayL.visible = !isNight;
+        nightL.visible = isNight;
+      }
     };
 
     const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
@@ -171,6 +179,7 @@ const GlobeBackground = () => {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/TileLayer",
+        "esri/layers/WebTileLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -185,6 +194,7 @@ const GlobeBackground = () => {
             Map,
             SceneView,
             TileLayer,
+            WebTileLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -223,13 +233,24 @@ const GlobeBackground = () => {
               },
             });
 
+            const isNightSaved = localStorage.getItem("globeNight") === "1";
+
             const dayLayer = new TileLayer({
               url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
               copyright: "Tiles © Esri",
+              visible: !isNightSaved,
             });
+            const nightLayer = new WebTileLayer({
+              urlTemplate:
+                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible/{level}/{row}/{col}.jpg",
+              copyright: "NASA GIBS / Black Marble",
+              visible: isNightSaved,
+            });
+            dayLayerRef.current = dayLayer;
+            nightLayerRef.current = nightLayer;
 
             const basemap = new Basemap({
-              baseLayers: [dayLayer],
+              baseLayers: [dayLayer, nightLayer],
             });
 
             const map = new Map({
@@ -272,8 +293,8 @@ const GlobeBackground = () => {
 
             viewRef.current = view;
 
-            // Aplica modo noite salvo antes do primeiro render
-            if (localStorage.getItem("globeNight") === "1") {
+            // Aplica iluminação noturna salva antes do primeiro render
+            if (isNightSaved) {
               const env = view.environment.clone();
               const d = new Date();
               d.setHours(d.getHours() + 12);
