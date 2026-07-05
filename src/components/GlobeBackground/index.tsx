@@ -179,7 +179,6 @@ const GlobeBackground = () => {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/TileLayer",
-        "esri/layers/WebTileLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -194,7 +193,6 @@ const GlobeBackground = () => {
             Map,
             SceneView,
             TileLayer,
-            WebTileLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -205,7 +203,7 @@ const GlobeBackground = () => {
           ]) => {
             if (!mountedRef.current) return;
 
-            esriConfig.apiKey = import.meta.env.VITE_ESRI_API_KEY;
+            esriConfig.apiKey = import.meta.env.VITE_ESRI_NEW_TOKEN;
 
             const R = 6358137;
             const offset = 300000;
@@ -240,10 +238,9 @@ const GlobeBackground = () => {
               copyright: "Tiles © Esri",
               visible: !isNightSaved,
             });
-            const nightLayer = new WebTileLayer({
-              urlTemplate:
-                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_DayNightBand_ENCC/default/2023-01-01/GoogleMapsCompatible_Level8/{level}/{row}/{col}.png",
-              copyright: "NASA GIBS / VIIRS Day-Night Band",
+            const nightLayer = new TileLayer({
+              url: "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/ViirsEarthAtNight2012/MapServer",
+              copyright: "NASA / ESRI Living Atlas — VIIRS Earth at Night",
               visible: isNightSaved,
             });
             dayLayerRef.current = dayLayer;
