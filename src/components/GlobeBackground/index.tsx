@@ -241,9 +241,8 @@ const GlobeBackground = () => {
               visible: !isNightSaved,
             });
             const nightLayer = new WebTileLayer({
-              urlTemplate:
-                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_DayNightBand_ENCC/default/2023-01-01/GoogleMapsCompatible_Level8/{level}/{row}/{col}.png",
-              copyright: "NASA GIBS / VIIRS Day-Night Band",
+              urlTemplate: `https://api.maptiler.com/tiles/earth-at-night/{level}/{col}/{row}.jpg?key=${import.meta.env.VITE_MAPTILER_KEY}`,
+              copyright: "MapTiler / NASA Black Marble",
               visible: isNightSaved,
             });
             dayLayerRef.current = dayLayer;
