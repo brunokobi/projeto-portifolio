@@ -108,6 +108,8 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
+  const dayLayerRef = useRef<any>(null);
+  const nightLayerRef = useRef<any>(null);
   const [nightMode, setNightMode] = useState(false);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
 
@@ -152,6 +154,13 @@ const GlobeBackground = () => {
       view.environment = env;
     } catch {
       // view ainda não pronta
+    }
+    // Troca tile layer: NASA Black Marble (noite) ↔ satélite (dia)
+    const dayL = dayLayerRef.current;
+    const nightL = nightLayerRef.current;
+    if (dayL && nightL) {
+      dayL.visible = !nightMode;
+      nightL.visible = nightMode;
     }
   }, [nightMode]);
 
@@ -218,13 +227,20 @@ const GlobeBackground = () => {
               },
             });
 
+            const dayLayer = new TileLayer({
+              url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
+              copyright: "Tiles © Esri",
+              visible: true,
+            });
+            const nightLayer = new TileLayer({
+              url: "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/ViirsEarthAtNight2012/MapServer",
+              visible: false,
+            });
+            dayLayerRef.current = dayLayer;
+            nightLayerRef.current = nightLayer;
+
             const basemap = new Basemap({
-              baseLayers: [
-                new TileLayer({
-                  url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
-                  copyright: "Tiles © Esri",
-                }),
-              ],
+              baseLayers: [dayLayer, nightLayer],
             });
 
             const map = new Map({
@@ -245,9 +261,9 @@ const GlobeBackground = () => {
               alphaCompositingEnabled: true,
               qualityProfile: "medium",
               camera: {
-                position: [-55.03975781, 14.94826384, 19921223.30821],
-                heading: 2.03,
-                tilt: 0.13,
+                position: [-55.03975781, 14.94826384, 65000000],
+                heading: 0,
+                tilt: 0,
               },
               environment: {
                 background: { type: "color", color: [0, 0, 0, 0] },
@@ -260,7 +276,7 @@ const GlobeBackground = () => {
                 },
               },
               constraints: {
-                altitude: { min: 4000000, max: 25000000 },
+                altitude: { min: 4000000, max: 70000000 },
               },
               ui: { components: [] },
             });
@@ -374,14 +390,13 @@ const GlobeBackground = () => {
 
             view.when(() => {
               watchUtils.whenFalseOnce(view, "updating", () => {
-                // Loop de rotação
+                // Loop de rotação — só inicia após a animação de entrada
                 const rotate = () => {
                   if (!mountedRef.current) return;
                   if (!userInteracting) {
                     const cam = view.camera.clone();
                     const arc = activeArcRef.current;
                     if (arc && (arc.phase === "drawing" || arc.phase === "holding")) {
-                      // Segue a ponta do arco (posição do "avião")
                       const t = arc.phase === "drawing" ? arc.progress : 1;
                       const tip = slerpPoint(arc.fromLat, arc.fromLon, HOME.lat, HOME.lon, t);
                       const diff = ((tip.lon - cam.position.longitude + 540) % 360) - 180;
@@ -394,7 +409,28 @@ const GlobeBackground = () => {
                   }
                   requestAnimationFrame(rotate);
                 };
-                rotate();
+
+                // Animação de entrada: zoom dramático do espaço até posição final
+                view
+                  .goTo(
+                    {
+                      position: { longitude: -55.03975781, latitude: 14.94826384, z: 19921223.30821 },
+                      heading: 2.03,
+                      tilt: 0.13,
+                    },
+                    { animate: true, duration: 4000, easing: "out-expo" }
+                  )
+                  .then(() => {
+                    if (!mountedRef.current) return;
+                    view.constraints.altitude.max = 25000000;
+                    rotate();
+                  })
+                  .catch(() => {
+                    if (mountedRef.current) {
+                      view.constraints.altitude.max = 25000000;
+                      rotate();
+                    }
+                  });
 
                 // Canvas overlay — pins das cidades com pulso
                 const canvas = document.getElementById(
