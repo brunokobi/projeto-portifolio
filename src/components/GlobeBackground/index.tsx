@@ -110,7 +110,6 @@ const GlobeBackground = () => {
   );
   const dayLayerRef = useRef<any>(null);
   const nightLayerRef = useRef<any>(null);
-  const [nightMode, setNightMode] = useState(false);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
 
   // Geolocalização do visitante → pin especial no globo
@@ -142,27 +141,33 @@ const GlobeBackground = () => {
     );
   }, []);
 
-  // Aplicar modo dia/noite na view já carregada
+  // Escuta evento globeNightToggle disparado pelo WeatherBar
   useEffect(() => {
-    const view = viewRef.current;
-    if (!view) return;
-    try {
-      const env = view.environment.clone();
-      const d = new Date();
-      if (nightMode) d.setHours(d.getHours() + 12);
-      env.lighting.date = d;
-      view.environment = env;
-    } catch {
-      // view ainda não pronta
-    }
-    // Troca tile layer: NASA Black Marble (noite) ↔ satélite (dia)
-    const dayL = dayLayerRef.current;
-    const nightL = nightLayerRef.current;
-    if (dayL && nightL) {
-      dayL.visible = !nightMode;
-      nightL.visible = nightMode;
-    }
-  }, [nightMode]);
+    const applyNight = (isNight: boolean) => {
+      const view = viewRef.current;
+      if (view) {
+        try {
+          const env = view.environment.clone();
+          const d = new Date();
+          if (isNight) d.setHours(d.getHours() + 12);
+          env.lighting.date = d;
+          view.environment = env;
+        } catch {
+          // view ainda não pronta
+        }
+      }
+      const dayL = dayLayerRef.current;
+      const nightL = nightLayerRef.current;
+      if (dayL && nightL) {
+        dayL.visible = !isNight;
+        nightL.visible = isNight;
+      }
+    };
+
+    const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
+    window.addEventListener("globeNightToggle", handler);
+    return () => window.removeEventListener("globeNightToggle", handler);
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -238,6 +243,12 @@ const GlobeBackground = () => {
             });
             dayLayerRef.current = dayLayer;
             nightLayerRef.current = nightLayer;
+
+            // Aplica modo noite salvo se o usuário já tinha ativado antes
+            if (localStorage.getItem("globeNight") === "1") {
+              dayLayer.visible = false;
+              nightLayer.visible = true;
+            }
 
             const basemap = new Basemap({
               baseLayers: [dayLayer, nightLayer],
@@ -663,29 +674,6 @@ const GlobeBackground = () => {
           pointerEvents: "none",
         }}
       />
-
-      {/* Botão dia / noite */}
-      <button
-        onClick={() => setNightMode((p) => !p)}
-        title={nightMode ? "Modo dia" : "Modo noite"}
-        style={{
-          position: "fixed",
-          bottom: "24px",
-          left: "24px",
-          zIndex: 10,
-          background: "rgba(0,0,0,0.8)",
-          border: "1px solid #00ff41",
-          borderRadius: "6px",
-          color: "#00ff41",
-          fontFamily: "monospace",
-          fontSize: "12px",
-          padding: "6px 12px",
-          cursor: "pointer",
-          letterSpacing: "1px",
-        }}
-      >
-        {nightMode ? "☀ DIA" : "☾ NOITE"}
-      </button>
 
       {/* Popup de coordenadas ao clicar */}
       {clickInfo && (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Box, HStack, Text, Divider } from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
 import falar from "../TextAudio";
@@ -70,6 +70,14 @@ const getCoords = () =>
 type WeatherData = { temp: number; code: number; city: string | null };
 
 const WeatherBar = () => {
+  const [nightMode, setNightMode] = useState(() => localStorage.getItem("globeNight") === "1");
+
+  const toggleNight = useCallback(() => {
+    const next = !nightMode;
+    setNightMode(next);
+    localStorage.setItem("globeNight", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeNightToggle", { detail: { nightMode: next } }));
+  }, [nightMode]);
   const [data, setData] = useState<WeatherData | null | false>(null); // null = carregando, false = erro, objeto = ok
 
   useEffect(() => {
@@ -181,6 +189,22 @@ const WeatherBar = () => {
           letterSpacing="0.02em"
         >
           · {wmo.label}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleNight}
+          title={nightMode ? "Modo dia" : "Modo noite"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {nightMode ? "☀ DIA" : "☾ NOITE"}
         </Text>
       </HStack>
     </Box>
