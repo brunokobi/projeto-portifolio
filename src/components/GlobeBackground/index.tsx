@@ -161,6 +161,12 @@ const GlobeBackground = () => {
         dayL.visible = !isNight;
         nightL.visible = isNight;
       }
+      const el = document.getElementById("globeBgDiv");
+      if (el) {
+        el.style.filter = isNight
+          ? "sepia(1) saturate(5) hue-rotate(-20deg) brightness(0.7)"
+          : "none";
+      }
     };
 
     const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
@@ -241,8 +247,9 @@ const GlobeBackground = () => {
               visible: !isNightSaved,
             });
             const nightLayer = new WebTileLayer({
-              urlTemplate: `https://api.maptiler.com/tiles/earth-at-night/{level}/{col}/{row}.jpg?key=${import.meta.env.VITE_MAPTILER_KEY}`,
-              copyright: "MapTiler / NASA Black Marble",
+              urlTemplate:
+                "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_DayNightBand_ENCC/default/2023-01-01/GoogleMapsCompatible_Level8/{level}/{row}/{col}.png",
+              copyright: "NASA GIBS / VIIRS Day-Night Band",
               visible: isNightSaved,
             });
             dayLayerRef.current = dayLayer;
@@ -299,6 +306,8 @@ const GlobeBackground = () => {
               d.setHours(d.getHours() + 12);
               env.lighting.date = d;
               view.environment = env;
+              const el = document.getElementById("globeBgDiv");
+              if (el) el.style.filter = "sepia(1) saturate(5) hue-rotate(-20deg) brightness(0.7)";
             }
 
             // Camada oceano
