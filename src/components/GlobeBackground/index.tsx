@@ -151,7 +151,7 @@ const GlobeBackground = () => {
         nightL.visible = isNight;
       }
       const el = document.getElementById("globeBgDiv");
-      if (el) el.style.filter = isNight ? "brightness(1.25)" : "";
+      if (el) el.style.filter = isNight ? "brightness(0.6)" : "";
     };
 
     const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
@@ -324,7 +324,7 @@ const GlobeBackground = () => {
               dayLayer.visible = false;
               nightLayer.visible = true;
               const el = document.getElementById("globeBgDiv");
-              if (el) el.style.filter = "brightness(1.25)";
+              if (el) el.style.filter = "brightness(0.6)";
             }
 
             // Camada oceano

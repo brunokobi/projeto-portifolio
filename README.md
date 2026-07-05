@@ -155,6 +155,35 @@ npx playwright test  # Testes E2E (requer Playwright instalado)
 
 ---
 
+## 🌍 Feature: Globo 3D Interativo com Modo Dia/Noite
+
+> **Complexidade:** ⭐⭐⭐⭐ — ArcGIS SceneView 3D + NASA GIBS WMTS + BaseTileLayer customizado + geolocalização + arcos de voo animados
+
+Globo 3D em tempo real renderizado com **ArcGIS SceneView** com iluminação virtual uniforme (cobre o globo inteiro), sistema de dia/noite alternável e visualização de luzes da Terra à noite via **NASA Black Marble**.
+
+### Modo Dia
+- Basemap de satélite de alta resolução (`World_Imagery` — ESRI)
+- Iluminação virtual uniforme: o globo inteiro exibe o mapa de dia
+- Rotação automática com pausa ao interagir
+
+### Modo Noite (`☾ NOITE` na barra de clima)
+- Troca para **NASA Black Marble 2016** (`VIIRS_Black_Marble` via NASA GIBS WMTS)
+- Tiles coloridos em tempo real via `BaseTileLayer` com processamento canvas pixel a pixel:
+  - Preto → preto (oceano sem luz)
+  - Baixo brilho → âmbar (subúrbios)
+  - Alto brilho → dourado (centros urbanos)
+  - Núcleo → branco-dourado (metrópoles)
+- Escurecimento do globo para realismo noturno (`brightness(0.6)`)
+- Preferência salva em `localStorage`
+
+### Outros recursos do globo
+- **Pin de geolocalização** amarelo pulsante com nome da cidade do visitante (browser Geolocation API + Nominatim reverse geocoding)
+- **26 pins** de cidades globais com animação de pulso verde
+- **Arcos de voo** animados ao clicar num pin: trajetória esférica (`SLERP`) até Vitória-ES
+- **Clique no mapa**: exibe coordenadas lat/lon em popup
+
+---
+
 ## 🤖 Feature: chatBruno — Assistente Virtual Multi-Agente com RAG
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + AWS EC2 Self-Hosted
