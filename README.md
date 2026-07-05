@@ -362,7 +362,7 @@ O globo 3D que serve como plano de fundo da Home é muito mais do que uma anima�
 ### Configuração visual
 
 - Satélite imagery (`World_Imagery`) como basemap diurno
-- **NASA Black Marble** (VIIRS) como basemap noturno — luzes das cidades reais à noite
+- **NASA GIBS VIIRS Day-Night Band** (`VIIRS_SNPP_DayNightBand_ENCC`) como basemap noturno — luzes das cidades reais à noite, 100% gratuito via NASA GIBS
 - Elevação exagerada: montanhas ×40, batimetria ×60 — relevo visível do espaço
 - Camada de nuvens com textura NASA real (`clouds-nasa.png`)
 - Esfera oceânica metálica azul como fundo dos oceanos
@@ -421,7 +421,7 @@ Clique no pin
 ### Controles
 
 - **Clique no globo** → popup com coordenadas lat/lon do ponto clicado
-- **Botão ☾ NOITE / ☀ DIA** — troca o tile layer para NASA Black Marble (luzes das cidades reais) + rotaciona o sol 12 h
+- **Botão ☾ NOITE / ☀ DIA** (no WeatherBar) — alterna para o layer NASA GIBS VIIRS Day-Night Band + rotaciona o sol 12 h para o terminador real
 
 ---
 
@@ -721,7 +721,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless + scoring tiered por fonte + keywords com cap + recência dominante   |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, feedback diferenciado ao usuário      |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D interativo          | 26 pins + arcos slerp + zoom galáctic de entrada + NASA Black Marble noturno         |
+| 🌐 Globo 3D interativo          | 26 pins + arcos slerp + zoom galáctico de entrada + NASA GIBS VIIRS noturno          |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🧪 62 testes + E2E              | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
