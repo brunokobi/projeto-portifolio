@@ -358,6 +358,20 @@ const GlobeBackground = () => {
               clickTimerRef.current = setTimeout(() => setClickInfo(null), 3500);
             });
 
+            // Cursor pointer ao passar sobre um pin
+            view.on("pointer-move", (evt: any) => {
+              const positions = cityScreenPosRef.current;
+              let over = false;
+              for (let i = 0; i < positions.length; i++) {
+                const cp = positions[i];
+                if (!cp) continue;
+                const dx = evt.x - cp.x, dy = evt.y - cp.y;
+                if (dx * dx + dy * dy < 18 * 18) { over = true; break; }
+              }
+              const el = document.getElementById("globeBgDiv");
+              if (el) el.style.cursor = over ? "pointer" : "default";
+            });
+
             view.when(() => {
               watchUtils.whenFalseOnce(view, "updating", () => {
                 // Loop de rotação
