@@ -108,8 +108,6 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
-  const dayLayerRef = useRef<any>(null);
-  const nightLayerRef = useRef<any>(null);
   const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
 
   // Geolocalização do visitante → pin especial no globo
@@ -145,22 +143,15 @@ const GlobeBackground = () => {
   useEffect(() => {
     const applyNight = (isNight: boolean) => {
       const view = viewRef.current;
-      if (view) {
-        try {
-          const env = view.environment.clone();
-          const d = new Date();
-          if (isNight) d.setHours(d.getHours() + 12);
-          env.lighting.date = d;
-          view.environment = env;
-        } catch {
-          // view ainda não pronta
-        }
-      }
-      const dayL = dayLayerRef.current;
-      const nightL = nightLayerRef.current;
-      if (dayL && nightL) {
-        dayL.visible = !isNight;
-        nightL.visible = isNight;
+      if (!view) return;
+      try {
+        const env = view.environment.clone();
+        const d = new Date();
+        if (isNight) d.setHours(d.getHours() + 12);
+        env.lighting.date = d;
+        view.environment = env;
+      } catch {
+        // view ainda não pronta
       }
     };
 
@@ -235,23 +226,10 @@ const GlobeBackground = () => {
             const dayLayer = new TileLayer({
               url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
               copyright: "Tiles © Esri",
-              visible: true,
             });
-            const nightLayer = new TileLayer({
-              url: "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/ViirsEarthAtNight2012/MapServer",
-              visible: false,
-            });
-            dayLayerRef.current = dayLayer;
-            nightLayerRef.current = nightLayer;
-
-            // Aplica modo noite salvo se o usuário já tinha ativado antes
-            if (localStorage.getItem("globeNight") === "1") {
-              dayLayer.visible = false;
-              nightLayer.visible = true;
-            }
 
             const basemap = new Basemap({
-              baseLayers: [dayLayer, nightLayer],
+              baseLayers: [dayLayer],
             });
 
             const map = new Map({
@@ -293,6 +271,15 @@ const GlobeBackground = () => {
             });
 
             viewRef.current = view;
+
+            // Aplica modo noite salvo antes do primeiro render
+            if (localStorage.getItem("globeNight") === "1") {
+              const env = view.environment.clone();
+              const d = new Date();
+              d.setHours(d.getHours() + 12);
+              env.lighting.date = d;
+              view.environment = env;
+            }
 
             // Camada oceano
             const oceanMesh = Mesh.createSphere(new Point({ x: 0, y: -90, z: -(2 * R) }), {
