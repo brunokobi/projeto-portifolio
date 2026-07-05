@@ -144,17 +144,8 @@ const GlobeBackground = () => {
   // Escuta evento globeNightToggle disparado pelo WeatherBar
   useEffect(() => {
     const applyNight = (isNight: boolean) => {
-      const view = viewRef.current;
       const dayL = dayLayerRef.current;
       const nightL = nightLayerRef.current;
-      if (!view) return;
-      try {
-        const env = view.environment.clone();
-        const d = new Date();
-        if (isNight) d.setHours(d.getHours() + 12);
-        env.lighting.date = d;
-        view.environment = env;
-      } catch { /* view ainda não pronta */ }
       if (dayL && nightL) {
         dayL.visible = !isNight;
         nightL.visible = isNight;
@@ -319,10 +310,7 @@ const GlobeBackground = () => {
                 starsEnabled: true,
                 atmosphereEnabled: true,
                 atmosphere: { quality: "high" },
-                lighting: {
-                  directShadowsEnabled: false,
-                  date: new Date(),
-                },
+                lighting: { type: "virtual" },
               },
               constraints: {
                 altitude: { min: 4000000, max: 70000000 },
@@ -333,11 +321,6 @@ const GlobeBackground = () => {
             viewRef.current = view;
 
             if (isNightSaved) {
-              const env = view.environment.clone();
-              const d = new Date();
-              d.setHours(d.getHours() + 12);
-              env.lighting.date = d;
-              view.environment = env;
               dayLayer.visible = false;
               nightLayer.visible = true;
               const el = document.getElementById("globeBgDiv");
