@@ -97,10 +97,10 @@ interface UserLoc {
   lon: number;
 }
 
+setDefaultOptions({ css: true });
+
 const GlobeBackground = () => {
-  setDefaultOptions({ css: true });
   const mountedRef = useRef(true);
-  const viewRef = useRef<any>(null);
   const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userLocRef = useRef<UserLoc | null>(null);
   const userPtRef = useRef<any>(null);
@@ -161,6 +161,7 @@ const GlobeBackground = () => {
 
   useEffect(() => {
     mountedRef.current = true;
+    let cleanupResize = () => {};
 
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -317,8 +318,6 @@ const GlobeBackground = () => {
               },
               ui: { components: [] },
             });
-
-            viewRef.current = view;
 
             if (isNightSaved) {
               dayLayer.visible = false;
@@ -661,9 +660,9 @@ const GlobeBackground = () => {
                 };
                 drawPins();
 
-                window.addEventListener("resize", () => {
-                  setupCanvas();
-                });
+                const onResize = () => setupCanvas();
+                window.addEventListener("resize", onResize);
+                cleanupResize = () => window.removeEventListener("resize", onResize);
               });
             });
           }
@@ -675,6 +674,7 @@ const GlobeBackground = () => {
       mountedRef.current = false;
       clearTimeout(timer);
       clearTimeout(clickTimerRef.current ?? undefined);
+      cleanupResize();
     };
   }, []);
 
