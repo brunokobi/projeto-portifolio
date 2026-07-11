@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { loadModules, setDefaultOptions } from "esri-loader";
 
 // Checa se lat/lon está na metade visível do globo em relação à câmera
@@ -85,11 +85,7 @@ const CITIES = [
   { name: "Honolulu", lat: 21.3069, lon: -157.8583 },
 ];
 
-interface ClickInfo {
-  x: number;
-  y: number;
-  text: string;
-}
+
 
 interface UserLoc {
   name: string;
@@ -101,7 +97,7 @@ setDefaultOptions({ css: true });
 
 const GlobeBackground = () => {
   const mountedRef = useRef(true);
-  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const userLocRef = useRef<UserLoc | null>(null);
   const userPtRef = useRef<any>(null);
   const activeArcRef = useRef<ArcState | null>(null);
@@ -110,7 +106,7 @@ const GlobeBackground = () => {
   );
   const dayLayerRef = useRef<any>(null);
   const nightLayerRef = useRef<any>(null);
-  const [clickInfo, setClickInfo] = useState<ClickInfo | null>(null);
+
 
   // Geolocalização do visitante → pin especial no globo
   useEffect(() => {
@@ -385,7 +381,7 @@ const GlobeBackground = () => {
               }, 3000);
             });
 
-            // Clique → arco de voo para Vitória-ES (ou coordenadas se não for pin)
+            // Clique → arco de voo para Vitória-ES
             view.on("click", (evt: any) => {
               const RADIUS = 18;
               const positions = cityScreenPosRef.current;
@@ -417,12 +413,6 @@ const GlobeBackground = () => {
                   return;
                 }
               }
-              if (!evt.mapPoint) return;
-              const lat = evt.mapPoint.latitude.toFixed(3);
-              const lon = evt.mapPoint.longitude.toFixed(3);
-              clearTimeout(clickTimerRef.current ?? undefined);
-              setClickInfo({ x: evt.x, y: evt.y, text: `${lat}°, ${lon}°` });
-              clickTimerRef.current = setTimeout(() => setClickInfo(null), 3500);
             });
 
             // Cursor pointer ao passar sobre um pin
@@ -681,7 +671,6 @@ const GlobeBackground = () => {
     return () => {
       mountedRef.current = false;
       clearTimeout(timer);
-      clearTimeout(clickTimerRef.current ?? undefined);
       cleanupResize();
       document.getElementById("esri-bg-override")?.remove();
     };
@@ -718,29 +707,6 @@ const GlobeBackground = () => {
         }}
       />
 
-      {/* Popup de coordenadas ao clicar */}
-      {clickInfo && (
-        <div
-          style={{
-            position: "fixed",
-            left: Math.min(clickInfo.x + 14, window.innerWidth - 210),
-            top: Math.max(clickInfo.y - 34, 8),
-            zIndex: 20,
-            background: "rgba(0,0,0,0.88)",
-            border: "1px solid #00ff41",
-            borderRadius: "4px",
-            padding: "5px 10px",
-            fontFamily: "monospace",
-            fontSize: "12px",
-            color: "#00ff41",
-            pointerEvents: "none",
-            boxShadow: "0 0 10px rgba(0,255,65,0.25)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          📍 {clickInfo.text}
-        </div>
-      )}
     </>
   );
 };
