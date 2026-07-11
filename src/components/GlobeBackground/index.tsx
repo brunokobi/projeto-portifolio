@@ -319,6 +319,15 @@ const GlobeBackground = () => {
               ui: { components: [] },
             });
 
+            // Override CSS do ESRI que pode opacificar o container
+            const esriOverride = document.createElement("style");
+            esriOverride.id = "esri-bg-override";
+            esriOverride.textContent =
+              "#globeBgDiv,#globeBgDiv .esri-view,#globeBgDiv .esri-view-root," +
+              "#globeBgDiv .esri-view-surface,#globeBgDiv .esri-display-object" +
+              "{background:transparent!important;background-color:transparent!important;}";
+            document.head.appendChild(esriOverride);
+
             if (isNightSaved) {
               dayLayer.visible = false;
               nightLayer.visible = true;
@@ -675,6 +684,7 @@ const GlobeBackground = () => {
       clearTimeout(timer);
       clearTimeout(clickTimerRef.current ?? undefined);
       cleanupResize();
+      document.getElementById("esri-bg-override")?.remove();
     };
   }, []);
 
@@ -691,6 +701,7 @@ const GlobeBackground = () => {
           zIndex: 2,
           pointerEvents: "auto",
           opacity: 1,
+          background: "transparent",
         }}
       />
 
