@@ -215,11 +215,9 @@ const GlobeBackground = () => {
       const dayL = dayLayerRef.current;
       const nightL = nightLayerRef.current;
       if (dayL && nightL) {
-        dayL.visible = !isNight;
+        dayL.opacity = isNight ? 0.2 : 1.0;
         nightL.visible = isNight;
       }
-      const el = document.getElementById("globeBgDiv");
-      if (el) el.style.filter = isNight ? "brightness(0.6)" : "";
     };
 
     const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
@@ -397,10 +395,8 @@ const GlobeBackground = () => {
             document.head.appendChild(esriOverride);
 
             if (isNightSaved) {
-              dayLayer.visible = false;
+              dayLayer.opacity = 0.2;
               nightLayer.visible = true;
-              const el = document.getElementById("globeBgDiv");
-              if (el) el.style.filter = "brightness(0.6)";
             }
 
             // Camada oceano
