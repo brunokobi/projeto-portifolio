@@ -10,6 +10,40 @@ const citySlug = (name: string) =>
     .replace(/[\s-]+/g, "_")
     .replace(/[^a-z0-9_]/g, "");
 
+const COUNTRY_FLAG: Record<string, string> = {
+  "Brasil": "🇧🇷",
+  "EUA": "🇺🇸",
+  "Reino Unido": "🇬🇧",
+  "Japão": "🇯🇵",
+  "Coreia do Sul": "🇰🇷",
+  "Singapura": "🇸🇬",
+  "China": "🇨🇳",
+  "Índia": "🇮🇳",
+  "Alemanha": "🇩🇪",
+  "Israel": "🇮🇱",
+  "França": "🇫🇷",
+  "Países Baixos": "🇳🇱",
+  "Canadá": "🇨🇦",
+  "Austrália": "🇦🇺",
+  "Suécia": "🇸🇪",
+  "Nigéria": "🇳🇬",
+  "Quênia": "🇰🇪",
+  "Egito": "🇪🇬",
+  "África do Sul": "🇿🇦",
+  "EAU": "🇦🇪",
+  "Arábia Saudita": "🇸🇦",
+  "Indonésia": "🇮🇩",
+  "Malásia": "🇲🇾",
+  "Vietnã": "🇻🇳",
+  "Taiwan": "🇹🇼",
+  "Estônia": "🇪🇪",
+  "Polônia": "🇵🇱",
+  "Suíça": "🇨🇭",
+  "México": "🇲🇽",
+  "Argentina": "🇦🇷",
+  "Colômbia": "🇨🇴",
+};
+
 // Checa se lat/lon está na metade visível do globo em relação à câmera
 const isFacing = (camLat: number, camLon: number, ptLat: number, ptLon: number): boolean => {
   const r = Math.PI / 180;
@@ -496,7 +530,7 @@ const GlobeBackground = () => {
                       cam.position.longitude += diff * 0.025;
                       cam.position.latitude += (tip.lat - cam.position.latitude) * 0.015;
                     } else {
-                      cam.position.longitude -= 0.15;
+                      cam.position.longitude -= 0.12;
                     }
                     view.goTo(cam, { animate: false });
                   }
@@ -780,8 +814,8 @@ const GlobeBackground = () => {
             <span style={{ fontSize: "13px", fontWeight: "bold", color: "#42ff6b" }}>
               {hoverCity.city.name}
             </span>
-            <span style={{ fontSize: "10px", color: "#00cc33" }}>
-              {hoverCity.city.country}
+            <span style={{ fontSize: "16px", lineHeight: 1 }} title={hoverCity.city.country}>
+              {COUNTRY_FLAG[hoverCity.city.country] ?? hoverCity.city.country}
             </span>
           </div>
           <div style={{ fontSize: "11px", color: "#00e055", lineHeight: "1.6" }}>
