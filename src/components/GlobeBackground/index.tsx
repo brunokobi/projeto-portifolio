@@ -239,7 +239,6 @@ const GlobeBackground = () => {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/TileLayer",
-        "esri/layers/BaseTileLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -254,7 +253,6 @@ const GlobeBackground = () => {
             Map,
             SceneView,
             TileLayer,
-            BaseTileLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -300,49 +298,9 @@ const GlobeBackground = () => {
               copyright: "Tiles © Esri",
               visible: true,
             });
-            // BaseTileLayer personalizado: coloriza cada tile via Canvas 2D
-            // antes do ESRI renderizar — só afeta os tiles, não estrelas/atmosfera
-            const GoldenNightLayer = BaseTileLayer.createSubclass({
-              fetchTile(level: number, row: number, col: number) {
-                const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/${level}/${row}/${col}.png`;
-                return new Promise<HTMLCanvasElement>((resolve) => {
-                  const img = new Image();
-                  img.crossOrigin = "anonymous";
-                  const sz = 256;
-                  img.onload = () => {
-                    const w = img.width || sz, h = img.height || sz;
-                    const canvas = document.createElement("canvas");
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext("2d");
-                    if (!ctx) { resolve(canvas); return; }
-                    ctx.drawImage(img, 0, 0);
-
-                    // Mapeamento pixel a pixel: transforma cinza em paleta de luzes quentes
-                    // preto → preto | baixo brilho → âmbar | alto brilho → ouro/branco-dourado
-                    const id = ctx.getImageData(0, 0, w, h);
-                    const d = id.data;
-                    for (let i = 0; i < d.length; i += 4) {
-                      const b = d[i] / 255;              // brightness 0–1 (grayscale)
-                      const e = Math.pow(b, 0.65);       // realça midtones
-                      d[i]   = Math.min(255, e * 255);               // R: pleno
-                      d[i+1] = Math.min(255, e * e * 230);           // G: quadrático → âmbar/ouro
-                      d[i+2] = Math.min(255, Math.pow(e, 3.5) * 120); // B: cúbico → toque azul só no núcleo
-                    }
-                    ctx.putImageData(id, 0, 0);
-                    resolve(canvas);
-                  };
-                  img.onerror = () => {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = sz; canvas.height = sz;
-                    resolve(canvas);
-                  };
-                  img.src = url;
-                });
-              },
-            });
-
-            const nightLayer = new GoldenNightLayer({
-              copyright: "NASA Black Marble — VIIRS 2016 / NASA GIBS",
+            const nightLayer = new TileLayer({
+              url: "https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Earth_at_Night_WM/MapServer",
+              copyright: "Earth at Night © Esri, NASA, NOAA",
               visible: false,
             });
             dayLayerRef.current = dayLayer;
