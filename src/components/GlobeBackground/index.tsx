@@ -239,7 +239,7 @@ const GlobeBackground = () => {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/TileLayer",
-        "esri/layers/GraphicsLayer",
+        "esri/layers/BaseTileLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -254,7 +254,7 @@ const GlobeBackground = () => {
             Map,
             SceneView,
             TileLayer,
-            GraphicsLayer,
+            BaseTileLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -298,12 +298,58 @@ const GlobeBackground = () => {
             const dayLayer = new TileLayer({
               url: "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer",
               copyright: "Tiles © Esri",
-              visible: !isNightSaved,
+              visible: true,
+            });
+            // BaseTileLayer personalizado: coloriza cada tile via Canvas 2D
+            // antes do ESRI renderizar — só afeta os tiles, não estrelas/atmosfera
+            const GoldenNightLayer = BaseTileLayer.createSubclass({
+              fetchTile(level: number, row: number, col: number) {
+                const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/${level}/${row}/${col}.png`;
+                return new Promise<HTMLCanvasElement>((resolve) => {
+                  const img = new Image();
+                  img.crossOrigin = "anonymous";
+                  const sz = 256;
+                  img.onload = () => {
+                    const w = img.width || sz, h = img.height || sz;
+                    const canvas = document.createElement("canvas");
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext("2d");
+                    if (!ctx) { resolve(canvas); return; }
+                    ctx.drawImage(img, 0, 0);
+
+                    // Mapeamento pixel a pixel: transforma cinza em paleta de luzes quentes
+                    // preto → preto | baixo brilho → âmbar | alto brilho → ouro/branco-dourado
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const d = id.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                      const b = d[i] / 255;              // brightness 0–1 (grayscale)
+                      const e = Math.pow(b, 0.65);       // realça midtones
+                      d[i]   = Math.min(255, e * 255);               // R: pleno
+                      d[i+1] = Math.min(255, e * e * 230);           // G: quadrático → âmbar/ouro
+                      d[i+2] = Math.min(255, Math.pow(e, 3.5) * 120); // B: cúbico → toque azul só no núcleo
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    resolve(canvas);
+                  };
+                  img.onerror = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = sz; canvas.height = sz;
+                    resolve(canvas);
+                  };
+                  img.src = url;
+                });
+              },
+            });
+
+            const nightLayer = new GoldenNightLayer({
+              copyright: "NASA Black Marble — VIIRS 2016 / NASA GIBS",
+              visible: false,
             });
             dayLayerRef.current = dayLayer;
+            nightLayerRef.current = nightLayer;
 
             const basemap = new Basemap({
-              baseLayers: [dayLayer],
+              baseLayers: [dayLayer, nightLayer],
             });
 
             const map = new Map({
@@ -317,26 +363,6 @@ const GlobeBackground = () => {
                 ],
               },
             });
-
-            // Textura noturna 8K (Solar System Scope) aplicada como mesh esférico
-            const nightMesh = Mesh.createSphere(
-              new Point({ x: 0, y: -90, z: -(2 * R + 10000) }),
-              {
-                size: 2 * (R + 10000),
-                densificationFactor: 5,
-                material: { colorTexture: "/8k_earth_nightmap.jpg", doubleSided: false },
-              }
-            );
-            nightMesh.components[0].shading = "flat";
-            const nightGraphicsLayer = new GraphicsLayer({
-              graphics: [new Graphic({
-                geometry: nightMesh,
-                symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
-              })],
-              visible: isNightSaved,
-            });
-            map.add(nightGraphicsLayer);
-            nightLayerRef.current = nightGraphicsLayer;
 
             const view = new SceneView({
               container: "globeBgDiv",
@@ -370,6 +396,8 @@ const GlobeBackground = () => {
             document.head.appendChild(esriOverride);
 
             if (isNightSaved) {
+              dayLayer.visible = false;
+              nightLayer.visible = true;
               const el = document.getElementById("globeBgDiv");
               if (el) el.style.filter = "brightness(0.6)";
             }
