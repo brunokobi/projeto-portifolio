@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadModules, setDefaultOptions } from "esri-loader";
 
 // Checa se lat/lon está na metade visível do globo em relação à câmera
@@ -50,39 +50,37 @@ interface ArcState {
   opacity: number;
 }
 
-const CITIES = [
-  // América do Sul
-  { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
-  { name: "Vitória-ES", lat: -20.3155, lon: -40.3128 },
-  { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
-  // América do Norte
-  { name: "Mexico City", lat: 19.4326, lon: -99.1332 },
-  { name: "Chicago", lat: 41.8781, lon: -87.6298 },
-  { name: "New York", lat: 40.7128, lon: -74.006 },
-  { name: "San Francisco", lat: 37.7749, lon: -122.4194 },
-  // Europa
-  { name: "Madrid", lat: 40.4168, lon: -3.7038 },
-  { name: "London", lat: 51.5074, lon: -0.1278 },
-  { name: "Paris", lat: 48.8566, lon: 2.3522 },
-  { name: "Berlin", lat: 52.52, lon: 13.405 },
-  { name: "Moscow", lat: 55.7558, lon: 37.6173 },
-  // Oriente Médio / África
-  { name: "Istanbul", lat: 41.0151, lon: 28.9795 },
-  { name: "Nairobi", lat: -1.2921, lon: 36.8219 },
-  { name: "Cairo", lat: 30.0444, lon: 31.2357 },
-  { name: "Lagos", lat: 6.5244, lon: 3.3792 },
-  { name: "Dubai", lat: 25.2048, lon: 55.2708 },
-  // Ásia
-  { name: "Mumbai", lat: 19.076, lon: 72.8777 },
-  { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
-  { name: "Singapore", lat: 1.3521, lon: 103.8198 },
-  { name: "Beijing", lat: 39.9042, lon: 116.4074 },
-  { name: "Seoul", lat: 37.5665, lon: 126.978 },
-  { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
-  // Oceania / Pacífico
-  { name: "Sydney", lat: -33.8688, lon: 151.2093 },
-  { name: "Auckland", lat: -36.8485, lon: 174.7633 },
-  { name: "Honolulu", lat: 21.3069, lon: -157.8583 },
+interface City {
+  name: string;
+  lat: number;
+  lon: number;
+  country: string;
+  desc: string;
+  tags: string[];
+}
+
+const CITIES: City[] = [
+  { name: "Vitória-ES",     lat: -20.3155, lon: -40.3128, country: "Brasil",         desc: "",                                                                                                                                            tags: [] },
+  { name: "San Francisco",  lat:  37.7749, lon:-122.4194, country: "EUA",            desc: "Principal epicentro mundial de inovação, liderando em investimentos de risco, inteligência artificial e ecossistema de startups.",           tags: ["IA", "Startups", "VC"] },
+  { name: "Nova York",      lat:  40.7128, lon: -74.006,  country: "EUA",            desc: "Capital financeira global, destacando-se fortemente no setor de fintechs e expansão rápida de inteligência artificial.",                    tags: ["Fintech", "IA", "Finanças"] },
+  { name: "Londres",        lat:  51.5074, lon:  -0.1278, country: "Reino Unido",    desc: "Principal ecossistema tecnológico da Europa, reconhecida por liderar a regulação de IA, fintechs e finanças descentralizadas.",             tags: ["Fintech", "IA", "DeFi"] },
+  { name: "Tóquio",         lat:  35.6762, lon: 139.6503, country: "Japão",          desc: "Centro tecnológico asiático pioneiro em robótica, automação, mobilidade inteligente e infraestrutura urbana de internet.",                   tags: ["Robótica", "IoT", "Mobilidade"] },
+  { name: "Seul",           lat:  37.5665, lon: 126.978,  country: "Coreia do Sul",  desc: "Conhecida como cidade do futuro, destaca-se em conectividade 5G, hardware, IoT e serviços públicos digitais.",                             tags: ["5G", "Hardware", "IoT"] },
+  { name: "Singapura",      lat:   1.3521, lon: 103.8198, country: "Singapura",      desc: "Líder asiática em cidades inteligentes, investimento em Inteligência Artificial e forte atração de talentos internacionais.",               tags: ["Smart City", "IA", "Talentos"] },
+  { name: "Shenzhen",       lat:  22.5431, lon: 114.0579, country: "China",          desc: "O 'Vale do Silício do Hardware', principal polo mundial de fabricação, prototipagem rápida e inovação industrial.",                          tags: ["Hardware", "Manufatura", "IoT"] },
+  { name: "Bangalore",      lat:  12.9716, lon:  77.5946, country: "Índia",          desc: "Vale do Silício da Índia, concentra a maior força de trabalho global em terceirização de TI e serviços de software.",                      tags: ["TI", "Software", "Outsourcing"] },
+  { name: "Berlim",         lat:  52.52,   lon:  13.405,  country: "Alemanha",       desc: "Um dos maiores polos de startups na Europa, com foco em e-commerce, software e cultura tecnológica aberta.",                               tags: ["Startups", "E-commerce", "Software"] },
+  { name: "São Paulo",      lat: -23.5505, lon: -46.6333, country: "Brasil",         desc: "Principal motor de inovação e tecnologia da América Latina, abrigando a maior concentração de fintechs e unicórnios da região.",            tags: ["Fintech", "Unicórnios", "LatAm"] },
+  { name: "Tel Aviv",       lat:  32.0853, lon:  34.7818, country: "Israel",         desc: "Silicon Wadi, líder global em segurança digital, defesa e inteligência artificial profunda.",                                               tags: ["Cybersecurity", "IA", "Defesa"] },
+  { name: "Paris",          lat:  48.8566, lon:   2.3522, country: "França",         desc: "Grande polo europeu em forte ascensão, destacando-se em pesquisas avançadas de IA e investimentos governamentais no setor.",                tags: ["IA", "Pesquisa", "Inovação"] },
+  { name: "Amsterdã",       lat:  52.3676, lon:   4.9041, country: "Países Baixos",  desc: "Hub estratégico na Europa para semicondutores, logística inteligente, computação em nuvem e tecnologia verde.",                            tags: ["Semicondutores", "Cloud", "Cleantech"] },
+  { name: "Toronto",        lat:  43.6532, lon: -79.3832, country: "Canadá",         desc: "Terceiro maior centro de tecnologia da América do Norte, reconhecido pela pesquisa pioneira em redes neurais e IA.",                        tags: ["IA", "Redes Neurais", "Academia"] },
+  { name: "Sydney",         lat: -33.8688, lon: 151.2093, country: "Austrália",      desc: "Principal motor tecnológico da Oceania, concentrando unicórnios de software corporativo, design digital e fintechs.",                       tags: ["Software", "Fintech", "Design"] },
+  { name: "Xangai",         lat:  31.2304, lon: 121.4737, country: "China",          desc: "Gigante asiático focado em semicondutores, veículos elétricos autônomos, e-commerce e supercomputação.",                                   tags: ["Semicondutores", "IA", "EVs"] },
+  { name: "Austin",         lat:  30.2672, lon: -97.7431, country: "EUA",            desc: "Silicon Hills, atrai gigantes de hardware e software pelo custo competitivo e forte cultura de inovação.",                                  tags: ["Hardware", "Software", "Inovação"] },
+  { name: "Estocolmo",      lat:  59.3293, lon:  18.0686, country: "Suécia",         desc: "Fábrica de unicórnios europeia, famosa por criar gigantes de streaming, jogos eletrônicos e pagamentos digitais.",                          tags: ["Streaming", "Games", "Pagamentos"] },
+  { name: "Pequim",         lat:  39.9042, lon: 116.4074, country: "China",          desc: "Centro acadêmico que abriga as sedes das maiores empresas de internet da China e investimentos massivos em IA e computação quântica.",       tags: ["IA", "Internet", "Quantum"] },
+  { name: "Munique",        lat:  48.1351, lon:  11.582,  country: "Alemanha",       desc: "Polo de tecnologia industrial avançada, liderando em engenharia automotiva digital, IIoT e aeroespacial.",                                  tags: ["Automotivo", "IIoT", "Aeroespacial"] },
 ];
 
 
@@ -106,7 +104,9 @@ const GlobeBackground = () => {
   );
   const dayLayerRef = useRef<any>(null);
   const nightLayerRef = useRef<any>(null);
-
+  const isHoveringRef = useRef(false);
+  const hoveredNameRef = useRef<string | null>(null);
+  const [hoverCity, setHoverCity] = useState<{ city: City; x: number; y: number } | null>(null);
 
   // Geolocalização do visitante → pin especial no globo
   useEffect(() => {
@@ -415,7 +415,7 @@ const GlobeBackground = () => {
               }
             });
 
-            // Cursor pointer ao passar sobre um pin
+            // Cursor pointer e hover modal ao passar sobre um pin
             view.on("pointer-move", (evt: any) => {
               const positions = cityScreenPosRef.current;
               let over = false;
@@ -423,7 +423,21 @@ const GlobeBackground = () => {
                 const cp = positions[i];
                 if (!cp) continue;
                 const dx = evt.x - cp.x, dy = evt.y - cp.y;
-                if (dx * dx + dy * dy < 18 * 18) { over = true; break; }
+                if (dx * dx + dy * dy < 18 * 18) {
+                  over = true;
+                  const city = CITIES[i];
+                  if (hoveredNameRef.current !== city.name) {
+                    hoveredNameRef.current = city.name;
+                    setHoverCity({ city, x: evt.x, y: evt.y });
+                  }
+                  isHoveringRef.current = true;
+                  break;
+                }
+              }
+              if (!over && isHoveringRef.current) {
+                isHoveringRef.current = false;
+                hoveredNameRef.current = null;
+                setHoverCity(null);
               }
               const el = document.getElementById("globeBgDiv");
               if (el) el.style.cursor = over ? "pointer" : "default";
@@ -434,7 +448,7 @@ const GlobeBackground = () => {
                 // Loop de rotação — só inicia após a animação de entrada
                 const rotate = () => {
                   if (!mountedRef.current) return;
-                  if (!userInteracting) {
+                  if (!userInteracting && !isHoveringRef.current) {
                     const cam = view.camera.clone();
                     const arc = activeArcRef.current;
                     if (arc && (arc.phase === "drawing" || arc.phase === "holding")) {
@@ -706,6 +720,56 @@ const GlobeBackground = () => {
           pointerEvents: "none",
         }}
       />
+
+      {hoverCity && hoverCity.city.desc && (
+        <div
+          style={{
+            position: "fixed",
+            left: Math.min(hoverCity.x + 22, window.innerWidth - 310),
+            top: Math.max(hoverCity.y - 120, 8),
+            zIndex: 20,
+            width: "290px",
+            background: "rgba(0, 10, 2, 0.96)",
+            border: "1px solid #00ff41",
+            borderRadius: "6px",
+            padding: "12px 14px",
+            fontFamily: "monospace",
+            pointerEvents: "none",
+            boxShadow: "0 0 24px rgba(0,255,65,0.25), inset 0 0 30px rgba(0,255,65,0.04)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "baseline", gap: "8px", borderBottom: "1px solid rgba(0,255,65,0.25)", paddingBottom: "8px", marginBottom: "8px" }}>
+            <span style={{ fontSize: "13px", fontWeight: "bold", color: "#42ff6b" }}>
+              {hoverCity.city.name}
+            </span>
+            <span style={{ fontSize: "10px", color: "#00cc33" }}>
+              {hoverCity.city.country}
+            </span>
+          </div>
+          <div style={{ fontSize: "11px", color: "#00e055", lineHeight: "1.6" }}>
+            {hoverCity.city.desc}
+          </div>
+          {hoverCity.city.tags.length > 0 && (
+            <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
+              {hoverCity.city.tags.map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    background: "rgba(0,255,65,0.1)",
+                    border: "1px solid rgba(0,255,65,0.35)",
+                    borderRadius: "3px",
+                    padding: "2px 7px",
+                    fontSize: "10px",
+                    color: "#00ff41",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
     </>
   );
