@@ -63,6 +63,7 @@ const Home = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         margin="3%"
+        pointerEvents="none"
       >
         <Stack
           direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
@@ -87,6 +88,7 @@ const Home = () => {
                 fontWeight={300}
                 mb={{ md: -1, lg: -2 }}
                 onMouseOver={falarBoasVindas}
+                pointerEvents="auto"
                 textShadow="0px 0px 10px rgb(0,0,0)"
               >
                 {intl.formatMessage({ id: "ola_mundo" })},&nbsp;
@@ -95,6 +97,7 @@ const Home = () => {
                 fontSize={{ base: "md", md: "xl" }}
                 fontWeight={300}
                 onMouseOver={falarEuSou}
+                pointerEvents="auto"
                 textShadow="0px 0px 10px rgb(0,0,0)"
               >
                 {intl.formatMessage({ id: "eu_sou" })}
@@ -105,6 +108,7 @@ const Home = () => {
               display="flex"
               fontSize={{ base: "3xl", sm: "3xl", md: "3xl", lg: "5xl", xl: "6xl" }}
               onMouseOver={falarNome}
+              pointerEvents="auto"
               textShadow="0px 0px 10px #42c920"
             >
               {intl.formatMessage({ id: "meunome" })}
@@ -123,6 +127,7 @@ const Home = () => {
               fontSize={{ base: "sm", md: "xl" }}
               fontWeight={300}
               onMouseOver={falarFrases}
+              pointerEvents="auto"
               textShadow="0px 0px 10px rgb(0,0,0)"
             >
               <span style={{ borderRight: "2px solid #42c920" }}>{typedPhrase}</span>
