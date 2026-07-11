@@ -530,7 +530,7 @@ const GlobeBackground = () => {
                       cam.position.longitude += diff * 0.025;
                       cam.position.latitude += (tip.lat - cam.position.latitude) * 0.015;
                     } else {
-                      cam.position.longitude -= 0.12;
+                      cam.position.longitude -= 0.15;
                     }
                     view.goTo(cam, { animate: false });
                   }
