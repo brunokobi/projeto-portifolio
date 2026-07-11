@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from "react";
+import { useIntl } from "react-intl";
 import { loadModules, setDefaultOptions } from "esri-loader";
+
+const citySlug = (name: string) =>
+  name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\s-]+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
 
 // Checa se lat/lon está na metade visível do globo em relação à câmera
 const isFacing = (camLat: number, camLon: number, ptLat: number, ptLon: number): boolean => {
@@ -122,6 +131,7 @@ interface UserLoc {
 setDefaultOptions({ css: true });
 
 const GlobeBackground = () => {
+  const intl = useIntl();
   const mountedRef = useRef(true);
 
   const userLocRef = useRef<UserLoc | null>(null);
@@ -775,7 +785,9 @@ const GlobeBackground = () => {
             </span>
           </div>
           <div style={{ fontSize: "11px", color: "#00e055", lineHeight: "1.6" }}>
-            {hoverCity.city.desc}
+            {intl.formatMessage(
+              { id: `city_${citySlug(hoverCity.city.name)}_desc`, defaultMessage: hoverCity.city.desc }
+            )}
           </div>
           {hoverCity.city.tags.length > 0 && (
             <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
