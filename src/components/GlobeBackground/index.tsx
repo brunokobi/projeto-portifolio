@@ -10,38 +10,38 @@ const citySlug = (name: string) =>
     .replace(/[\s-]+/g, "_")
     .replace(/[^a-z0-9_]/g, "");
 
-const COUNTRY_FLAG: Record<string, string> = {
-  "Brasil": "🇧🇷",
-  "EUA": "🇺🇸",
-  "Reino Unido": "🇬🇧",
-  "Japão": "🇯🇵",
-  "Coreia do Sul": "🇰🇷",
-  "Singapura": "🇸🇬",
-  "China": "🇨🇳",
-  "Índia": "🇮🇳",
-  "Alemanha": "🇩🇪",
-  "Israel": "🇮🇱",
-  "França": "🇫🇷",
-  "Países Baixos": "🇳🇱",
-  "Canadá": "🇨🇦",
-  "Austrália": "🇦🇺",
-  "Suécia": "🇸🇪",
-  "Nigéria": "🇳🇬",
-  "Quênia": "🇰🇪",
-  "Egito": "🇪🇬",
-  "África do Sul": "🇿🇦",
-  "EAU": "🇦🇪",
-  "Arábia Saudita": "🇸🇦",
-  "Indonésia": "🇮🇩",
-  "Malásia": "🇲🇾",
-  "Vietnã": "🇻🇳",
-  "Taiwan": "🇹🇼",
-  "Estônia": "🇪🇪",
-  "Polônia": "🇵🇱",
-  "Suíça": "🇨🇭",
-  "México": "🇲🇽",
-  "Argentina": "🇦🇷",
-  "Colômbia": "🇨🇴",
+const COUNTRY_ISO: Record<string, string> = {
+  "Brasil": "br",
+  "EUA": "us",
+  "Reino Unido": "gb",
+  "Japão": "jp",
+  "Coreia do Sul": "kr",
+  "Singapura": "sg",
+  "China": "cn",
+  "Índia": "in",
+  "Alemanha": "de",
+  "Israel": "il",
+  "França": "fr",
+  "Países Baixos": "nl",
+  "Canadá": "ca",
+  "Austrália": "au",
+  "Suécia": "se",
+  "Nigéria": "ng",
+  "Quênia": "ke",
+  "Egito": "eg",
+  "África do Sul": "za",
+  "EAU": "ae",
+  "Arábia Saudita": "sa",
+  "Indonésia": "id",
+  "Malásia": "my",
+  "Vietnã": "vn",
+  "Taiwan": "tw",
+  "Estônia": "ee",
+  "Polônia": "pl",
+  "Suíça": "ch",
+  "México": "mx",
+  "Argentina": "ar",
+  "Colômbia": "co",
 };
 
 // Checa se lat/lon está na metade visível do globo em relação à câmera
@@ -814,9 +814,16 @@ const GlobeBackground = () => {
             <span style={{ fontSize: "13px", fontWeight: "bold", color: "#42ff6b" }}>
               {hoverCity.city.name}
             </span>
-            <span style={{ fontSize: "16px", lineHeight: 1 }} title={hoverCity.city.country}>
-              {COUNTRY_FLAG[hoverCity.city.country] ?? hoverCity.city.country}
-            </span>
+            {COUNTRY_ISO[hoverCity.city.country] ? (
+              <img
+                src={`https://flagcdn.com/20x15/${COUNTRY_ISO[hoverCity.city.country]}.png`}
+                alt={hoverCity.city.country}
+                title={hoverCity.city.country}
+                style={{ width: 20, height: 15, objectFit: "cover", borderRadius: 2, verticalAlign: "middle" }}
+              />
+            ) : (
+              <span style={{ fontSize: "10px", color: "#00cc33" }}>{hoverCity.city.country}</span>
+            )}
           </div>
           <div style={{ fontSize: "11px", color: "#00e055", lineHeight: "1.6" }}>
             {intl.formatMessage(
