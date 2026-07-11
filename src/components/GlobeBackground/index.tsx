@@ -239,6 +239,7 @@ const GlobeBackground = () => {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/TileLayer",
+        "esri/layers/BaseTileLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -253,6 +254,7 @@ const GlobeBackground = () => {
             Map,
             SceneView,
             TileLayer,
+            BaseTileLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -298,9 +300,45 @@ const GlobeBackground = () => {
               copyright: "Tiles © Esri",
               visible: true,
             });
-            const nightLayer = new TileLayer({
-              url: "https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Earth_at_Night_WM/MapServer",
-              copyright: "Earth at Night © Esri, NASA, NOAA",
+            const NightLayer = BaseTileLayer.createSubclass({
+              fetchTile(level: number, row: number, col: number) {
+                const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/${level}/${row}/${col}.png`;
+                return new Promise<HTMLCanvasElement>((resolve) => {
+                  const img = new Image();
+                  img.crossOrigin = "anonymous";
+                  const sz = 256;
+                  img.onload = () => {
+                    const w = img.width || sz, h = img.height || sz;
+                    const canvas = document.createElement("canvas");
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext("2d");
+                    if (!ctx) { resolve(canvas); return; }
+                    ctx.drawImage(img, 0, 0);
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const d = id.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                      const b = d[i] / 255;
+                      // threshold: mantém preto puro para áreas sem luz
+                      const t = Math.max(0, b - 0.05) / 0.95;
+                      const e = Math.pow(t, 0.55);
+                      d[i]   = Math.min(255, e * 255);
+                      d[i+1] = Math.min(255, Math.pow(e, 1.6) * 210);
+                      d[i+2] = Math.min(255, Math.pow(e, 5.0) * 80);
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    resolve(canvas);
+                  };
+                  img.onerror = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = sz; canvas.height = sz;
+                    resolve(canvas);
+                  };
+                  img.src = url;
+                });
+              },
+            });
+            const nightLayer = new NightLayer({
+              copyright: "NASA Black Marble — VIIRS / NASA GIBS",
               visible: false,
             });
             dayLayerRef.current = dayLayer;
