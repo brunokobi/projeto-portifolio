@@ -319,14 +319,15 @@ const GlobeBackground = () => {
                     for (let i = 0; i < d.length; i += 4) {
                       const b = d[i] / 255;
                       if (b < 0.11) {
-                        // preto puro — elimina marrom de pixels oceânicos com brilho residual
-                        d[i] = d[i+1] = d[i+2] = 0;
+                        // transparente — deixa o azul do oceano aparecer por baixo
+                        d[i] = d[i+1] = d[i+2] = d[i+3] = 0;
                       } else {
                         const t = (b - 0.11) / 0.89;
                         const e = Math.pow(t, 0.5);
                         d[i]   = Math.min(255, e * 255);
                         d[i+1] = Math.min(255, Math.pow(e, 1.8) * 210);
                         d[i+2] = Math.min(255, Math.pow(e, 5.5) * 80);
+                        d[i+3] = 255;
                       }
                     }
                     ctx.putImageData(id, 0, 0);
