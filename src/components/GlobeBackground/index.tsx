@@ -309,8 +309,7 @@ const GlobeBackground = () => {
               environment: {
                 background: { type: "color", color: [0, 0, 0, 0] },
                 starsEnabled: false,
-                atmosphereEnabled: true,
-                atmosphere: { quality: "high" },
+                atmosphereEnabled: false,
                 lighting: { type: "virtual" },
               },
               constraints: {
