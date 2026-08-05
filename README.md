@@ -33,6 +33,12 @@
   <a href="https://github.com/brunokobi" target="_blank">GitHub</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/sponsors/brunokobi">
+    <img src="https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F%20Apoiar%20este%20projeto-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Apoiar no GitHub Sponsors" height="38">
+  </a>
+</p>
+
 ---
 
 ## 🌌 O que é este projeto?
@@ -768,3 +774,13 @@ Full Stack Developer & AI Systems Engineer especializado em transformar complexi
 Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las e o que acontece quando algo falha**.
 
 🔗 [brunokobi.netlify.app](https://brunokobi.netlify.app) · [LinkedIn](https://www.linkedin.com/in/brunokobi/) · [GitHub](https://github.com/brunokobi)
+
+---
+
+## 💛 Apoie o projeto
+
+[![GitHub Sponsors](https://img.shields.io/badge/❤%EF%B8%8F%20Apoiar-github.com%2Fsponsors%2Fbrunokobi-ea4aaa?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/brunokobi)
+
+Este portfólio é código aberto e mantido nas horas vagas — infra própria (AWS EC2, self-hosted n8n) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
+
+### ⭐ Se este projeto te inspirou, deixe uma estrela — leva 1 segundo e ajuda demais!
