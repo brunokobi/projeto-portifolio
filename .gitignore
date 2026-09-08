@@ -31,3 +31,5 @@ yarn-error.log*
 /playwright-report
 /test-results
 /playwright/.cache
+# Local Netlify folder
+.netlify
