@@ -21,6 +21,9 @@ import arkon from "../../assets/img/arkon.png";
 import loteria from "../../assets/img/loteria.png";
 import chatbruno from "../../assets/img/chatbruno.png";
 import frota from "../../assets/img/frota.png";
+import grandeVitoria from "../../assets/img/grande-vitoria-dashboard.png";
+import tabelaAcfdv from "../../assets/img/tabela-acfdv.png";
+import letrinhasMagicas from "../../assets/img/letrinhas-magicas.png";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -31,6 +34,42 @@ const Projects = () => {
   // Memoriza a lista para não ser recriada a cada renderização
   const projects = useMemo(
     () => [
+      {
+        title: intl.formatMessage({ id: "project16t" }),
+        link: "",
+        img: grandeVitoria,
+        demo: "https://empresas.brunokobi.tech",
+        description: intl.formatMessage({ id: "project16d" }),
+        tags: [
+          "#FASTAPI",
+          "#SQLITE",
+          "#MAPLIBRE GL",
+          "#MCP",
+          "#XGBOOST",
+          "#NEO4J",
+          "#OPEN DATA",
+          "#DUE DILIGENCE",
+        ],
+        code: "https://github.com/brunokobi/projeto_grande_vitoria_empresas",
+      },
+      {
+        title: intl.formatMessage({ id: "project17t" }),
+        link: "",
+        img: tabelaAcfdv,
+        demo: "https://tabelaacfdv.netlify.app",
+        description: intl.formatMessage({ id: "project17d" }),
+        tags: ["#REACT 19", "#TYPESCRIPT", "#VITE", "#TAILWIND CSS", "#ZUSTAND", "#LOCALSTORAGE"],
+        code: "https://github.com/brunokobi/tabela_acfdv",
+      },
+      {
+        title: intl.formatMessage({ id: "project18t" }),
+        link: "",
+        img: letrinhasMagicas,
+        demo: "https://benjamimteclado.netlify.app",
+        description: intl.formatMessage({ id: "project18d" }),
+        tags: ["#VANILLA TYPESCRIPT", "#VITE", "#WEB SPEECH API", "#NETLIFY", "#UI/UX INFANTIL"],
+        code: "https://github.com/brunokobi/benjamimteclado",
+      },
       {
         title: intl.formatMessage({ id: "project14t" }),
         link: "",
