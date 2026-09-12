@@ -28,7 +28,7 @@ import { track } from "../../utils/track";
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
 import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineMail } from "react-icons/ai";
-import { MdOutlineNewspaper } from "react-icons/md";
+import { MdOutlineNewspaper, MdBusiness } from "react-icons/md";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import { BiCube } from "react-icons/bi";
@@ -203,6 +203,7 @@ const Nav = () => {
       icon: AiOutlineGithub,
     },
     { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
+    { label: "Empresas GV", url: "https://empresas.brunokobi.tech/", icon: MdBusiness },
   ];
 
   const handleLanguageChange = (langId: string) => {
