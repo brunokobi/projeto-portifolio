@@ -8,11 +8,13 @@ const VideoBackground = () => {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+    // Antes disto reatribuía `v.src` pro mesmo valor do <source> e chamava
+    // `v.load()` — como já é a mesma URL, isso não "recarrega" nada, só
+    // força o navegador a buscar o vídeo inteiro de novo do zero (download
+    // duplicado). `play()` sozinho já dispara o carregamento (preload="none"
+    // só adia o carregamento automático do navegador, não impede o play).
     const timer = setTimeout(() => {
-      const src = v.querySelector("source")?.getAttribute("src");
-      if (src) v.src = src;
       v.muted = true;
-      v.load();
       v.play().catch(() => {});
     }, 2000);
     return () => clearTimeout(timer);
