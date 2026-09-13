@@ -7,7 +7,8 @@ import WeatherBar from "./components/WeatherBar";
 import N8nChatWidget from "./components/N8nChatWidget";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import { useLanguage } from "./contexts/useLanguage";
 import { trackClick } from "./utils/track";
 
 import "@formatjs/intl-relativetimeformat/polyfill";

@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import type { LanguageContextType } from "../types";
+import { useState, useCallback, type ReactNode } from "react";
+import { LanguageContext } from "./useLanguage";
 
 const LANG_KEY = "i18nConfig";
 
@@ -12,8 +12,6 @@ const getStoredLang = (): string => {
   }
 };
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
-
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<string>(getStoredLang);
 
@@ -25,10 +23,4 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   return (
     <LanguageContext.Provider value={{ locale, setLanguage }}>{children}</LanguageContext.Provider>
   );
-};
-
-export const useLanguage = (): LanguageContextType => {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage must be used within LanguageProvider");
-  return ctx;
 };

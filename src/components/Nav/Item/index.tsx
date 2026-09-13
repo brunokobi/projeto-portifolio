@@ -20,7 +20,7 @@ const Item = ({ label, url, icon }: ItemProps) => {
 
   return (
     <BreadcrumbItem
-      as={motion.div as any}
+      as={motion.div as unknown as React.ElementType}
       initial="rest"
       whileHover="hover"
       animate="rest"

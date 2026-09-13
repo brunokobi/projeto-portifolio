@@ -24,7 +24,7 @@ interface CategoryCardProps extends MiniCardProps {
 
 interface ScrollRowProps {
   articles: Array<Article & { score?: number }>;
-  CardComponent: React.ComponentType<any>;
+  CardComponent: React.ComponentType<CategoryCardProps>;
 }
 
 interface DrawerArticleRowProps {
@@ -32,8 +32,16 @@ interface DrawerArticleRowProps {
   accent: string;
 }
 
+// Só o que o CategoryDrawer de fato lê (title/desc/accent/articles) — não o
+// NewsCategory inteiro. `id`/`sources` nunca chegam a existir no objeto
+// montado em `openDrawer` abaixo, então exigi-los aqui seria uma mentira de
+// tipo (era um "any" escondendo essa lacuna antes).
+export type DrawerCategory = Pick<NewsCategory, "title" | "desc" | "accent"> & {
+  articles: Array<Article & { score?: number }>;
+};
+
 interface CategoryDrawerProps {
-  cat: (NewsCategory & { articles: Array<Article & { score?: number }> }) | null;
+  cat: DrawerCategory | null;
   onClose: () => void;
 }
 
@@ -42,7 +50,7 @@ interface CategorySectionProps {
   desc: string;
   accent: string;
   articles: Array<Article & { score?: number }>;
-  onOpenDrawer?: (cat: any) => void;
+  onOpenDrawer?: (cat: DrawerCategory) => void;
 }
 
 // ── Corners helper ─────────────────────────────────────────────────────────

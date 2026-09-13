@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import React from "react";
-import { LanguageProvider, useLanguage } from "../LanguageContext";
+import { LanguageProvider } from "../LanguageContext";
+import { useLanguage } from "../useLanguage";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <LanguageProvider>{children}</LanguageProvider>

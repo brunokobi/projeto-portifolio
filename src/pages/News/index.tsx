@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Box, Flex, Text, Link, Spinner, VStack, HStack, Icon, Tooltip } from "@chakra-ui/react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Box, Flex, Text, Link, VStack, HStack, Icon, Tooltip } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { BsSortDown, BsClock, BsQuestionCircle } from "react-icons/bs";
 import { IoMdRocket } from "react-icons/io";
@@ -10,102 +10,18 @@ import { BiCube } from "react-icons/bi";
 import brazilFlag from "../../assets/img/brazil.png";
 
 import { parseRSS, translateArticles, PROXY, CACHE_TTL } from "../../utils/rss";
-import { GREEN, MATRIX_CSS, MCHARS, CATEGORIES, FEEDS } from "./newsConstants";
+import { GREEN, MATRIX_CSS, CATEGORIES, FEEDS } from "./newsConstants";
 import { isSpam, isRelevant, scoreArticle, heroScore, isTooOld, HERO_MAX_AGE_MS, MIXED_SOURCES } from "./newsFunctions";
 import { HeroCarousel } from "./HeroCarousel";
-import { ScrollRow, MiniCard, CategorySection, CategoryDrawer } from "./CategorySection";
-import type { Article, NewsCategory } from "../../types";
+import { ScrollRow, MiniCard, CategorySection, CategoryDrawer, type DrawerCategory } from "./CategorySection";
+import { MatrixLoader, FilterBtn } from "./NewsUI";
+import type { Article } from "../../types";
 
 type ScoredArticle = Article & { score: number };
-type DrawerCat = NewsCategory & { articles: ScoredArticle[] };
+type DrawerCat = DrawerCategory;
 
 // ── Cache in-memory ────────────────────────────────────────────────────────
 const cache: { data: ScoredArticle[] | null; ts: number } = { data: null, ts: 0 };
-
-// ── Matrix rain loader ─────────────────────────────────────────────────────
-function MatrixLoader() {
-  const drops = useMemo(
-    () =>
-      Array.from({ length: 60 }, (_, i) => ({
-        char: MCHARS[(i * 7) % MCHARS.length],
-        left: `${(i / 60) * 100}%`,
-        delay: (i * 83) % 1400,
-        dur: 0.6 + (i % 5) * 0.18,
-        top: `${(i * 37) % 100}%`,
-        op: 0.08 + (i % 4) * 0.07,
-      })),
-    []
-  );
-
-  return (
-    <Flex h="70vh" align="center" justify="center" position="relative" overflow="hidden">
-      {drops.map((d, i) => (
-        <Text
-          key={i}
-          position="absolute"
-          left={d.left}
-          top={d.top}
-          fontSize="xs"
-          color={GREEN}
-          fontFamily="monospace"
-          userSelect="none"
-          style={{ opacity: d.op, animation: `nwsMatrixFall ${d.dur}s ${d.delay}ms infinite` }}
-        >
-          {d.char}
-        </Text>
-      ))}
-      <VStack spacing={4} zIndex={1}>
-        <Spinner
-          size="xl"
-          color={GREEN}
-          thickness="3px"
-          style={{ animation: "nwsPulse 1.5s ease infinite" }}
-        />
-        <Text fontSize="sm" color={GREEN} fontFamily="monospace" letterSpacing="0.2em">
-          CARREGANDO FEEDS...
-        </Text>
-        <Text fontSize="xs" color="whiteAlpha.300" fontFamily="monospace">
-          {MCHARS.slice(0, 12).join(" ")}
-        </Text>
-      </VStack>
-    </Flex>
-  );
-}
-
-// ── Filter Button ──────────────────────────────────────────────────────────
-function FilterBtn({
-  id,
-  label,
-  active,
-  onClick,
-}: {
-  id: string;
-  label: string;
-  active: boolean;
-  onClick: (id: string) => void;
-}) {
-  return (
-    <Box
-      as="button"
-      onClick={() => onClick(id)}
-      aria-pressed={active}
-      px={3}
-      py={1}
-      borderRadius="4px"
-      fontSize="xs"
-      fontFamily="heading"
-      fontWeight={active ? "700" : "500"}
-      color={active ? GREEN : "whiteAlpha.600"}
-      bg={active ? `${GREEN}15` : "transparent"}
-      transition="all .15s"
-      _hover={{ color: GREEN, bg: `${GREEN}10` }}
-      whiteSpace="nowrap"
-      style={active ? { textShadow: `0 0 8px ${GREEN}88` } : {}}
-    >
-      {label}
-    </Box>
-  );
-}
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 const NewsPage = () => {

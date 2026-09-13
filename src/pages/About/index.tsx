@@ -11,10 +11,8 @@ import {
   ScaleFade,
   Wrap,
   WrapItem,
-  HStack,
-  Button,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, type ElementType } from "react";
 import { track } from "../../utils/track";
 import rock from "../../assets/img/rock.png"; // Imagem usada na seção de experiência
 import profilePhoto from "../../assets/img/profile.png"; // Foto de perfil do usuário
@@ -28,18 +26,7 @@ import { skills } from "./skills"; // Lista de habilidades
 import { motion, AnimatePresence } from "framer-motion"; // Biblioteca para animações avançadas
 
 import falar from "../../components/TextAudio"; // Função para síntese de voz
-
-import kenzie from "../../assets/img/certificadoKenzie.jpg"; // Certificados
-import certf_1 from "../../assets/img/certificado_1.png";
-import certf_2 from "../../assets/img/certificado_2.png";
-import certf_3 from "../../assets/img/certificado_3.png";
-import certf_4 from "../../assets/img/certificado_4.png";
-import certf_5 from "../../assets/img/certificado_5.png";
-import certf_9 from "../../assets/img/certificado_6.png";
-import certf_10 from "../../assets/img/certificado_7.png";
-import certf_8 from "../../assets/img//cert_form_mla.jpg";
-import certf_6 from "../../assets/img//cert_form_qa.jpg";
-import certf_7 from "../../assets/img/cert_form_npl.jpg";
+import CertificateCarousel from "./CertificateCarousel"; // Carrossel de certificados
 
 import { useObserver } from "./observers"; // Hook personalizado para observação de elementos no viewport
 import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrelas animadas
@@ -53,25 +40,6 @@ const About = () => {
   const presentationRef = useRef(null); // Referência para a seção de apresentação
 
   useEffect(() => { track({ event: "pageview", page: "/about" }); }, []);
-
-  const [certIdx, setCertIdx] = useState(0);
-
-  // Lista de certificados
-  const certifications = useMemo(() => {
-    return [
-      kenzie,
-      certf_1,
-      certf_2,
-      certf_3,
-      certf_4,
-      certf_5,
-      certf_6,
-      certf_7,
-      certf_8,
-      certf_9,
-      certf_10,
-    ];
-  }, []);
 
   // Verifica se as seções estão visíveis no viewport
   const { inViewport: presentationViewPort } = useObserver(presentationRef);
@@ -120,7 +88,7 @@ const About = () => {
             maxW={{ base: "100%", md: "700px" }}
           >
             {/* Foto de perfil */}
-            <Box as={SlideFade as any} in={presentationViewPort} offsetX="-50%" transition="all 1s">
+            <Box as={SlideFade as unknown as ElementType} in={presentationViewPort} offsetX="-50%" transition="all 1s">
               <Image src={profilePhoto} w={300} ref={presentationRef} />
             </Box>
             <Divider
@@ -132,7 +100,7 @@ const About = () => {
             {/* Texto "Sobre mim" */}
             <Box
               maxW="350px"
-              as={SlideFade as any}
+              as={SlideFade as unknown as ElementType}
               in={presentationViewPort}
               offsetY="-50%"
               transition="all 1s"
@@ -195,7 +163,7 @@ const About = () => {
           >
             <Box
               maxW="350px"
-              as={ScaleFade as any}
+              as={ScaleFade as unknown as ElementType}
               initialScale={0.6}
               in={aboutViewPort}
               transition="all 1s"
@@ -220,7 +188,7 @@ const About = () => {
             <Box
               mt={-24}
               textAlign="center"
-              as={SlideFade as any}
+              as={SlideFade as unknown as ElementType}
               in={aboutViewPort}
               offsetX="50%"
               transition="all 1s"
@@ -251,7 +219,7 @@ const About = () => {
           >
             <Box
               textAlign="center"
-              as={SlideFade as any}
+              as={SlideFade as unknown as ElementType}
               in={experienciaViewPort}
               offsetX="-50%"
               transition="all 1s"
@@ -260,7 +228,7 @@ const About = () => {
             </Box>
             <Box
               maxW="350px"
-              as={SlideFade as any}
+              as={SlideFade as unknown as ElementType}
               in={experienciaViewPort}
               offsetX="50%"
               transition="all 1s"
@@ -420,82 +388,7 @@ const About = () => {
             </Link>
           </Box>
 
-          <Stack
-            justify="space-between"
-            alignItems="center"
-            w="100%"
-            maxW={{ base: "350px", md: "700px" }}
-            id="qualifications"
-            spacing={12}
-          >
-            <div>
-              <Heading
-                fontSize={{ base: "3xl", lg: "4xl" }}
-                textShadow="0px 0px 10px #42c920"
-                textAlign="center"
-                onMouseOver={() => falar(intl.formatMessage({ id: "quali" }))}
-              >
-                {intl.formatMessage({ id: "quali" })}
-              </Heading>
-            </div>
-            <Box position="relative" w="100%" maxW="500px" mx="auto">
-              <Image
-                src={certifications[certIdx]}
-                alt={`Certificado ${certIdx + 1}`}
-                w="100%"
-                borderRadius="md"
-                border="1px solid"
-                borderColor="whiteAlpha.200"
-                loading="lazy"
-              />
-              <HStack
-                position="absolute"
-                bottom={2}
-                left={0}
-                right={0}
-                justify="center"
-                spacing={2}
-              >
-                {certifications.map((_, i) => (
-                  <Box
-                    key={i}
-                    as="button"
-                    w={certIdx === i ? "20px" : "8px"}
-                    h="8px"
-                    borderRadius="full"
-                    bg={certIdx === i ? "#42c920" : "whiteAlpha.400"}
-                    transition="all 0.2s"
-                    onClick={() => setCertIdx(i)}
-                  />
-                ))}
-              </HStack>
-              <HStack justify="space-between" mt={2}>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  color="#42c920"
-                  _hover={{ bg: "whiteAlpha.100" }}
-                  onClick={() =>
-                    setCertIdx((i) => (i - 1 + certifications.length) % certifications.length)
-                  }
-                >
-                  ← Anterior
-                </Button>
-                <Text fontSize="xs" color="whiteAlpha.600">
-                  {certIdx + 1} / {certifications.length}
-                </Text>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  color="#42c920"
-                  _hover={{ bg: "whiteAlpha.100" }}
-                  onClick={() => setCertIdx((i) => (i + 1) % certifications.length)}
-                >
-                  Próximo →
-                </Button>
-              </HStack>
-            </Box>
-          </Stack>
+          <CertificateCarousel />
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
