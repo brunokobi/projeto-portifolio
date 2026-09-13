@@ -1,5 +1,12 @@
 import type { Handler } from "@netlify/functions";
 import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
+import { FEEDS } from "../../src/pages/News/newsConstants";
+
+// Allowlist derivada dos 52 feeds RSS reais consumidos pelo painel de notícias.
+// Sem isso, esta function é um proxy HTTP aberto: qualquer um poderia usar
+// ?url= pra fazer o servidor buscar (e devolver, com CORS liberado) qualquer
+// URL arbitrária — SSRF / relay anônimo.
+const ALLOWED_HOSTS = new Set(FEEDS.map((f) => new URL(f.url).hostname.toLowerCase()));
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -17,6 +24,17 @@ export const handler: Handler = async (event) => {
   const feedUrl = event.queryStringParameters?.url;
   if (!feedUrl) {
     return { statusCode: 400, body: JSON.stringify({ error: "Missing url param" }) };
+  }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(feedUrl);
+  } catch {
+    return { statusCode: 400, body: JSON.stringify({ error: "Invalid url" }) };
+  }
+
+  if (parsed.protocol !== "https:" || !ALLOWED_HOSTS.has(parsed.hostname.toLowerCase())) {
+    return { statusCode: 403, body: JSON.stringify({ error: "Host not allowed" }) };
   }
 
   const tracer = getTracer("news");

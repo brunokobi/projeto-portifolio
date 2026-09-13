@@ -7,6 +7,17 @@ interface FormPayload {
   mensagem?: string;
 }
 
+// Evita HTML injection no e-mail de notificação (nome/mensagem vêm direto do
+// visitante e são interpolados no corpo HTML do e-mail).
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export const handler: Handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -71,10 +82,10 @@ export const handler: Handler = async (event) => {
         html: `
           <div style="font-family:monospace;background:#000;color:#00ff41;padding:24px;border:1px solid #00ff41;border-radius:8px;">
             <h2 style="color:#00ff41;letter-spacing:4px;">▌ NOVA TRANSMISSÃO ▐</h2>
-            <p><strong>Nome:</strong> ${nome}</p>
-            <p><strong>Email:</strong> <a href="mailto:${email}" style="color:#00ff41;">${email}</a></p>
+            <p><strong>Nome:</strong> ${escapeHtml(nome)}</p>
+            <p><strong>Email:</strong> <a href="mailto:${encodeURIComponent(email)}" style="color:#00ff41;">${escapeHtml(email)}</a></p>
             <p><strong>Mensagem:</strong></p>
-            <blockquote style="border-left:3px solid #00ff41;padding-left:12px;color:#aaffaa;">${mensagem.replace(/\n/g, "<br>")}</blockquote>
+            <blockquote style="border-left:3px solid #00ff41;padding-left:12px;color:#aaffaa;">${escapeHtml(mensagem).replace(/\n/g, "<br>")}</blockquote>
           </div>
         `,
       }),

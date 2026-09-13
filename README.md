@@ -134,7 +134,6 @@ Crie um arquivo `.env.local` na raiz (veja `.env.example` para referência compl
 VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
 VITE_ESRI_API_KEY=AAPTxy8BH...
-VITE_HUGGING_FACE_API_KEY=hf_xxxx
 RESEND_API_KEY=re_xxxx          # Netlify env var — envio de email do formulário de contato
 CONTACT_TO_EMAIL=seu@email.com  # Netlify env var — destino das notificações (opcional)
 TELEGRAM_BOT_TOKEN=123456:ABC   # Netlify env var — bot de alertas em tempo real

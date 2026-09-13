@@ -11,7 +11,6 @@ const Home = lazy(() => import("../pages/Home"));
 const About = lazy(() => import("../pages/About"));
 const Projects = lazy(() => import("../pages/Projects"));
 const Curriculo = lazy(() => import("../pages/Curriculo"));
-const LlamaChat = lazy(() => import("../pages/ChatGPT/index"));
 const Mapa = lazy(() => import("../pages/Map/index"));
 const News = lazy(() => import("../pages/News/index"));
 
@@ -63,7 +62,6 @@ const Router = () => {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/projects" element={<Projects />} />
-            <Route path="/chat" element={<LlamaChat />} />
             <Route path="/map" element={<Mapa />} />
             <Route path="/curriculo" element={<Curriculo />} />
             <Route path="/news" element={<News />} />
