@@ -1,7 +1,13 @@
 // Selo de status ao vivo dos serviços que rodam em produção na infra própria
 // (VPS Oracle Cloud). Checagem 100% client-side, sem backend novo: cada
-// visitante confere na hora, via fetch com mode:"no-cors" (evita CORS/leitura
-// de resposta — só nos interessa se a conexão foi estabelecida ou falhou).
+// visitante confere na hora.
+//
+// Por que <img> em vez de fetch(): a primeira versão usava
+// fetch(url, {mode:"no-cors"}), mas o ORB (Opaque Response Blocking) do
+// Chrome bloqueia respostas HTML/JSON cross-origin buscadas via no-cors —
+// dava falso "offline" com o serviço no ar (confirmado testando ao vivo).
+// Carregar uma imagem estática conhecida de cada serviço via onload/onerror
+// não sofre esse bloqueio e é a técnica clássica de "ping" cross-origin.
 import { useEffect, useState } from "react";
 import { Box, HStack, Stack, Text } from "@chakra-ui/react";
 import falar from "../../components/TextAudio";
@@ -10,27 +16,37 @@ type Status = "checking" | "up" | "down";
 
 interface Service {
   label: string;
-  url: string;
+  // Precisa ser uma imagem estática que sempre responde 200 quando o
+  // serviço está no ar (favicon, og-image etc.) — não a página em si.
+  pingUrl: string;
 }
 
 const SERVICES: Service[] = [
-  { label: "chatBruno (n8n, AWS/Oracle self-hosted)", url: "https://n8n.brunokobi.tech/" },
-  { label: "Dataset Grande Vitória (351k empresas)", url: "https://empresas.brunokobi.tech/" },
+  { label: "chatBruno (n8n, AWS/Oracle self-hosted)", pingUrl: "https://n8n.brunokobi.tech/favicon.ico" },
+  { label: "Dataset Grande Vitória (351k empresas)", pingUrl: "https://empresas.brunokobi.tech/og-image.png" },
 ];
 
 const CHECK_TIMEOUT_MS = 6000;
 
-async function checkService(url: string): Promise<Status> {
-  try {
-    // no-cors: a resposta vem opaca (não dá pra ler status/corpo), mas isso
-    // não importa aqui — só queremos saber se a conexão foi estabelecida.
-    // Falha de rede/timeout rejeita a promise; resposta HTTP (mesmo erro)
-    // não rejeita.
-    await fetch(url, { mode: "no-cors", signal: AbortSignal.timeout(CHECK_TIMEOUT_MS) });
-    return "up";
-  } catch {
-    return "down";
-  }
+function pingImage(url: string): Promise<Status> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const timer = setTimeout(() => {
+      img.onload = null;
+      img.onerror = null;
+      resolve("down");
+    }, CHECK_TIMEOUT_MS);
+    img.onload = () => {
+      clearTimeout(timer);
+      resolve("up");
+    };
+    img.onerror = () => {
+      clearTimeout(timer);
+      resolve("down");
+    };
+    // cache-busting: queremos saber se está no ar agora, não se já esteve
+    img.src = `${url}?_t=${Date.now()}`;
+  });
 }
 
 const DOT_COLOR: Record<Status, string> = {
@@ -60,7 +76,7 @@ const ServiceStatus = () => {
   useEffect(() => {
     let cancelled = false;
     SERVICES.forEach((service, i) => {
-      checkService(service.url).then((status) => {
+      pingImage(service.pingUrl).then((status) => {
         if (cancelled) return;
         setStatuses((prev) => {
           const next = [...prev];
@@ -97,7 +113,7 @@ const ServiceStatus = () => {
       </Text>
       <Stack spacing={2}>
         {SERVICES.map((service, i) => (
-          <HStack key={service.url} spacing={3}>
+          <HStack key={service.pingUrl} spacing={3}>
             <StatusDot status={statuses[i]} />
             <Text fontSize="sm" color="whiteAlpha.800">
               {service.label}
