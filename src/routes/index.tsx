@@ -6,8 +6,14 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import Nav from "../components/Nav";
 
-// Lazy loading: cada página vira chunk separado — não entra no bundle inicial
-const Home = lazy(() => import("../pages/Home"));
+// Home é a rota de entrada de ~100% dos visitantes — lazy-load nela só
+// adiciona uma volta de rede extra (baixar+parsear o chunk) antes do
+// navegador sequer descobrir a imagem de perfil, atrasando o LCP em
+// segundos (medido com Lighthouse). Import estático: já ia pro bundle
+// principal mesmo assim, só sem o round-trip a mais.
+import Home from "../pages/Home";
+// Lazy loading nas demais: cada página vira chunk separado, não entra no
+// bundle inicial — faz sentido pra rotas que a maioria não visita de cara.
 const About = lazy(() => import("../pages/About"));
 const Projects = lazy(() => import("../pages/Projects"));
 const Curriculo = lazy(() => import("../pages/Curriculo"));
