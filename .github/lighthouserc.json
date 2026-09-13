@@ -1,0 +1,9 @@
+{
+  "ci": {
+    "collect": {
+      "settings": {
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --use-gl=angle --use-angle=swiftshader-webgl --ignore-gpu-blocklist --enable-webgl"
+      }
+    }
+  }
+}
