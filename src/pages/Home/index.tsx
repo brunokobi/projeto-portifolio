@@ -1,17 +1,22 @@
 import { Flex, Heading, SlideFade, Stack } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
 import { track } from "../../utils/track";
 
 import VideoBackground from "../../components/VideoBackground";
 import BigBangLoader from "../../components/BigBangLoader";
-import GlobeBackground from "../../components/GlobeBackground";
 import IconsBackground from "../../components/IconsBackground";
 import { useIntl } from "react-intl";
 import falar from "../../components/TextAudio";
+
+// GlobeBackground (ArcGIS SceneView, WebGL 3D) é decorativo e o mais pesado
+// de longe do que roda na Home — lazy-load pra não bloquear FCP/LCP do
+// conteúdo em texto acima dele. Sem loading fallback (é background, não faz
+// sentido mostrar spinner por cima do resto da página só por causa dele).
+const GlobeBackground = lazy(() => import("../../components/GlobeBackground"));
 
 const Home = () => {
   const intl = useIntl();
@@ -48,7 +53,9 @@ const Home = () => {
     <AnimatePresence>
       <VideoBackground />
       <BigBangLoader />
-      <GlobeBackground />
+      <Suspense fallback={null}>
+        <GlobeBackground />
+      </Suspense>
       <IconsBackground />
 
       <Flex

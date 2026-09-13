@@ -25,7 +25,6 @@ jobs:
         with:
           urls: |
             https://brunokobi.netlify.app
-          budgetPath: .github/lighthouse-budget.json
           configPath: .github/lighthouserc.json
           runs: 3
           uploadArtifacts: true
