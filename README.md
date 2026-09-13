@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-62%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-72%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -22,15 +22,19 @@
   <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
-  <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" />
+  <img src="https://img.shields.io/badge/Oracle_Cloud_VPS-F80000?style=for-the-badge&logo=oracle&logoColor=white" />
+  <img src="https://img.shields.io/badge/Cloudflare_Tunnel-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" />
   <img src="https://img.shields.io/badge/LangChain_RAG-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" />
   <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
 </p>
 
 <p align="center">
-  <a href="https://brunokobi.netlify.app" target="_blank"><strong>🌐 Ver ao vivo</strong></a> ·
+  <a href="https://brunokobi.tech" target="_blank"><strong>🌐 Ver ao vivo</strong></a> ·
   <a href="https://www.linkedin.com/in/brunokobi/" target="_blank">LinkedIn</a> ·
   <a href="https://github.com/brunokobi" target="_blank">GitHub</a>
+</p>
+<p align="center">
+  <sub>(também disponível em <a href="https://brunokobi.netlify.app">brunokobi.netlify.app</a>)</sub>
 </p>
 
 <p align="center">
@@ -45,7 +49,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** hospedado em AWS EC2, mapa 3D geoespacial, feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), mapa 3D geoespacial, feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -57,19 +61,27 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 ┌─────────────────────────────────────────────────────────┐
 │              Browser (React 18 + Vite 5)                │
 │  i18n · WeatherBar · NewsPanel · ArcGIS · TextToSpeech  │
+│  ServiceStatus (ping ao vivo da infra própria)          │
 └──────────────────┬──────────────────────────────────────┘
                    │ HTTPS
       ┌────────────┼────────────────────┐
       │            │                    │
       ▼            ▼                    ▼
-Netlify Fn     Supabase (BaaS)      AWS EC2 (n8n self-hosted)
-TypeScript     PostgreSQL + RLS     ┌──────────────────────┐
-- Proxy RSS    JWT Auth             │  chatBruno           │
-- Contato      Shared Client        │  Multi-Agente + RAG  │
-  → Resend API (notif. direta)      │  LangChain + Gemini  │
-               │                    │  pgvector search     │
-               Supabase pgvector    └──────────────────────┘
-               (base vetorial)
+Netlify Fn     Supabase (BaaS)      Netlify Fn: n8n-chat.ts
+TypeScript     PostgreSQL + RLS     (proxy, esconde a URL real)
+- Proxy RSS    JWT Auth                     │
+- Contato      Shared Client                ▼
+  → Resend API (notif. direta)      Cloudflare Tunnel (cloudflared)
+               │                            │ egress-only, contorna
+               Supabase pgvector            │ bloqueio de rede AWS↔Oracle
+               (base vetorial)              ▼
+                                     Oracle Cloud VPS (self-hosted)
+                                     ┌──────────────────────┐
+                                     │  chatBruno (n8n)     │
+                                     │  Multi-Agente + RAG  │
+                                     │  LangChain + Gemini  │
+                                     │  pgvector search     │
+                                     └──────────────────────┘
 
 Open-Meteo API (clima)
 ipapi.co (geolocalização)
@@ -92,15 +104,15 @@ Resend API (email transacional)
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
 | Voz             | Web Speech API               | Text-to-Speech nativo                              |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 62 testes unitários + E2E Chromium                 |
+| Testes          | Vitest + Playwright          | 72 testes unitários + E2E Chromium                 |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
-| Automação       | n8n (self-hosted, AWS EC2)   | Workflows event-driven + orquestração Multi-Agente |
+| Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + orquestração Multi-Agente |
 | IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
 | IA — Embeddings | Google Gemini Embedding 001  | Vetorização base de conhecimento (768 dim)         |
 | RAG Pipeline    | LangChain Tools (via n8n)    | Busca semântica autônoma por agente                |
 | Banco Vetorial  | Supabase pgvector (ivfflat)  | Similaridade cosseno em 22 chunks                  |
 | Email           | Resend                       | Transacional                                       |
-| Infra           | AWS EC2                      | Hospedagem self-hosted do n8n                      |
+| Infra           | Oracle Cloud VPS + Cloudflare Tunnel | Hospedagem self-hosted do n8n, tunnel contorna bloqueio de rede entre nuvens |
 | Deploy          | Netlify                      | CI/CD + Serverless Functions                       |
 | GIS             | ESRI ArcGIS                  | Mapas 3D interativos                               |
 | Clima           | Open-Meteo                   | API gratuita, sem chave                            |
@@ -191,9 +203,9 @@ Globo 3D em tempo real renderizado com **ArcGIS SceneView** com iluminação vir
 
 ## 🤖 Feature: chatBruno — Assistente Virtual Multi-Agente com RAG
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + AWS EC2 Self-Hosted
+> **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + self-hosted em VPS própria, atrás de Cloudflare Tunnel
 
-Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes especializados** orquestrados por um Agente Roteador, base de conhecimento vetorial em **Supabase pgvector** e interface de chat nativa do n8n — zero frontend customizado.
+Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes especializados** orquestrados por um Agente Roteador, base de conhecimento vetorial em **Supabase pgvector**, e widget de chat embedado via React (injetado em runtime, não no HTML estático — ver nota de arquitetura abaixo).
 
 ### Por que Multi-Agente + RAG?
 
@@ -207,7 +219,12 @@ Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes es
 
 ```
 Usuário
-  → n8n Chat UI (frontend nativo via URL pública do workflow — zero config)
+  → Widget @n8n/chat (injetado via useEffect em N8nChatWidget.tsx — não é
+    mais <script> cru no index.html: um <script type="module"> inline
+    importando URL externa não sobrevive ao vite build)
+  → POST /.netlify/functions/n8n-chat (proxy — esconde a URL real do n8n)
+  → Cloudflare Tunnel (cloudflared, egress-only na VPS)
+  → n8n self-hosted (Oracle Cloud VPS)
   → Agente Roteador (Gemini 2.5 Flash Lite) classifica intenção
   → Switch → 7 rotas: PERFIL | SKILLS | EXPERIENCIA | EDUCACAO | PROJETOS | CONTATO | GERAL
   → Agente Especialista aciona Tool "buscar_conhecimento_bruno"
@@ -215,6 +232,13 @@ Usuário
   → 5 chunks mais relevantes injetados como contexto
   → Resposta contextualizada + memória de sessão (Window Buffer, 10 trocas)
 ```
+
+> **Nota de arquitetura — por que um proxy + tunnel:** a Netlify Function
+> roda em AWS (us-east-1); conectar direto da AWS pra VPS na Oracle Cloud
+> batia num bloqueio de rede na camada de nuvem (~10s de connect timeout,
+> reproduzível e não presente de nenhuma outra origem testada). Um
+> Cloudflare Tunnel egress-only na VPS contorna isso — ela quem abre a
+> conexão pra fora, nunca alguém "entrando".
 
 ### Agentes Especializados (7 + Roteador)
 
@@ -247,7 +271,8 @@ $$ LANGUAGE sql;
 
 ### Infraestrutura
 
-- **AWS EC2 (self-hosted)** — controle total, sem limites de plano SaaS
+- **Oracle Cloud VPS (self-hosted, ARM64)** — controle total, sem limites de plano SaaS; migrado de uma instância AWS EC2 anterior
+- **Cloudflare Tunnel (cloudflared)** — expõe o n8n publicamente sem depender de conectividade cloud-to-cloud direta, que se mostrou bloqueada especificamente no trajeto AWS→Oracle
 - **Keep-alive automático** — n8n Schedule a cada 3 dias previne congelamento do Supabase Free Tier
 
 ---
@@ -487,9 +512,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 62 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 72 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (62 testes unitários)
+### Suítes de teste (72 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -502,6 +527,10 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `utils/geoip`          | Fetch com cache, erro retorna `{}`, reutilização de promise                              |
 | `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente     |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
+| `ServiceStatus`        | checking/online/offline via mock de `Image` (onload/onerror)                            |
+| `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
+| `Map`                  | Smoke test — campos de lat/lon, monta/desmonta sem quebrar                              |
+| `NewsPage`             | Fluxo real fetch→parse→score sai do loading sem lançar erro (fetch/translate mockados)   |
 
 ### E2E com Playwright
 
@@ -523,7 +552,7 @@ A cada push ou Pull Request para `main`:
 
 1. `npx tsc --noEmit` — TypeScript sem erros
 2. `npm run lint` — ESLint 9 zero erros
-3. `vitest run` — 62 testes unitários
+3. `vitest run` — 72 testes unitários
 4. `vite build` — bundle de produção sem quebrar
 5. `playwright test` — 5 testes E2E Chromium
 6. Lighthouse CI — audita performance, a11y e SEO em produção
@@ -565,6 +594,26 @@ returns bigint language sql as $$
   returning count;
 $$;
 ```
+
+---
+
+## 🟢 Feature: Selo de Status ao Vivo dos Serviços em Produção
+
+> **Complexidade:** ⭐⭐⭐ — Ping cross-origin client-side, sem backend novo
+
+Widget na página `/about` que confere, na hora, se o chatBruno (n8n) e o Dataset Grande Vitória estão no ar — prova visual de que a infra própria descrita nesse README roda de verdade, não é só documentação.
+
+100% client-side: cada visitante faz a própria checagem, sem depender de um serviço de status centralizado.
+
+```
+Cada serviço → carrega uma imagem estática conhecida (favicon.ico, og-image.png)
+             → onload → 🟢 online
+             → onerror / timeout 6s → 🔴 offline
+```
+
+### Por que `<img>` e não `fetch`
+
+A primeira versão usava `fetch(url, { mode: "no-cors" })` — mas o **ORB (Opaque Response Blocking)** do Chrome bloqueia respostas HTML/JSON cross-origin buscadas via `no-cors`, mesmo sem nenhum header CORS/CORP explícito do servidor. Resultado: falso "offline" com o serviço perfeitamente no ar (achado testando ao vivo no navegador, não só nos testes unitários). Imagens não sofrem esse bloqueio — é a técnica clássica de "ping" cross-origin.
 
 ---
 
@@ -742,6 +791,8 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | Banco de dados | Row Level Security (RLS) no Supabase                      |
 | Autenticação   | JWT via Supabase Auth                                     |
 | Segredos       | Variáveis `VITE_*` — nunca expostas no bundle de produção |
+| Proxy RSS      | Allowlist dos hosts dos 52 feeds — não é um proxy HTTP aberto |
+| Formulário de contato | Nome/e-mail/mensagem escapados antes de virar HTML do e-mail |
 | CORS           | Controlado pelas Netlify Functions                        |
 | Error handling | ErrorBoundary global com tela de recuperação em PT        |
 
@@ -751,15 +802,16 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 
 | Feature                         | Por que impressiona                                                                   |
 | ------------------------------- | ------------------------------------------------------------------------------------- |
-| 🤖 chatBruno Multi-Agente + RAG | 8 agentes + pgvector + LangChain Tools + n8n + AWS EC2 em produção real               |
-| 📰 52 RSS Feeds + heroScore     | Proxy serverless + scoring tiered por fonte + keywords com cap + recência dominante   |
-| ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, feedback diferenciado ao usuário      |
+| 🤖 chatBruno Multi-Agente + RAG | 8 agentes + pgvector + LangChain Tools + n8n self-hosted atrás de Cloudflare Tunnel   |
+| 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
+| ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D interativo          | 26 pins + arcos slerp + zoom galáctico de entrada + NASA Black Marble noturno        |
+| 🌐 Globo 3D interativo          | 26 pins + arcos slerp + zoom galáctico de entrada + NASA Black Marble noturno, lazy-loaded |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
-| 🧪 62 testes + E2E              | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
-| 🔷 TypeScript strict            | `strict: true` — zero erros em 22 arquivos, tipos precisos end-to-end                 |
+| 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
+| 🧪 72 testes + E2E              | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
+| 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
 | ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |
 | ♿ Text-to-Speech               | Zero dependências, Web API nativa, ARIA completo                                      |
@@ -772,7 +824,7 @@ Full Stack Developer & AI Systems Engineer especializado em transformar complexi
 
 Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las e o que acontece quando algo falha**.
 
-🔗 [brunokobi.netlify.app](https://brunokobi.netlify.app) · [LinkedIn](https://www.linkedin.com/in/brunokobi/) · [GitHub](https://github.com/brunokobi)
+🔗 [brunokobi.tech](https://brunokobi.tech) · [LinkedIn](https://www.linkedin.com/in/brunokobi/) · [GitHub](https://github.com/brunokobi)
 
 ---
 
@@ -780,6 +832,6 @@ Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las
 
 [![GitHub Sponsors](https://img.shields.io/badge/❤%EF%B8%8F%20Apoiar-github.com%2Fsponsors%2Fbrunokobi-ea4aaa?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/brunokobi)
 
-Este portfólio é código aberto e mantido nas horas vagas — infra própria (AWS EC2, self-hosted n8n) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
+Este portfólio é código aberto e mantido nas horas vagas — infra própria (Oracle Cloud VPS, self-hosted n8n atrás de Cloudflare Tunnel) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
 
 ### ⭐ Se este projeto te inspirou, deixe uma estrela — leva 1 segundo e ajuda demais!
