@@ -1,6 +1,6 @@
 import React from "react";
 import { Spinner } from "@chakra-ui/react";
-import globo from "./globo.gif";
+import globo from "./globo.mp4";
 
 const LoadingGlobo = () => {
   return (
@@ -19,9 +19,12 @@ const LoadingGlobo = () => {
           flexDirection: "column", // Alterando o eixo de alinhamento para coluna
         }}
       >
-        <img
+        <video
           src={globo}
-          alt="ovni"
+          autoPlay
+          loop
+          muted
+          playsInline
           width={250}
           style={{ borderRadius: "50%", marginBottom: "20px" }}
         />
