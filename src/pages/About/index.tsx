@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "framer-motion"; // Biblioteca para anim
 
 import falar from "../../components/TextAudio"; // Função para síntese de voz
 import CertificateCarousel from "./CertificateCarousel"; // Carrossel de certificados
+import ServiceStatus from "./ServiceStatus"; // Selo de status dos serviços em produção
 
 import { useObserver } from "./observers"; // Hook personalizado para observação de elementos no viewport
 import AnimatedStars from "../../components/AnimatedStars"; // Efeito de estrelas animadas
@@ -389,6 +390,7 @@ const About = () => {
           </Box>
 
           <CertificateCarousel />
+          <ServiceStatus />
           <Box
             as={motion.div}
             whileHover={{ scale: 1.5 }}
