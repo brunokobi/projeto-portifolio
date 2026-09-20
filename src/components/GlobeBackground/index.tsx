@@ -13,24 +13,8 @@ import {
   type ArcState,
   type EsriAny,
 } from "./geo";
-import {
-  loadWindGrid,
-  advanceParticle,
-  createRandomParticle,
-  windDashEnd,
-  type WindGrid,
-  type WindParticle,
-} from "./wind";
 
 setDefaultOptions({ css: true });
-
-const WIND_PARTICLE_COUNT = 150;
-// Passo só pra desenhar a "farpa" na direção do vento (não é o avanço real da
-// partícula — ver TIME_STEP_SECONDS em wind.ts). Precisa ser grande: no zoom
-// em que o globo aparece (~20.000km de altitude, um hemisfério inteiro na
-// tela), um vento de ~10m/s por poucos segundos desloca menos de 1 pixel —
-// a farpa fica invisível. 25000s ≈ 250km de deslocamento a 10m/s, visível.
-const WIND_DASH_STEP_SECONDS = 25000;
 
 const GlobeBackground = () => {
   const intl = useIntl();
@@ -449,60 +433,12 @@ const GlobeBackground = () => {
                   (c) => new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
                 );
 
-                // Vento real (GFS via firestorm-wind-data) — carrega em paralelo,
-                // sem bloquear o resto do setup; enquanto não chega, o loop de
-                // desenho simplesmente não tem partículas pra mostrar ainda.
-                let windGrid: WindGrid | null = null;
-                let windParticles: WindParticle[] = [];
-                loadWindGrid().then((grid) => {
-                  if (!mountedRef.current || !grid) return;
-                  windGrid = grid;
-                  windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
-                });
-
-                // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
-                const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
-
                 let frame = 0;
                 const drawPins = () => {
                   if (!mountedRef.current) return;
                   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
                   const cam = view.camera.position;
-
-                  // Partículas de vento — farpa curta na direção do vento local,
-                  // uma por partícula; a posição de cada uma avança a cada frame
-                  // (advanceParticle), dando a impressão de fluxo contínuo.
-                  if (windGrid) {
-                    ctx.save();
-                    ctx.strokeStyle = "rgba(150,230,255,0.75)";
-                    ctx.lineWidth = 1.5;
-                    ctx.lineCap = "round";
-                    for (let i = 0; i < windParticles.length; i++) {
-                      windParticles[i] = advanceParticle(windParticles[i], windGrid);
-                      const p = windParticles[i];
-                      if (!isFacing(cam.latitude, cam.longitude, p.lat, toArcgisLon(p.lon))) continue;
-                      try {
-                        const start = view.toScreen(
-                          new Point({ longitude: toArcgisLon(p.lon), latitude: p.lat, z: 40000 })
-                        );
-                        if (!start) continue;
-                        const tip = windDashEnd(windGrid, p.lat, p.lon, WIND_DASH_STEP_SECONDS);
-                        const end = view.toScreen(
-                          new Point({ longitude: toArcgisLon(tip.lon), latitude: tip.lat, z: 40000 })
-                        );
-                        if (!end) continue;
-                        ctx.beginPath();
-                        ctx.moveTo(start.x, start.y);
-                        ctx.lineTo(end.x, end.y);
-                        ctx.stroke();
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                    ctx.restore();
-                  }
-
                   cityPoints.forEach((pt, i) => {
                     cityScreenPosRef.current[i] = null;
                     try {
