@@ -13,8 +13,31 @@ import {
   type ArcState,
   type EsriAny,
 } from "./geo";
+import {
+  loadWindGrid,
+  advanceParticle,
+  createRandomParticle,
+  sampleWind,
+  windSpeed,
+  speedToColor,
+  buildHeatmapPixels,
+  type WindGrid,
+  type WindParticle,
+} from "./wind";
 
 setDefaultOptions({ css: true });
+
+// Partículas suficientes pra dar sensação de correntes contínuas sem pesar
+// demais no toScreen() (projeção 3D→2D) chamado por partícula a cada frame.
+const WIND_PARTICLE_COUNT = 700;
+// Alpha do "destination-in" aplicado no canvas de vento a cada frame — abaixo
+// de 1 multiplica a opacidade existente, criando o efeito de rastro que
+// desbota (em vez de limpar tudo, como o canvas dos pins das cidades faz).
+const WIND_TRAIL_FADE = 0.93;
+// Acima disso (em pixels de tela) um salto entre frames é tratado como
+// "partícula recém-nascida noutro lugar" e não desenha uma linha falsa
+// ligando o ponto antigo ao novo.
+const WIND_MAX_TRAIL_JUMP_PX = 80;
 
 const GlobeBackground = () => {
   const intl = useIntl();
@@ -293,6 +316,38 @@ const GlobeBackground = () => {
               })
             );
 
+            // Camada de mapa de calor do vento — textura equiretangular gerada
+            // a partir da grade de vento real, colada na esfera (mesma técnica
+            // da camada de nuvens acima, só que a imagem é gerada em runtime
+            // em vez de vir de uma URL fixa). Quase transparente onde o vento
+            // é calmo, bem colorida onde é forte.
+            const addWindHeatmapLayer = (grid: WindGrid) => {
+              const W = 720, H = 360;
+              const off = document.createElement("canvas");
+              off.width = W; off.height = H;
+              const octx = off.getContext("2d");
+              if (!octx) return;
+              const imgData = octx.createImageData(W, H);
+              imgData.data.set(buildHeatmapPixels(grid, W, H));
+              octx.putImageData(imgData, 0, 0);
+
+              const heatMesh = Mesh.createSphere(
+                new Point({ x: 0, y: -90, z: -(2 * R + offset * 0.5) }),
+                {
+                  size: 2 * (R + offset * 0.5),
+                  densificationFactor: 3,
+                  material: { colorTexture: off.toDataURL(), doubleSided: false },
+                }
+              );
+              heatMesh.components[0].shading = "flat";
+              view.graphics.add(
+                new Graphic({
+                  geometry: heatMesh,
+                  symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
+                })
+              );
+            };
+
             // Rotação automática — pausa quando o usuário arrasta
             let userInteracting = false;
             let resumeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -417,12 +472,26 @@ const GlobeBackground = () => {
                 ) as HTMLCanvasElement | null;
                 if (!canvas) return;
 
+                // Canvas dedicado às correntes de vento — separado do canvas
+                // dos pins porque usa "destination-in" pra desbotar o rastro
+                // em vez de limpar tudo a cada frame (os pins precisam de
+                // clearRect puro, senão o pulso deixaria rastro também).
+                const windCanvas = document.getElementById(
+                  "globeWindOverlay"
+                ) as HTMLCanvasElement | null;
+                const windCtx = windCanvas?.getContext("2d") ?? null;
+
                 const dpr = window.devicePixelRatio || 1;
                 const setupCanvas = () => {
                   canvas.width = window.innerWidth * dpr;
                   canvas.height = window.innerHeight * dpr;
                   const c = canvas.getContext("2d");
                   if (c) c.scale(dpr, dpr);
+                  if (windCanvas) {
+                    windCanvas.width = window.innerWidth * dpr;
+                    windCanvas.height = window.innerHeight * dpr;
+                    windCtx?.scale(dpr, dpr);
+                  }
                 };
                 setupCanvas();
 
@@ -433,12 +502,74 @@ const GlobeBackground = () => {
                   (c) => new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
                 );
 
+                // Vento real (GFS via firestorm-wind-data) — carrega em
+                // paralelo, sem bloquear o resto do setup.
+                let windGrid: WindGrid | null = null;
+                let windParticles: WindParticle[] = [];
+                let windPrevScreen: Array<{ x: number; y: number } | null> = [];
+                loadWindGrid().then((grid) => {
+                  if (!mountedRef.current || !grid) return;
+                  windGrid = grid;
+                  windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
+                  windPrevScreen = new Array(WIND_PARTICLE_COUNT).fill(null);
+                  addWindHeatmapLayer(grid);
+                });
+
+                // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
+                const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
+
                 let frame = 0;
                 const drawPins = () => {
                   if (!mountedRef.current) return;
                   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
                   const cam = view.camera.position;
+
+                  // Correntes de vento — cada partícula deixa uma linha curta
+                  // da posição anterior pra atual, colorida pela velocidade;
+                  // o canvas nunca é limpo de verdade, só desbotado
+                  // (destination-in), dando a impressão de fluxo contínuo.
+                  if (windGrid && windCtx && windCanvas) {
+                    windCtx.save();
+                    windCtx.globalCompositeOperation = "destination-in";
+                    windCtx.fillStyle = `rgba(0,0,0,${WIND_TRAIL_FADE})`;
+                    windCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+                    windCtx.globalCompositeOperation = "source-over";
+                    windCtx.lineWidth = 1.3;
+                    windCtx.lineCap = "round";
+
+                    for (let i = 0; i < windParticles.length; i++) {
+                      const prevScreen = windPrevScreen[i];
+                      windParticles[i] = advanceParticle(windParticles[i], windGrid);
+                      const p = windParticles[i];
+                      if (!isFacing(cam.latitude, cam.longitude, p.lat, toArcgisLon(p.lon))) {
+                        windPrevScreen[i] = null;
+                        continue;
+                      }
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: toArcgisLon(p.lon), latitude: p.lat, z: 40000 })
+                        );
+                        if (!sp) { windPrevScreen[i] = null; continue; }
+                        if (prevScreen) {
+                          const dx = sp.x - prevScreen.x, dy = sp.y - prevScreen.y;
+                          if (dx * dx + dy * dy < WIND_MAX_TRAIL_JUMP_PX * WIND_MAX_TRAIL_JUMP_PX) {
+                            const { u, v } = sampleWind(windGrid, p.lat, p.lon);
+                            windCtx.strokeStyle = speedToColor(windSpeed(u, v));
+                            windCtx.beginPath();
+                            windCtx.moveTo(prevScreen.x, prevScreen.y);
+                            windCtx.lineTo(sp.x, sp.y);
+                            windCtx.stroke();
+                          }
+                        }
+                        windPrevScreen[i] = { x: sp.x, y: sp.y };
+                      } catch {
+                        windPrevScreen[i] = null;
+                      }
+                    }
+                    windCtx.restore();
+                  }
+
                   cityPoints.forEach((pt, i) => {
                     cityScreenPosRef.current[i] = null;
                     try {
@@ -631,6 +762,21 @@ const GlobeBackground = () => {
         }}
       />
 
+      {/* Canvas das correntes de vento — próprio pra poder desbotar o rastro
+          em vez de limpar tudo a cada frame */}
+      <canvas
+        id="globeWindOverlay"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 3,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Canvas para pins das cidades */}
       <canvas
         id="globeOverlay"
@@ -640,7 +786,7 @@ const GlobeBackground = () => {
           left: 0,
           width: "100vw",
           height: "100vh",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "none",
         }}
       />
