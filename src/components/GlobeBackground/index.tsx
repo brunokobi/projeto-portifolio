@@ -452,10 +452,16 @@ const GlobeBackground = () => {
                 let windGrid: WindGrid | null = null;
                 let windParticles: WindParticle[] = [];
                 loadWindGrid().then((grid) => {
-                  if (!mountedRef.current || !grid) return;
+                  if (!mountedRef.current) return;
+                  if (!grid) {
+                    console.warn("[vento] loadWindGrid retornou null (fetch ou parse falhou)");
+                    return;
+                  }
                   windGrid = grid;
                   windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
+                  console.warn(`[vento] grade carregada — ${windParticles.length} partículas`);
                 });
+                let loggedWindDrawError = false;
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -474,6 +480,7 @@ const GlobeBackground = () => {
                     ctx.save();
                     ctx.strokeStyle = "rgba(120,220,255,0.55)";
                     ctx.lineWidth = 1;
+                    let drawnThisFrame = 0;
                     for (let i = 0; i < windParticles.length; i++) {
                       windParticles[i] = advanceParticle(windParticles[i], windGrid);
                       const p = windParticles[i];
@@ -492,9 +499,18 @@ const GlobeBackground = () => {
                         ctx.moveTo(start.x, start.y);
                         ctx.lineTo(end.x, end.y);
                         ctx.stroke();
-                      } catch {
-                        // ponto fora do campo de visão
+                        drawnThisFrame++;
+                      } catch (err) {
+                        if (!loggedWindDrawError) {
+                          loggedWindDrawError = true;
+                          console.warn("[vento] erro ao desenhar farpa", err);
+                        }
                       }
+                    }
+                    if (frame % 120 === 0) {
+                      console.warn(
+                        `[vento] frame ${frame}: ${drawnThisFrame}/${windParticles.length} farpas desenhadas`
+                      );
                     }
                     ctx.restore();
                   }
