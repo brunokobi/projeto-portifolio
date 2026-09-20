@@ -272,12 +272,6 @@ export const posts: Post[] = [
           '**Monitoramento de uptime não é só sobre alerta** — pode ser, de fato, a diferença entre uma instância free tier considerada "em uso" ou "ociosa".',
         ],
       },
-      { type: "hr" },
-      {
-        type: "paragraph",
-        text:
-          "*Todo esse processo — diagnóstico, tentativas de recuperação, migração cross-region e reconstrução do stack — foi conduzido com o Claude Code como par de investigação/automação, rodando os comandos da OCI CLI, escrevendo o código de migração e validando cada etapa.*",
-      },
     ],
   },
 ];
