@@ -86,6 +86,17 @@ const WeatherBar = () => {
     localStorage.setItem("globeWind", next ? "1" : "0");
     window.dispatchEvent(new CustomEvent("globeWindToggle", { detail: { windEnabled: next } }));
   }, [windEnabled]);
+
+  const [rotationEnabled, setRotationEnabled] = useState(
+    () => localStorage.getItem("globeRotation") !== "0"
+  );
+  const toggleRotation = useCallback(() => {
+    const next = !rotationEnabled;
+    setRotationEnabled(next);
+    localStorage.setItem("globeRotation", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeRotationToggle", { detail: { rotationEnabled: next } }));
+  }, [rotationEnabled]);
+
   const [data, setData] = useState<WeatherData | null | false>(null); // null = carregando, false = erro, objeto = ok
 
   useEffect(() => {
@@ -228,7 +239,23 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {windEnabled ? "🌬 OFF" : "🌬 VENTO"}
+          {windEnabled ? "🌬 VENTO ON" : "🌬 VENTO OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleRotation}
+          title={rotationEnabled ? "Parar rotação do globo" : "Retomar rotação do globo"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {rotationEnabled ? "🔄 GIRO ON" : "⏸ GIRO OFF"}
         </Text>
       </HStack>
     </Box>

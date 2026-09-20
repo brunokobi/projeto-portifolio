@@ -53,6 +53,7 @@ const GlobeBackground = () => {
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
   const windHeatmapGraphicRef = useRef<EsriAny>(null);
+  const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
   const [hoverCity, setHoverCity] = useState<{ city: City; x: number; y: number } | null>(null);
@@ -118,6 +119,15 @@ const GlobeBackground = () => {
     };
     window.addEventListener("globeWindToggle", handler);
     return () => window.removeEventListener("globeWindToggle", handler);
+  }, []);
+
+  // Escuta evento globeRotationToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      rotationEnabledRef.current = (e as CustomEvent).detail.rotationEnabled as boolean;
+    };
+    window.addEventListener("globeRotationToggle", handler);
+    return () => window.removeEventListener("globeRotationToggle", handler);
   }, []);
 
   useEffect(() => {
@@ -447,18 +457,21 @@ const GlobeBackground = () => {
                 const rotate = () => {
                   if (!mountedRef.current) return;
                   if (!userInteracting && !isHoveringRef.current) {
-                    const cam = view.camera.clone();
                     const arc = activeArcRef.current;
-                    if (arc && (arc.phase === "drawing" || arc.phase === "holding")) {
-                      const t = arc.phase === "drawing" ? arc.progress : 1;
-                      const tip = slerpPoint(arc.fromLat, arc.fromLon, HOME.lat, HOME.lon, t);
-                      const diff = ((tip.lon - cam.position.longitude + 540) % 360) - 180;
-                      cam.position.longitude += diff * 0.025;
-                      cam.position.latitude += (tip.lat - cam.position.latitude) * 0.015;
-                    } else {
-                      cam.position.longitude -= 0.15;
+                    const arcActive = arc && (arc.phase === "drawing" || arc.phase === "holding");
+                    if (arcActive || rotationEnabledRef.current) {
+                      const cam = view.camera.clone();
+                      if (arcActive) {
+                        const t = arc.phase === "drawing" ? arc.progress : 1;
+                        const tip = slerpPoint(arc.fromLat, arc.fromLon, HOME.lat, HOME.lon, t);
+                        const diff = ((tip.lon - cam.position.longitude + 540) % 360) - 180;
+                        cam.position.longitude += diff * 0.025;
+                        cam.position.latitude += (tip.lat - cam.position.latitude) * 0.015;
+                      } else {
+                        cam.position.longitude -= 0.15;
+                      }
+                      view.goTo(cam, { animate: false });
                     }
-                    view.goTo(cam, { animate: false });
                   }
                   requestAnimationFrame(rotate);
                 };
