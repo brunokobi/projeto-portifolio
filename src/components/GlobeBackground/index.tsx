@@ -51,6 +51,8 @@ const GlobeBackground = () => {
   );
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
+  const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
+  const windHeatmapGraphicRef = useRef<EsriAny>(null);
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
   const [hoverCity, setHoverCity] = useState<{ city: City; x: number; y: number } | null>(null);
@@ -100,6 +102,22 @@ const GlobeBackground = () => {
     const handler = (e: Event) => applyNight((e as CustomEvent).detail.nightMode);
     window.addEventListener("globeNightToggle", handler);
     return () => window.removeEventListener("globeNightToggle", handler);
+  }, []);
+
+  // Escuta evento globeWindToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const enabled = (e as CustomEvent).detail.windEnabled as boolean;
+      windEnabledRef.current = enabled;
+      if (windHeatmapGraphicRef.current) windHeatmapGraphicRef.current.visible = enabled;
+      if (!enabled) {
+        const wc = document.getElementById("globeWindOverlay") as HTMLCanvasElement | null;
+        const wctx = wc?.getContext("2d");
+        wctx?.clearRect(0, 0, wc?.width ?? 0, wc?.height ?? 0);
+      }
+    };
+    window.addEventListener("globeWindToggle", handler);
+    return () => window.removeEventListener("globeWindToggle", handler);
   }, []);
 
   useEffect(() => {
@@ -340,12 +358,13 @@ const GlobeBackground = () => {
                 }
               );
               heatMesh.components[0].shading = "flat";
-              view.graphics.add(
-                new Graphic({
-                  geometry: heatMesh,
-                  symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
-                })
-              );
+              const heatGraphic = new Graphic({
+                geometry: heatMesh,
+                symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
+                visible: windEnabledRef.current,
+              });
+              view.graphics.add(heatGraphic);
+              windHeatmapGraphicRef.current = heatGraphic;
             };
 
             // Rotação automática — pausa quando o usuário arrasta
@@ -529,7 +548,7 @@ const GlobeBackground = () => {
                   // da posição anterior pra atual, colorida pela velocidade;
                   // o canvas nunca é limpo de verdade, só desbotado
                   // (destination-in), dando a impressão de fluxo contínuo.
-                  if (windGrid && windCtx && windCanvas) {
+                  if (windEnabledRef.current && windGrid && windCtx && windCanvas) {
                     windCtx.save();
                     windCtx.globalCompositeOperation = "destination-in";
                     windCtx.fillStyle = `rgba(0,0,0,${WIND_TRAIL_FADE})`;

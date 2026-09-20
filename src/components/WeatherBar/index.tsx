@@ -71,6 +71,7 @@ type WeatherData = { temp: number; code: number; city: string | null };
 
 const WeatherBar = () => {
   const [nightMode, setNightMode] = useState(() => localStorage.getItem("globeNight") === "1");
+  const [windEnabled, setWindEnabled] = useState(() => localStorage.getItem("globeWind") !== "0");
 
   const toggleNight = useCallback(() => {
     const next = !nightMode;
@@ -78,6 +79,13 @@ const WeatherBar = () => {
     localStorage.setItem("globeNight", next ? "1" : "0");
     window.dispatchEvent(new CustomEvent("globeNightToggle", { detail: { nightMode: next } }));
   }, [nightMode]);
+
+  const toggleWind = useCallback(() => {
+    const next = !windEnabled;
+    setWindEnabled(next);
+    localStorage.setItem("globeWind", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeWindToggle", { detail: { windEnabled: next } }));
+  }, [windEnabled]);
   const [data, setData] = useState<WeatherData | null | false>(null); // null = carregando, false = erro, objeto = ok
 
   useEffect(() => {
@@ -205,6 +213,22 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {nightMode ? "☀ DIA" : "☾ NOITE"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleWind}
+          title={windEnabled ? "Desativar vento" : "Ativar vento"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {windEnabled ? "🌬 OFF" : "🌬 VENTO"}
         </Text>
       </HStack>
     </Box>
