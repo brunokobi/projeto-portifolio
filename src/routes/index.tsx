@@ -19,6 +19,7 @@ const Projects = lazy(() => import("../pages/Projects"));
 const Curriculo = lazy(() => import("../pages/Curriculo"));
 const Mapa = lazy(() => import("../pages/Map/index"));
 const News = lazy(() => import("../pages/News/index"));
+const DevBlog = lazy(() => import("../pages/DevBlog/index"));
 
 const PageLoader = () => (
   <Box h="100vh" display="flex" alignItems="center" justifyContent="center" bg="black">
@@ -71,6 +72,7 @@ const Router = () => {
             <Route path="/map" element={<Mapa />} />
             <Route path="/curriculo" element={<Curriculo />} />
             <Route path="/news" element={<News />} />
+            <Route path="/blog" element={<DevBlog />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>

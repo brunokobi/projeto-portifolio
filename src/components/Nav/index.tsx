@@ -32,6 +32,7 @@ import { MdOutlineNewspaper, MdBusiness } from "react-icons/md";
 import { RiAliensFill } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import { BiCube } from "react-icons/bi";
+import { FaBlog } from "react-icons/fa";
 
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
@@ -203,6 +204,7 @@ const Nav = () => {
       icon: AiOutlineGithub,
     },
     { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
+    { label: "Blog Dev", url: "/blog", icon: FaBlog },
     { label: "Empresas GV", url: "https://empresas.brunokobi.tech/", icon: MdBusiness },
   ];
 
