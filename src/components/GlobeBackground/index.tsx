@@ -25,9 +25,12 @@ import {
 setDefaultOptions({ css: true });
 
 const WIND_PARTICLE_COUNT = 150;
-// Passo curto só pra desenhar a "farpa" na direção do vento (não é o avanço
-// real da partícula, que usa TIME_STEP_SECONDS bem maior — ver wind.ts).
-const WIND_DASH_STEP_SECONDS = 250;
+// Passo só pra desenhar a "farpa" na direção do vento (não é o avanço real da
+// partícula — ver TIME_STEP_SECONDS em wind.ts). Precisa ser grande: no zoom
+// em que o globo aparece (~20.000km de altitude, um hemisfério inteiro na
+// tela), um vento de ~10m/s por poucos segundos desloca menos de 1 pixel —
+// a farpa fica invisível. 25000s ≈ 250km de deslocamento a 10m/s, visível.
+const WIND_DASH_STEP_SECONDS = 25000;
 
 const GlobeBackground = () => {
   const intl = useIntl();
@@ -452,16 +455,10 @@ const GlobeBackground = () => {
                 let windGrid: WindGrid | null = null;
                 let windParticles: WindParticle[] = [];
                 loadWindGrid().then((grid) => {
-                  if (!mountedRef.current) return;
-                  if (!grid) {
-                    console.warn("[vento] loadWindGrid retornou null (fetch ou parse falhou)");
-                    return;
-                  }
+                  if (!mountedRef.current || !grid) return;
                   windGrid = grid;
                   windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
-                  console.warn(`[vento] grade carregada — ${windParticles.length} partículas`);
                 });
-                let loggedWindDrawError = false;
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -478,9 +475,9 @@ const GlobeBackground = () => {
                   // (advanceParticle), dando a impressão de fluxo contínuo.
                   if (windGrid) {
                     ctx.save();
-                    ctx.strokeStyle = "rgba(120,220,255,0.55)";
-                    ctx.lineWidth = 1;
-                    let drawnThisFrame = 0;
+                    ctx.strokeStyle = "rgba(150,230,255,0.75)";
+                    ctx.lineWidth = 1.5;
+                    ctx.lineCap = "round";
                     for (let i = 0; i < windParticles.length; i++) {
                       windParticles[i] = advanceParticle(windParticles[i], windGrid);
                       const p = windParticles[i];
@@ -499,18 +496,9 @@ const GlobeBackground = () => {
                         ctx.moveTo(start.x, start.y);
                         ctx.lineTo(end.x, end.y);
                         ctx.stroke();
-                        drawnThisFrame++;
-                      } catch (err) {
-                        if (!loggedWindDrawError) {
-                          loggedWindDrawError = true;
-                          console.warn("[vento] erro ao desenhar farpa", err);
-                        }
+                      } catch {
+                        // ponto fora do campo de visão
                       }
-                    }
-                    if (frame % 120 === 0) {
-                      console.warn(
-                        `[vento] frame ${frame}: ${drawnThisFrame}/${windParticles.length} farpas desenhadas`
-                      );
                     }
                     ctx.restore();
                   }
