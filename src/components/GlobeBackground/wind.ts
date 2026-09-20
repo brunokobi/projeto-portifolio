@@ -123,41 +123,6 @@ export function speedToColor(speedMs: number): string {
   return `rgb(${r},${g},${bl})`;
 }
 
-/**
- * Buffer RGBA (equiretangular, longitude 0–360 da esquerda pra direita,
- * latitude 90..-90 de cima pra baixo) colorido pela velocidade do vento —
- * a "camada de mapa de calor" aplicada como textura na esfera do globo.
- * Áreas calmas ficam quase transparentes; vento forte fica bem visível.
- */
-export function buildHeatmapPixels(grid: WindGrid, width: number, height: number): Uint8ClampedArray {
-  const pixels = new Uint8ClampedArray(width * height * 4);
-  const MAX_SPEED_FOR_ALPHA = 20;
-  const BASE_ALPHA = 40;
-  const MAX_ALPHA = 190;
-
-  for (let y = 0; y < height; y++) {
-    const lat = 90 - ((y + 0.5) / height) * 180;
-    for (let x = 0; x < width; x++) {
-      const lon = ((x + 0.5) / width) * 360;
-      const { u, v } = sampleWind(grid, lat, lon);
-      const speed = windSpeed(u, v);
-      const [r, g, b] = speedToColor(speed)
-        .replace(/rgb\(|\)/g, "")
-        .split(",")
-        .map(Number);
-      const alphaT = Math.min(1, speed / MAX_SPEED_FOR_ALPHA);
-      const alpha = BASE_ALPHA + alphaT * (MAX_ALPHA - BASE_ALPHA);
-
-      const idx = (y * width + x) * 4;
-      pixels[idx] = r;
-      pixels[idx + 1] = g;
-      pixels[idx + 2] = b;
-      pixels[idx + 3] = alpha;
-    }
-  }
-  return pixels;
-}
-
 export interface WindParticle {
   lat: number;
   lon: number;

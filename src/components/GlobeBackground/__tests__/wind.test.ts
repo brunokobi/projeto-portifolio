@@ -6,7 +6,6 @@ import {
   createRandomParticle,
   windSpeed,
   speedToColor,
-  buildHeatmapPixels,
   type WindGrid,
 } from "../wind";
 
@@ -104,28 +103,6 @@ describe("speedToColor", () => {
     const low = speedToColor(2);
     const high = speedToColor(8);
     expect(low).not.toBe(high);
-  });
-});
-
-describe("buildHeatmapPixels", () => {
-  it("gera um buffer RGBA do tamanho esperado (width*height*4)", () => {
-    const grid = makeGrid(new Array(12).fill(0), new Array(12).fill(0));
-    const pixels = buildHeatmapPixels(grid, 8, 4);
-    expect(pixels.length).toBe(8 * 4 * 4);
-  });
-
-  it("vento calmo gera alpha baixo (quase transparente)", () => {
-    const grid = makeGrid(new Array(12).fill(0), new Array(12).fill(0));
-    const pixels = buildHeatmapPixels(grid, 4, 4);
-    expect(pixels[3]).toBeLessThan(60);
-  });
-
-  it("vento forte gera alpha bem mais alto que vento calmo", () => {
-    const calmGrid = makeGrid(new Array(12).fill(0), new Array(12).fill(0));
-    const strongGrid = makeGrid(new Array(12).fill(25), new Array(12).fill(0));
-    const calmAlpha = buildHeatmapPixels(calmGrid, 4, 4)[3];
-    const strongAlpha = buildHeatmapPixels(strongGrid, 4, 4)[3];
-    expect(strongAlpha).toBeGreaterThan(calmAlpha);
   });
 });
 

@@ -20,7 +20,6 @@ import {
   sampleWind,
   windSpeed,
   speedToColor,
-  buildHeatmapPixels,
   type WindGrid,
   type WindParticle,
 } from "./wind";
@@ -52,7 +51,6 @@ const GlobeBackground = () => {
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
-  const windHeatmapGraphicRef = useRef<EsriAny>(null);
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -110,7 +108,6 @@ const GlobeBackground = () => {
     const handler = (e: Event) => {
       const enabled = (e as CustomEvent).detail.windEnabled as boolean;
       windEnabledRef.current = enabled;
-      if (windHeatmapGraphicRef.current) windHeatmapGraphicRef.current.visible = enabled;
       if (!enabled) {
         const wc = document.getElementById("globeWindOverlay") as HTMLCanvasElement | null;
         const wctx = wc?.getContext("2d");
@@ -344,39 +341,6 @@ const GlobeBackground = () => {
               })
             );
 
-            // Camada de mapa de calor do vento — textura equiretangular gerada
-            // a partir da grade de vento real, colada na esfera (mesma técnica
-            // da camada de nuvens acima, só que a imagem é gerada em runtime
-            // em vez de vir de uma URL fixa). Quase transparente onde o vento
-            // é calmo, bem colorida onde é forte.
-            const addWindHeatmapLayer = (grid: WindGrid) => {
-              const W = 720, H = 360;
-              const off = document.createElement("canvas");
-              off.width = W; off.height = H;
-              const octx = off.getContext("2d");
-              if (!octx) return;
-              const imgData = octx.createImageData(W, H);
-              imgData.data.set(buildHeatmapPixels(grid, W, H));
-              octx.putImageData(imgData, 0, 0);
-
-              const heatMesh = Mesh.createSphere(
-                new Point({ x: 0, y: -90, z: -(2 * R + offset * 0.5) }),
-                {
-                  size: 2 * (R + offset * 0.5),
-                  densificationFactor: 3,
-                  material: { colorTexture: off.toDataURL(), doubleSided: false },
-                }
-              );
-              heatMesh.components[0].shading = "flat";
-              const heatGraphic = new Graphic({
-                geometry: heatMesh,
-                symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
-                visible: windEnabledRef.current,
-              });
-              view.graphics.add(heatGraphic);
-              windHeatmapGraphicRef.current = heatGraphic;
-            };
-
             // Rotação automática — pausa quando o usuário arrasta
             let userInteracting = false;
             let resumeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -544,7 +508,6 @@ const GlobeBackground = () => {
                   windGrid = grid;
                   windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
                   windPrevScreen = new Array(WIND_PARTICLE_COUNT).fill(null);
-                  addWindHeatmapLayer(grid);
                 });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
