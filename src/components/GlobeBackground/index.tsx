@@ -30,6 +30,8 @@ import {
   oceanSpeedToColor,
   type OceanParticle,
 } from "./ocean";
+import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
+import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 
 setDefaultOptions({ css: true });
 
@@ -60,6 +62,8 @@ const GlobeBackground = () => {
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
   const oceanEnabledRef = useRef(localStorage.getItem("globeOcean") !== "0");
+  const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
+  const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -143,6 +147,24 @@ const GlobeBackground = () => {
     return () => window.removeEventListener("globeOceanToggle", handler);
   }, []);
 
+  // Escuta evento globeQuakesToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      quakesEnabledRef.current = (e as CustomEvent).detail.quakesEnabled as boolean;
+    };
+    window.addEventListener("globeQuakesToggle", handler);
+    return () => window.removeEventListener("globeQuakesToggle", handler);
+  }, []);
+
+  // Escuta evento globeIssToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      issEnabledRef.current = (e as CustomEvent).detail.issEnabled as boolean;
+    };
+    window.addEventListener("globeIssToggle", handler);
+    return () => window.removeEventListener("globeIssToggle", handler);
+  }, []);
+
   // Escuta evento globeRotationToggle disparado pelo WeatherBar
   useEffect(() => {
     const handler = (e: Event) => {
@@ -155,6 +177,7 @@ const GlobeBackground = () => {
   useEffect(() => {
     mountedRef.current = true;
     let cleanupResize = () => {};
+    let issIntervalId: ReturnType<typeof setInterval> | null = null;
 
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -546,6 +569,26 @@ const GlobeBackground = () => {
                   oceanPrevScreen = new Array(OCEAN_PARTICLE_COUNT).fill(null);
                 });
 
+                // Terremotos reais (USGS) — carrega uma vez; a lista de
+                // sismos de M4.5+ nas últimas 24h não muda tão rápido que
+                // precise de polling.
+                let quakes: Quake[] = [];
+                loadQuakes().then((data) => {
+                  if (!mountedRef.current) return;
+                  quakes = data;
+                });
+
+                // Posição real da ISS — se move rápido, precisa de polling.
+                let issPos: IssPosition | null = null;
+                const pollIss = () => {
+                  loadIssPosition().then((pos) => {
+                    if (!mountedRef.current || !pos) return;
+                    issPos = pos;
+                  });
+                };
+                pollIss();
+                issIntervalId = setInterval(pollIss, ISS_POLL_INTERVAL_MS);
+
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
 
@@ -686,6 +729,81 @@ const GlobeBackground = () => {
                     }
                   });
 
+                  // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
+                  // pulsante colorido/dimensionado pela magnitude.
+                  if (quakesEnabledRef.current) {
+                    for (let i = 0; i < quakes.length; i++) {
+                      const q = quakes[i];
+                      if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
+                        );
+                        if (!sp) continue;
+                        const color = quakeColor(q.mag);
+                        const radius = quakeRadius(q.mag);
+                        const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
+
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
+                        ctx.strokeStyle = color;
+                        ctx.globalAlpha = 0.55 - pulse * 0.35;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = color;
+                        ctx.fillText(`M${q.mag.toFixed(1)}`, sp.x + radius + 6, sp.y + 3);
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  }
+
+                  // Posição real da ISS — ponto branco cintilante com um
+                  // pequeno anel de órbita.
+                  if (issEnabledRef.current && issPos) {
+                    if (isFacing(cam.latitude, cam.longitude, issPos.lat, issPos.lon)) {
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: issPos.lon, latitude: issPos.lat, z: 400000 })
+                        );
+                        if (sp) {
+                          const blink = (Math.sin(frame * 0.1) + 1) / 2;
+
+                          ctx.beginPath();
+                          ctx.ellipse(sp.x, sp.y, 12, 5, frame * 0.02, 0, Math.PI * 2);
+                          ctx.strokeStyle = `rgba(220,220,255,${0.4 + blink * 0.3})`;
+                          ctx.lineWidth = 1;
+                          ctx.stroke();
+
+                          ctx.beginPath();
+                          ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                          ctx.fillStyle = "#e8e8ff";
+                          ctx.shadowBlur = 9;
+                          ctx.shadowColor = "#e8e8ff";
+                          ctx.fill();
+                          ctx.shadowBlur = 0;
+
+                          ctx.font = "bold 10px monospace";
+                          ctx.fillStyle = "#e8e8ff";
+                          ctx.fillText("🛰 ISS", sp.x + 12, sp.y - 6);
+                        }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  }
+
                   // Pin do visitante (geolocalização)
                   const userLoc = userLocRef.current;
                   if (userLoc && isFacing(cam.latitude, cam.longitude, userLoc.lat, userLoc.lon)) {
@@ -815,6 +933,7 @@ const GlobeBackground = () => {
       mountedRef.current = false;
       clearTimeout(timer);
       cleanupResize();
+      if (issIntervalId) clearInterval(issIntervalId);
       document.getElementById("esri-bg-override")?.remove();
     };
   }, []);

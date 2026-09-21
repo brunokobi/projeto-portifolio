@@ -95,6 +95,22 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeOceanToggle", { detail: { oceanEnabled: next } }));
   }, [oceanEnabled]);
 
+  const [quakesEnabled, setQuakesEnabled] = useState(() => localStorage.getItem("globeQuakes") !== "0");
+  const toggleQuakes = useCallback(() => {
+    const next = !quakesEnabled;
+    setQuakesEnabled(next);
+    localStorage.setItem("globeQuakes", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeQuakesToggle", { detail: { quakesEnabled: next } }));
+  }, [quakesEnabled]);
+
+  const [issEnabled, setIssEnabled] = useState(() => localStorage.getItem("globeIss") !== "0");
+  const toggleIss = useCallback(() => {
+    const next = !issEnabled;
+    setIssEnabled(next);
+    localStorage.setItem("globeIss", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeIssToggle", { detail: { issEnabled: next } }));
+  }, [issEnabled]);
+
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
   );
@@ -264,6 +280,38 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {oceanEnabled ? "🌊 CORRENTES ON" : "🌊 CORRENTES OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleQuakes}
+          title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {quakesEnabled ? "🌋 SISMOS ON" : "🌋 SISMOS OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleIss}
+          title={issEnabled ? "Desativar ISS" : "Ativar ISS"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {issEnabled ? "🛰 ISS ON" : "🛰 ISS OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
