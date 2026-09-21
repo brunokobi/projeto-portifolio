@@ -23,12 +23,20 @@ import {
   type WindGrid,
   type WindParticle,
 } from "./wind";
+import {
+  loadOceanGrid,
+  createRandomOceanParticle,
+  advanceOceanParticle,
+  oceanSpeedToColor,
+  type OceanParticle,
+} from "./ocean";
 
 setDefaultOptions({ css: true });
 
 // Partículas suficientes pra dar sensação de correntes contínuas sem pesar
 // demais no toScreen() (projeção 3D→2D) chamado por partícula a cada frame.
 const WIND_PARTICLE_COUNT = 700;
+const OCEAN_PARTICLE_COUNT = 400;
 // Alpha do "destination-in" aplicado no canvas de vento a cada frame — abaixo
 // de 1 multiplica a opacidade existente, criando o efeito de rastro que
 // desbota (em vez de limpar tudo, como o canvas dos pins das cidades faz).
@@ -51,6 +59,7 @@ const GlobeBackground = () => {
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
+  const oceanEnabledRef = useRef(localStorage.getItem("globeOcean") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -103,19 +112,35 @@ const GlobeBackground = () => {
     return () => window.removeEventListener("globeNightToggle", handler);
   }, []);
 
+  // Vento e correntes marítimas desenham no mesmo canvas (mesmo efeito de
+  // rastro que desbota) — só limpa de vez quando os DOIS ficam desligados;
+  // se só um for desligado, o rastro dele desbota naturalmente no fade do
+  // outro, sem precisar de um clear abrupto.
+  const clearWindCanvasIfBothOff = () => {
+    if (windEnabledRef.current || oceanEnabledRef.current) return;
+    const wc = document.getElementById("globeWindOverlay") as HTMLCanvasElement | null;
+    const wctx = wc?.getContext("2d");
+    wctx?.clearRect(0, 0, wc?.width ?? 0, wc?.height ?? 0);
+  };
+
   // Escuta evento globeWindToggle disparado pelo WeatherBar
   useEffect(() => {
     const handler = (e: Event) => {
-      const enabled = (e as CustomEvent).detail.windEnabled as boolean;
-      windEnabledRef.current = enabled;
-      if (!enabled) {
-        const wc = document.getElementById("globeWindOverlay") as HTMLCanvasElement | null;
-        const wctx = wc?.getContext("2d");
-        wctx?.clearRect(0, 0, wc?.width ?? 0, wc?.height ?? 0);
-      }
+      windEnabledRef.current = (e as CustomEvent).detail.windEnabled as boolean;
+      clearWindCanvasIfBothOff();
     };
     window.addEventListener("globeWindToggle", handler);
     return () => window.removeEventListener("globeWindToggle", handler);
+  }, []);
+
+  // Escuta evento globeOceanToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      oceanEnabledRef.current = (e as CustomEvent).detail.oceanEnabled as boolean;
+      clearWindCanvasIfBothOff();
+    };
+    window.addEventListener("globeOceanToggle", handler);
+    return () => window.removeEventListener("globeOceanToggle", handler);
   }, []);
 
   // Escuta evento globeRotationToggle disparado pelo WeatherBar
@@ -498,7 +523,8 @@ const GlobeBackground = () => {
                   (c) => new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
                 );
 
-                // Vento real (GFS via firestorm-wind-data) — carrega em
+                // Vento real (GFS via firestorm-wind-data) e correntes
+                // marítimas reais (Open-Meteo Marine) — carregam em
                 // paralelo, sem bloquear o resto do setup.
                 let windGrid: WindGrid | null = null;
                 let windParticles: WindParticle[] = [];
@@ -508,6 +534,16 @@ const GlobeBackground = () => {
                   windGrid = grid;
                   windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
                   windPrevScreen = new Array(WIND_PARTICLE_COUNT).fill(null);
+                });
+
+                let oceanGrid: WindGrid | null = null;
+                let oceanParticles: OceanParticle[] = [];
+                let oceanPrevScreen: Array<{ x: number; y: number } | null> = [];
+                loadOceanGrid().then((grid) => {
+                  if (!mountedRef.current || !grid) return;
+                  oceanGrid = grid;
+                  oceanParticles = Array.from({ length: OCEAN_PARTICLE_COUNT }, createRandomOceanParticle);
+                  oceanPrevScreen = new Array(OCEAN_PARTICLE_COUNT).fill(null);
                 });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
@@ -520,48 +556,87 @@ const GlobeBackground = () => {
 
                   const cam = view.camera.position;
 
-                  // Correntes de vento — cada partícula deixa uma linha curta
-                  // da posição anterior pra atual, colorida pela velocidade;
-                  // o canvas nunca é limpo de verdade, só desbotado
-                  // (destination-in), dando a impressão de fluxo contínuo.
-                  if (windEnabledRef.current && windGrid && windCtx && windCanvas) {
+                  // Correntes de vento e marítimas — cada partícula deixa uma
+                  // linha curta da posição anterior pra atual, colorida pela
+                  // velocidade; o canvas nunca é limpo de verdade, só
+                  // desbotado (destination-in), dando a impressão de fluxo
+                  // contínuo. As duas compartilham o mesmo canvas/fade.
+                  const showWind = windEnabledRef.current && !!windGrid;
+                  const showOcean = oceanEnabledRef.current && !!oceanGrid;
+                  if ((showWind || showOcean) && windCtx && windCanvas) {
                     windCtx.save();
                     windCtx.globalCompositeOperation = "destination-in";
                     windCtx.fillStyle = `rgba(0,0,0,${WIND_TRAIL_FADE})`;
                     windCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
                     windCtx.globalCompositeOperation = "source-over";
-                    windCtx.lineWidth = 1.3;
                     windCtx.lineCap = "round";
 
-                    for (let i = 0; i < windParticles.length; i++) {
-                      const prevScreen = windPrevScreen[i];
-                      windParticles[i] = advanceParticle(windParticles[i], windGrid);
-                      const p = windParticles[i];
-                      if (!isFacing(cam.latitude, cam.longitude, p.lat, toArcgisLon(p.lon))) {
-                        windPrevScreen[i] = null;
-                        continue;
-                      }
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: toArcgisLon(p.lon), latitude: p.lat, z: 40000 })
-                        );
-                        if (!sp) { windPrevScreen[i] = null; continue; }
-                        if (prevScreen) {
-                          const dx = sp.x - prevScreen.x, dy = sp.y - prevScreen.y;
-                          if (dx * dx + dy * dy < WIND_MAX_TRAIL_JUMP_PX * WIND_MAX_TRAIL_JUMP_PX) {
-                            const { u, v } = sampleWind(windGrid, p.lat, p.lon);
-                            windCtx.strokeStyle = speedToColor(windSpeed(u, v));
-                            windCtx.beginPath();
-                            windCtx.moveTo(prevScreen.x, prevScreen.y);
-                            windCtx.lineTo(sp.x, sp.y);
-                            windCtx.stroke();
-                          }
+                    if (showWind && windGrid) {
+                      windCtx.lineWidth = 1.3;
+                      for (let i = 0; i < windParticles.length; i++) {
+                        const prevScreen = windPrevScreen[i];
+                        windParticles[i] = advanceParticle(windParticles[i], windGrid);
+                        const p = windParticles[i];
+                        if (!isFacing(cam.latitude, cam.longitude, p.lat, toArcgisLon(p.lon))) {
+                          windPrevScreen[i] = null;
+                          continue;
                         }
-                        windPrevScreen[i] = { x: sp.x, y: sp.y };
-                      } catch {
-                        windPrevScreen[i] = null;
+                        try {
+                          const sp = view.toScreen(
+                            new Point({ longitude: toArcgisLon(p.lon), latitude: p.lat, z: 40000 })
+                          );
+                          if (!sp) { windPrevScreen[i] = null; continue; }
+                          if (prevScreen) {
+                            const dx = sp.x - prevScreen.x, dy = sp.y - prevScreen.y;
+                            if (dx * dx + dy * dy < WIND_MAX_TRAIL_JUMP_PX * WIND_MAX_TRAIL_JUMP_PX) {
+                              const { u, v } = sampleWind(windGrid, p.lat, p.lon);
+                              windCtx.strokeStyle = speedToColor(windSpeed(u, v));
+                              windCtx.beginPath();
+                              windCtx.moveTo(prevScreen.x, prevScreen.y);
+                              windCtx.lineTo(sp.x, sp.y);
+                              windCtx.stroke();
+                            }
+                          }
+                          windPrevScreen[i] = { x: sp.x, y: sp.y };
+                        } catch {
+                          windPrevScreen[i] = null;
+                        }
                       }
                     }
+
+                    if (showOcean && oceanGrid) {
+                      windCtx.lineWidth = 1.8;
+                      for (let i = 0; i < oceanParticles.length; i++) {
+                        const prevScreen = oceanPrevScreen[i];
+                        oceanParticles[i] = advanceOceanParticle(oceanParticles[i], oceanGrid);
+                        const p = oceanParticles[i];
+                        if (!isFacing(cam.latitude, cam.longitude, p.lat, toArcgisLon(p.lon))) {
+                          oceanPrevScreen[i] = null;
+                          continue;
+                        }
+                        try {
+                          const sp = view.toScreen(
+                            new Point({ longitude: toArcgisLon(p.lon), latitude: p.lat, z: 40000 })
+                          );
+                          if (!sp) { oceanPrevScreen[i] = null; continue; }
+                          if (prevScreen) {
+                            const dx = sp.x - prevScreen.x, dy = sp.y - prevScreen.y;
+                            if (dx * dx + dy * dy < WIND_MAX_TRAIL_JUMP_PX * WIND_MAX_TRAIL_JUMP_PX) {
+                              const { u, v } = sampleWind(oceanGrid, p.lat, p.lon);
+                              windCtx.strokeStyle = oceanSpeedToColor(windSpeed(u, v));
+                              windCtx.beginPath();
+                              windCtx.moveTo(prevScreen.x, prevScreen.y);
+                              windCtx.lineTo(sp.x, sp.y);
+                              windCtx.stroke();
+                            }
+                          }
+                          oceanPrevScreen[i] = { x: sp.x, y: sp.y };
+                        } catch {
+                          oceanPrevScreen[i] = null;
+                        }
+                      }
+                    }
+
                     windCtx.restore();
                   }
 

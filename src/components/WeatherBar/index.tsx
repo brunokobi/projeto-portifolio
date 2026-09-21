@@ -87,6 +87,14 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeWindToggle", { detail: { windEnabled: next } }));
   }, [windEnabled]);
 
+  const [oceanEnabled, setOceanEnabled] = useState(() => localStorage.getItem("globeOcean") !== "0");
+  const toggleOcean = useCallback(() => {
+    const next = !oceanEnabled;
+    setOceanEnabled(next);
+    localStorage.setItem("globeOcean", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeOceanToggle", { detail: { oceanEnabled: next } }));
+  }, [oceanEnabled]);
+
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
   );
@@ -240,6 +248,22 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {windEnabled ? "🌬 VENTO ON" : "🌬 VENTO OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleOcean}
+          title={oceanEnabled ? "Desativar correntes marítimas" : "Ativar correntes marítimas"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {oceanEnabled ? "🌊 CORRENTES ON" : "🌊 CORRENTES OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
