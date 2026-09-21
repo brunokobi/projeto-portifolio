@@ -480,7 +480,11 @@ const GlobeBackground = () => {
                       setHoverInfo({
                         x: evt.x,
                         y: evt.y,
-                        lines: [`🌋 M${qp.mag.toFixed(1)} — ${qp.place}`, when],
+                        lines: [
+                          "🌋 Terremoto",
+                          `M${qp.mag.toFixed(1)} (escala Richter) — ${qp.place}`,
+                          when,
+                        ],
                       });
                       setHoverCity(null);
                     }
