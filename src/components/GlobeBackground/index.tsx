@@ -573,6 +573,7 @@ const GlobeBackground = () => {
 
                     if (showWind && windGrid) {
                       windCtx.lineWidth = 1.3;
+                      windCtx.setLineDash([]);
                       for (let i = 0; i < windParticles.length; i++) {
                         const prevScreen = windPrevScreen[i];
                         windParticles[i] = advanceParticle(windParticles[i], windGrid);
@@ -606,6 +607,9 @@ const GlobeBackground = () => {
 
                     if (showOcean && oceanGrid) {
                       windCtx.lineWidth = 1.8;
+                      // tracejado — leitura visual diferente do vento (que é
+                      // sólido), convenção comum em mapas pra corrente marítima.
+                      windCtx.setLineDash([3, 4]);
                       for (let i = 0; i < oceanParticles.length; i++) {
                         const prevScreen = oceanPrevScreen[i];
                         oceanParticles[i] = advanceOceanParticle(oceanParticles[i], oceanGrid);
