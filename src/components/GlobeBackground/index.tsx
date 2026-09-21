@@ -58,6 +58,13 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
+  const quakeScreenPosRef = useRef<Array<{ x: number; y: number; mag: number; place: string; time: number } | null>>(
+    []
+  );
+  const issScreenPosRef = useRef<{ x: number; y: number; lat: number; lon: number; altitude?: number; velocity?: number } | null>(
+    null
+  );
+  const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
@@ -435,7 +442,7 @@ const GlobeBackground = () => {
               }
             });
 
-            // Cursor pointer e hover modal ao passar sobre um pin
+            // Cursor pointer e hover modal/legenda ao passar sobre um pin
             view.on("pointer-move", (evt: { x: number; y: number }) => {
               const positions = cityScreenPosRef.current;
               let over = false;
@@ -449,15 +456,65 @@ const GlobeBackground = () => {
                   if (hoveredNameRef.current !== city.name) {
                     hoveredNameRef.current = city.name;
                     setHoverCity({ city, x: evt.x, y: evt.y });
+                    setHoverInfo(null);
                   }
                   isHoveringRef.current = true;
                   break;
                 }
               }
+
+              if (!over) {
+                // Terremotos
+                const quakePositions = quakeScreenPosRef.current;
+                for (let i = 0; i < quakePositions.length; i++) {
+                  const qp = quakePositions[i];
+                  if (!qp) continue;
+                  const dx = evt.x - qp.x, dy = evt.y - qp.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `quake-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const hoursAgo = Math.max(0, (Date.now() - qp.time) / 3600000);
+                      const when = hoursAgo < 1 ? "há menos de 1h" : `há ${Math.round(hoursAgo)}h`;
+                      setHoverInfo({
+                        x: evt.x,
+                        y: evt.y,
+                        lines: [`🌋 M${qp.mag.toFixed(1)} — ${qp.place}`, when],
+                      });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // ISS
+                const ip = issScreenPosRef.current;
+                if (ip) {
+                  const dx = evt.x - ip.x, dy = evt.y - ip.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    if (hoveredNameRef.current !== "iss") {
+                      hoveredNameRef.current = "iss";
+                      const lines = ["🛰 ISS — Estação Espacial Internacional"];
+                      if (ip.altitude != null) lines.push(`Altitude: ${Math.round(ip.altitude)} km`);
+                      if (ip.velocity != null) lines.push(`Velocidade: ${Math.round(ip.velocity)} km/h`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                  }
+                }
+              }
+
               if (!over && isHoveringRef.current) {
                 isHoveringRef.current = false;
                 hoveredNameRef.current = null;
                 setHoverCity(null);
+                setHoverInfo(null);
               }
               const el = document.getElementById("globeBgDiv");
               if (el) el.style.cursor = over ? "pointer" : "default";
@@ -731,8 +788,12 @@ const GlobeBackground = () => {
 
                   // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
                   // pulsante colorido/dimensionado pela magnitude.
+                  if (quakeScreenPosRef.current.length !== quakes.length) {
+                    quakeScreenPosRef.current = new Array(quakes.length).fill(null);
+                  }
                   if (quakesEnabledRef.current) {
                     for (let i = 0; i < quakes.length; i++) {
+                      quakeScreenPosRef.current[i] = null;
                       const q = quakes[i];
                       if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
                       try {
@@ -740,6 +801,7 @@ const GlobeBackground = () => {
                           new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
                         );
                         if (!sp) continue;
+                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, mag: q.mag, place: q.place, time: q.time };
                         const color = quakeColor(q.mag);
                         const radius = quakeRadius(q.mag);
                         const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
@@ -767,10 +829,13 @@ const GlobeBackground = () => {
                         // ponto fora do campo de visão
                       }
                     }
+                  } else {
+                    quakeScreenPosRef.current.fill(null);
                   }
 
                   // Posição real da ISS — ponto branco cintilante com um
                   // pequeno anel de órbita.
+                  issScreenPosRef.current = null;
                   if (issEnabledRef.current && issPos) {
                     if (isFacing(cam.latitude, cam.longitude, issPos.lat, issPos.lon)) {
                       try {
@@ -778,6 +843,14 @@ const GlobeBackground = () => {
                           new Point({ longitude: issPos.lon, latitude: issPos.lat, z: 400000 })
                         );
                         if (sp) {
+                          issScreenPosRef.current = {
+                            x: sp.x,
+                            y: sp.y,
+                            lat: issPos.lat,
+                            lon: issPos.lon,
+                            altitude: issPos.altitude,
+                            velocity: issPos.velocity,
+                          };
                           const blink = (Math.sin(frame * 0.1) + 1) / 2;
 
                           ctx.beginPath();
@@ -983,6 +1056,39 @@ const GlobeBackground = () => {
           pointerEvents: "none",
         }}
       />
+
+      {hoverInfo && (
+        <div
+          style={{
+            position: "fixed",
+            left: Math.min(hoverInfo.x + 18, window.innerWidth - 280),
+            top: Math.max(hoverInfo.y - 50, 8),
+            zIndex: 20,
+            maxWidth: "260px",
+            background: "rgba(0, 10, 2, 0.96)",
+            border: "1px solid #00ff41",
+            borderRadius: "6px",
+            padding: "8px 12px",
+            fontFamily: "monospace",
+            pointerEvents: "none",
+            boxShadow: "0 0 24px rgba(0,255,65,0.25), inset 0 0 30px rgba(0,255,65,0.04)",
+          }}
+        >
+          {hoverInfo.lines.map((line, i) => (
+            <div
+              key={i}
+              style={{
+                fontSize: i === 0 ? "11px" : "10px",
+                color: i === 0 ? "#42ff6b" : "#00e055",
+                fontWeight: i === 0 ? "bold" : "normal",
+                lineHeight: 1.5,
+              }}
+            >
+              {line}
+            </div>
+          ))}
+        </div>
+      )}
 
       {hoverCity && hoverCity.city.desc && (
         <div

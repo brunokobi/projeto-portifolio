@@ -9,15 +9,19 @@ export const ISS_POLL_INTERVAL_MS = 8000; // a ISS se move r√°pido (~7.66km/s) ‚
 export interface IssPosition {
   lat: number;
   lon: number;
+  altitude?: number; // km
+  velocity?: number; // km/h
 }
 
 export function parseIssPosition(json: unknown): IssPosition | null {
-  const data = json as { latitude?: unknown; longitude?: unknown };
+  const data = json as { latitude?: unknown; longitude?: unknown; altitude?: unknown; velocity?: unknown };
   const lat = data?.latitude;
   const lon = data?.longitude;
   if (typeof lat !== "number" || typeof lon !== "number") return null;
   if (Number.isNaN(lat) || Number.isNaN(lon)) return null;
-  return { lat, lon };
+  const altitude = typeof data?.altitude === "number" ? data.altitude : undefined;
+  const velocity = typeof data?.velocity === "number" ? data.velocity : undefined;
+  return { lat, lon, altitude, velocity };
 }
 
 export async function loadIssPosition(): Promise<IssPosition | null> {

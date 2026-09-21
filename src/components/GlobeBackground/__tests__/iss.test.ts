@@ -2,9 +2,18 @@ import { describe, it, expect } from "vitest";
 import { parseIssPosition } from "../iss";
 
 describe("parseIssPosition", () => {
-  it("extrai latitude/longitude da resposta da wheretheiss.at", () => {
-    const json = { latitude: 20.945769312447, longitude: -61.865061652716, altitude: 416.2 };
-    expect(parseIssPosition(json)).toEqual({ lat: 20.945769312447, lon: -61.865061652716 });
+  it("extrai lat/lon/altitude/velocidade da resposta da wheretheiss.at", () => {
+    const json = { latitude: 20.945769312447, longitude: -61.865061652716, altitude: 416.2, velocity: 27598.6 };
+    expect(parseIssPosition(json)).toEqual({
+      lat: 20.945769312447,
+      lon: -61.865061652716,
+      altitude: 416.2,
+      velocity: 27598.6,
+    });
+  });
+
+  it("altitude/velocidade ficam undefined se ausentes, sem invalidar a posição", () => {
+    expect(parseIssPosition({ latitude: 1, longitude: 2 })).toEqual({ lat: 1, lon: 2, altitude: undefined, velocity: undefined });
   });
 
   it("rejeita quando falta latitude ou longitude", () => {
