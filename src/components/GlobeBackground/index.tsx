@@ -215,7 +215,7 @@ const GlobeBackground = () => {
         "esri/Graphic",
         "esri/geometry/Point",
         "esri/geometry/Mesh",
-        "esri/symbols/Picture3DSymbol",
+        "esri/symbols/SimpleMarkerSymbol",
         "esri/core/watchUtils",
       ])
         .then(
@@ -231,7 +231,7 @@ const GlobeBackground = () => {
             Graphic,
             Point,
             Mesh,
-            Picture3DSymbol,
+            SimpleMarkerSymbol,
             watchUtils,
           ]) => {
             if (!mountedRef.current) return;
@@ -684,14 +684,19 @@ const GlobeBackground = () => {
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
 
-                // Graphic 3D do ISS
+                // Graphic 3D do ISS com símbolo customizado
                 const issGraphic = new Graphic({
                   geometry: new Point({ longitude: 0, latitude: 0, z: 400000 }),
-                  symbol: new Picture3DSymbol({
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23aaaaff;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='20' y='25' width='40' height='30' fill='url(%23grad1)' stroke='%23e8e8ff' stroke-width='1' rx='4'/%3E%3Crect x='10' y='35' width='15' height='10' fill='%2365aaff' stroke='%23e8e8ff' stroke-width='0.5' rx='2'/%3E%3Crect x='55' y='35' width='15' height='10' fill='%2365aaff' stroke='%23e8e8ff' stroke-width='0.5' rx='2'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23ffff00' opacity='0.9'/%3E%3Ccircle cx='40' cy='40' r='8' fill='none' stroke='%23ffff00' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E",
-                    width: 50,
-                    height: 50,
+                  symbol: new SimpleMarkerSymbol({
+                    style: "diamond",
+                    color: [232, 232, 255, 0.9],
+                    size: 16,
+                    outline: {
+                      color: [200, 220, 255],
+                      width: 2,
+                    },
                   }),
+                  attributes: { type: "iss" },
                 });
                 view.graphics.add(issGraphic);
 
