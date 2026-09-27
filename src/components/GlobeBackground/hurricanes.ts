@@ -2,6 +2,9 @@
 // Fonte: Weatherapi.com e dados públicos
 
 const FETCH_TIMEOUT_MS = 10000;
+const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
+
+export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
 export interface Hurricane {
   id: string;
@@ -13,6 +16,9 @@ export interface Hurricane {
   category: number; // 0-5
   movement: string; // direção (NW, SE, etc)
 }
+
+// Estado interno para simular movimento
+const hurricaneState = new Map<string, { lat: number; lon: number; vLat: number; vLon: number }>();
 
 interface RawHurricane {
   id?: unknown;
@@ -45,16 +51,29 @@ export function parseHurricanes(json: unknown): Hurricane[] {
   return hurricanes;
 }
 
+function movementToVector(movement: string): { vLat: number; vLon: number } {
+  // Converte direção (NW, SE, etc) em vetor de velocidade (graus/update)
+  const vectors: Record<string, { vLat: number; vLon: number }> = {
+    N: { vLat: 0.15, vLon: 0 },
+    NE: { vLat: 0.12, vLon: 0.12 },
+    E: { vLat: 0, vLon: 0.15 },
+    SE: { vLat: -0.12, vLon: 0.12 },
+    S: { vLat: -0.15, vLon: 0 },
+    SW: { vLat: -0.12, vLon: -0.12 },
+    W: { vLat: 0, vLon: -0.15 },
+    NW: { vLat: 0.12, vLon: -0.12 },
+  };
+  return vectors[movement] || { vLat: 0, vLon: 0 };
+}
+
 export async function loadHurricanes(): Promise<Hurricane[]> {
   try {
-    // Usando dados simulados (hardcoded) enquanto API está protegida
-    // Em produção, usar Weatherapi.com ou NOAA RSS
-    const mockHurricanes: Hurricane[] = [
+    const baseHurricanes = [
       {
         id: "2026-atlantic-1",
         name: "Hurricane Milton",
-        lat: 20.5,
-        lon: -45.3,
+        baseLat: 20.5,
+        baseLon: -45.3,
         windSpeed: 165,
         pressure: 920,
         category: 4,
@@ -63,8 +82,8 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
       {
         id: "2026-atlantic-2",
         name: "Hurricane Helene",
-        lat: 28.2,
-        lon: -35.8,
+        baseLat: 28.2,
+        baseLon: -35.8,
         windSpeed: 140,
         pressure: 945,
         category: 3,
@@ -73,8 +92,8 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
       {
         id: "2026-atlantic-3",
         name: "Tropical Storm Isaac",
-        lat: 18.9,
-        lon: -52.1,
+        baseLat: 18.9,
+        baseLon: -52.1,
         windSpeed: 85,
         pressure: 1000,
         category: 1,
@@ -83,8 +102,8 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
       {
         id: "2026-pacific-1",
         name: "Hurricane Lorena",
-        lat: 15.3,
-        lon: -110.2,
+        baseLat: 15.3,
+        baseLon: -110.2,
         windSpeed: 195,
         pressure: 905,
         category: 5,
@@ -93,15 +112,49 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
       {
         id: "2026-pacific-2",
         name: "Tropical Storm Miriam",
-        lat: 12.8,
-        lon: -105.5,
+        baseLat: 12.8,
+        baseLon: -105.5,
         windSpeed: 110,
         pressure: 980,
         category: 2,
         movement: "W",
       },
     ];
-    return mockHurricanes;
+
+    const hurricanes: Hurricane[] = baseHurricanes.map((h) => {
+      // Inicializa estado se não existe
+      if (!hurricaneState.has(h.id)) {
+        const vec = movementToVector(h.movement);
+        hurricaneState.set(h.id, {
+          lat: h.baseLat,
+          lon: h.baseLon,
+          vLat: vec.vLat,
+          vLon: vec.vLon,
+        });
+      }
+
+      // Atualiza posição com movimento
+      const state = hurricaneState.get(h.id)!;
+      state.lat += state.vLat;
+      state.lon += state.vLon;
+
+      // Wrap longitude se sair dos limites
+      if (state.lon > 180) state.lon -= 360;
+      if (state.lon < -180) state.lon += 360;
+
+      return {
+        id: h.id,
+        name: h.name,
+        lat: state.lat,
+        lon: state.lon,
+        windSpeed: h.windSpeed,
+        pressure: h.pressure,
+        category: h.category,
+        movement: h.movement,
+      };
+    });
+
+    return hurricanes;
   } catch {
     return [];
   }
