@@ -215,7 +215,6 @@ const GlobeBackground = () => {
         "esri/Graphic",
         "esri/geometry/Point",
         "esri/geometry/Mesh",
-        "esri/symbols/SimpleMarkerSymbol",
         "esri/core/watchUtils",
       ])
         .then(
@@ -231,7 +230,6 @@ const GlobeBackground = () => {
             Graphic,
             Point,
             Mesh,
-            SimpleMarkerSymbol,
             watchUtils,
           ]) => {
             if (!mountedRef.current) return;
@@ -684,31 +682,12 @@ const GlobeBackground = () => {
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
 
-                // Graphic 3D do ISS com símbolo customizado
-                const issGraphic = new Graphic({
-                  geometry: new Point({ longitude: 0, latitude: 0, z: 400000 }),
-                  symbol: new SimpleMarkerSymbol({
-                    style: "diamond",
-                    color: [232, 232, 255, 0.9],
-                    size: 16,
-                    outline: {
-                      color: [200, 220, 255],
-                      width: 2,
-                    },
-                  }),
-                  attributes: { type: "iss" },
-                });
-                view.graphics.add(issGraphic);
-
+                // Posição real da ISS — se move rápido, precisa de polling.
+                let issPos: IssPosition | null = null;
                 const pollIss = () => {
                   loadIssPosition().then((pos) => {
                     if (!mountedRef.current || !pos) return;
                     issPos = pos;
-                    issGraphic.geometry = new Point({
-                      longitude: pos.lon,
-                      latitude: pos.lat,
-                      z: 400000,
-                    });
                   });
                 };
                 pollIss();
@@ -908,8 +887,7 @@ const GlobeBackground = () => {
                     quakeScreenPosRef.current.fill(null);
                   }
 
-                  // Posição real da ISS — renderizada como Graphic 3D
-                  // Atualizar issScreenPosRef apenas para hover detection
+                  // Posição real da ISS — ponto azul pulsante com anel
                   issScreenPosRef.current = null;
                   if (issEnabledRef.current && issPos) {
                     if (isFacing(cam.latitude, cam.longitude, issPos.lat, issPos.lon)) {
@@ -926,6 +904,30 @@ const GlobeBackground = () => {
                             altitude: issPos.altitude,
                             velocity: issPos.velocity,
                           };
+                          const pulse = (Math.sin(frame * 0.08) + 1) / 2;
+
+                          // Anel pulsante azul
+                          ctx.beginPath();
+                          ctx.arc(sp.x, sp.y, 8 + pulse * 10, 0, Math.PI * 2);
+                          ctx.strokeStyle = `rgba(100,200,255,${0.5 - pulse * 0.35})`;
+                          ctx.lineWidth = 2;
+                          ctx.stroke();
+
+                          // Anel fixo
+                          ctx.beginPath();
+                          ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+                          ctx.strokeStyle = "rgba(100,200,255,0.7)";
+                          ctx.lineWidth = 1;
+                          ctx.stroke();
+
+                          // Ponto central azul brilhante
+                          ctx.beginPath();
+                          ctx.arc(sp.x, sp.y, 2.5, 0, Math.PI * 2);
+                          ctx.fillStyle = "#64c8ff";
+                          ctx.shadowBlur = 8;
+                          ctx.shadowColor = "#64c8ff";
+                          ctx.fill();
+                          ctx.shadowBlur = 0;
                         }
                       } catch {
                         // ponto fora do campo de visão
