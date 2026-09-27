@@ -1094,31 +1094,36 @@ const GlobeBackground = () => {
                         const color = hurricaneColor(h.category);
                         const radius = hurricaneRadius(h.windSpeed);
 
-                        // Ícone de furacão — espiral preenchida com arcos dinâmicos
+                        // Ícone de furacão — espiral visual (tipo ícone SVG)
                         ctx.save();
                         ctx.translate(sp.x, sp.y);
 
-                        // Fundo circular (núcleo)
-                        ctx.beginPath();
-                        ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 8;
+                        // Espiral contínua (redemoinho limpo)
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = radius * 0.15;
+                        ctx.lineCap = "round";
+                        ctx.lineJoin = "round";
+                        ctx.shadowBlur = 10;
                         ctx.shadowColor = color;
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
 
-                        // Arcos da espiral (redemoinho)
-                        for (let j = 1; j <= 3; j++) {
-                          const r = radius * (0.3 + j * 0.2);
-                          ctx.beginPath();
-                          ctx.arc(0, 0, r, 0, Math.PI * 1.5);
-                          ctx.strokeStyle = color;
-                          ctx.globalAlpha = 0.8 - j * 0.15;
-                          ctx.lineWidth = 2;
-                          ctx.stroke();
-                          ctx.globalAlpha = 1;
+                        // Desenha espiral (3 voltas)
+                        ctx.beginPath();
+                        for (let angle = 0; angle < Math.PI * 6; angle += 0.1) {
+                          const r = (angle / (Math.PI * 6)) * radius;
+                          const x = Math.cos(angle) * r;
+                          const y = Math.sin(angle) * r;
+                          if (angle === 0) ctx.moveTo(x, y);
+                          else ctx.lineTo(x, y);
                         }
+                        ctx.stroke();
 
+                        // Núcleo circular
+                        ctx.beginPath();
+                        ctx.arc(0, 0, radius * 0.15, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.fill();
+
+                        ctx.shadowBlur = 0;
                         ctx.restore();
                       } catch {
                         // ponto fora do campo de visão
