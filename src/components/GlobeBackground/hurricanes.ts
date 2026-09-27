@@ -4,10 +4,11 @@
 const FETCH_TIMEOUT_MS = 30000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
-// OpenWeatherMap API key — ONE CALL API 2.5 com alertas
+// OpenWeatherMap API key — ONE CALL API 3.0 (4.0) com alertas
+// Assinatura: "One Call by Call" — 1000 chamadas/dia gratuitas
 // Configurar via variável de ambiente VITE_OPENWEATHER_KEY
 const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_KEY || "";
-const OPENWEATHER_ONECALL = "https://api.openweathermap.org/data/2.5/onecall";
+const OPENWEATHER_ONECALL = "https://api.openweathermap.org/data/3.0/onecall";
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
