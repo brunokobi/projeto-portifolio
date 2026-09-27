@@ -1094,16 +1094,32 @@ const GlobeBackground = () => {
                         const color = hurricaneColor(h.category);
                         const radius = hurricaneRadius(h.windSpeed);
 
-                        // Espiral de furacão (círculos concêntricos)
-                        for (let j = 0; j < 3; j++) {
+                        // Ícone de furacão — espiral preenchida com arcos dinâmicos
+                        ctx.save();
+                        ctx.translate(sp.x, sp.y);
+
+                        // Fundo circular (núcleo)
+                        ctx.beginPath();
+                        ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Arcos da espiral (redemoinho)
+                        for (let j = 1; j <= 3; j++) {
+                          const r = radius * (0.3 + j * 0.2);
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, radius * (1 - j * 0.3), 0, Math.PI * 2);
+                          ctx.arc(0, 0, r, 0, Math.PI * 1.5);
                           ctx.strokeStyle = color;
-                          ctx.globalAlpha = 0.7 - j * 0.2;
-                          ctx.lineWidth = 1.5;
+                          ctx.globalAlpha = 0.8 - j * 0.15;
+                          ctx.lineWidth = 2;
                           ctx.stroke();
                           ctx.globalAlpha = 1;
                         }
+
+                        ctx.restore();
                       } catch {
                         // ponto fora do campo de visão
                       }
