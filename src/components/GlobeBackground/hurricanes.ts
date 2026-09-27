@@ -4,10 +4,11 @@
 const FETCH_TIMEOUT_MS = 30000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
-// OpenWeatherMap API key — ONE CALL API 3.0 com alertas
-// Configurar via variável de ambiente VITE_OPENWEATHER_KEY
-const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_KEY || "";
-const OPENWEATHER_ONECALL = "https://api.openweathermap.org/data/3.0/onecall";
+const NOAA_RSS_FEEDS = [
+  "https://www.nhc.noaa.gov/index-at.xml", // Atlântico
+  "https://www.nhc.noaa.gov/index-ep.xml", // Pacífico Leste
+  "https://www.nhc.noaa.gov/index-cp.xml", // Pacífico Central
+];
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
@@ -71,83 +72,97 @@ function movementToVector(movement: string): { vLat: number; vLon: number } {
   return vectors[movement] || { vLat: 0, vLon: 0 };
 }
 
-// Pontos estratégicos do oceano Atlântico e Pacífico pra buscar tempestades
-const STORM_CHECK_POINTS = [
-  { lat: 20, lon: -45, name: "Atlântico Central" },
-  { lat: 25, lon: -75, name: "Caribe" },
-  { lat: 15, lon: -150, name: "Pacífico Central" },
-  { lat: 10, lon: -140, name: "Pacífico Leste" },
-];
 
-async function fetchOpenWeatherAlerts(lat: number, lon: number): Promise<any> {
+async function fetchNOAARSSFeed(url: string): Promise<Document | null> {
   try {
-    const url = `${OPENWEATHER_ONECALL}?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_KEY}`;
-    console.log(`🔄 Fetching:`, url);
+    console.log(`🔄 Fetching NOAA:`, url);
     const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-    console.log(`📍 (${lat}, ${lon}): status ${res.status}`);
     if (!res.ok) {
-      console.error(`❌ OpenWeather ${res.status}`);
+      console.error(`❌ NOAA ${res.status}`);
       return null;
     }
-    const data = await res.json();
-    console.log(`✅ Dados recebidos:`, data.alerts?.length || 0, "alertas");
-    return data;
+    const text = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, "application/xml");
+    if (doc.getElementsByTagName("parsererror").length) {
+      console.error(`❌ XML parse error`);
+      return null;
+    }
+    return doc;
   } catch (e: any) {
-    console.error(`❌ OpenWeather error: ${e.message}`);
+    console.error(`❌ NOAA error: ${e.message}`);
     return null;
   }
 }
 
-function extractStormAlerts(weatherData: any, point: any): Hurricane[] {
-  if (!weatherData?.alerts) return [];
+function parseNOAACyclones(doc: Document): Hurricane[] {
+  const cyclones: Hurricane[] = [];
+  const items = doc.getElementsByTagName("item");
 
-  return weatherData.alerts
-    .filter((alert: any) => {
-      const event = (alert.event || "").toLowerCase();
-      return event.includes("hurricane") || event.includes("storm") || event.includes("cyclone") || event.includes("tornado");
-    })
-    .map((alert: any, idx: number) => {
-      // Simula posição próxima ao ponto (com variação pra visual)
-      const varLat = (Math.random() - 0.5) * 8;
-      const varLon = (Math.random() - 0.5) * 8;
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const nhcCyclone = item.getElementsByTagName("nhc:Cyclone")[0];
+    if (!nhcCyclone) continue;
 
-      const windSpeed = Math.floor(Math.random() * 100 + 80); // 80-180 km/h
-      const category = windSpeed >= 154 ? 2 : windSpeed >= 119 ? 1 : 0;
+    const centerText = nhcCyclone.getElementsByTagName("nhc:center")[0]?.textContent || "";
+    const [latStr, lonStr] = centerText.split(",").map((s) => s.trim());
+    const lat = parseFloat(latStr);
+    const lon = parseFloat(lonStr);
 
-      return {
-        id: `owm-${point.lon}-${point.lat}-${idx}`,
-        name: alert.event || "Tempestade",
-        lat: point.lat + varLat,
-        lon: point.lon + varLon,
-        windSpeed,
-        pressure: Math.floor(Math.random() * 50 + 950),
-        category,
-        movement: "N/A",
-      };
+    if (isNaN(lat) || isNaN(lon)) continue;
+
+    const name = nhcCyclone.getElementsByTagName("nhc:name")[0]?.textContent || "Storm";
+    const typeEl = nhcCyclone.getElementsByTagName("nhc:type")[0]?.textContent || "";
+    const windStr = nhcCyclone.getElementsByTagName("nhc:wind")[0]?.textContent || "0";
+    const pressureStr = nhcCyclone.getElementsByTagName("nhc:pressure")[0]?.textContent || "1013";
+
+    const windMph = parseInt(windStr) || 0;
+    const windKmh = Math.round(windMph * 1.60934);
+    const pressure = parseInt(pressureStr) || 1013;
+
+    // Saffir-Simpson: 74+ mph (119 km/h) = Cat 1, 96+ (154) = Cat 2, etc.
+    let category = 0;
+    if (windMph >= 157) category = 5;
+    else if (windMph >= 130) category = 4;
+    else if (windMph >= 111) category = 3;
+    else if (windMph >= 96) category = 2;
+    else if (windMph >= 74) category = 1;
+
+    cyclones.push({
+      id: `noaa-${name}-${lat}-${lon}`,
+      name,
+      lat,
+      lon,
+      windSpeed: windKmh,
+      pressure,
+      category,
+      movement: typeEl,
     });
+  }
+
+  return cyclones;
 }
 
 export async function loadHurricanes(): Promise<Hurricane[]> {
   try {
-    console.log("🌀 Buscando tempestades no OpenWeatherMap...");
+    console.log("🌀 Buscando tempestades no NOAA NHC...");
 
     const allStorms: Hurricane[] = [];
 
-    // Busca alertas em pontos estratégicos
-    for (const point of STORM_CHECK_POINTS) {
-      const data = await fetchOpenWeatherAlerts(point.lat, point.lon);
-      if (data) {
-        if (data.alerts && data.alerts.length > 0) {
-          const storms = extractStormAlerts(data, point);
-          allStorms.push(...storms);
-          console.log(`✅ ${point.name}: ${storms.length} alertas detectados`);
-        }
+    // Busca em todos os feeds do NOAA (Atlântico, Pacífico Leste, Central)
+    for (const feedUrl of NOAA_RSS_FEEDS) {
+      const doc = await fetchNOAARSSFeed(feedUrl);
+      if (doc) {
+        const cyclones = parseNOAACyclones(doc);
+        allStorms.push(...cyclones);
+        console.log(`✅ Feed: ${cyclones.length} ciclones detectados`);
       }
     }
 
-    // Se não tiver alertas, retorna vazio
     if (allStorms.length === 0) {
-      console.log("ℹ️ OpenWeather: sem alertas ativos.");
+      console.log("ℹ️ NOAA: sem ciclones ativos.");
+    } else {
+      console.log(`✅ Total: ${allStorms.length} tempestades tropicais`);
     }
 
     return allStorms;
