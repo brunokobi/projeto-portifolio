@@ -1104,20 +1104,6 @@ const GlobeBackground = () => {
                           ctx.stroke();
                           ctx.globalAlpha = 1;
                         }
-
-                        // Ponto central com glow
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = color;
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-
-                        // Label com categoria
-                        ctx.font = "bold 9px monospace";
-                        ctx.fillStyle = color;
-                        ctx.fillText(`🌀 ${h.name.toUpperCase()}`, sp.x + radius + 6, sp.y - 2);
                       } catch {
                         // ponto fora do campo de visão
                       }
