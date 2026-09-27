@@ -187,9 +187,9 @@ export function hurricaneColor(category: number): string {
   return "#FFFF00"; // Yellow - Tropical Storm
 }
 
-/** Raio do ícone do furacão (px) */
+/** Raio do ícone do furacão (px) — 3x maior que vulcões/terremotos */
 export function hurricaneRadius(windSpeed: number): number {
-  return 8 + Math.max(0, Math.min(windSpeed / 50, 8)) * 2;
+  return (8 + Math.max(0, Math.min(windSpeed / 50, 8)) * 2) * 3;
 }
 
 /** Label da categoria */
