@@ -215,6 +215,7 @@ const GlobeBackground = () => {
         "esri/Graphic",
         "esri/geometry/Point",
         "esri/geometry/Mesh",
+        "esri/symbols/Picture3DSymbol",
         "esri/core/watchUtils",
       ])
         .then(
@@ -230,6 +231,7 @@ const GlobeBackground = () => {
             Graphic,
             Point,
             Mesh,
+            Picture3DSymbol,
             watchUtils,
           ]) => {
             if (!mountedRef.current) return;
@@ -681,10 +683,27 @@ const GlobeBackground = () => {
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
+
+                // Graphic 3D do ISS
+                const issGraphic = new Graphic({
+                  geometry: new Point({ longitude: 0, latitude: 0, z: 400000 }),
+                  symbol: new Picture3DSymbol({
+                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23aaaaff;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='20' y='25' width='40' height='30' fill='url(%23grad1)' stroke='%23e8e8ff' stroke-width='1' rx='4'/%3E%3Crect x='10' y='35' width='15' height='10' fill='%2365aaff' stroke='%23e8e8ff' stroke-width='0.5' rx='2'/%3E%3Crect x='55' y='35' width='15' height='10' fill='%2365aaff' stroke='%23e8e8ff' stroke-width='0.5' rx='2'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23ffff00' opacity='0.9'/%3E%3Ccircle cx='40' cy='40' r='8' fill='none' stroke='%23ffff00' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E",
+                    width: 50,
+                    height: 50,
+                  }),
+                });
+                view.graphics.add(issGraphic);
+
                 const pollIss = () => {
                   loadIssPosition().then((pos) => {
                     if (!mountedRef.current || !pos) return;
                     issPos = pos;
+                    issGraphic.geometry = new Point({
+                      longitude: pos.lon,
+                      latitude: pos.lat,
+                      z: 400000,
+                    });
                   });
                 };
                 pollIss();
@@ -884,8 +903,8 @@ const GlobeBackground = () => {
                     quakeScreenPosRef.current.fill(null);
                   }
 
-                  // Posição real da ISS — ponto branco cintilante com um
-                  // pequeno anel de órbita.
+                  // Posição real da ISS — renderizada como Graphic 3D
+                  // Atualizar issScreenPosRef apenas para hover detection
                   issScreenPosRef.current = null;
                   if (issEnabledRef.current && issPos) {
                     if (isFacing(cam.latitude, cam.longitude, issPos.lat, issPos.lon)) {
@@ -902,25 +921,6 @@ const GlobeBackground = () => {
                             altitude: issPos.altitude,
                             velocity: issPos.velocity,
                           };
-                          const blink = (Math.sin(frame * 0.1) + 1) / 2;
-
-                          ctx.beginPath();
-                          ctx.ellipse(sp.x, sp.y, 12, 5, frame * 0.02, 0, Math.PI * 2);
-                          ctx.strokeStyle = `rgba(220,220,255,${0.4 + blink * 0.3})`;
-                          ctx.lineWidth = 1;
-                          ctx.stroke();
-
-                          ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
-                          ctx.fillStyle = "#e8e8ff";
-                          ctx.shadowBlur = 9;
-                          ctx.shadowColor = "#e8e8ff";
-                          ctx.fill();
-                          ctx.shadowBlur = 0;
-
-                          ctx.font = "bold 10px monospace";
-                          ctx.fillStyle = "#e8e8ff";
-                          ctx.fillText("🛰 ISS", sp.x + 12, sp.y - 6);
                         }
                       } catch {
                         // ponto fora do campo de visão
