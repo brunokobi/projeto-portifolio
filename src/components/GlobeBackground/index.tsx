@@ -681,9 +681,6 @@ const GlobeBackground = () => {
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
-
-                // Posição real da ISS — se move rápido, precisa de polling.
-                let issPos: IssPosition | null = null;
                 const pollIss = () => {
                   loadIssPosition().then((pos) => {
                     if (!mountedRef.current || !pos) return;
