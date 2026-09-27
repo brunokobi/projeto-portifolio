@@ -145,54 +145,18 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
       }
     }
 
-    // Se não tiver alertas, carrega mock pra demonstrar
+    // Se não tiver alertas, retorna vazio
     if (allStorms.length === 0) {
-      console.log("ℹ️ OpenWeather: sem alertas ativos. Carregando dados mock...");
-      return loadMockHurricanes();
+      console.log("ℹ️ OpenWeather: sem alertas ativos.");
     }
 
     return allStorms;
   } catch (e) {
     console.error("❌ Erro ao buscar tempestades:", e);
-    return loadMockHurricanes();
+    return [];
   }
 }
 
-function loadMockHurricanes(): Hurricane[] {
-  const mocks = [
-    {
-      id: "mock-1",
-      name: "Hurricane Milton",
-      baseLat: 16.5,
-      baseLon: -35.3,
-      windSpeed: 165,
-      pressure: 920,
-      category: 4,
-      movement: "NW",
-    },
-    {
-      id: "mock-2",
-      name: "Hurricane Helene",
-      baseLat: 22.2,
-      baseLon: -25.8,
-      windSpeed: 140,
-      pressure: 945,
-      category: 3,
-      movement: "N",
-    },
-  ];
-
-  return mocks.map((m) => ({
-    id: m.id,
-    name: m.name,
-    lat: m.baseLat,
-    lon: m.baseLon,
-    windSpeed: m.windSpeed,
-    pressure: m.pressure,
-    category: m.category,
-    movement: m.movement,
-  }));
-}
 
 /** Cor por categoria de furacão (Saffir-Simpson scale) */
 export function hurricaneColor(category: number): string {
