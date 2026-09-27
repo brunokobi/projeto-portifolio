@@ -917,18 +917,18 @@ const GlobeBackground = () => {
                           ctx.lineWidth = 1;
                           ctx.stroke();
 
-                          // Ponto central azul brilhante (2x maior)
+                          // Ponto central azul escuro (2x maior)
                           ctx.beginPath();
                           ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
-                          ctx.fillStyle = "#64c8ff";
+                          ctx.fillStyle = "#0066ff";
                           ctx.shadowBlur = 8;
-                          ctx.shadowColor = "#64c8ff";
+                          ctx.shadowColor = "#0066ff";
                           ctx.fill();
                           ctx.shadowBlur = 0;
 
                           // Texto "ISS"
                           ctx.font = "bold 10px monospace";
-                          ctx.fillStyle = "#64c8ff";
+                          ctx.fillStyle = "#0066ff";
                           ctx.fillText("🛰 ISS", sp.x + 14, sp.y - 4);
                         }
                       } catch {
