@@ -903,28 +903,33 @@ const GlobeBackground = () => {
                           };
                           const pulse = (Math.sin(frame * 0.08) + 1) / 2;
 
-                          // Anel pulsante azul
+                          // Anel pulsante azul (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 8 + pulse * 10, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, 16 + pulse * 20, 0, Math.PI * 2);
                           ctx.strokeStyle = `rgba(100,200,255,${0.5 - pulse * 0.35})`;
                           ctx.lineWidth = 2;
                           ctx.stroke();
 
-                          // Anel fixo
+                          // Anel fixo (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, 10, 0, Math.PI * 2);
                           ctx.strokeStyle = "rgba(100,200,255,0.7)";
                           ctx.lineWidth = 1;
                           ctx.stroke();
 
-                          // Ponto central azul brilhante
+                          // Ponto central azul brilhante (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 2.5, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
                           ctx.fillStyle = "#64c8ff";
                           ctx.shadowBlur = 8;
                           ctx.shadowColor = "#64c8ff";
                           ctx.fill();
                           ctx.shadowBlur = 0;
+
+                          // Texto "ISS"
+                          ctx.font = "bold 10px monospace";
+                          ctx.fillStyle = "#64c8ff";
+                          ctx.fillText("🛰 ISS", sp.x + 14, sp.y - 4);
                         }
                       } catch {
                         // ponto fora do campo de visão
