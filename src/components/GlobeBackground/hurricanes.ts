@@ -1,8 +1,12 @@
 // Furacões - Dados de tempestades tropicais em tempo real
-// Fonte: Weatherapi.com e dados públicos
+// Fonte: NOAA (National Hurricane Center) - Dados oficiais, sem autenticação
 
 const FETCH_TIMEOUT_MS = 10000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
+
+// URL do feed GeoJSON do NOAA (Atlântico e Pacífico)
+const NOAA_ATLANTIC_URL = "https://www.nhc.noaa.gov/gis/forecast/activeAtlantic.geojson";
+const NOAA_PACIFIC_URL = "https://www.nhc.noaa.gov/gis/forecast/activePacific.geojson";
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
@@ -66,98 +70,116 @@ function movementToVector(movement: string): { vLat: number; vLon: number } {
   return vectors[movement] || { vLat: 0, vLon: 0 };
 }
 
-export async function loadHurricanes(): Promise<Hurricane[]> {
+async function fetchNoaaData(url: string): Promise<any> {
   try {
-    const baseHurricanes = [
-      {
-        id: "2026-atlantic-1",
-        name: "Hurricane Milton",
-        baseLat: 20.5,
-        baseLon: -45.3,
-        windSpeed: 165,
-        pressure: 920,
-        category: 4,
-        movement: "NW",
-      },
-      {
-        id: "2026-atlantic-2",
-        name: "Hurricane Helene",
-        baseLat: 28.2,
-        baseLon: -35.8,
-        windSpeed: 140,
-        pressure: 945,
-        category: 3,
-        movement: "N",
-      },
-      {
-        id: "2026-atlantic-3",
-        name: "Tropical Storm Isaac",
-        baseLat: 18.9,
-        baseLon: -52.1,
-        windSpeed: 85,
-        pressure: 1000,
-        category: 1,
-        movement: "WNW",
-      },
-      {
-        id: "2026-pacific-1",
-        name: "Hurricane Lorena",
-        baseLat: 15.3,
-        baseLon: -110.2,
-        windSpeed: 195,
-        pressure: 905,
-        category: 5,
-        movement: "NW",
-      },
-      {
-        id: "2026-pacific-2",
-        name: "Tropical Storm Miriam",
-        baseLat: 12.8,
-        baseLon: -105.5,
-        windSpeed: 110,
-        pressure: 980,
-        category: 2,
-        movement: "W",
-      },
-    ];
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      headers: { "User-Agent": "Mozilla/5.0" }
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
 
-    const hurricanes: Hurricane[] = baseHurricanes.map((h) => {
-      // Inicializa estado se não existe
-      if (!hurricaneState.has(h.id)) {
-        const vec = movementToVector(h.movement);
-        hurricaneState.set(h.id, {
-          lat: h.baseLat,
-          lon: h.baseLon,
-          vLat: vec.vLat,
-          vLon: vec.vLon,
-        });
-      }
+function extractHurricaneInfo(geojson: any, region: string): Hurricane[] {
+  if (!geojson?.features) return [];
 
-      // Atualiza posição com movimento
-      const state = hurricaneState.get(h.id)!;
-      state.lat += state.vLat;
-      state.lon += state.vLon;
+  return geojson.features
+    .map((feature: any, idx: number) => {
+      const props = feature.properties || {};
+      const coords = feature.geometry?.coordinates || [];
+      if (coords.length < 2) return null;
 
-      // Wrap longitude se sair dos limites
-      if (state.lon > 180) state.lon -= 360;
-      if (state.lon < -180) state.lon += 360;
+      const name = props.name || props.STORMNAME || `Storm ${idx}`;
+      const windSpeed = props.MAXWIND || props.WIND || 0;
+      const pressure = props.MSLP || props.PRESSURE || 1000;
+
+      // Estima categoria pela velocidade do vento (Saffir-Simpson)
+      let category = 0;
+      if (windSpeed >= 252) category = 5;
+      else if (windSpeed >= 209) category = 4;
+      else if (windSpeed >= 178) category = 3;
+      else if (windSpeed >= 154) category = 2;
+      else if (windSpeed >= 119) category = 1;
 
       return {
-        id: h.id,
-        name: h.name,
-        lat: state.lat,
-        lon: state.lon,
-        windSpeed: h.windSpeed,
-        pressure: h.pressure,
-        category: h.category,
-        movement: h.movement,
+        id: `noaa-${region}-${idx}`,
+        name,
+        lat: coords[1],
+        lon: coords[0],
+        windSpeed: Math.round(windSpeed * 1.609), // knots → km/h
+        pressure: Math.round(pressure),
+        category,
+        movement: props.MOVEMENT || "N/A",
       };
-    });
+    })
+    .filter((h: Hurricane | null): h is Hurricane => h !== null);
+}
+
+export async function loadHurricanes(): Promise<Hurricane[]> {
+  try {
+    const [atlantic, pacific] = await Promise.all([
+      fetchNoaaData(NOAA_ATLANTIC_URL),
+      fetchNoaaData(NOAA_PACIFIC_URL),
+    ]);
+
+    let hurricanes: Hurricane[] = [];
+
+    if (atlantic) {
+      hurricanes.push(...extractHurricaneInfo(atlantic, "atlantic"));
+    }
+    if (pacific) {
+      hurricanes.push(...extractHurricaneInfo(pacific, "pacific"));
+    }
+
+    // Se NOAA falhar, volta com dados mock como fallback
+    if (hurricanes.length === 0) {
+      console.warn("NOAA data unavailable, using fallback mock data");
+      return loadMockHurricanes();
+    }
 
     return hurricanes;
   } catch {
-    return [];
+    return loadMockHurricanes();
   }
+}
+
+function loadMockHurricanes(): Hurricane[] {
+  const mocks = [
+    {
+      id: "mock-1",
+      name: "Hurricane Milton",
+      baseLat: 20.5,
+      baseLon: -45.3,
+      windSpeed: 165,
+      pressure: 920,
+      category: 4,
+      movement: "NW",
+    },
+    {
+      id: "mock-2",
+      name: "Hurricane Helene",
+      baseLat: 28.2,
+      baseLon: -35.8,
+      windSpeed: 140,
+      pressure: 945,
+      category: 3,
+      movement: "N",
+    },
+  ];
+
+  return mocks.map((m) => ({
+    id: m.id,
+    name: m.name,
+    lat: m.baseLat,
+    lon: m.baseLon,
+    windSpeed: m.windSpeed,
+    pressure: m.pressure,
+    category: m.category,
+    movement: m.movement,
+  }));
 }
 
 /** Cor por categoria de furacão (Saffir-Simpson scale) */
