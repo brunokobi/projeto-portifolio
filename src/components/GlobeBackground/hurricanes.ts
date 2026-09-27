@@ -76,9 +76,15 @@ async function fetchNoaaData(url: string): Promise<any> {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       headers: { "User-Agent": "Mozilla/5.0" }
     });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
+    if (!res.ok) {
+      console.error(`NOAA fetch failed: ${res.status}`, url);
+      return null;
+    }
+    const data = await res.json();
+    console.log(`✅ NOAA data loaded:`, data.features?.length || 0, "features from", url.includes("Atlantic") ? "Atlantic" : "Pacific");
+    return data;
+  } catch (e) {
+    console.error("❌ NOAA fetch error:", e);
     return null;
   }
 }
