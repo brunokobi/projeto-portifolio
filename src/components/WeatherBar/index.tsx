@@ -119,6 +119,14 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globoVolcanoesToggle", { detail: { volcanoesEnabled: next } }));
   }, [volcanoesEnabled]);
 
+  const [hurricanesEnabled, setHurricanesEnabled] = useState(() => localStorage.getItem("globeHurricanes") !== "0");
+  const toggleHurricanes = useCallback(() => {
+    const next = !hurricanesEnabled;
+    setHurricanesEnabled(next);
+    localStorage.setItem("globeHurricanes", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeHurricanesToggle", { detail: { hurricanesEnabled: next } }));
+  }, [hurricanesEnabled]);
+
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
   );
@@ -336,6 +344,22 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {volcanoesEnabled ? "🌋 VULCÕES ON" : "🌋 VULCÕES OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleHurricanes}
+          title={hurricanesEnabled ? "Desativar furacões" : "Ativar furacões"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {hurricanesEnabled ? "🌀 FURACÕES ON" : "🌀 FURACÕES OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />

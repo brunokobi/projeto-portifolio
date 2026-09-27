@@ -33,6 +33,7 @@ import {
 import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
+import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, type Hurricane } from "./hurricanes";
 
 setDefaultOptions({ css: true });
 
@@ -68,6 +69,9 @@ const GlobeBackground = () => {
   const volcanoScreenPosRef = useRef<
     Array<{ x: number; y: number; name: string; country: string; type: string; elevation: number } | null>
   >([]);
+  const hurricaneScreenPosRef = useRef<
+    Array<{ x: number; y: number; name: string; windSpeed: number; pressure: number; category: number } | null>
+  >([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
@@ -76,6 +80,7 @@ const GlobeBackground = () => {
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
+  const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -193,6 +198,15 @@ const GlobeBackground = () => {
     };
     window.addEventListener("globoVolcanoesToggle", handler);
     return () => window.removeEventListener("globoVolcanoesToggle", handler);
+  }, []);
+
+  // Escuta evento globeHurricanesToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      hurricanesEnabledRef.current = (e as CustomEvent).detail.hurricanesEnabled as boolean;
+    };
+    window.addEventListener("globeHurricanesToggle", handler);
+    return () => window.removeEventListener("globeHurricanesToggle", handler);
   }, []);
 
   useEffect(() => {
@@ -554,6 +568,32 @@ const GlobeBackground = () => {
                 }
               }
 
+              if (!over) {
+                // Furacões
+                const hurricanePositions = hurricaneScreenPosRef.current;
+                for (let i = 0; i < hurricanePositions.length; i++) {
+                  const hp = hurricanePositions[i];
+                  if (!hp) continue;
+                  const dx = evt.x - hp.x, dy = evt.y - hp.y;
+                  if (dx * dx + dy * dy < 24 * 24) {
+                    over = true;
+                    const key = `hurricane-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🌀 Furacão"];
+                      if (hp.name) lines.push(`${hp.name}`);
+                      lines.push(`Categoria: ${hp.category}`);
+                      if (hp.windSpeed) lines.push(`Velocidade: ${hp.windSpeed} km/h`);
+                      if (hp.pressure) lines.push(`Pressão: ${hp.pressure} mb`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
               if (!over && isHoveringRef.current) {
                 isHoveringRef.current = false;
                 hoveredNameRef.current = null;
@@ -695,6 +735,13 @@ const GlobeBackground = () => {
                 loadVolcanoes().then((data) => {
                   if (!mountedRef.current) return;
                   volcanoes = data;
+                });
+
+                // Furacões e tempestades tropicais (tempo real)
+                let hurricanes: Hurricane[] = [];
+                loadHurricanes().then((data) => {
+                  if (!mountedRef.current) return;
+                  hurricanes = data;
                 });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
@@ -1026,6 +1073,57 @@ const GlobeBackground = () => {
                     }
                   } else {
                     volcanoScreenPosRef.current.fill(null);
+                  }
+
+                  // Furacões — ícones de espiral coloridos pela categoria
+                  if (hurricaneScreenPosRef.current.length !== hurricanes.length) {
+                    hurricaneScreenPosRef.current = new Array(hurricanes.length).fill(null);
+                  }
+                  if (hurricanesEnabledRef.current) {
+                    for (let i = 0; i < hurricanes.length; i++) {
+                      hurricaneScreenPosRef.current[i] = null;
+                      const h = hurricanes[i];
+                      if (!isFacing(cam.latitude, cam.longitude, h.lat, h.lon)) continue;
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: h.lon, latitude: h.lat, z: 100000 })
+                        );
+                        if (!sp) continue;
+                        hurricaneScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: h.name, windSpeed: h.windSpeed, pressure: h.pressure, category: h.category };
+
+                        const color = hurricaneColor(h.category);
+                        const radius = hurricaneRadius(h.windSpeed);
+
+                        // Espiral de furacão (círculos concêntricos)
+                        for (let j = 0; j < 3; j++) {
+                          ctx.beginPath();
+                          ctx.arc(sp.x, sp.y, radius * (1 - j * 0.3), 0, Math.PI * 2);
+                          ctx.strokeStyle = color;
+                          ctx.globalAlpha = 0.7 - j * 0.2;
+                          ctx.lineWidth = 1.5;
+                          ctx.stroke();
+                          ctx.globalAlpha = 1;
+                        }
+
+                        // Ponto central com glow
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Label com categoria
+                        ctx.font = "bold 9px monospace";
+                        ctx.fillStyle = color;
+                        ctx.fillText(`🌀 ${h.name.toUpperCase()}`, sp.x + radius + 6, sp.y - 2);
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  } else {
+                    hurricaneScreenPosRef.current.fill(null);
                   }
 
                   // Arco de voo animado
