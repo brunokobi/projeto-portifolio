@@ -1125,6 +1125,14 @@ const GlobeBackground = () => {
 
                         ctx.shadowBlur = 0;
                         ctx.restore();
+
+                        // Label com nome do furacão
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = color;
+                        ctx.fillText(h.name.toUpperCase(), sp.x + radius + 8, sp.y + 3);
+                        ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
                       }
