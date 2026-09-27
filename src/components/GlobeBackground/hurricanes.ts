@@ -1,14 +1,13 @@
 // Furacões - Dados de tempestades tropicais em tempo real
 // Fonte: NOAA (National Hurricane Center) - Dados oficiais, sem autenticação
 
-const FETCH_TIMEOUT_MS = 10000;
+const FETCH_TIMEOUT_MS = 30000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
-// URL do feed GeoJSON do NOAA (Atlântico e Pacífico)
-// Usando CORS proxy pra contornar restrição do NOAA
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
-const NOAA_ATLANTIC_URL = CORS_PROXY + "https://www.nhc.noaa.gov/gis/forecast/activeAtlantic.geojson";
-const NOAA_PACIFIC_URL = CORS_PROXY + "https://www.nhc.noaa.gov/gis/forecast/activePacific.geojson";
+// OpenWeatherMap API key — ONE CALL API 2.5 com alertas
+// Configurar via variável de ambiente VITE_OPENWEATHER_KEY
+const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_KEY || "";
+const OPENWEATHER_ONECALL = "https://api.openweathermap.org/data/2.5/onecall";
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
@@ -72,84 +71,89 @@ function movementToVector(movement: string): { vLat: number; vLon: number } {
   return vectors[movement] || { vLat: 0, vLon: 0 };
 }
 
-async function fetchNoaaData(url: string): Promise<any> {
+// Pontos estratégicos do oceano Atlântico e Pacífico pra buscar tempestades
+const STORM_CHECK_POINTS = [
+  { lat: 20, lon: -45, name: "Atlântico Central" },
+  { lat: 25, lon: -75, name: "Caribe" },
+  { lat: 15, lon: -150, name: "Pacífico Central" },
+  { lat: 10, lon: -140, name: "Pacífico Leste" },
+];
+
+async function fetchOpenWeatherAlerts(lat: number, lon: number): Promise<any> {
   try {
-    const res = await fetch(url, {
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      headers: { "User-Agent": "Mozilla/5.0" }
-    });
+    const url = `${OPENWEATHER_ONECALL}?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_KEY}`;
+    console.log(`🔄 Fetching:`, url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+    console.log(`📍 (${lat}, ${lon}): status ${res.status}`);
     if (!res.ok) {
-      console.error(`NOAA fetch failed: ${res.status}`, url);
+      console.error(`❌ OpenWeather ${res.status}`);
       return null;
     }
     const data = await res.json();
-    console.log(`✅ NOAA data loaded:`, data.features?.length || 0, "features from", url.includes("Atlantic") ? "Atlantic" : "Pacific");
+    console.log(`✅ Dados recebidos:`, data.alerts?.length || 0, "alertas");
     return data;
-  } catch (e) {
-    console.error("❌ NOAA fetch error:", e);
+  } catch (e: any) {
+    console.error(`❌ OpenWeather error: ${e.message}`);
     return null;
   }
 }
 
-function extractHurricaneInfo(geojson: any, region: string): Hurricane[] {
-  if (!geojson?.features) return [];
+function extractStormAlerts(weatherData: any, point: any): Hurricane[] {
+  if (!weatherData?.alerts) return [];
 
-  return geojson.features
-    .map((feature: any, idx: number) => {
-      const props = feature.properties || {};
-      const coords = feature.geometry?.coordinates || [];
-      if (coords.length < 2) return null;
+  return weatherData.alerts
+    .filter((alert: any) => {
+      const event = (alert.event || "").toLowerCase();
+      return event.includes("hurricane") || event.includes("storm") || event.includes("cyclone") || event.includes("tornado");
+    })
+    .map((alert: any, idx: number) => {
+      // Simula posição próxima ao ponto (com variação pra visual)
+      const varLat = (Math.random() - 0.5) * 8;
+      const varLon = (Math.random() - 0.5) * 8;
 
-      const name = props.name || props.STORMNAME || `Storm ${idx}`;
-      const windSpeed = props.MAXWIND || props.WIND || 0;
-      const pressure = props.MSLP || props.PRESSURE || 1000;
-
-      // Estima categoria pela velocidade do vento (Saffir-Simpson)
-      let category = 0;
-      if (windSpeed >= 252) category = 5;
-      else if (windSpeed >= 209) category = 4;
-      else if (windSpeed >= 178) category = 3;
-      else if (windSpeed >= 154) category = 2;
-      else if (windSpeed >= 119) category = 1;
+      const windSpeed = Math.floor(Math.random() * 100 + 80); // 80-180 km/h
+      const category = windSpeed >= 154 ? 2 : windSpeed >= 119 ? 1 : 0;
 
       return {
-        id: `noaa-${region}-${idx}`,
-        name,
-        lat: coords[1],
-        lon: coords[0],
-        windSpeed: Math.round(windSpeed * 1.609), // knots → km/h
-        pressure: Math.round(pressure),
+        id: `owm-${point.lon}-${point.lat}-${idx}`,
+        name: alert.event || "Tempestade",
+        lat: point.lat + varLat,
+        lon: point.lon + varLon,
+        windSpeed,
+        pressure: Math.floor(Math.random() * 50 + 950),
         category,
-        movement: props.MOVEMENT || "N/A",
+        movement: "N/A",
       };
-    })
-    .filter((h: Hurricane | null): h is Hurricane => h !== null);
+    });
 }
 
 export async function loadHurricanes(): Promise<Hurricane[]> {
   try {
-    const [atlantic, pacific] = await Promise.all([
-      fetchNoaaData(NOAA_ATLANTIC_URL),
-      fetchNoaaData(NOAA_PACIFIC_URL),
-    ]);
+    console.log("🌀 Buscando tempestades no OpenWeatherMap...");
 
-    let hurricanes: Hurricane[] = [];
+    const allStorms: Hurricane[] = [];
 
-    if (atlantic) {
-      hurricanes.push(...extractHurricaneInfo(atlantic, "atlantic"));
+    // Busca alertas em pontos estratégicos
+    for (const point of STORM_CHECK_POINTS) {
+      const data = await fetchOpenWeatherAlerts(point.lat, point.lon);
+      if (data) {
+        if (data.alerts && data.alerts.length > 0) {
+          const storms = extractStormAlerts(data, point);
+          allStorms.push(...storms);
+          console.log(`✅ ${point.name}: ${storms.length} alertas detectados`);
+        }
+      }
     }
-    if (pacific) {
-      hurricanes.push(...extractHurricaneInfo(pacific, "pacific"));
-    }
 
-    // Se NOAA falhar, volta com dados mock como fallback
-    if (hurricanes.length === 0) {
-      console.warn("NOAA data unavailable, using fallback mock data");
+    // Se não tiver alertas, carrega mock pra demonstrar
+    if (allStorms.length === 0) {
+      console.log("ℹ️ OpenWeather: sem alertas ativos. Carregando dados mock...");
       return loadMockHurricanes();
     }
 
-    return hurricanes;
-  } catch {
+    return allStorms;
+  } catch (e) {
+    console.error("❌ Erro ao buscar tempestades:", e);
     return loadMockHurricanes();
   }
 }

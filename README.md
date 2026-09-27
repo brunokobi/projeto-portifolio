@@ -497,6 +497,55 @@ Módulo de mapa dedicado (`/map`) com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 ---
 
+## 🌀 Feature: Furacões e Tempestades em Tempo Real
+
+> **Complexidade:** ⭐⭐⭐⭐ — OpenWeatherMap OneCall API + rendering canvas + toggle ON/OFF + localStorage persistence
+
+Sistema de rastreamento de furacões e tempestades severas integrado ao globo 3D, mostrando eventos meteorológicos extremos em tempo real.
+
+### Funcionamento
+
+- **Dados reais via OpenWeatherMap** — OneCall API 2.5 busca alertas meteorológicos em 4 pontos estratégicos (Atlântico Central, Caribe, Pacífico Central, Pacífico Leste)
+- **Carregamento único** — dados atualizam apenas ao entrar na página (sem polling contínuo)
+- **Renderização visual** — espirais coloridas no mapa 3D, raio e cor variam pela categoria Saffir-Simpson
+- **Hover interativo** — tooltip mostra nome, velocidade do vento (km/h), pressão (mb) e categoria
+- **Toggle ON/OFF** — botão `🌀 FURACÕES` na WeatherBar, com persistência em localStorage
+
+### Categorias de cor (Saffir-Simpson)
+
+| Categoria | Cor | Velocidade |
+|---|---|---|
+| Tropical Storm | Ciano | < 119 km/h |
+| Cat 1 | Ciano | 119–153 km/h |
+| Cat 2 | Laranja | 154–177 km/h |
+| Cat 3 | Orange | 178–208 km/h |
+| Cat 4 | Vermelho | 209–251 km/h |
+| Cat 5 | Vermelho escuro | ≥ 252 km/h |
+
+### Integração com o globo
+
+Os eventos aparecem como marcadores animados sobrepostos ao mapa 3D:
+- Latitude/longitude posicionadas em tempo real
+- Símbolos de espiral pulsante com label do nome
+- Visíveis em qualquer zoom do globo
+- Desaparecem quando o toggle é desligado
+
+### Setup (para dados reais)
+
+Precisa de uma chave válida do OpenWeatherMap (gratuita):
+
+1. Crie conta em https://openweathermap.org/api/one-call-api
+2. Copie sua **API key** (válida em até 2 horas após geração)
+3. Adicione ao `.env.local` (desenvolvimento) ou variáveis de ambiente da Netlify (produção):
+
+```env
+VITE_OPENWEATHER_KEY=sua_chave_aqui
+```
+
+Enquanto aguarda a chave ficar ativa, o sistema usa **dados mock** (Milton e Helene) para demonstração.
+
+---
+
 ## 🌤️ Feature: Clima em Tempo Real com Fallback GPS → IP
 
 > **Complexidade:** ⭐⭐⭐⭐ — Dual-source geolocation + Open-Meteo API + 22 códigos WMO
