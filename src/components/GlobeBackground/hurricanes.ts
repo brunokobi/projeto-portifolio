@@ -5,8 +5,10 @@ const FETCH_TIMEOUT_MS = 10000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
 // URL do feed GeoJSON do NOAA (Atlântico e Pacífico)
-const NOAA_ATLANTIC_URL = "https://www.nhc.noaa.gov/gis/forecast/activeAtlantic.geojson";
-const NOAA_PACIFIC_URL = "https://www.nhc.noaa.gov/gis/forecast/activePacific.geojson";
+// Usando CORS proxy pra contornar restrição do NOAA
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const NOAA_ATLANTIC_URL = CORS_PROXY + "https://www.nhc.noaa.gov/gis/forecast/activeAtlantic.geojson";
+const NOAA_PACIFIC_URL = CORS_PROXY + "https://www.nhc.noaa.gov/gis/forecast/activePacific.geojson";
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
