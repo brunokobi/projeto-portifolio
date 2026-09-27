@@ -163,8 +163,8 @@ function loadMockHurricanes(): Hurricane[] {
     {
       id: "mock-1",
       name: "Hurricane Milton",
-      baseLat: 20.5,
-      baseLon: -45.3,
+      baseLat: 16.5,
+      baseLon: -35.3,
       windSpeed: 165,
       pressure: 920,
       category: 4,
@@ -173,8 +173,8 @@ function loadMockHurricanes(): Hurricane[] {
     {
       id: "mock-2",
       name: "Hurricane Helene",
-      baseLat: 28.2,
-      baseLon: -35.8,
+      baseLat: 22.2,
+      baseLon: -25.8,
       windSpeed: 140,
       pressure: 945,
       category: 3,
