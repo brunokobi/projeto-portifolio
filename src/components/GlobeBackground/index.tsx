@@ -32,6 +32,7 @@ import {
 } from "./ocean";
 import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
+import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 
 setDefaultOptions({ css: true });
 
@@ -64,6 +65,9 @@ const GlobeBackground = () => {
   const issScreenPosRef = useRef<{ x: number; y: number; lat: number; lon: number; altitude?: number; velocity?: number } | null>(
     null
   );
+  const volcanoScreenPosRef = useRef<
+    Array<{ x: number; y: number; name: string; country: string; type: string; elevation: number } | null>
+  >([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
@@ -71,6 +75,7 @@ const GlobeBackground = () => {
   const oceanEnabledRef = useRef(localStorage.getItem("globeOcean") !== "0");
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
+  const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -179,6 +184,15 @@ const GlobeBackground = () => {
     };
     window.addEventListener("globeRotationToggle", handler);
     return () => window.removeEventListener("globeRotationToggle", handler);
+  }, []);
+
+  // Escuta evento globoVolcanoesToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      volcanoesEnabledRef.current = (e as CustomEvent).detail.volcanoesEnabled as boolean;
+    };
+    window.addEventListener("globoVolcanoesToggle", handler);
+    return () => window.removeEventListener("globoVolcanoesToggle", handler);
   }, []);
 
   useEffect(() => {
@@ -514,6 +528,32 @@ const GlobeBackground = () => {
                 }
               }
 
+              if (!over) {
+                // Vulcões
+                const volcanoPositions = volcanoScreenPosRef.current;
+                for (let i = 0; i < volcanoPositions.length; i++) {
+                  const vp = volcanoPositions[i];
+                  if (!vp) continue;
+                  const dx = evt.x - vp.x, dy = evt.y - vp.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `volcano-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🌋 Vulcão"];
+                      if (vp.name) lines.push(`${vp.name}`);
+                      if (vp.country) lines.push(`${vp.country}`);
+                      if (vp.type) lines.push(`Tipo: ${vp.type}`);
+                      if (vp.elevation) lines.push(`Elevação: ${vp.elevation} m`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
               if (!over && isHoveringRef.current) {
                 isHoveringRef.current = false;
                 hoveredNameRef.current = null;
@@ -649,6 +689,13 @@ const GlobeBackground = () => {
                 };
                 pollIss();
                 issIntervalId = setInterval(pollIss, ISS_POLL_INTERVAL_MS);
+
+                // Vulcões reais (425 vulcões, lista estática)
+                let volcanoes: Volcano[] = [];
+                loadVolcanoes().then((data) => {
+                  if (!mountedRef.current) return;
+                  volcanoes = data;
+                });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -927,6 +974,49 @@ const GlobeBackground = () => {
                     } catch {
                       // ponto fora do campo de visão
                     }
+                  }
+
+                  // Vulcões — pins triangulares coloridos pela elevação
+                  if (volcanoScreenPosRef.current.length !== volcanoes.length) {
+                    volcanoScreenPosRef.current = new Array(volcanoes.length).fill(null);
+                  }
+                  if (volcanoesEnabledRef.current) {
+                    for (let i = 0; i < volcanoes.length; i++) {
+                      volcanoScreenPosRef.current[i] = null;
+                      const v = volcanoes[i];
+                      if (!isFacing(cam.latitude, cam.longitude, v.lat, v.lon)) continue;
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
+                        );
+                        if (!sp) continue;
+                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevation: v.elevation };
+
+                        const color = volcanoColor(v.type);
+                        const radius = volcanoRadius(v.elevation);
+
+                        // Triângulo (pico vulcânico)
+                        ctx.beginPath();
+                        ctx.moveTo(sp.x, sp.y - radius);
+                        ctx.lineTo(sp.x + radius, sp.y + radius / 2);
+                        ctx.lineTo(sp.x - radius, sp.y + radius / 2);
+                        ctx.closePath();
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 6;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Borda
+                        ctx.strokeStyle = `rgba(255,255,255,0.6)`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  } else {
+                    volcanoScreenPosRef.current.fill(null);
                   }
 
                   // Arco de voo animado
