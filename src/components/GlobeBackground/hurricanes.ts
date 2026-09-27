@@ -4,10 +4,11 @@
 const FETCH_TIMEOUT_MS = 30000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
+// NOAA feeds via Netlify proxy (/api/noaa/*) — resolve CORS bloqueado
 const NOAA_RSS_FEEDS = [
-  "https://www.nhc.noaa.gov/index-at.xml", // Atlântico
-  "https://www.nhc.noaa.gov/index-ep.xml", // Pacífico Leste
-  "https://www.nhc.noaa.gov/index-cp.xml", // Pacífico Central
+  "/api/noaa/index-at.xml", // Atlântico
+  "/api/noaa/index-ep.xml", // Pacífico Leste
+  "/api/noaa/index-cp.xml", // Pacífico Central
 ];
 
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;

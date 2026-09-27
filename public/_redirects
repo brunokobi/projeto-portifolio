@@ -1,0 +1,5 @@
+# Netlify proxy pra NOAA NHC — resolve CORS bloqueado
+/api/noaa/*  https://www.nhc.noaa.gov/:splat  200
+
+# Fallback pra SPA React
+/*    /index.html   200
