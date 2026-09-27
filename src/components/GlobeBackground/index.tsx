@@ -213,7 +213,6 @@ const GlobeBackground = () => {
     mountedRef.current = true;
     let cleanupResize = () => {};
     let issIntervalId: ReturnType<typeof setInterval> | null = null;
-    let hurricanesIntervalId: ReturnType<typeof setInterval> | null = null;
 
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -738,16 +737,12 @@ const GlobeBackground = () => {
                   volcanoes = data;
                 });
 
-                // Furacões e tempestades tropicais (tempo real com polling)
+                // Furacões e tempestades tropicais (carrega ao entrar na página)
                 let hurricanes: Hurricane[] = [];
-                const pollHurricanes = () => {
-                  loadHurricanes().then((data) => {
-                    if (!mountedRef.current) return;
-                    hurricanes = data;
-                  });
-                };
-                pollHurricanes();
-                hurricanesIntervalId = setInterval(pollHurricanes, HURRICANE_POLL_INTERVAL);
+                loadHurricanes().then((data) => {
+                  if (!mountedRef.current) return;
+                  hurricanes = data;
+                });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -1213,7 +1208,6 @@ const GlobeBackground = () => {
       clearTimeout(timer);
       cleanupResize();
       if (issIntervalId) clearInterval(issIntervalId);
-      if (hurricanesIntervalId) clearInterval(hurricanesIntervalId);
       document.getElementById("esri-bg-override")?.remove();
     };
   }, []);
