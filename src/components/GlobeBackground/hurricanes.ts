@@ -14,6 +14,11 @@ const NOAA_RSS_FEEDS = [
   "/api/noaa/index-sh.xml", // Hemisfério Sul (Ciclones/Tempestades)
 ];
 
+// Cache pra evitar múltiplas requisições simultâneas
+let cachedHurricanes: Hurricane[] = [];
+let cacheTimestamp = 0;
+const CACHE_TTL_MS = 60000; // Cache por 60 segundos
+
 export const HURRICANE_POLL_INTERVAL = HURRICANE_POLL_INTERVAL_MS;
 
 export interface Hurricane {
@@ -79,22 +84,14 @@ function movementToVector(movement: string): { vLat: number; vLon: number } {
 
 async function fetchNOAARSSFeed(url: string): Promise<Document | null> {
   try {
-    console.log(`🔄 Fetching NOAA:`, url);
     const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-    if (!res.ok) {
-      console.error(`❌ NOAA ${res.status}`);
-      return null;
-    }
+    if (!res.ok) return null;
     const text = await res.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, "application/xml");
-    if (doc.getElementsByTagName("parsererror").length) {
-      console.error(`❌ XML parse error`);
-      return null;
-    }
+    if (doc.getElementsByTagName("parsererror").length) return null;
     return doc;
-  } catch (e: any) {
-    console.error(`❌ NOAA error: ${e.message}`);
+  } catch {
     return null;
   }
 }
@@ -148,31 +145,30 @@ function parseNOAACyclones(doc: Document): Hurricane[] {
 }
 
 export async function loadHurricanes(): Promise<Hurricane[]> {
-  try {
-    console.log("🌀 Buscando tempestades no NOAA NHC...");
+  // Retorna cache se ainda está válido
+  const now = Date.now();
+  if (now - cacheTimestamp < CACHE_TTL_MS) {
+    return cachedHurricanes;
+  }
 
+  try {
     const allStorms: Hurricane[] = [];
 
-    // Busca em todos os feeds do NOAA (Atlântico, Pacífico Leste, Central)
     for (const feedUrl of NOAA_RSS_FEEDS) {
       const doc = await fetchNOAARSSFeed(feedUrl);
       if (doc) {
         const cyclones = parseNOAACyclones(doc);
         allStorms.push(...cyclones);
-        console.log(`✅ Feed: ${cyclones.length} ciclones detectados`);
       }
     }
 
-    if (allStorms.length === 0) {
-      console.log("ℹ️ NOAA: sem ciclones ativos.");
-    } else {
-      console.log(`✅ Total: ${allStorms.length} tempestades tropicais`);
-    }
+    // Atualiza cache
+    cachedHurricanes = allStorms;
+    cacheTimestamp = now;
 
     return allStorms;
-  } catch (e) {
-    console.error("❌ Erro ao buscar tempestades:", e);
-    return [];
+  } catch {
+    return cachedHurricanes;
   }
 }
 
@@ -197,4 +193,53 @@ export function hurricaneLabel(category: number): string {
   if (category >= 5) return "Cat 5";
   if (category >= 1) return `Cat ${category}`;
   return "Tropical Storm";
+}
+
+/** Desenha ícone de furacão no canvas */
+export function drawHurricaneIcon(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+  color: string,
+  name: string
+): void {
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Espiral contínua (redemoinho limpo)
+  ctx.strokeStyle = color;
+  ctx.lineWidth = radius * 0.15;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = color;
+
+  // Desenha espiral (3 voltas)
+  ctx.beginPath();
+  for (let angle = 0; angle < Math.PI * 6; angle += 0.1) {
+    const r = (angle / (Math.PI * 6)) * radius;
+    const px = Math.cos(angle) * r;
+    const py = Math.sin(angle) * r;
+    if (angle === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Núcleo circular
+  ctx.beginPath();
+  ctx.arc(0, 0, radius * 0.15, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+  ctx.restore();
+
+  // Label com nome do furacão
+  ctx.font = "bold 10px monospace";
+  ctx.fillStyle = color;
+  ctx.shadowBlur = 4;
+  ctx.shadowColor = color;
+  ctx.fillText(name.toUpperCase(), x + radius + 8, y + 3);
+  ctx.shadowBlur = 0;
 }

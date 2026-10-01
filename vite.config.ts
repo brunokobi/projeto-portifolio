@@ -13,18 +13,15 @@ const svgoPlugins = [
 ] as PluginConfig[];
 
 export default defineConfig({
-  plugins: [
-    react(),
-    ViteImageOptimizer({
-      png: { quality: 75 },
-      jpg: { quality: 75 },
-      jpeg: { quality: 75 },
-      webp: { lossless: false, quality: 75 },
-      gif: {},
-      svg: { plugins: svgoPlugins },
-      logStats: true,
-    }),
-  ],
+  plugins: [react(), ViteImageOptimizer({
+    png: { quality: 75 },
+    jpg: { quality: 75 },
+    jpeg: { quality: 75 },
+    webp: { lossless: false, quality: 75 },
+    gif: {},
+    svg: { plugins: svgoPlugins },
+    logStats: true,
+  })],
   server: { port: 3000, open: true },
   build: {
     outDir: "dist",
@@ -41,5 +38,7 @@ export default defineConfig({
       },
     },
   },
+  esbuild: { loader: "tsx", include: /src\/.*\.tsx?$/, exclude: [] },
+  optimizeDeps: { esbuildOptions: { loader: { ".tsx": "tsx" } } },
   define: { global: "window" },
 });

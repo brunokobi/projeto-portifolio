@@ -33,7 +33,7 @@ import {
 import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
-import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, HURRICANE_POLL_INTERVAL, type Hurricane } from "./hurricanes";
+import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, drawHurricaneIcon, HURRICANE_POLL_INTERVAL, type Hurricane } from "./hurricanes";
 
 setDefaultOptions({ css: true });
 
@@ -1094,45 +1094,8 @@ const GlobeBackground = () => {
                         const color = hurricaneColor(h.category);
                         const radius = hurricaneRadius(h.windSpeed);
 
-                        // Ícone de furacão — espiral visual (tipo ícone SVG)
-                        ctx.save();
-                        ctx.translate(sp.x, sp.y);
-
-                        // Espiral contínua (redemoinho limpo)
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = radius * 0.15;
-                        ctx.lineCap = "round";
-                        ctx.lineJoin = "round";
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = color;
-
-                        // Desenha espiral (3 voltas)
-                        ctx.beginPath();
-                        for (let angle = 0; angle < Math.PI * 6; angle += 0.1) {
-                          const r = (angle / (Math.PI * 6)) * radius;
-                          const x = Math.cos(angle) * r;
-                          const y = Math.sin(angle) * r;
-                          if (angle === 0) ctx.moveTo(x, y);
-                          else ctx.lineTo(x, y);
-                        }
-                        ctx.stroke();
-
-                        // Núcleo circular
-                        ctx.beginPath();
-                        ctx.arc(0, 0, radius * 0.15, 0, Math.PI * 2);
-                        ctx.fillStyle = color;
-                        ctx.fill();
-
-                        ctx.shadowBlur = 0;
-                        ctx.restore();
-
-                        // Label com nome do furacão
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = color;
-                        ctx.fillText(h.name.toUpperCase(), sp.x + radius + 8, sp.y + 3);
-                        ctx.shadowBlur = 0;
+                        // Renderiza ícone de furacão
+                        drawHurricaneIcon(ctx, sp.x, sp.y, radius, color, h.name);
                       } catch {
                         // ponto fora do campo de visão
                       }
