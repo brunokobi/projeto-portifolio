@@ -33,12 +33,12 @@ import {
 import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
-import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, drawHurricaneIcon, HURRICANE_POLL_INTERVAL, type Hurricane } from "./hurricanes";
-import { loadSatellites, satelliteColor, satelliteRadius, type Satellite } from "./satellites";
-import { loadAircraft, aircraftColor, aircraftRadius, type Aircraft } from "./aircraft";
+import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
+import { loadSatellites, satelliteColor, type Satellite } from "./satellites";
+import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
 import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
 import { loadAirQuality, loadWildfires, loadLightning, aqiColor, wildfireColor, lightningColor, type AirQuality, type Wildfire, type Lightning } from "./hazards";
-import { loadTechHubs, loadInternetCoverage, getTimeZones, techHubColor, internetCoverageColor, getTimeZoneColor, type TechHub, type InternetCoverage } from "./infrastructure";
+import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
 
 setDefaultOptions({ css: true });
 
@@ -265,7 +265,7 @@ const GlobeBackground = () => {
     // 8 Novas features — variáveis no escopo do useEffect pra acessibilidade
     let satellites: Satellite[] = [];
     let aircraft: Aircraft[] = [];
-    let cities: CityData[] = TOP_CITIES;
+    const cities: CityData[] = TOP_CITIES;
     let airQuality: AirQuality[] = [];
     let wildfires: Wildfire[] = [];
     let lightning: Lightning[] = [];
@@ -1195,7 +1195,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = satelliteColor(s.type);
                         ctx.fillText(s.name, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     satelliteScreenPosRef.current.fill(null);
@@ -1224,7 +1226,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = aircraftColor(a.altitude);
                         ctx.fillText(a.callsign, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     aircraftScreenPosRef.current.fill(null);
@@ -1255,7 +1259,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = cityColor(c.type);
                         ctx.fillText(c.name, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     cityScreenPosRef2.current.fill(null);
@@ -1286,7 +1292,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = aqiColor(a.aqi);
                         ctx.fillText(`${a.name} AQI:${a.aqi}`, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     airQualityScreenPosRef.current.fill(null);
@@ -1315,7 +1323,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = wildfireColor(w.confidence);
                         ctx.fillText(`${w.name}`, sp.x + 14, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     wildfireScreenPosRef.current.fill(null);
@@ -1346,7 +1356,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = lightningColor();
                         ctx.fillText("STORM", sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     lightningScreenPosRef.current.fill(null);
@@ -1375,7 +1387,9 @@ const GlobeBackground = () => {
                         ctx.shadowColor = techHubColor(t.sector);
                         ctx.fillText(t.name, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
-                      } catch { }
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
                     }
                   } else {
                     techHubScreenPosRef.current.fill(null);

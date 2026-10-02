@@ -1,7 +1,6 @@
 // Satélites em órbita — Satellite.js library pra cálculos de posição
 // Mostra ISS, Starlink, satélites de comunicação em tempo real
 
-const FETCH_TIMEOUT_MS = 30000;
 const SATELLITE_POLL_INTERVAL_MS = 10000; // Atualiza a cada 10s
 
 export const SATELLITE_POLL_INTERVAL = SATELLITE_POLL_INTERVAL_MS;

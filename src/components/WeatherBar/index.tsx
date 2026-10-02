@@ -127,16 +127,6 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeHurricanesToggle", { detail: { hurricanesEnabled: next } }));
   }, [hurricanesEnabled]);
 
-  // 8 novas features
-  const toggleFeature = useCallback((key: string, setter: (v: boolean) => void, event: string) => {
-    return () => {
-      const enabled = localStorage.getItem(key) === "0";
-      setter(!enabled);
-      localStorage.setItem(key, enabled ? "0" : "1");
-      window.dispatchEvent(new CustomEvent(event, { detail: { [key.replace("globe", "").toLowerCase()]: !enabled } }));
-    };
-  }, []);
-
   const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
   const [aircraftEnabled, setAircraftEnabled] = useState(() => localStorage.getItem("globeAircraft") !== "0");
   const [citiesEnabled, setCitiesEnabled] = useState(() => localStorage.getItem("globeCities") !== "0");
