@@ -1180,10 +1180,14 @@ const GlobeBackground = () => {
                         const sp = view.toScreen(new Point({ longitude: s.lon, latitude: s.lat }));
                         if (!sp) continue;
                         ctx.fillStyle = satelliteColor(s.type);
-                        ctx.font = "bold 10px Arial";
-                        ctx.fillText("🛰️", sp.x - 5, sp.y + 5);
-                        ctx.font = "8px monospace";
-                        ctx.fillText(s.name.substring(0, 6), sp.x + 8, sp.y + 5);
+                        ctx.font = "bold 12px Arial";
+                        ctx.fillText("🛰️", sp.x - 6, sp.y + 6);
+                        ctx.font = "bold 9px monospace";
+                        ctx.fillStyle = satelliteColor(s.type);
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = satelliteColor(s.type);
+                        ctx.fillText(s.name, sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1196,8 +1200,14 @@ const GlobeBackground = () => {
                         const sp = view.toScreen(new Point({ longitude: a.lon, latitude: a.lat }));
                         if (!sp) continue;
                         ctx.fillStyle = aircraftColor(a.altitude);
-                        ctx.font = "bold 10px Arial";
-                        ctx.fillText("✈️", sp.x - 5, sp.y + 5);
+                        ctx.font = "bold 12px Arial";
+                        ctx.fillText("✈️", sp.x - 6, sp.y + 6);
+                        ctx.font = "bold 9px monospace";
+                        ctx.fillStyle = aircraftColor(a.altitude);
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = aircraftColor(a.altitude);
+                        ctx.fillText(a.callsign, sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1213,9 +1223,12 @@ const GlobeBackground = () => {
                         ctx.beginPath();
                         ctx.arc(sp.x, sp.y, cityRadius(c.population), 0, Math.PI * 2);
                         ctx.fill();
-                        ctx.font = "8px monospace";
-                        ctx.fillStyle = "#00FF00";
-                        ctx.fillText(c.name.substring(0, 5), sp.x + 8, sp.y);
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = cityColor(c.type);
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = cityColor(c.type);
+                        ctx.fillText(c.name, sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1229,11 +1242,14 @@ const GlobeBackground = () => {
                         if (!sp) continue;
                         ctx.fillStyle = aqiColor(a.aqi);
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, 6, 0, Math.PI * 2);
                         ctx.fill();
-                        ctx.font = "8px monospace";
-                        ctx.fillStyle = "#FFFFFF";
-                        ctx.fillText(a.aqi.toString(), sp.x + 6, sp.y + 4);
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = aqiColor(a.aqi);
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = aqiColor(a.aqi);
+                        ctx.fillText(`${a.name} AQI:${a.aqi}`, sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1246,8 +1262,14 @@ const GlobeBackground = () => {
                         const sp = view.toScreen(new Point({ longitude: w.lon, latitude: w.lat }));
                         if (!sp) continue;
                         ctx.fillStyle = wildfireColor(w.confidence);
-                        ctx.font = "bold 12px Arial";
-                        ctx.fillText("🔥", sp.x - 6, sp.y + 6);
+                        ctx.font = "bold 14px Arial";
+                        ctx.fillText("🔥", sp.x - 7, sp.y + 7);
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = wildfireColor(w.confidence);
+                        ctx.shadowBlur = 5;
+                        ctx.shadowColor = wildfireColor(w.confidence);
+                        ctx.fillText(`${w.name}`, sp.x + 14, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1264,6 +1286,12 @@ const GlobeBackground = () => {
                         ctx.globalAlpha = 0.8;
                         ctx.fillText("⚡", sp.x - 7, sp.y + 7);
                         ctx.globalAlpha = 1;
+                        ctx.font = "bold 9px monospace";
+                        ctx.fillStyle = lightningColor();
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = lightningColor();
+                        ctx.fillText("STORM", sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
@@ -1276,10 +1304,14 @@ const GlobeBackground = () => {
                         const sp = view.toScreen(new Point({ longitude: t.lon, latitude: t.lat }));
                         if (!sp) continue;
                         ctx.fillStyle = techHubColor(t.sector);
-                        ctx.font = "bold 11px Arial";
-                        ctx.fillText("💻", sp.x - 5, sp.y + 5);
-                        ctx.font = "7px monospace";
-                        ctx.fillText(t.name.substring(0, 4), sp.x + 8, sp.y + 2);
+                        ctx.font = "bold 13px Arial";
+                        ctx.fillText("💻", sp.x - 6, sp.y + 6);
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = techHubColor(t.sector);
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = techHubColor(t.sector);
+                        ctx.fillText(t.name, sp.x + 12, sp.y + 4);
+                        ctx.shadowBlur = 0;
                       } catch { }
                     }
                   }
