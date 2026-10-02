@@ -397,7 +397,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {satellitesEnabled ? "🛰️" : "🛰️"} SAT
+          🛰️ {satellitesEnabled ? "ON" : "OFF"}
         </Text>
 
         <Text
@@ -414,7 +414,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {aircraftEnabled ? "✈️" : "✈️"} AVN
+          {aircraftEnabled ? "✈️ ON" : "✈️ OFF"}
         </Text>
 
         <Text
@@ -431,7 +431,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          🌆 CITY
+          {citiesEnabled ? "🌆 ON" : "🌆 OFF"}
         </Text>
 
         <Text
@@ -448,7 +448,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          🌫️ AQI
+          {airQualityEnabled ? "🌫️ ON" : "🌫️ OFF"}
         </Text>
 
         <Text
@@ -465,7 +465,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          🔥 FIRE
+          {wildfiresEnabled ? "🔥 ON" : "🔥 OFF"}
         </Text>
 
         <Text
@@ -482,7 +482,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          ⚡ LGT
+          {lightningEnabled ? "⚡ ON" : "⚡ OFF"}
         </Text>
 
         <Text
@@ -499,7 +499,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          💻 TECH
+          {techHubsEnabled ? "💻 ON" : "💻 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
