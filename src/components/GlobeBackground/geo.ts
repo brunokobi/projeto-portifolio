@@ -107,6 +107,9 @@ export interface City {
   desc: string;
   tags: string[];
   aqi?: number;
+  temp?: number;
+  weather_code?: number;
+  weather_cached_at?: number;
 }
 
 export const CITIES: City[] = [

@@ -55,6 +55,66 @@ const WIND_TRAIL_FADE = 0.93;
 // ligando o ponto antigo ao novo.
 const WIND_MAX_TRAIL_JUMP_PX = 80;
 
+// Cache de clima: { "lat,lon": { temp, code, timestamp } }
+const weatherCache = new Map<string, { temp: number; code: number; timestamp: number }>();
+
+const WMO: Record<number, { icon: string; label: string }> = {
+  0: { icon: "☀️", label: "Limpo" },
+  1: { icon: "🌤️", label: "Quase limpo" },
+  2: { icon: "⛅", label: "Parcialmente nublado" },
+  3: { icon: "☁️", label: "Nublado" },
+  45: { icon: "🌫️", label: "Neblina" },
+  48: { icon: "🌫️", label: "Geada" },
+  51: { icon: "🌦️", label: "Garoa leve" },
+  53: { icon: "🌦️", label: "Garoa" },
+  55: { icon: "🌧️", label: "Garoa densa" },
+  61: { icon: "🌧️", label: "Chuva leve" },
+  63: { icon: "🌧️", label: "Chuva" },
+  65: { icon: "🌧️", label: "Chuva forte" },
+  71: { icon: "❄️", label: "Neve leve" },
+  73: { icon: "❄️", label: "Neve" },
+  75: { icon: "❄️", label: "Neve forte" },
+  77: { icon: "❄️", label: "Granizo" },
+  80: { icon: "🌦️", label: "Pancadas leves" },
+  81: { icon: "🌧️", label: "Pancadas" },
+  82: { icon: "⛈️", label: "Pancadas fortes" },
+  85: { icon: "❄️", label: "Neve leve" },
+  86: { icon: "❄️", label: "Neve forte" },
+  95: { icon: "⛈️", label: "Tempestade" },
+  96: { icon: "⛈️", label: "Tempestade c/ granizo" },
+  99: { icon: "⛈️", label: "Tempestade c/ granizo" },
+};
+
+const fetchCityWeather = async (lat: number, lon: number): Promise<{ temp: number; code: number } | null> => {
+  const key = `${lat},${lon}`;
+  const cached = weatherCache.get(key);
+  const now = Date.now();
+
+  // Cache válido por 2h (7200000ms)
+  if (cached && now - cached.timestamp < 7200000) {
+    return { temp: cached.temp, code: cached.code };
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    const { temperature_2m, weather_code } = data.current ?? {};
+
+    if (temperature_2m == null || weather_code == null) return null;
+
+    const result = { temp: Math.round(temperature_2m), code: weather_code };
+    weatherCache.set(key, { ...result, timestamp: now });
+    return result;
+  } catch {
+    return null;
+  }
+};
+
 const GlobeBackground = () => {
   const intl = useIntl();
   const mountedRef = useRef(true);
@@ -550,7 +610,18 @@ const GlobeBackground = () => {
                   const city = CITIES[i];
                   if (hoveredNameRef.current !== city.name) {
                     hoveredNameRef.current = city.name;
-                    setHoverCity({ city, x: evt.x, y: evt.y });
+                    // Buscar clima se não tiver em cache
+                    if (!city.temp || !city.weather_code) {
+                      fetchCityWeather(city.lat, city.lon).then((weather) => {
+                        if (weather && mountedRef.current) {
+                          city.temp = weather.temp;
+                          city.weather_code = weather.code;
+                          setHoverCity({ city, x: evt.x, y: evt.y });
+                        }
+                      });
+                    } else {
+                      setHoverCity({ city, x: evt.x, y: evt.y });
+                    }
                     setHoverInfo(null);
                   }
                   isHoveringRef.current = true;
@@ -1768,6 +1839,11 @@ const GlobeBackground = () => {
               { id: `city_${citySlug(hoverCity.city.name)}_desc`, defaultMessage: hoverCity.city.desc }
             )}
           </div>
+          {hoverCity.city.temp != null && hoverCity.city.weather_code != null && (
+            <div style={{ marginTop: "8px", fontSize: "11px", color: "#00e055" }}>
+              {WMO[hoverCity.city.weather_code]?.icon || "❓"} {hoverCity.city.temp}°C
+            </div>
+          )}
           {(hoverCity.city.tags.length > 0 || hoverCity.city.aqi) && (
             <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
               {hoverCity.city.tags.map((tag) => (
