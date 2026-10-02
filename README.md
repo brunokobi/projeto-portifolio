@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-72%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-126%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -49,7 +49,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), mapa 3D geoespacial, feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, clima via GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), globo 3D interativo com **8 overlays geoespaciais em tempo real** (satélites, aviões, cidades com clima & hora local, qualidade do ar, incêndios, raios, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -277,6 +277,60 @@ $$ LANGUAGE sql;
 
 ---
 
+## 💬 Feature: Chat IA com Mensagens Personalizadas
+
+> **Complexidade:** ⭐⭐⭐⭐ — Geolocalização + timezone detection + Open-Meteo API + personalisação dinâmica
+
+Widget de chat (chatBruno) com mensagem de boas-vindas **personalizada dinamicamente** baseada em contexto real do visitante: horário local, localização geográfica e condições climáticas.
+
+### Fluxo de personalização
+
+```
+Visitante abre o chat
+  → generatePersonalizedGreeting() dispara async
+  → navigator.geolocation (GPS do browser)
+    · Se permit: lat/lon precisão de metros
+    · Se recusa: fallback Nominatim para detectar erro → fallback hardcoded Serra, BR
+  → Reverse geocoding (Nominatim OSM API)
+    · Coordenadas → nome da cidade
+  → Open-Meteo: fetch clima + timezone
+    · Temperature, weather_code, timezone
+    · 2h cache (reutiliza se já consultou)
+  → Análise de tempo
+    · Hora local (detecta período: manhã 🌅, tarde ☀️, noite 🌆, madrugada 🌙)
+    · WMO código → emoji + descrição (☀️ lindo, 🌧️ chovendo, etc.)
+  → Análise de temperatura (thresholds dinâmicos)
+    · > 30°C: "está quentíssimo!"
+    · 25-30°C: "está morno e agradável!"
+    · 18-25°C: "está fresco e legal!"
+    · < 18°C: "tá friozinho!"
+  → Mensagem final renderizada
+    → Exemplo: "Bom dia! 🌅\nAqui em São Paulo está quentíssimo! 28°C ☀️ lindo demais!\nO que posso te ajudar hoje?"
+  → Chatbot.init({ welcomeMessage })
+```
+
+### Tratamento de erros
+
+Falhas em qualquer etapa da personalização retornam **fallback genérico**:
+```
+"Olá! 👋
+Seja bem-vindo(a)! Como posso te ajudar hoje?"
+```
+
+- **Geolocalização negada** → fallback serra, BR
+- **Nominatim fora** → "sua região" (genérico)
+- **Open-Meteo timeout** → clima genérico
+- **Qualquer Promise rejeitada** → fallback completo
+
+### Dados fetched
+
+- Geolocalização: navigator.geolocation (built-in, sem API key)
+- Reverse geocoding: Nominatim OSM (gratuito, sem API key)
+- Clima: Open-Meteo (gratuito, sem API key)
+- Timezone: Open-Meteo fornece junto com clima
+
+---
+
 ## 📰 Feature: Painel de Notícias de IA em Tempo Real
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — CORS proxy serverless + RSS multi-formato + scoring tiered + hero carousel + tradução automática com prioridade + anti-spam
@@ -484,6 +538,85 @@ Clique no pin
 
 ---
 
+## 🌍 Feature: Globo 3D com 8 Overlays Geoespaciais em Tempo Real
+
+> **Complexidade:** ⭐⭐⭐⭐⭐ — Canvas overlay + coordinate transformation (lat/lon → screen) + 2h weather cache + real-time API polling + toggle UI + localStorage persistence
+
+Sistema completo de visualização de dados geoespaciais em tempo real sobre o globo 3D interativo. **8 tipos de features** aparecem sobre o mapa com hover interativo, informações dinâmicas e controles ON/OFF individuais.
+
+### Features suportadas
+
+| Feature | Ícone | API | Atualização | Hover Info |
+|---|---|---|---|---|
+| **Satélites** | 🛰️ | Simulado | Estático | Altitude, velocidade, NORAD ID |
+| **Aviões** | ✈️ | OpenSky Network | 8s | Flight ID, altitude, velocidade |
+| **Cidades** | 🏙️ | TOP_CITIES (43 cidades) | Estático | Hora local, temp, clima, AQI, população, país |
+| **Qualidade do Ar** | 💨 | SAMPLE_AIR_QUALITY (4 cidades) | Estático | AQI, PM2.5 (integrado nos city cards quando sobrepõe) |
+| **Incêndios** | 🔥 | NASA FIRMS (simulado) | Estático | Nome, confidence, data |
+| **Raios** | ⚡ | Simulado | Estático | Latitude, longitude, intensidade |
+| **Vulcões** | 🌋 | GVP (425 vulcões) | Estático | Nome, país, status, última erupção |
+| **Furacões** | 🌀 | OpenWeatherMap OneCall | Único load | Categoria Saffir-Simpson, vento, pressão |
+
+### Implementação técnica
+
+**Renderização:**
+- Canvas overlay 2D sobre o globo 3D
+- Coordenadas lat/lon convertidas para screen coordinates via `view.toScreen()`
+- Visibilidade inteligente: `isFacing()` filtra pontos no lado visível do globo (sem atravessar a esfera)
+- Z coordinate para depth rendering correto em 3D
+
+**Interação:**
+- Hover detection com `mousemove` — detecta proximidade de pontos em pixels (10–15px de raio)
+- Overlap detection — se AQI está perto de uma cidade, info do AQI aparece integrada no card da cidade
+- Clique em pins abre tooltip customizado com dados contextuais
+
+**Performance:**
+- Weather cache com 2h TTL — previne overload da Open-Meteo API ao fazer hover repetido
+- Lazy loading dos dados — arrays de screen positions resetados apenas quando feature toggled ou dados mudaram
+- RequestAnimationFrame — todos os cálculos sincronizados com frame do navegador
+
+### WeatherBar — Controles ON/OFF
+
+Botões toggle individuais para cada feature na barra de clima (superior):
+```
+🛰️ SAT  ✈️ AVN  🏙️ CITY  💨 AQI  🔥 FIRE  ⚡ LGT  🌋 VOL  🌀 FUR
+```
+
+- Cada toggle emite CustomEvent capturado pelo GlobeBackground
+- Estado salvo em localStorage — preferências persistem entre sessões
+- Visual feedback: botão ativo (verde) vs. inativo (cinza)
+
+### Cidades com Clima & Hora Local
+
+Todas as **43 cidades** do globo agora exibem:
+- **Hora local** 🕐 — convertida via `Intl.DateTimeFormat` para o timezone da cidade (Open-Meteo fornece timezone)
+- **Temperatura** — arredondada em °C
+- **Condição do tempo** — emoji WMO (☀️, 🌧️, ⛈️, etc.) + descrição
+- **AQI** — exibido como tag colorida quando disponível
+
+Exemplo de card ao passar o mouse em Londres:
+```
+Londres 🇬🇧
+Principal ecossistema de fintech...
+
+🕐 14:30
+☀️ 24°C
+
+Fintech  IA  DeFi  💨 AQI: 45 (verde)
+```
+
+### APIs utilizadas
+
+| Fonte | Endpoint | Limite Free | Uso |
+|---|---|---|---|
+| Open-Meteo | `api.open-meteo.com/v1/forecast` | Ilimitado | Clima + timezone (2h cache) |
+| OpenSky Network | `opensky-network.org/api/states/all` | 400 req/dia | Aviões em tempo real (8s polling) |
+| NASA FIRMS | Via MapTiler | Mensal | Incêndios (mock temporário) |
+| OpenWeatherMap | OneCall 2.5 | 1.000 req/dia | Furacões (dados reais via API) |
+| GVP | Volcano data (local) | — | 425 vulcões (sem API, dados estáticos) |
+
+---
+
 ## 🌍 Feature: Mapa 3D Geoespacial (ESRI ArcGIS)
 
 > **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading + WebGL 3D + fotos próprias nos marcadores
@@ -561,9 +694,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 72 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 126 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (72 testes unitários)
+### Suítes de teste (126 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -855,7 +988,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D interativo          | 26 pins + arcos slerp + zoom galáctico de entrada + NASA Black Marble noturno, lazy-loaded |
+| 🌐 Globo 3D + 8 overlays        | 43 cidades com clima & hora local + 8 features geoespaciais (aviões, satélites, AQI, incêndios, raios, vulcões, furacões) + toggle UI + 2h cache weather |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
