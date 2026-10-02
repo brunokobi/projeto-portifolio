@@ -733,9 +733,15 @@ const GlobeBackground = () => {
                       const lines: string[] = ["🌆 Cidade"];
                       if (cp.name) lines.push(`${cp.name}`);
                       if (cp.population) lines.push(`População: ${(cp.population / 1000000).toFixed(1)}M`);
-                      const nearbyAqi = findNearbyAQI(cp.x, cp.y);
-                      if (nearbyAqi) {
-                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
+                      // AQI da cidade (se existir) ou buscar AQI próximo
+                      const city = cities[i];
+                      if (city?.aqi) {
+                        lines.push(`💨 AQI: ${city.aqi}`);
+                      } else {
+                        const nearbyAqi = findNearbyAQI(cp.x, cp.y);
+                        if (nearbyAqi) {
+                          lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
+                        }
                       }
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
