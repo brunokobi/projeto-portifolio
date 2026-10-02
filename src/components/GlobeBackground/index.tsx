@@ -800,39 +800,6 @@ const GlobeBackground = () => {
                 }
               }
 
-              if (!over) {
-                // Cidades (novas)
-                const cityPositions = cityScreenPosRef2.current;
-                for (let i = 0; i < cityPositions.length; i++) {
-                  const cp = cityPositions[i];
-                  if (!cp) continue;
-                  const dx = evt.x - cp.x, dy = evt.y - cp.y;
-                  if (dx * dx + dy * dy < 20 * 20) {
-                    over = true;
-                    const key = `city-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const lines: string[] = ["🌆 Cidade"];
-                      if (cp.name) lines.push(`${cp.name}`);
-                      if (cp.population) lines.push(`População: ${(cp.population / 1000000).toFixed(1)}M`);
-                      // AQI da cidade (se existir) ou buscar AQI próximo
-                      const city = cities[i];
-                      if (city?.aqi) {
-                        lines.push(`💨 AQI: ${city.aqi}`);
-                      } else {
-                        const nearbyAqi = findNearbyAQI(cp.x, cp.y);
-                        if (nearbyAqi) {
-                          lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
-                        }
-                      }
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
 
               // Função helper: detectar AQI próximo a um ponto
               const findNearbyAQI = (x: number, y: number) => {
@@ -1492,35 +1459,7 @@ const GlobeBackground = () => {
                     aircraftScreenPosRef.current.fill(null);
                   }
 
-                  // Cidades
-                  if (cityScreenPosRef2.current.length !== cities.length) {
-                    cityScreenPosRef2.current = new Array(cities.length).fill(null);
-                  }
-                  if (citiesEnabledRef.current) {
-                    for (let i = 0; i < cities.length; i++) {
-                      cityScreenPosRef2.current[i] = null;
-                      const c = cities[i];
-                      if (!isFacing(cam.latitude, cam.longitude, c.lat, c.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
-                        );
-                        if (!sp) continue;
-                        cityScreenPosRef2.current[i] = { x: sp.x, y: sp.y, name: c.name, population: c.population };
-                        ctx.fillStyle = cityColor(c.type);
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, cityRadius(c.population), 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.font = "bold 9px monospace";
-                        ctx.fillStyle = "#42c920";
-                        ctx.fillText(c.name, sp.x + 10, sp.y + 3);
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    cityScreenPosRef2.current.fill(null);
-                  }
+                  // Renderização de TOP_CITIES removida - usar apenas CITIES com anéis pulsantes
 
                   // Qualidade do Ar (AQI renderizado apenas nos cards de hover das cidades, não como pontos separados)
 
