@@ -792,6 +792,24 @@ const GlobeBackground = () => {
                   hurricanes = data;
                 });
 
+                // 8 Novas features
+                let satellites: Satellite[] = [];
+                let aircraft: Aircraft[] = [];
+                let cities = TOP_CITIES;
+                let airQuality: AirQuality[] = [];
+                let wildfires: Wildfire[] = [];
+                let lightning: Lightning[] = [];
+                let techHubs: TechHub[] = [];
+
+                Promise.all([
+                  loadSatellites().then((d) => { satellites = d; }),
+                  loadAircraft().then((d) => { aircraft = d; }),
+                  loadAirQuality().then((d) => { airQuality = d; }),
+                  loadWildfires().then((d) => { wildfires = d; }),
+                  loadLightning().then((d) => { lightning = d; }),
+                  loadTechHubs().then((d) => { techHubs = d; }),
+                ]).catch(() => {});
+
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
 
@@ -1150,6 +1168,120 @@ const GlobeBackground = () => {
                     }
                   } else {
                     hurricaneScreenPosRef.current.fill(null);
+                  }
+
+                  // 8 Novas Features - Renderização
+
+                  // Satélites
+                  if (satellitesEnabledRef.current) {
+                    for (let i = 0; i < satellites.length; i++) {
+                      const s = satellites[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: s.lon, latitude: s.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = satelliteColor(s.type);
+                        ctx.font = "bold 10px Arial";
+                        ctx.fillText("🛰️", sp.x - 5, sp.y + 5);
+                        ctx.font = "8px monospace";
+                        ctx.fillText(s.name.substring(0, 6), sp.x + 8, sp.y + 5);
+                      } catch { }
+                    }
+                  }
+
+                  // Aviões
+                  if (aircraftEnabledRef.current) {
+                    for (let i = 0; i < aircraft.length; i++) {
+                      const a = aircraft[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: a.lon, latitude: a.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = aircraftColor(a.altitude);
+                        ctx.font = "bold 10px Arial";
+                        ctx.fillText("✈️", sp.x - 5, sp.y + 5);
+                      } catch { }
+                    }
+                  }
+
+                  // Cidades
+                  if (citiesEnabledRef.current) {
+                    for (let i = 0; i < cities.length; i++) {
+                      const c = cities[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: c.lon, latitude: c.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = cityColor(c.type);
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, cityRadius(c.population), 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.font = "8px monospace";
+                        ctx.fillStyle = "#00FF00";
+                        ctx.fillText(c.name.substring(0, 5), sp.x + 8, sp.y);
+                      } catch { }
+                    }
+                  }
+
+                  // Qualidade do Ar
+                  if (airQualityEnabledRef.current) {
+                    for (let i = 0; i < airQuality.length; i++) {
+                      const a = airQuality[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: a.lon, latitude: a.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = aqiColor(a.aqi);
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.font = "8px monospace";
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillText(a.aqi.toString(), sp.x + 6, sp.y + 4);
+                      } catch { }
+                    }
+                  }
+
+                  // Incêndios
+                  if (wildfiresEnabledRef.current) {
+                    for (let i = 0; i < wildfires.length; i++) {
+                      const w = wildfires[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: w.lon, latitude: w.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = wildfireColor(w.confidence);
+                        ctx.font = "bold 12px Arial";
+                        ctx.fillText("🔥", sp.x - 6, sp.y + 6);
+                      } catch { }
+                    }
+                  }
+
+                  // Raios
+                  if (lightningEnabledRef.current) {
+                    for (let i = 0; i < lightning.length; i++) {
+                      const l = lightning[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: l.lon, latitude: l.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = lightningColor();
+                        ctx.font = "bold 14px Arial";
+                        ctx.globalAlpha = 0.8;
+                        ctx.fillText("⚡", sp.x - 7, sp.y + 7);
+                        ctx.globalAlpha = 1;
+                      } catch { }
+                    }
+                  }
+
+                  // Tech Hubs
+                  if (techHubsEnabledRef.current) {
+                    for (let i = 0; i < techHubs.length; i++) {
+                      const t = techHubs[i];
+                      try {
+                        const sp = view.toScreen(new Point({ longitude: t.lon, latitude: t.lat }));
+                        if (!sp) continue;
+                        ctx.fillStyle = techHubColor(t.sector);
+                        ctx.font = "bold 11px Arial";
+                        ctx.fillText("💻", sp.x - 5, sp.y + 5);
+                        ctx.font = "7px monospace";
+                        ctx.fillText(t.name.substring(0, 4), sp.x + 8, sp.y + 2);
+                      } catch { }
+                    }
                   }
 
                   // Arco de voo animado
