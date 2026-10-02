@@ -93,13 +93,13 @@ const GlobeBackground = () => {
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
-  const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0" || true);
-  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0" || true);
-  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0" || true);
+  const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
+  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0");
+  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0");
   const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
   const lightningEnabledRef = useRef(localStorage.getItem("globeLightning") !== "0");
-  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0" || true);
+  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -1172,16 +1172,21 @@ const GlobeBackground = () => {
                     hurricaneScreenPosRef.current.fill(null);
                   }
 
-                  // 8 Novas Features - Renderização
-
                   // Satélites
+                  if (satelliteScreenPosRef.current.length !== satellites.length) {
+                    satelliteScreenPosRef.current = new Array(satellites.length).fill(null);
+                  }
                   if (satellitesEnabledRef.current) {
                     for (let i = 0; i < satellites.length; i++) {
+                      satelliteScreenPosRef.current[i] = null;
                       const s = satellites[i];
+                      if (!isFacing(cam.latitude, cam.longitude, s.lat, s.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: s.lon, latitude: s.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: s.lon, latitude: s.lat, z: 60000 })
+                        );
                         if (!sp) continue;
-                        ctx.fillStyle = satelliteColor(s.type);
+                        satelliteScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: s.name, altitude: s.altitude };
                         ctx.font = "bold 12px Arial";
                         ctx.fillText("🛰️", sp.x - 6, sp.y + 6);
                         ctx.font = "bold 9px monospace";
@@ -1192,16 +1197,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    satelliteScreenPosRef.current.fill(null);
                   }
 
                   // Aviões
+                  if (aircraftScreenPosRef.current.length !== aircraft.length) {
+                    aircraftScreenPosRef.current = new Array(aircraft.length).fill(null);
+                  }
                   if (aircraftEnabledRef.current) {
                     for (let i = 0; i < aircraft.length; i++) {
+                      aircraftScreenPosRef.current[i] = null;
                       const a = aircraft[i];
+                      if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: a.lon, latitude: a.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: a.lon, latitude: a.lat, z: 60000 })
+                        );
                         if (!sp) continue;
-                        ctx.fillStyle = aircraftColor(a.altitude);
+                        aircraftScreenPosRef.current[i] = { x: sp.x, y: sp.y, callsign: a.callsign, altitude: a.altitude };
                         ctx.font = "bold 12px Arial";
                         ctx.fillText("✈️", sp.x - 6, sp.y + 6);
                         ctx.font = "bold 9px monospace";
@@ -1212,15 +1226,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    aircraftScreenPosRef.current.fill(null);
                   }
 
                   // Cidades
+                  if (cityScreenPosRef2.current.length !== cities.length) {
+                    cityScreenPosRef2.current = new Array(cities.length).fill(null);
+                  }
                   if (citiesEnabledRef.current) {
                     for (let i = 0; i < cities.length; i++) {
+                      cityScreenPosRef2.current[i] = null;
                       const c = cities[i];
+                      if (!isFacing(cam.latitude, cam.longitude, c.lat, c.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: c.lon, latitude: c.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: c.lon, latitude: c.lat, z: 50000 })
+                        );
                         if (!sp) continue;
+                        cityScreenPosRef2.current[i] = { x: sp.x, y: sp.y, name: c.name, population: c.population };
                         ctx.fillStyle = cityColor(c.type);
                         ctx.beginPath();
                         ctx.arc(sp.x, sp.y, cityRadius(c.population), 0, Math.PI * 2);
@@ -1233,15 +1257,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    cityScreenPosRef2.current.fill(null);
                   }
 
                   // Qualidade do Ar
+                  if (airQualityScreenPosRef.current.length !== airQuality.length) {
+                    airQualityScreenPosRef.current = new Array(airQuality.length).fill(null);
+                  }
                   if (airQualityEnabledRef.current) {
                     for (let i = 0; i < airQuality.length; i++) {
+                      airQualityScreenPosRef.current[i] = null;
                       const a = airQuality[i];
+                      if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: a.lon, latitude: a.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: a.lon, latitude: a.lat, z: 50000 })
+                        );
                         if (!sp) continue;
+                        airQualityScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: a.name, aqi: a.aqi };
                         ctx.fillStyle = aqiColor(a.aqi);
                         ctx.beginPath();
                         ctx.arc(sp.x, sp.y, 6, 0, Math.PI * 2);
@@ -1254,16 +1288,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    airQualityScreenPosRef.current.fill(null);
                   }
 
                   // Incêndios
+                  if (wildfireScreenPosRef.current.length !== wildfires.length) {
+                    wildfireScreenPosRef.current = new Array(wildfires.length).fill(null);
+                  }
                   if (wildfiresEnabledRef.current) {
                     for (let i = 0; i < wildfires.length; i++) {
+                      wildfireScreenPosRef.current[i] = null;
                       const w = wildfires[i];
+                      if (!isFacing(cam.latitude, cam.longitude, w.lat, w.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: w.lon, latitude: w.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: w.lon, latitude: w.lat, z: 50000 })
+                        );
                         if (!sp) continue;
-                        ctx.fillStyle = wildfireColor(w.confidence);
+                        wildfireScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: w.name, confidence: w.confidence };
                         ctx.font = "bold 14px Arial";
                         ctx.fillText("🔥", sp.x - 7, sp.y + 7);
                         ctx.font = "bold 10px monospace";
@@ -1274,16 +1317,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    wildfireScreenPosRef.current.fill(null);
                   }
 
                   // Raios
+                  if (lightningScreenPosRef.current.length !== lightning.length) {
+                    lightningScreenPosRef.current = new Array(lightning.length).fill(null);
+                  }
                   if (lightningEnabledRef.current) {
                     for (let i = 0; i < lightning.length; i++) {
+                      lightningScreenPosRef.current[i] = null;
                       const l = lightning[i];
+                      if (!isFacing(cam.latitude, cam.longitude, l.lat, l.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: l.lon, latitude: l.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: l.lon, latitude: l.lat, z: 50000 })
+                        );
                         if (!sp) continue;
-                        ctx.fillStyle = lightningColor();
+                        lightningScreenPosRef.current[i] = { x: sp.x, y: sp.y };
                         ctx.font = "bold 14px Arial";
                         ctx.globalAlpha = 0.8;
                         ctx.fillText("⚡", sp.x - 7, sp.y + 7);
@@ -1296,16 +1348,25 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    lightningScreenPosRef.current.fill(null);
                   }
 
                   // Tech Hubs
+                  if (techHubScreenPosRef.current.length !== techHubs.length) {
+                    techHubScreenPosRef.current = new Array(techHubs.length).fill(null);
+                  }
                   if (techHubsEnabledRef.current) {
                     for (let i = 0; i < techHubs.length; i++) {
+                      techHubScreenPosRef.current[i] = null;
                       const t = techHubs[i];
+                      if (!isFacing(cam.latitude, cam.longitude, t.lat, t.lon)) continue;
                       try {
-                        const sp = view.toScreen(new Point({ longitude: t.lon, latitude: t.lat }));
+                        const sp = view.toScreen(
+                          new Point({ longitude: t.lon, latitude: t.lat, z: 50000 })
+                        );
                         if (!sp) continue;
-                        ctx.fillStyle = techHubColor(t.sector);
+                        techHubScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: t.name, sector: t.sector };
                         ctx.font = "bold 13px Arial";
                         ctx.fillText("💻", sp.x - 6, sp.y + 6);
                         ctx.font = "bold 10px monospace";
@@ -1316,6 +1377,8 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
                       } catch { }
                     }
+                  } else {
+                    techHubScreenPosRef.current.fill(null);
                   }
 
                   // Arco de voo animado
