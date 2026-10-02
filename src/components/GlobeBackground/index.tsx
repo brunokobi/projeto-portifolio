@@ -34,6 +34,11 @@ import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, drawHurricaneIcon, HURRICANE_POLL_INTERVAL, type Hurricane } from "./hurricanes";
+import { loadSatellites, satelliteColor, satelliteRadius, type Satellite } from "./satellites";
+import { loadAircraft, aircraftColor, aircraftRadius, type Aircraft } from "./aircraft";
+import { TOP_CITIES, cityColor, cityRadius, type City } from "./cities";
+import { loadAirQuality, loadWildfires, loadLightning, aqiColor, wildfireColor, lightningColor, type AirQuality, type Wildfire, type Lightning } from "./hazards";
+import { loadTechHubs, loadInternetCoverage, getTimeZones, techHubColor, internetCoverageColor, getTimeZoneColor, type TechHub, type InternetCoverage } from "./infrastructure";
 
 setDefaultOptions({ css: true });
 
@@ -72,6 +77,13 @@ const GlobeBackground = () => {
   const hurricaneScreenPosRef = useRef<
     Array<{ x: number; y: number; name: string; windSpeed: number; pressure: number; category: number } | null>
   >([]);
+  const satelliteScreenPosRef = useRef<Array<{ x: number; y: number; name: string; altitude: number } | null>>([]);
+  const aircraftScreenPosRef = useRef<Array<{ x: number; y: number; callsign: string; altitude: number } | null>>([]);
+  const cityScreenPosRef2 = useRef<Array<{ x: number; y: number; name: string; population: number } | null>>([]);
+  const airQualityScreenPosRef = useRef<Array<{ x: number; y: number; name: string; aqi: number } | null>>([]);
+  const wildfireScreenPosRef = useRef<Array<{ x: number; y: number; name: string; confidence: number } | null>>([]);
+  const lightningScreenPosRef = useRef<Array<{ x: number; y: number } | null>>([]);
+  const techHubScreenPosRef = useRef<Array<{ x: number; y: number; name: string; sector: string } | null>>([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
@@ -81,6 +93,13 @@ const GlobeBackground = () => {
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
+  const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
+  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0");
+  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0");
+  const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
+  const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
+  const lightningEnabledRef = useRef(localStorage.getItem("globeLightning") !== "0");
+  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
@@ -200,13 +219,42 @@ const GlobeBackground = () => {
     return () => window.removeEventListener("globoVolcanoesToggle", handler);
   }, []);
 
-  // Escuta evento globeHurricanesToggle disparado pelo WeatherBar
+  // Escuta eventos de toggle disparados pelo WeatherBar
   useEffect(() => {
-    const handler = (e: Event) => {
-      hurricanesEnabledRef.current = (e as CustomEvent).detail.hurricanesEnabled as boolean;
+    const handlers = {
+      globeHurricanesToggle: (e: Event) => {
+        hurricanesEnabledRef.current = (e as CustomEvent).detail.hurricanesEnabled as boolean;
+      },
+      globeSatellitesToggle: (e: Event) => {
+        satellitesEnabledRef.current = (e as CustomEvent).detail.satellitesEnabled as boolean;
+      },
+      globeAircraftToggle: (e: Event) => {
+        aircraftEnabledRef.current = (e as CustomEvent).detail.aircraftEnabled as boolean;
+      },
+      globeCitiesToggle: (e: Event) => {
+        citiesEnabledRef.current = (e as CustomEvent).detail.citiesEnabled as boolean;
+      },
+      globeAirQualityToggle: (e: Event) => {
+        airQualityEnabledRef.current = (e as CustomEvent).detail.airQualityEnabled as boolean;
+      },
+      globeWildfiresToggle: (e: Event) => {
+        wildfiresEnabledRef.current = (e as CustomEvent).detail.wildfiresEnabled as boolean;
+      },
+      globeLightningToggle: (e: Event) => {
+        lightningEnabledRef.current = (e as CustomEvent).detail.lightningEnabled as boolean;
+      },
+      globeTechHubsToggle: (e: Event) => {
+        techHubsEnabledRef.current = (e as CustomEvent).detail.techHubsEnabled as boolean;
+      },
     };
-    window.addEventListener("globeHurricanesToggle", handler);
-    return () => window.removeEventListener("globeHurricanesToggle", handler);
+    Object.entries(handlers).forEach(([event, handler]) => {
+      window.addEventListener(event, handler);
+    });
+    return () => {
+      Object.entries(handlers).forEach(([event, handler]) => {
+        window.removeEventListener(event, handler);
+      });
+    };
   }, []);
 
   useEffect(() => {
