@@ -56,7 +56,7 @@ const WIND_TRAIL_FADE = 0.93;
 const WIND_MAX_TRAIL_JUMP_PX = 80;
 
 // Cache de clima: { "lat,lon": { temp, code, timestamp } }
-const weatherCache = new Map<string, { temp: number; code: number; timestamp: number }>();
+const weatherCache = new Map<string, { temp: number; code: number; timezone: string; timestamp: number }>();
 
 const WMO: Record<number, { icon: string; label: string }> = {
   0: { icon: "☀️", label: "Limpo" },
@@ -85,14 +85,14 @@ const WMO: Record<number, { icon: string; label: string }> = {
   99: { icon: "⛈️", label: "Tempestade c/ granizo" },
 };
 
-const fetchCityWeather = async (lat: number, lon: number): Promise<{ temp: number; code: number } | null> => {
+const fetchCityWeather = async (lat: number, lon: number): Promise<{ temp: number; code: number; timezone: string } | null> => {
   const key = `${lat},${lon}`;
   const cached = weatherCache.get(key);
   const now = Date.now();
 
   // Cache válido por 2h (7200000ms)
   if (cached && now - cached.timestamp < 7200000) {
-    return { temp: cached.temp, code: cached.code };
+    return { temp: cached.temp, code: cached.code, timezone: cached.timezone };
   }
 
   try {
@@ -104,10 +104,11 @@ const fetchCityWeather = async (lat: number, lon: number): Promise<{ temp: numbe
 
     const data = await res.json();
     const { temperature_2m, weather_code } = data.current ?? {};
+    const { timezone } = data;
 
-    if (temperature_2m == null || weather_code == null) return null;
+    if (temperature_2m == null || weather_code == null || !timezone) return null;
 
-    const result = { temp: Math.round(temperature_2m), code: weather_code };
+    const result = { temp: Math.round(temperature_2m), code: weather_code, timezone };
     weatherCache.set(key, { ...result, timestamp: now });
     return result;
   } catch {
@@ -616,6 +617,7 @@ const GlobeBackground = () => {
                         if (weather && mountedRef.current) {
                           city.temp = weather.temp;
                           city.weather_code = weather.code;
+                          city.timezone = weather.timezone;
                           setHoverCity({ city, x: evt.x, y: evt.y });
                         }
                       });
@@ -1841,6 +1843,15 @@ const GlobeBackground = () => {
           </div>
           {hoverCity.city.temp != null && hoverCity.city.weather_code != null && (
             <div style={{ marginTop: "8px", fontSize: "11px", color: "#00e055" }}>
+              {hoverCity.city.timezone && (
+                <div style={{ marginBottom: "4px" }}>
+                  🕐 {new Intl.DateTimeFormat("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: hoverCity.city.timezone,
+                  }).format(new Date())}
+                </div>
+              )}
               {WMO[hoverCity.city.weather_code]?.icon || "❓"} {hoverCity.city.temp}°C
             </div>
           )}

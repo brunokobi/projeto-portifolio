@@ -109,6 +109,7 @@ export interface City {
   aqi?: number;
   temp?: number;
   weather_code?: number;
+  timezone?: string;
   weather_cached_at?: number;
 }
 
