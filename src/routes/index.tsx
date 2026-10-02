@@ -40,7 +40,7 @@ const Router = () => {
   };
 
   return (
-    <Box minH="100vh" bg="black" color="rgb(196, 196, 196)">
+    <Box minH="100vh" bg="black" color="rgb(196, 196, 196)" pb={{ base: "80px", md: "70px", lg: "60px" }}>
       {!isNews && (
         <Box position="fixed" top="44px" right="10px" zIndex="999">
           <Button

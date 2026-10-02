@@ -45,13 +45,13 @@ const ProjectCard = ({
       as={SlideFade}
       ref={cardRef}
       {...(i % 2 ? { offsetX: 50 } : { offsetX: -50 })}
-      // offsetY={50}
       in={cardViewport}
       transition={`all 1s`}
       zIndex={1}
       position="relative"
     >
       <Stack
+        as={motion.div}
         borderRadius="lg"
         w={{ base: "95vw", sm: "350px", md: "640px" }}
         maxW="640px"
@@ -62,6 +62,16 @@ const ProjectCard = ({
         spacing={3}
         justify="center"
         textAlign="center"
+        border="2px solid transparent"
+        transition="all 0.3s"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={cardViewport ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ duration: 0.6, delay: i * 0.1 }}
+        whileHover={{
+          borderColor: "#42c920",
+          boxShadow: "0 0 20px rgba(66, 201, 32, 0.6)",
+          y: -8,
+        }}
       >
         <Heading fontSize={"2xl"} fontFamily={"body"} onMouseOver={() => falar(title)}>
           {title}
