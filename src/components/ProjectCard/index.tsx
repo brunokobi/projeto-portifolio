@@ -63,14 +63,15 @@ const ProjectCard = ({
         justify="center"
         textAlign="center"
         border="2px solid transparent"
-        transition="all 0.3s"
         initial={{ scale: 0, opacity: 0 }}
         animate={cardViewport ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-        transition={{ duration: 0.6, delay: i * 0.1 }}
+        transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
         whileHover={{
+          scale: 1.05,
           borderColor: "#42c920",
-          boxShadow: "0 0 20px rgba(66, 201, 32, 0.6)",
-          y: -8,
+          boxShadow: "0 0 30px rgba(66, 201, 32, 0.8), 0 0 60px rgba(66, 201, 32, 0.4)",
+          y: -12,
+          transition: { duration: 0.3 },
         }}
       >
         <Heading fontSize={"2xl"} fontFamily={"body"} onMouseOver={() => falar(title)}>
