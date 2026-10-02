@@ -839,29 +839,6 @@ const GlobeBackground = () => {
                 return null;
               };
 
-              if (!over) {
-                // Qualidade do Ar
-                const aqiPositions = airQualityScreenPosRef.current;
-                for (let i = 0; i < aqiPositions.length; i++) {
-                  const aqip = aqiPositions[i];
-                  if (!aqip) continue;
-                  const dx = evt.x - aqip.x, dy = evt.y - aqip.y;
-                  if (dx * dx + dy * dy < 14 * 14) {
-                    over = true;
-                    const key = `aqi-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const lines: string[] = ["💨 Qualidade do Ar"];
-                      if (aqip.name) lines.push(`${aqip.name}`);
-                      if (aqip.aqi) lines.push(`AQI: ${aqip.aqi}`);
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
 
               if (!over) {
                 // Incêndios
@@ -1539,40 +1516,7 @@ const GlobeBackground = () => {
                     cityScreenPosRef2.current.fill(null);
                   }
 
-                  // Qualidade do Ar
-                  if (airQualityScreenPosRef.current.length !== airQuality.length) {
-                    airQualityScreenPosRef.current = new Array(airQuality.length).fill(null);
-                  }
-                  if (airQualityEnabledRef.current) {
-                    for (let i = 0; i < airQuality.length; i++) {
-                      airQualityScreenPosRef.current[i] = null;
-                      const a = airQuality[i];
-                      if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: a.lon, latitude: a.lat, z: 50000 })
-                        );
-                        if (!sp) continue;
-                        airQualityScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: a.name, aqi: a.aqi };
-                        ctx.fillStyle = aqiColor(a.aqi);
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 6, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.font = "bold 12px Arial";
-                        ctx.fillText("💨", sp.x - 6, sp.y + 6);
-                        ctx.font = "bold 9px monospace";
-                        ctx.fillStyle = aqiColor(a.aqi);
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = aqiColor(a.aqi);
-                        ctx.fillText(`AQI:${a.aqi}`, sp.x + 12, sp.y + 4);
-                        ctx.shadowBlur = 0;
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    airQualityScreenPosRef.current.fill(null);
-                  }
+                  // Qualidade do Ar (AQI renderizado apenas nos cards de hover das cidades, não como pontos separados)
 
                   // Incêndios
                   if (wildfireScreenPosRef.current.length !== wildfires.length) {

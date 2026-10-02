@@ -130,7 +130,6 @@ const WeatherBar = () => {
   const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
   const [aircraftEnabled, setAircraftEnabled] = useState(() => localStorage.getItem("globeAircraft") !== "0");
   const [citiesEnabled, setCitiesEnabled] = useState(() => localStorage.getItem("globeCities") !== "0");
-  const [airQualityEnabled, setAirQualityEnabled] = useState(() => localStorage.getItem("globeAirQuality") !== "0");
   const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
   const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
 
@@ -423,24 +422,7 @@ const WeatherBar = () => {
           {citiesEnabled ? "🌆 ON" : "🌆 OFF"}
         </Text>
 
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setAirQualityEnabled(!airQualityEnabled);
-            localStorage.setItem("globeAirQuality", !airQualityEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeAirQualityToggle", { detail: { airQualityEnabled: !airQualityEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {airQualityEnabled ? "🌫️ ON" : "🌫️ OFF"}
-        </Text>
-
-        <Text
+<Text
           as="button"
           fontSize="xs"
           fontFamily="monospace"
