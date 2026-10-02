@@ -127,6 +127,24 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeHurricanesToggle", { detail: { hurricanesEnabled: next } }));
   }, [hurricanesEnabled]);
 
+  // 8 novas features
+  const toggleFeature = useCallback((key: string, setter: (v: boolean) => void, event: string) => {
+    return () => {
+      const enabled = localStorage.getItem(key) === "0";
+      setter(!enabled);
+      localStorage.setItem(key, enabled ? "0" : "1");
+      window.dispatchEvent(new CustomEvent(event, { detail: { [key.replace("globe", "").toLowerCase()]: !enabled } }));
+    };
+  }, []);
+
+  const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
+  const [aircraftEnabled, setAircraftEnabled] = useState(() => localStorage.getItem("globeAircraft") !== "0");
+  const [citiesEnabled, setCitiesEnabled] = useState(() => localStorage.getItem("globeCities") !== "0");
+  const [airQualityEnabled, setAirQualityEnabled] = useState(() => localStorage.getItem("globeAirQuality") !== "0");
+  const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
+  const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
+  const [techHubsEnabled, setTechHubsEnabled] = useState(() => localStorage.getItem("globeTechHubs") !== "0");
+
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
   );
@@ -363,6 +381,129 @@ const WeatherBar = () => {
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+
+        {/* Novos toggles - 8 features */}
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setSatellitesEnabled(!satellitesEnabled);
+            localStorage.setItem("globeSatellites", !satellitesEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeSatellitesToggle", { detail: { satellitesEnabled: !satellitesEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {satellitesEnabled ? "🛰️" : "🛰️"} SAT
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setAircraftEnabled(!aircraftEnabled);
+            localStorage.setItem("globeAircraft", !aircraftEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeAircraftToggle", { detail: { aircraftEnabled: !aircraftEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {aircraftEnabled ? "✈️" : "✈️"} AVN
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setCitiesEnabled(!citiesEnabled);
+            localStorage.setItem("globeCities", !citiesEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeCitiesToggle", { detail: { citiesEnabled: !citiesEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          🌆 CITY
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setAirQualityEnabled(!airQualityEnabled);
+            localStorage.setItem("globeAirQuality", !airQualityEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeAirQualityToggle", { detail: { airQualityEnabled: !airQualityEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          🌫️ AQI
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setWildfiresEnabled(!wildfiresEnabled);
+            localStorage.setItem("globeWildfires", !wildfiresEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeWildfiresToggle", { detail: { wildfiresEnabled: !wildfiresEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          🔥 FIRE
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setLightningEnabled(!lightningEnabled);
+            localStorage.setItem("globeLightning", !lightningEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeLightningToggle", { detail: { lightningEnabled: !lightningEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          ⚡ LGT
+        </Text>
+
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          cursor="pointer"
+          onClick={() => {
+            setTechHubsEnabled(!techHubsEnabled);
+            localStorage.setItem("globeTechHubs", !techHubsEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeTechHubsToggle", { detail: { techHubsEnabled: !techHubsEnabled } }));
+          }}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          💻 TECH
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+
         <Text
           as="button"
           fontSize="xs"
