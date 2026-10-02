@@ -1768,7 +1768,7 @@ const GlobeBackground = () => {
               { id: `city_${citySlug(hoverCity.city.name)}_desc`, defaultMessage: hoverCity.city.desc }
             )}
           </div>
-          {hoverCity.city.tags.length > 0 && (
+          {(hoverCity.city.tags.length > 0 || hoverCity.city.aqi) && (
             <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
               {hoverCity.city.tags.map((tag) => (
                 <span
@@ -1785,6 +1785,20 @@ const GlobeBackground = () => {
                   {tag}
                 </span>
               ))}
+              {hoverCity.city.aqi && (
+                <span
+                  style={{
+                    background: "rgba(255,165,0,0.15)",
+                    border: "1px solid rgba(255,165,0,0.5)",
+                    borderRadius: "3px",
+                    padding: "2px 7px",
+                    fontSize: "10px",
+                    color: "#ffa500",
+                  }}
+                >
+                  💨 AQI: {hoverCity.city.aqi}
+                </span>
+              )}
             </div>
           )}
         </div>
