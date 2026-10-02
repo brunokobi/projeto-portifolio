@@ -36,7 +36,7 @@ import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volc
 import { loadHurricanes, hurricaneColor, hurricaneRadius, hurricaneLabel, drawHurricaneIcon, HURRICANE_POLL_INTERVAL, type Hurricane } from "./hurricanes";
 import { loadSatellites, satelliteColor, satelliteRadius, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, aircraftRadius, type Aircraft } from "./aircraft";
-import { TOP_CITIES, cityColor, cityRadius, type City } from "./cities";
+import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
 import { loadAirQuality, loadWildfires, loadLightning, aqiColor, wildfireColor, lightningColor, type AirQuality, type Wildfire, type Lightning } from "./hazards";
 import { loadTechHubs, loadInternetCoverage, getTimeZones, techHubColor, internetCoverageColor, getTimeZoneColor, type TechHub, type InternetCoverage } from "./infrastructure";
 
@@ -795,7 +795,7 @@ const GlobeBackground = () => {
                 // 8 Novas features
                 let satellites: Satellite[] = [];
                 let aircraft: Aircraft[] = [];
-                let cities = TOP_CITIES;
+                let cities: CityData[] = TOP_CITIES;
                 let airQuality: AirQuality[] = [];
                 let wildfires: Wildfire[] = [];
                 let lightning: Lightning[] = [];
