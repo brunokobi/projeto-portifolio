@@ -1502,12 +1502,9 @@ const GlobeBackground = () => {
                         ctx.beginPath();
                         ctx.arc(sp.x, sp.y, cityRadius(c.population), 0, Math.PI * 2);
                         ctx.fill();
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = cityColor(c.type);
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = cityColor(c.type);
-                        ctx.fillText(c.name, sp.x + 12, sp.y + 4);
-                        ctx.shadowBlur = 0;
+                        ctx.font = "bold 9px monospace";
+                        ctx.fillStyle = "#42c920";
+                        ctx.fillText(c.name, sp.x + 10, sp.y + 3);
                       } catch {
                         // ponto fora do campo de visão
                       }
