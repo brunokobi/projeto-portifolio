@@ -133,7 +133,6 @@ const WeatherBar = () => {
   const [airQualityEnabled, setAirQualityEnabled] = useState(() => localStorage.getItem("globeAirQuality") !== "0");
   const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
   const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
-  const [techHubsEnabled, setTechHubsEnabled] = useState(() => localStorage.getItem("globeTechHubs") !== "0");
 
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
@@ -473,23 +472,6 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {lightningEnabled ? "⚡ ON" : "⚡ OFF"}
-        </Text>
-
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setTechHubsEnabled(!techHubsEnabled);
-            localStorage.setItem("globeTechHubs", !techHubsEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeTechHubsToggle", { detail: { techHubsEnabled: !techHubsEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {techHubsEnabled ? "💻 ON" : "💻 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />

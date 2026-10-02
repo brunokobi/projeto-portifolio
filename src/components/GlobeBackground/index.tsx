@@ -572,14 +572,19 @@ const GlobeBackground = () => {
                       hoveredNameRef.current = key;
                       const hoursAgo = Math.max(0, (Date.now() - qp.time) / 3600000);
                       const when = hoursAgo < 1 ? "há menos de 1h" : `há ${Math.round(hoursAgo)}h`;
+                      const lines = [
+                        "🌋 Terremoto",
+                        `M${qp.mag.toFixed(1)} (escala Richter) — ${qp.place}`,
+                        when,
+                      ];
+                      const nearbyAqi = findNearbyAQI(qp.x, qp.y);
+                      if (nearbyAqi) {
+                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
+                      }
                       setHoverInfo({
                         x: evt.x,
                         y: evt.y,
-                        lines: [
-                          "🌋 Terremoto",
-                          `M${qp.mag.toFixed(1)} (escala Richter) — ${qp.place}`,
-                          when,
-                        ],
+                        lines,
                       });
                       setHoverCity(null);
                     }
@@ -626,6 +631,10 @@ const GlobeBackground = () => {
                       if (vp.country) lines.push(`${vp.country}`);
                       if (vp.type) lines.push(`Tipo: ${vp.type}`);
                       if (vp.elevation) lines.push(`Elevação: ${vp.elevation} m`);
+                      const nearbyAqi = findNearbyAQI(vp.x, vp.y);
+                      if (nearbyAqi) {
+                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
+                      }
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
@@ -724,6 +733,10 @@ const GlobeBackground = () => {
                       const lines: string[] = ["🌆 Cidade"];
                       if (cp.name) lines.push(`${cp.name}`);
                       if (cp.population) lines.push(`População: ${(cp.population / 1000000).toFixed(1)}M`);
+                      const nearbyAqi = findNearbyAQI(cp.x, cp.y);
+                      if (nearbyAqi) {
+                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
+                      }
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
@@ -732,6 +745,20 @@ const GlobeBackground = () => {
                   }
                 }
               }
+
+              // Função helper: detectar AQI próximo a um ponto
+              const findNearbyAQI = (x: number, y: number) => {
+                const aqiPositions = airQualityScreenPosRef.current;
+                for (let i = 0; i < aqiPositions.length; i++) {
+                  const aqip = aqiPositions[i];
+                  if (!aqip) continue;
+                  const dx = x - aqip.x, dy = y - aqip.y;
+                  if (dx * dx + dy * dy < 30 * 30) {
+                    return aqip;
+                  }
+                }
+                return null;
+              };
 
               if (!over) {
                 // Qualidade do Ar
@@ -745,7 +772,7 @@ const GlobeBackground = () => {
                     const key = `aqi-${i}`;
                     if (hoveredNameRef.current !== key) {
                       hoveredNameRef.current = key;
-                      const lines: string[] = ["🌫️ Qualidade do Ar"];
+                      const lines: string[] = ["💨 Qualidade do Ar"];
                       if (aqip.name) lines.push(`${aqip.name}`);
                       if (aqip.aqi) lines.push(`AQI: ${aqip.aqi}`);
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
@@ -1452,11 +1479,13 @@ const GlobeBackground = () => {
                         ctx.beginPath();
                         ctx.arc(sp.x, sp.y, 6, 0, Math.PI * 2);
                         ctx.fill();
-                        ctx.font = "bold 10px monospace";
+                        ctx.font = "bold 12px Arial";
+                        ctx.fillText("💨", sp.x - 6, sp.y + 6);
+                        ctx.font = "bold 9px monospace";
                         ctx.fillStyle = aqiColor(a.aqi);
                         ctx.shadowBlur = 4;
                         ctx.shadowColor = aqiColor(a.aqi);
-                        ctx.fillText(`${a.name} AQI:${a.aqi}`, sp.x + 12, sp.y + 4);
+                        ctx.fillText(`AQI:${a.aqi}`, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
@@ -1520,7 +1549,7 @@ const GlobeBackground = () => {
                         ctx.fillStyle = lightningColor();
                         ctx.shadowBlur = 4;
                         ctx.shadowColor = lightningColor();
-                        ctx.fillText("STORM", sp.x + 12, sp.y + 4);
+                        ctx.fillText(`RAIO #${i + 1}`, sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
@@ -1530,36 +1559,6 @@ const GlobeBackground = () => {
                     lightningScreenPosRef.current.fill(null);
                   }
 
-                  // Tech Hubs
-                  if (techHubScreenPosRef.current.length !== techHubs.length) {
-                    techHubScreenPosRef.current = new Array(techHubs.length).fill(null);
-                  }
-                  if (techHubsEnabledRef.current) {
-                    for (let i = 0; i < techHubs.length; i++) {
-                      techHubScreenPosRef.current[i] = null;
-                      const t = techHubs[i];
-                      if (!isFacing(cam.latitude, cam.longitude, t.lat, t.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: t.lon, latitude: t.lat, z: 50000 })
-                        );
-                        if (!sp) continue;
-                        techHubScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: t.name, sector: t.sector };
-                        ctx.font = "bold 13px Arial";
-                        ctx.fillText("💻", sp.x - 6, sp.y + 6);
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = techHubColor(t.sector);
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = techHubColor(t.sector);
-                        ctx.fillText(t.name, sp.x + 12, sp.y + 4);
-                        ctx.shadowBlur = 0;
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    techHubScreenPosRef.current.fill(null);
-                  }
 
                   // Arco de voo animado
                   const arc = activeArcRef.current;
