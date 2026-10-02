@@ -85,6 +85,15 @@ const WMO: Record<number, { icon: string; label: string }> = {
   99: { icon: "⛈️", label: "Tempestade c/ granizo" },
 };
 
+const getAQILabel = (aqi: number): string => {
+  if (aqi <= 50) return "Bom";
+  if (aqi <= 100) return "Moderado";
+  if (aqi <= 150) return "Insalubre (Sensíveis)";
+  if (aqi <= 200) return "Insalubre";
+  if (aqi <= 300) return "Muito Insalubre";
+  return "Perigoso";
+};
+
 const fetchCityWeather = async (lat: number, lon: number): Promise<{ temp: number; code: number; timezone: string } | null> => {
   const key = `${lat},${lon}`;
   const cached = weatherCache.get(key);
@@ -1816,15 +1825,15 @@ const GlobeBackground = () => {
               {hoverCity.city.aqi && (
                 <span
                   style={{
-                    background: "rgba(255,165,0,0.15)",
-                    border: "1px solid rgba(255,165,0,0.5)",
+                    background: "rgba(66,201,32,0.15)",
+                    border: "1px solid rgba(66,201,32,0.5)",
                     borderRadius: "3px",
                     padding: "2px 7px",
                     fontSize: "10px",
-                    color: "#ffa500",
+                    color: "#42c920",
                   }}
                 >
-                  💨 AQI: {hoverCity.city.aqi}
+                  💨 AQI: {hoverCity.city.aqi} ({getAQILabel(hoverCity.city.aqi)})
                 </span>
               )}
             </div>
