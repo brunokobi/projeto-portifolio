@@ -262,6 +262,25 @@ const GlobeBackground = () => {
     let cleanupResize = () => {};
     let issIntervalId: ReturnType<typeof setInterval> | null = null;
 
+    // 8 Novas features — variáveis no escopo do useEffect pra acessibilidade
+    let satellites: Satellite[] = [];
+    let aircraft: Aircraft[] = [];
+    let cities: CityData[] = TOP_CITIES;
+    let airQuality: AirQuality[] = [];
+    let wildfires: Wildfire[] = [];
+    let lightning: Lightning[] = [];
+    let techHubs: TechHub[] = [];
+
+    // Carrega dados
+    Promise.all([
+      loadSatellites().then((d) => { satellites = d; }),
+      loadAircraft().then((d) => { aircraft = d; }),
+      loadAirQuality().then((d) => { airQuality = d; }),
+      loadWildfires().then((d) => { wildfires = d; }),
+      loadLightning().then((d) => { lightning = d; }),
+      loadTechHubs().then((d) => { techHubs = d; }),
+    ]).catch(() => {});
+
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
 
@@ -792,23 +811,6 @@ const GlobeBackground = () => {
                   hurricanes = data;
                 });
 
-                // 8 Novas features
-                let satellites: Satellite[] = [];
-                let aircraft: Aircraft[] = [];
-                let cities: CityData[] = TOP_CITIES;
-                let airQuality: AirQuality[] = [];
-                let wildfires: Wildfire[] = [];
-                let lightning: Lightning[] = [];
-                let techHubs: TechHub[] = [];
-
-                Promise.all([
-                  loadSatellites().then((d) => { satellites = d; }),
-                  loadAircraft().then((d) => { aircraft = d; }),
-                  loadAirQuality().then((d) => { airQuality = d; }),
-                  loadWildfires().then((d) => { wildfires = d; }),
-                  loadLightning().then((d) => { lightning = d; }),
-                  loadTechHubs().then((d) => { techHubs = d; }),
-                ]).catch(() => {});
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
