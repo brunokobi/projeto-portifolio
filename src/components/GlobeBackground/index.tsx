@@ -661,6 +661,172 @@ const GlobeBackground = () => {
                 }
               }
 
+              if (!over) {
+                // Satélites
+                const satellitePositions = satelliteScreenPosRef.current;
+                for (let i = 0; i < satellitePositions.length; i++) {
+                  const sp = satellitePositions[i];
+                  if (!sp) continue;
+                  const dx = evt.x - sp.x, dy = evt.y - sp.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `satellite-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🛰️ Satélite"];
+                      if (sp.name) lines.push(`${sp.name}`);
+                      if (sp.altitude) lines.push(`Altitude: ${sp.altitude} km`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Aviões
+                const aircraftPositions = aircraftScreenPosRef.current;
+                for (let i = 0; i < aircraftPositions.length; i++) {
+                  const ap = aircraftPositions[i];
+                  if (!ap) continue;
+                  const dx = evt.x - ap.x, dy = evt.y - ap.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `aircraft-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["✈️ Voo"];
+                      if (ap.callsign) lines.push(`${ap.callsign}`);
+                      if (ap.altitude) lines.push(`Altitude: ${Math.round(ap.altitude / 1000)} km`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Cidades (novas)
+                const cityPositions = cityScreenPosRef2.current;
+                for (let i = 0; i < cityPositions.length; i++) {
+                  const cp = cityPositions[i];
+                  if (!cp) continue;
+                  const dx = evt.x - cp.x, dy = evt.y - cp.y;
+                  if (dx * dx + dy * dy < 20 * 20) {
+                    over = true;
+                    const key = `city-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🌆 Cidade"];
+                      if (cp.name) lines.push(`${cp.name}`);
+                      if (cp.population) lines.push(`População: ${(cp.population / 1000000).toFixed(1)}M`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Qualidade do Ar
+                const aqiPositions = airQualityScreenPosRef.current;
+                for (let i = 0; i < aqiPositions.length; i++) {
+                  const aqip = aqiPositions[i];
+                  if (!aqip) continue;
+                  const dx = evt.x - aqip.x, dy = evt.y - aqip.y;
+                  if (dx * dx + dy * dy < 14 * 14) {
+                    over = true;
+                    const key = `aqi-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🌫️ Qualidade do Ar"];
+                      if (aqip.name) lines.push(`${aqip.name}`);
+                      if (aqip.aqi) lines.push(`AQI: ${aqip.aqi}`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Incêndios
+                const wildfirePositions = wildfireScreenPosRef.current;
+                for (let i = 0; i < wildfirePositions.length; i++) {
+                  const wp = wildfirePositions[i];
+                  if (!wp) continue;
+                  const dx = evt.x - wp.x, dy = evt.y - wp.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `wildfire-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["🔥 Incêndio"];
+                      if (wp.name) lines.push(`${wp.name}`);
+                      if (wp.confidence) lines.push(`Confiança: ${wp.confidence}%`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Raios
+                const lightningPositions = lightningScreenPosRef.current;
+                for (let i = 0; i < lightningPositions.length; i++) {
+                  const lp = lightningPositions[i];
+                  if (!lp) continue;
+                  const dx = evt.x - lp.x, dy = evt.y - lp.y;
+                  if (dx * dx + dy * dy < 12 * 12) {
+                    over = true;
+                    const key = `lightning-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["⚡ Descarga Elétrica"];
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!over) {
+                // Tech Hubs
+                const techHubPositions = techHubScreenPosRef.current;
+                for (let i = 0; i < techHubPositions.length; i++) {
+                  const tp = techHubPositions[i];
+                  if (!tp) continue;
+                  const dx = evt.x - tp.x, dy = evt.y - tp.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
+                    over = true;
+                    const key = `techub-${i}`;
+                    if (hoveredNameRef.current !== key) {
+                      hoveredNameRef.current = key;
+                      const lines: string[] = ["💻 Tech Hub"];
+                      if (tp.name) lines.push(`${tp.name}`);
+                      if (tp.sector) lines.push(`Setor: ${tp.sector}`);
+                      setHoverInfo({ x: evt.x, y: evt.y, lines });
+                      setHoverCity(null);
+                    }
+                    isHoveringRef.current = true;
+                    break;
+                  }
+                }
+              }
+
               if (!over && isHoveringRef.current) {
                 isHoveringRef.current = false;
                 hoveredNameRef.current = null;
