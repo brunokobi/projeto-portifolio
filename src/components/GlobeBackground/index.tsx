@@ -573,10 +573,72 @@ const GlobeBackground = () => {
               }, 3000);
             });
 
+            // Clique → arco de voo para Vitória-ES
+            view.on("click", (evt: { x: number; y: number }) => {
+              const RADIUS = 18;
+              const positions = cityScreenPosRef.current;
+              for (let i = 0; i < positions.length; i++) {
+                const cp = positions[i];
+                if (!cp) continue;
+                const dx = evt.x - cp.x, dy = evt.y - cp.y;
+                if (Math.sqrt(dx * dx + dy * dy) < RADIUS) {
+                  const city = CITIES[i];
+                  if (city.name === HOME.name) return;
+                  const N = 80;
+                  const arcPts = Array.from({ length: N + 1 }, (_, j) => {
+                    const t = j / N;
+                    const mid = slerpPoint(city.lat, city.lon, HOME.lat, HOME.lon, t);
+                    const alt = Math.sin(t * Math.PI) * 1200000;
+                    return new Point({ longitude: mid.lon, latitude: mid.lat, z: alt });
+                  });
+                  activeArcRef.current = {
+                    points: arcPts,
+                    fromName: city.name,
+                    fromLat: city.lat,
+                    fromLon: city.lon,
+                    progress: 0,
+                    phase: "drawing",
+                    startTime: performance.now(),
+                    fadeStart: 0,
+                    opacity: 1,
+                  };
+                  return;
+                }
+              }
+            });
 
             // Cursor pointer e hover modal/legenda ao passar sobre um pin
             view.on("pointer-move", (evt: { x: number; y: number }) => {
+              const positions = cityScreenPosRef.current;
               let over = false;
+              for (let i = 0; i < positions.length; i++) {
+                const cp = positions[i];
+                if (!cp) continue;
+                const dx = evt.x - cp.x, dy = evt.y - cp.y;
+                if (dx * dx + dy * dy < 18 * 18) {
+                  over = true;
+                  const city = CITIES[i];
+                  if (hoveredNameRef.current !== city.name) {
+                    hoveredNameRef.current = city.name;
+                    // Buscar clima se não tiver em cache
+                    if (!city.temp || !city.weather_code) {
+                      fetchCityWeather(city.lat, city.lon).then((weather) => {
+                        if (weather && mountedRef.current) {
+                          city.temp = weather.temp;
+                          city.weather_code = weather.code;
+                          city.timezone = weather.timezone;
+                          setHoverCity({ city, x: evt.x, y: evt.y });
+                        }
+                      });
+                    } else {
+                      setHoverCity({ city, x: evt.x, y: evt.y });
+                    }
+                    setHoverInfo(null);
+                  }
+                  isHoveringRef.current = true;
+                  break;
+                }
+              }
 
               if (!over) {
                 // Terremotos
@@ -1106,7 +1168,47 @@ const GlobeBackground = () => {
                     windCtx.restore();
                   }
 
-                  // Renderização de CITIES removida - usar apenas TOP_CITIES (cityScreenPosRef2)
+                  cityPoints.forEach((pt, i) => {
+                    cityScreenPosRef.current[i] = null;
+                    try {
+                      if (!isFacing(cam.latitude, cam.longitude, CITIES[i].lat, CITIES[i].lon)) return;
+                      const sp = view.toScreen(pt);
+                      if (!sp) return;
+                      cityScreenPosRef.current[i] = { x: sp.x, y: sp.y };
+
+                      const pulse = (Math.sin(frame * 0.04 + i * 2.1) + 1) / 2;
+
+                      // Anel externo pulsante
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 6 + pulse * 10, 0, Math.PI * 2);
+                      ctx.strokeStyle = `rgba(0,255,65,${0.5 - pulse * 0.38})`;
+                      ctx.lineWidth = 1.5;
+                      ctx.stroke();
+
+                      // Anel interno fixo
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                      ctx.strokeStyle = "rgba(0,255,65,0.7)";
+                      ctx.lineWidth = 1;
+                      ctx.stroke();
+
+                      // Ponto central com glow
+                      ctx.beginPath();
+                      ctx.arc(sp.x, sp.y, 2.5, 0, Math.PI * 2);
+                      ctx.fillStyle = "#00ff41";
+                      ctx.shadowBlur = 7;
+                      ctx.shadowColor = "#00ff41";
+                      ctx.fill();
+                      ctx.shadowBlur = 0;
+
+                      // Label
+                      ctx.font = "11px monospace";
+                      ctx.fillStyle = "rgba(0,255,65,0.85)";
+                      ctx.fillText(CITIES[i].name, sp.x + 9, sp.y + 4);
+                    } catch {
+                      // ponto fora do campo de visão
+                    }
+                  });
 
                   // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
                   // pulsante colorido/dimensionado pela magnitude.
