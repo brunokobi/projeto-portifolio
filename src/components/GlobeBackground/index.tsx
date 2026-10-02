@@ -93,13 +93,13 @@ const GlobeBackground = () => {
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
-  const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
-  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0");
-  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0");
+  const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0" || true);
+  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0" || true);
+  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0" || true);
   const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
   const lightningEnabledRef = useRef(localStorage.getItem("globeLightning") !== "0");
-  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0");
+  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0" || true);
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
