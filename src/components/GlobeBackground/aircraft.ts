@@ -84,66 +84,10 @@ async function fetchOpenSkyAircraft(): Promise<Aircraft[]> {
 export async function loadAircraft(): Promise<Aircraft[]> {
   try {
     const aircraft = await fetchOpenSkyAircraft();
-    if (aircraft.length > 0) {
-      return aircraft.slice(0, 100); // Limita a 100 aviões pra não sobrecarregar
-    }
+    return aircraft.slice(0, 100); // Limita a 100 aviões pra não sobrecarregar
   } catch {
-    // continua com dados de exemplo abaixo
+    return [];
   }
-
-  // Dados de exemplo quando API falha (CORS, offline, etc)
-  return [
-    {
-      id: "aa-100",
-      callsign: "AA100",
-      lat: 40.7128,
-      lon: -74.0060,
-      altitude: 10000,
-      velocity: 900,
-      heading: 90,
-      aircraft_type: "Boeing 747",
-    },
-    {
-      id: "ua-500",
-      callsign: "UA500",
-      lat: 35.0,
-      lon: -120.0,
-      altitude: 8000,
-      velocity: 850,
-      heading: 180,
-      aircraft_type: "Airbus A320",
-    },
-    {
-      id: "dl-200",
-      callsign: "DL200",
-      lat: 25.0,
-      lon: -80.0,
-      altitude: 9500,
-      velocity: 880,
-      heading: 270,
-      aircraft_type: "Boeing 737",
-    },
-    {
-      id: "ba-300",
-      callsign: "BA300",
-      lat: 51.5074,
-      lon: -0.1278,
-      altitude: 11000,
-      velocity: 920,
-      heading: 45,
-      aircraft_type: "Boeing 777",
-    },
-    {
-      id: "af-400",
-      callsign: "AF400",
-      lat: 48.8566,
-      lon: 2.3522,
-      altitude: 10500,
-      velocity: 900,
-      heading: 135,
-      aircraft_type: "Airbus A380",
-    },
-  ];
 }
 
 /** Cor por tipo/altitude */
