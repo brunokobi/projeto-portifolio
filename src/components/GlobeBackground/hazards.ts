@@ -26,16 +26,13 @@ export interface Lightning {
   timestamp: number;
 }
 
-// Simulação de qualidade do ar em cidades principais
+// Simulação de qualidade do ar em cidades que NÃO estão em TOP_CITIES
+// (evita duplicatas — AQI aparece integrado no hover das cidades principais)
 export const SAMPLE_AIR_QUALITY: AirQuality[] = [
-  { id: "delhi-aqi", name: "Delhi", lat: 28.7041, lon: 77.1025, aqi: 285, pm25: 250 },
-  { id: "beijing-aqi", name: "Beijing", lat: 39.9042, lon: 116.4074, aqi: 156, pm25: 120 },
   { id: "lahore-aqi", name: "Lahore", lat: 31.5497, lon: 74.3436, aqi: 312, pm25: 280 },
-  { id: "cairo-aqi", name: "Cairo", lat: 30.0444, lon: 31.2357, aqi: 198, pm25: 180 },
-  { id: "shanghai-aqi", name: "Shanghai", lat: 31.2304, lon: 121.4737, aqi: 89, pm25: 60 },
-  { id: "london-aqi", name: "London", lat: 51.5074, lon: -0.1278, aqi: 45, pm25: 15 },
-  { id: "sf-aqi", name: "San Francisco", lat: 37.7749, lon: -122.4194, aqi: 52, pm25: 18 },
-  { id: "sydney-aqi", name: "Sydney", lat: -33.8688, lon: 151.2093, aqi: 38, pm25: 12 },
+  { id: "bangkok-aqi", name: "Bangkok", lat: 13.7563, lon: 100.5018, aqi: 128, pm25: 95 },
+  { id: "jakarta-aqi", name: "Jakarta", lat: -6.2088, lon: 106.8456, aqi: 156, pm25: 130 },
+  { id: "ho-chi-minh-aqi", name: "Ho Chi Minh City", lat: 10.8231, lon: 106.6297, aqi: 102, pm25: 78 },
 ];
 
 // Simulação de incêndios (baseado em padrões históricos)
