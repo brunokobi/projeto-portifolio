@@ -111,13 +111,6 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeIssToggle", { detail: { issEnabled: next } }));
   }, [issEnabled]);
 
-  const [volcanoesEnabled, setVolcanoesEnabled] = useState(() => localStorage.getItem("globeVolcanoes") !== "0");
-  const toggleVolcanoes = useCallback(() => {
-    const next = !volcanoesEnabled;
-    setVolcanoesEnabled(next);
-    localStorage.setItem("globeVolcanoes", next ? "1" : "0");
-    window.dispatchEvent(new CustomEvent("globoVolcanoesToggle", { detail: { volcanoesEnabled: next } }));
-  }, [volcanoesEnabled]);
 
   const [hurricanesEnabled, setHurricanesEnabled] = useState(() => localStorage.getItem("globeHurricanes") !== "0");
   const toggleHurricanes = useCallback(() => {
@@ -318,22 +311,6 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {issEnabled ? "🛰 ISS ON" : "🛰 ISS OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleVolcanoes}
-          title={volcanoesEnabled ? "Desativar vulcões" : "Ativar vulcões"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {volcanoesEnabled ? "🌋 VULCÕES ON" : "🌋 VULCÕES OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />

@@ -161,7 +161,6 @@ const GlobeBackground = () => {
   const oceanEnabledRef = useRef(localStorage.getItem("globeOcean") !== "0");
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
-  const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
   const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0");
@@ -278,15 +277,6 @@ const GlobeBackground = () => {
     };
     window.addEventListener("globeRotationToggle", handler);
     return () => window.removeEventListener("globeRotationToggle", handler);
-  }, []);
-
-  // Escuta evento globoVolcanoesToggle disparado pelo WeatherBar
-  useEffect(() => {
-    const handler = (e: Event) => {
-      volcanoesEnabledRef.current = (e as CustomEvent).detail.volcanoesEnabled as boolean;
-    };
-    window.addEventListener("globoVolcanoesToggle", handler);
-    return () => window.removeEventListener("globoVolcanoesToggle", handler);
   }, []);
 
   // Escuta eventos de toggle disparados pelo WeatherBar
