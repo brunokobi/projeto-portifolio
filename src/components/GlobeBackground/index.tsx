@@ -712,7 +712,6 @@ const GlobeBackground = () => {
                       if (vp.name) lines.push(`${vp.name}`);
                       if (vp.country) lines.push(`${vp.country}`);
                       if (vp.type) lines.push(`Tipo: ${vp.type}`);
-                      if (vp.elevation) lines.push(`Elevação: ${vp.elevation} m`);
                       const nearbyAqi = findNearbyAQI(vp.x, vp.y);
                       if (nearbyAqi) {
                         lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
