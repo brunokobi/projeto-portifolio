@@ -550,12 +550,12 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 |---|---|---|---|---|
 | **Satélites** | 🛰️ | Simulado | Estático | Altitude, velocidade, NORAD ID |
 | **Aviões** | ✈️ | OpenSky Network | 8s | Flight ID, altitude, velocidade |
-| **Cidades** | 🏙️ | TOP_CITIES (43 cidades) | Estático | Hora local, temp, clima, AQI, população, país |
-| **Qualidade do Ar** | 💨 | SAMPLE_AIR_QUALITY (4 cidades) | Estático | AQI, PM2.5 (integrado nos city cards quando sobrepõe) |
+| **Cidades** | 🏙️ | `CITIES` (42 cidades, `geo.ts`) + Open-Meteo | Estático (clima com cache 2h) | Hora local, temp, clima, AQI com classificação, país |
+| **Qualidade do Ar** | 💨 | AQI estático por cidade (`CITIES`) | Estático | Sem pontos próprios no mapa — AQI aparece apenas no card de hover da cidade |
 | **Incêndios** | 🔥 | NASA FIRMS (simulado) | Estático | Nome, confidence, data |
 | **Raios** | ⚡ | Simulado | Estático | Latitude, longitude, intensidade |
 | **Vulcões** | 🌋 | GVP (425 vulcões) | Estático | Nome, país, status, última erupção |
-| **Furacões** | 🌀 | OpenWeatherMap OneCall | Único load | Categoria Saffir-Simpson, vento, pressão |
+| **Furacões** | 🌀 | NOAA NHC (5 feeds RSS via proxy `/api/noaa/*`) | Único load | Categoria Saffir-Simpson, vento, pressão |
 
 ### Implementação técnica
 
@@ -567,7 +567,7 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 
 **Interação:**
 - Hover detection com `mousemove` — detecta proximidade de pontos em pixels (10–15px de raio)
-- Overlap detection — se AQI está perto de uma cidade, info do AQI aparece integrada no card da cidade
+- Pontos de cidade (`CITIES`) são anéis verdes pulsantes; o AQI não é mais desenhado como ponto separado no mapa, só no card de hover da cidade
 - Clique em pins abre tooltip customizado com dados contextuais
 
 **Performance:**
@@ -588,11 +588,11 @@ Botões toggle individuais para cada feature na barra de clima (superior):
 
 ### Cidades com Clima & Hora Local
 
-Todas as **43 cidades** do globo agora exibem:
-- **Hora local** 🕐 — convertida via `Intl.DateTimeFormat` para o timezone da cidade (Open-Meteo fornece timezone)
+Todas as **42 cidades** do globo (`CITIES` em `geo.ts`, marcadas por anéis verdes pulsantes) exibem no card de hover:
+- **Hora local** 🕐 — convertida via `Intl.DateTimeFormat` para o timezone da cidade (Open-Meteo, `timezone=auto`)
 - **Temperatura** — arredondada em °C
-- **Condição do tempo** — emoji WMO (☀️, 🌧️, ⛈️, etc.) + descrição
-- **AQI** — exibido como tag colorida quando disponível
+- **Condição do tempo** — emoji WMO (☀️, 🌧️, ⛈️, etc.)
+- **AQI** — tag com valor e classificação qualitativa: Bom (≤50), Moderado (≤100), Insalubre (Sensíveis) (≤150), Insalubre (≤200), Muito Insalubre (≤300), Perigoso (>300)
 
 Exemplo de card ao passar o mouse em Londres:
 ```
@@ -602,7 +602,7 @@ Principal ecossistema de fintech...
 🕐 14:30
 ☀️ 24°C
 
-Fintech  IA  DeFi  💨 AQI: 45 (verde)
+Fintech  IA  DeFi  💨 AQI: 45 (Bom)
 ```
 
 ### APIs utilizadas
@@ -612,7 +612,7 @@ Fintech  IA  DeFi  💨 AQI: 45 (verde)
 | Open-Meteo | `api.open-meteo.com/v1/forecast` | Ilimitado | Clima + timezone (2h cache) |
 | OpenSky Network | `opensky-network.org/api/states/all` | 400 req/dia | Aviões em tempo real (8s polling) |
 | NASA FIRMS | Via MapTiler | Mensal | Incêndios (mock temporário) |
-| OpenWeatherMap | OneCall 2.5 | 1.000 req/dia | Furacões (dados reais via API) |
+| NOAA NHC | `www.nhc.noaa.gov/index-{at,ep,cp,io,sh}.xml` (via `/api/noaa/*`) | Sem chave | Furacões, tufões e ciclones (RSS) |
 | GVP | Volcano data (local) | — | 425 vulcões (sem API, dados estáticos) |
 
 ---
@@ -632,50 +632,48 @@ Módulo de mapa dedicado (`/map`) com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 ## 🌀 Feature: Furacões e Tempestades em Tempo Real
 
-> **Complexidade:** ⭐⭐⭐⭐ — OpenWeatherMap OneCall API + rendering canvas + toggle ON/OFF + localStorage persistence
+> **Complexidade:** ⭐⭐⭐⭐ — 5 feeds RSS NOAA NHC + proxy anti-CORS + parsing XML + rendering canvas + toggle ON/OFF + localStorage persistence
 
-Sistema de rastreamento de furacões e tempestades severas integrado ao globo 3D, mostrando eventos meteorológicos extremos em tempo real.
+Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) integrado ao globo 3D, com dados oficiais do National Hurricane Center (NOAA), sem chave de API.
 
 ### Funcionamento
 
-- **Dados reais via OpenWeatherMap** — OneCall API 2.5 busca alertas meteorológicos em 4 pontos estratégicos (Atlântico Central, Caribe, Pacífico Central, Pacífico Leste)
-- **Carregamento único** — dados atualizam apenas ao entrar na página (sem polling contínuo)
-- **Renderização visual** — espirais coloridas no mapa 3D, raio e cor variam pela categoria Saffir-Simpson
+- **Dados reais via NOAA NHC** — 5 feeds RSS: Atlântico (`index-at`), Pacífico Leste (`index-ep`), Pacífico Central (`index-cp`), Oceano Índico (`index-io`) e Hemisfério Sul (`index-sh`)
+- **Proxy anti-CORS** — o browser chama `/api/noaa/<feed>.xml` (ex.: `/api/noaa/index-at.xml`); em `public/_redirects` essa rota é repassada para `https://www.nhc.noaa.gov/`
+- **Carregamento único** — dados carregam ao entrar na página (sem polling contínuo); cache em memória de 60 s
+- **Renderização visual** — espirais coloridas no mapa 3D, raio pela velocidade do vento e cor pela categoria Saffir-Simpson
 - **Hover interativo** — tooltip mostra nome, velocidade do vento (km/h), pressão (mb) e categoria
 - **Toggle ON/OFF** — botão `🌀 FURACÕES` na WeatherBar, com persistência em localStorage
+
+### Netlify Function `noaa.ts`
+
+`netlify/functions/noaa.ts` é um proxy equivalente em serverless para os mesmos 5 feeds:
+
+- Aceita o nome do feed no último segmento do path (`index-at.xml`, `index-ep.xml`, `index-cp.xml`, `index-io.xml`, `index-sh.xml`); outro valor retorna 404
+- Faz `fetch` no feed NOAA com `User-Agent` de browser e timeout de 8 s
+- Responde XML com `Access-Control-Allow-Origin: *` e `Cache-Control: public, max-age=300` (5 min); responde também ao preflight `OPTIONS`
+- Erros: repassa o status do NOAA ou retorna 500 (`Failed to fetch NOAA data`)
 
 ### Categorias de cor (Saffir-Simpson)
 
 | Categoria | Cor | Velocidade |
 |---|---|---|
-| Tropical Storm | Ciano | < 119 km/h |
+| Tropical Storm | Amarelo | < 119 km/h |
 | Cat 1 | Ciano | 119–153 km/h |
-| Cat 2 | Laranja | 154–177 km/h |
-| Cat 3 | Orange | 178–208 km/h |
+| Cat 2 | Amarelo-ouro | 154–177 km/h |
+| Cat 3 | Laranja | 178–208 km/h |
 | Cat 4 | Vermelho | 209–251 km/h |
-| Cat 5 | Vermelho escuro | ≥ 252 km/h |
+| Cat 5 | Vermelho escuro | ≥ 253 km/h |
 
 ### Integração com o globo
 
 Os eventos aparecem como marcadores animados sobrepostos ao mapa 3D:
 - Latitude/longitude posicionadas em tempo real
-- Símbolos de espiral pulsante com label do nome
+- Símbolos de espiral com label do nome
 - Visíveis em qualquer zoom do globo
 - Desaparecem quando o toggle é desligado
 
-### Setup (para dados reais)
-
-Precisa de uma chave válida do OpenWeatherMap (gratuita):
-
-1. Crie conta em https://openweathermap.org/api/one-call-api
-2. Copie sua **API key** (válida em até 2 horas após geração)
-3. Adicione ao `.env.local` (desenvolvimento) ou variáveis de ambiente da Netlify (produção):
-
-```env
-VITE_OPENWEATHER_KEY=sua_chave_aqui
-```
-
-Enquanto aguarda a chave ficar ativa, o sistema usa **dados mock** (Milton e Helene) para demonstração.
+Não há variável de ambiente nem chave de API para essa feature (a antiga `VITE_OPENWEATHER_KEY` e os dados mock Milton/Helene não existem mais no código).
 
 ---
 
@@ -988,7 +986,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D + 8 overlays        | 43 cidades com clima & hora local + 8 features geoespaciais (aviões, satélites, AQI, incêndios, raios, vulcões, furacões) + toggle UI + 2h cache weather |
+| 🌐 Globo 3D + 8 overlays        | 42 cidades com clima & hora local + 8 features geoespaciais (aviões, satélites, AQI, incêndios, raios, vulcões, furacões) + toggle UI + 2h cache weather |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
