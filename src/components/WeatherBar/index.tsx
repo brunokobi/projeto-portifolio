@@ -312,25 +312,6 @@ const WeatherBar = () => {
           color={GREEN}
           letterSpacing="0.06em"
           cursor="pointer"
-          onClick={toggleQuakes}
-          title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          🌋{" "}
-          <span style={{ display: "none" }}>
-            {quakesEnabled ? "TERREMOTOS ON" : "TERREMOTOS OFF"}
-          </span>
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
           onClick={toggleIss}
           title={issEnabled ? "Desativar ISS" : "Ativar ISS"}
           style={{ background: "none", border: "none", padding: 0 }}
