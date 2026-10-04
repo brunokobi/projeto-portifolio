@@ -142,7 +142,7 @@ const GlobeBackground = () => {
     null
   );
   const volcanoScreenPosRef = useRef<
-    Array<{ x: number; y: number; name: string; country: string; type: string; elevation: number } | null>
+    Array<{ x: number; y: number; name: string; country: string; type: string } | null>
   >([]);
   const hurricaneScreenPosRef = useRef<
     Array<{ x: number; y: number; name: string; windSpeed: number; pressure: number; category: number } | null>
@@ -1341,7 +1341,7 @@ const GlobeBackground = () => {
                           new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
                         );
                         if (!sp) continue;
-                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevation: v.elevation };
+                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type };
 
                         const color = volcanoColor(v.type);
                         const radius = volcanoRadius(v.elevation);
