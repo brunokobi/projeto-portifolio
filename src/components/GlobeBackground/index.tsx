@@ -1415,36 +1415,36 @@ const GlobeBackground = () => {
                     satelliteScreenPosRef.current.fill(null);
                   }
 
-                  // Aviões
-                  if (aircraftScreenPosRef.current.length !== aircraft.length) {
-                    aircraftScreenPosRef.current = new Array(aircraft.length).fill(null);
-                  }
-                  if (aircraftEnabledRef.current) {
-                    for (let i = 0; i < aircraft.length; i++) {
-                      aircraftScreenPosRef.current[i] = null;
-                      const a = aircraft[i];
-                      if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: a.lon, latitude: a.lat, z: 60000 })
-                        );
-                        if (!sp) continue;
-                        aircraftScreenPosRef.current[i] = { x: sp.x, y: sp.y, callsign: a.callsign, altitude: a.altitude };
-                        ctx.font = "bold 12px Arial";
-                        ctx.fillText("✈️", sp.x - 6, sp.y + 6);
-                        ctx.font = "bold 9px monospace";
-                        ctx.fillStyle = aircraftColor(a.altitude);
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = aircraftColor(a.altitude);
-                        ctx.fillText(a.callsign, sp.x + 12, sp.y + 4);
-                        ctx.shadowBlur = 0;
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    aircraftScreenPosRef.current.fill(null);
-                  }
+                  // Aviões: desabilitado
+                  // if (aircraftScreenPosRef.current.length !== aircraft.length) {
+                  //   aircraftScreenPosRef.current = new Array(aircraft.length).fill(null);
+                  // }
+                  // if (aircraftEnabledRef.current) {
+                  //   for (let i = 0; i < aircraft.length; i++) {
+                  //     aircraftScreenPosRef.current[i] = null;
+                  //     const a = aircraft[i];
+                  //     if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
+                  //     try {
+                  //       const sp = view.toScreen(
+                  //         new Point({ longitude: a.lon, latitude: a.lat, z: 60000 })
+                  //       );
+                  //       if (!sp) continue;
+                  //       aircraftScreenPosRef.current[i] = { x: sp.x, y: sp.y, callsign: a.callsign, altitude: a.altitude };
+                  //       ctx.font = "bold 12px Arial";
+                  //       ctx.fillText("✈️", sp.x - 6, sp.y + 6);
+                  //       ctx.font = "bold 9px monospace";
+                  //       ctx.fillStyle = aircraftColor(a.altitude);
+                  //       ctx.shadowBlur = 4;
+                  //       ctx.shadowColor = aircraftColor(a.altitude);
+                  //       ctx.fillText(a.callsign, sp.x + 12, sp.y + 4);
+                  //       ctx.shadowBlur = 0;
+                  //     } catch {
+                  //       // ponto fora do campo de visão
+                  //     }
+                  //   }
+                  // } else {
+                  //   aircraftScreenPosRef.current.fill(null);
+                  // }
 
                   // Renderização de TOP_CITIES removida - usar apenas CITIES com anéis pulsantes
 
