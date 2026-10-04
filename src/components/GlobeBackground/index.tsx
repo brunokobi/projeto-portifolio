@@ -472,6 +472,8 @@ const GlobeBackground = () => {
               baseLayers: [dayLayer, nightLayer],
             });
 
+            // DEBUG: Comentado para testar se erro vem do Map/SceneView
+            /*
             const map = new Map({
               basemap,
               ground: {
@@ -505,6 +507,8 @@ const GlobeBackground = () => {
               },
               ui: { components: [] },
             });
+            */
+            const view = null;
 
             // Override CSS do ESRI que pode opacificar o container
             const esriOverride = document.createElement("style");
