@@ -135,7 +135,7 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
-  const quakeScreenPosRef = useRef<Array<{ x: number; y: number; mag: number; place: string; time: number } | null>>(
+  const quakeScreenPosRef = useRef<Array<{ x: number; y: number; place: string; time: number } | null>>(
     []
   );
   const issScreenPosRef = useRef<{ x: number; y: number; lat: number; lon: number; altitude?: number; velocity?: number } | null>(
@@ -640,8 +640,6 @@ const GlobeBackground = () => {
                 }
               }
 
-              // TEMP: Terremotos desabilitados — problema de minificação
-              /*
               if (!over) {
                 // Terremotos
                 const quakePositions = quakeScreenPosRef.current;
@@ -677,7 +675,6 @@ const GlobeBackground = () => {
                   }
                 }
               }
-              */
 
               if (!over) {
                 // ISS
@@ -1195,7 +1192,7 @@ const GlobeBackground = () => {
                           new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
                         );
                         if (!sp) continue;
-                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, mag: q.mag, place: q.place, time: q.time };
+                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time };
                         const color = quakeColor(q.mag);
                         const radius = quakeRadius(q.mag);
                         const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
