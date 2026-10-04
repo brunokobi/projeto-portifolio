@@ -371,7 +371,7 @@ const GlobeBackground = () => {
         .then(
           ([
             esriConfig,
-            Map,
+            EsriMap,
             SceneView,
             TileLayer,
             BaseTileLayer,
@@ -474,7 +474,7 @@ const GlobeBackground = () => {
 
             // DEBUG: Comentado para testar se erro vem do Map/SceneView
             /*
-            const map = new Map({
+            const map = new EsriMap({
               basemap,
               ground: {
                 layers: [
