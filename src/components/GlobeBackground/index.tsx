@@ -1180,6 +1180,9 @@ const GlobeBackground = () => {
                     }
                   });
 
+                  // DEBUG: Terremotos desabilitados - culprit encontrado!
+                  quakeScreenPosRef.current.fill(null);
+                  /*
                   // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
                   // pulsante colorido/dimensionado pela magnitude.
                   if (quakeScreenPosRef.current.length !== quakes.length) {
@@ -1226,6 +1229,7 @@ const GlobeBackground = () => {
                   } else {
                     quakeScreenPosRef.current.fill(null);
                   }
+                  */
 
                   // Posição real da ISS — ponto azul pulsante com anel
                   issScreenPosRef.current = null;
