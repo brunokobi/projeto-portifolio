@@ -998,14 +998,12 @@ const GlobeBackground = () => {
                   oceanPrevScreen = new Array(OCEAN_PARTICLE_COUNT).fill(null);
                 });
 
-                // Terremotos reais (USGS) — carrega uma vez; a lista de
-                // sismos de M4.5+ nas últimas 24h não muda tão rápido que
-                // precise de polling.
+                // Terremotos: desabilitado
                 let quakes: Quake[] = [];
-                loadQuakes().then((data) => {
-                  if (!mountedRef.current) return;
-                  quakes = data;
-                });
+                // loadQuakes().then((data) => {
+                //   if (!mountedRef.current) return;
+                //   quakes = data;
+                // });
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
@@ -1173,53 +1171,52 @@ const GlobeBackground = () => {
                     }
                   });
 
-                  // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
-                  // pulsante colorido/dimensionado pela magnitude.
-                  if (quakeScreenPosRef.current.length !== quakes.length) {
-                    quakeScreenPosRef.current = new Array(quakes.length).fill(null);
-                  }
-                  if (quakesEnabledRef.current) {
-                    for (let i = 0; i < quakes.length; i++) {
-                      quakeScreenPosRef.current[i] = null;
-                      const q = quakes[i];
-                      if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
-                        );
-                        if (!sp) continue;
-                        const magnitudeText = q.mag.toFixed(1);
-                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
-                        const color = quakeColor(q.mag);
-                        const radius = quakeRadius(q.mag);
-                        const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
-
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
-                        ctx.strokeStyle = color;
-                        ctx.globalAlpha = 0.55 - pulse * 0.35;
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                        ctx.globalAlpha = 1;
-
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 8;
-                        ctx.shadowColor = color;
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = color;
-                        ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    quakeScreenPosRef.current.fill(null);
-                  }
+                  // Terremotos: desabilitado
+                  // if (quakeScreenPosRef.current.length !== quakes.length) {
+                  //   quakeScreenPosRef.current = new Array(quakes.length).fill(null);
+                  // }
+                  // if (quakesEnabledRef.current) {
+                  //   for (let i = 0; i < quakes.length; i++) {
+                  //     quakeScreenPosRef.current[i] = null;
+                  //     const q = quakes[i];
+                  //     if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
+                  //     try {
+                  //       const sp = view.toScreen(
+                  //         new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
+                  //       );
+                  //       if (!sp) continue;
+                  //       const magnitudeText = q.mag.toFixed(1);
+                  //       quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
+                  //       const color = quakeColor(q.mag);
+                  //       const radius = quakeRadius(q.mag);
+                  //       const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
+                  //
+                  //       ctx.beginPath();
+                  //       ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
+                  //       ctx.strokeStyle = color;
+                  //       ctx.globalAlpha = 0.55 - pulse * 0.35;
+                  //       ctx.lineWidth = 2;
+                  //       ctx.stroke();
+                  //       ctx.globalAlpha = 1;
+                  //
+                  //       ctx.beginPath();
+                  //       ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                  //       ctx.fillStyle = color;
+                  //       ctx.shadowBlur = 8;
+                  //       ctx.shadowColor = color;
+                  //       ctx.fill();
+                  //       ctx.shadowBlur = 0;
+                  //
+                  //       ctx.font = "bold 10px monospace";
+                  //       ctx.fillStyle = color;
+                  //       ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
+                  //     } catch {
+                  //       // ponto fora do campo de visão
+                  //     }
+                  //   }
+                  // } else {
+                  //   quakeScreenPosRef.current.fill(null);
+                  // }
 
                   // Posição real da ISS — ponto azul pulsante com anel
                   issScreenPosRef.current = null;
