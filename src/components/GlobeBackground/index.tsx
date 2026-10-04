@@ -334,7 +334,7 @@ const GlobeBackground = () => {
     // Carrega dados
     Promise.all([
       loadSatellites().then((d) => { satellites = d; }),
-      loadAircraft().then((d) => { aircraft = d; }),
+      // loadAircraft().then((d) => { aircraft = d; }), // Aviões: desabilitado (OpenSky CORS)
       loadAirQuality().then((d) => { airQuality = d; }),
       loadWildfires().then((d) => { wildfires = d; }),
       loadLightning().then((d) => { lightning = d; }),
