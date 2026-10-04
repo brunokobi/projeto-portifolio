@@ -305,20 +305,12 @@ const WeatherBar = () => {
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleQuakes}
-          title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {quakesEnabled ? "🌋 SISMOS ON" : "🌋 SISMOS OFF"}
-        </Text>
+        <HStack spacing="2px" as="button" onClick={toggleQuakes} title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} _hover={{ opacity: 0.7 }}>
+          <Text fontSize="xs" color={GREEN}>🌋</Text>
+          <Text fontSize="xs" fontFamily="monospace" color={GREEN} letterSpacing="0.06em" display={{ base: "none", md: "inline" }}>
+            {quakesEnabled ? "TERREMOTOS ON" : "TERREMOTOS OFF"}
+          </Text>
+        </HStack>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
         <Text
