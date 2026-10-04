@@ -94,7 +94,7 @@ Veja `DESIGN_SYSTEM.md` pra tokens completos.
 - ⛔ Terremotos (USGS) — desabilitados: `loadQuakes()` comentado e ícone removido da WeatherBar
 - ✅ ISS (wheretheiss, 8s polling)
 - ✅ Correntes marítimas (Open-Meteo, grid global)
-- ⚠️ Vulcões (425) — pins desenhados, hover/tooltip desabilitado (bloco comentado)
+- ⛔ Vulcões (425) — desabilitados: carregamento e rendering comentados
 - ✅ Vento (partículas com advection)
 - ✅ Furacões/ciclones (NOAA NHC, 5 feeds via proxy `/api/noaa/*`)
 - ✅ Cidades (`CITIES`, anéis pulsantes) com hora local, clima e AQI classificado no card de hover
