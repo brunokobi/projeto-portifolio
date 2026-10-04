@@ -1006,10 +1006,13 @@ const GlobeBackground = () => {
                 // sismos de M4.5+ nas últimas 24h não muda tão rápido que
                 // precise de polling.
                 let quakes: Quake[] = [];
+                // DEBUG: Terremotos desabilitados — problema de minificação não resolvido
+                /*
                 loadQuakes().then((data) => {
                   if (!mountedRef.current) return;
                   quakes = data;
                 });
+                */
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
