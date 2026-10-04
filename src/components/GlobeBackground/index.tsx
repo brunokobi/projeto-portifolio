@@ -1028,12 +1028,12 @@ const GlobeBackground = () => {
                 pollIss();
                 issIntervalId = setInterval(pollIss, ISS_POLL_INTERVAL_MS);
 
-                // Vulcões reais (425 vulcões, lista estática)
+                // Vulcões: desabilitado
                 let volcanoes: Volcano[] = [];
-                loadVolcanoes().then((data) => {
-                  if (!mountedRef.current) return;
-                  volcanoes = data;
-                });
+                // loadVolcanoes().then((data) => {
+                //   if (!mountedRef.current) return;
+                //   volcanoes = data;
+                // });
 
                 // Furacões e tempestades tropicais (carrega ao entrar na página)
                 let hurricanes: Hurricane[] = [];
@@ -1332,49 +1332,49 @@ const GlobeBackground = () => {
                     }
                   }
 
-                  // Vulcões — pins triangulares coloridos pela elevação
-                  if (volcanoScreenPosRef.current.length !== volcanoes.length) {
-                    volcanoScreenPosRef.current = new Array(volcanoes.length).fill(null);
-                  }
-                  if (volcanoesEnabledRef.current) {
-                    for (let i = 0; i < volcanoes.length; i++) {
-                      volcanoScreenPosRef.current[i] = null;
-                      const v = volcanoes[i];
-                      if (!isFacing(cam.latitude, cam.longitude, v.lat, v.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
-                        );
-                        if (!sp) continue;
-                        const elevationText = v.elevation.toString();
-                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
-
-                        const color = volcanoColor(v.type);
-                        const radius = volcanoRadius(v.elevation);
-
-                        // Triângulo (pico vulcânico)
-                        ctx.beginPath();
-                        ctx.moveTo(sp.x, sp.y - radius);
-                        ctx.lineTo(sp.x + radius, sp.y + radius / 2);
-                        ctx.lineTo(sp.x - radius, sp.y + radius / 2);
-                        ctx.closePath();
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 6;
-                        ctx.shadowColor = color;
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-
-                        // Borda
-                        ctx.strokeStyle = `rgba(255,255,255,0.6)`;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    volcanoScreenPosRef.current.fill(null);
-                  }
+                  // Vulcões: desabilitado
+                  // if (volcanoScreenPosRef.current.length !== volcanoes.length) {
+                  //   volcanoScreenPosRef.current = new Array(volcanoes.length).fill(null);
+                  // }
+                  // if (volcanoesEnabledRef.current) {
+                  //   for (let i = 0; i < volcanoes.length; i++) {
+                  //     volcanoScreenPosRef.current[i] = null;
+                  //     const v = volcanoes[i];
+                  //     if (!isFacing(cam.latitude, cam.longitude, v.lat, v.lon)) continue;
+                  //     try {
+                  //       const sp = view.toScreen(
+                  //         new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
+                  //       );
+                  //       if (!sp) continue;
+                  //       const elevationText = v.elevation.toString();
+                  //       volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
+                  //
+                  //       const color = volcanoColor(v.type);
+                  //       const radius = volcanoRadius(v.elevation);
+                  //
+                  //       // Triângulo (pico vulcânico)
+                  //       ctx.beginPath();
+                  //       ctx.moveTo(sp.x, sp.y - radius);
+                  //       ctx.lineTo(sp.x + radius, sp.y + radius / 2);
+                  //       ctx.lineTo(sp.x - radius, sp.y + radius / 2);
+                  //       ctx.closePath();
+                  //       ctx.fillStyle = color;
+                  //       ctx.shadowBlur = 6;
+                  //       ctx.shadowColor = color;
+                  //       ctx.fill();
+                  //       ctx.shadowBlur = 0;
+                  //
+                  //       // Borda
+                  //       ctx.strokeStyle = `rgba(255,255,255,0.6)`;
+                  //       ctx.lineWidth = 1;
+                  //       ctx.stroke();
+                  //     } catch {
+                  //       // ponto fora do campo de visão
+                  //     }
+                  //   }
+                  // } else {
+                  //   volcanoScreenPosRef.current.fill(null);
+                  // }
 
                   // Furacões — ícones de espiral coloridos pela categoria
                   if (hurricaneScreenPosRef.current.length !== hurricanes.length) {
