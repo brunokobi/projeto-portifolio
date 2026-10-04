@@ -656,7 +656,7 @@ const GlobeBackground = () => {
                       const when = hoursAgo < 1 ? "há menos de 1h" : `há ${Math.round(hoursAgo)}h`;
                       const lines = [
                         "🌋 Terremoto",
-                        `M${qp.mag.toFixed(1)} (escala Richter) — ${qp.place}`,
+                        `Magnitude: ${qp.mag.toFixed(1)} — ${qp.place}`,
                         when,
                       ];
                       const nearbyAqi = findNearbyAQI(qp.x, qp.y);
