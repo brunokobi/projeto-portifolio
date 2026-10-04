@@ -640,6 +640,8 @@ const GlobeBackground = () => {
                 }
               }
 
+              // DEBUG: Terremotos comentados — bug de minificação persiste
+              /*
               if (!over) {
                 // Terremotos
                 const quakePositions = quakeScreenPosRef.current;
@@ -675,6 +677,7 @@ const GlobeBackground = () => {
                   }
                 }
               }
+              */
 
               if (!over) {
                 // ISS
@@ -696,6 +699,8 @@ const GlobeBackground = () => {
                 }
               }
 
+              // DEBUG: Vulcões comentados — bug de minificação persiste
+              /*
               if (!over) {
                 // Vulcões
                 const volcanoPositions = volcanoScreenPosRef.current;
@@ -725,6 +730,7 @@ const GlobeBackground = () => {
                   }
                 }
               }
+              */
 
               if (!over) {
                 // Furacões
