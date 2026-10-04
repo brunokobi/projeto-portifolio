@@ -121,7 +121,6 @@ const WeatherBar = () => {
   }, [hurricanesEnabled]);
 
   const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
-  const [citiesEnabled, setCitiesEnabled] = useState(() => localStorage.getItem("globeCities") !== "0");
   const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
   const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
 
@@ -349,23 +348,6 @@ const WeatherBar = () => {
         </Text>
 
         <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setCitiesEnabled(!citiesEnabled);
-            localStorage.setItem("globeCities", !citiesEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeCitiesToggle", { detail: { citiesEnabled: !citiesEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {citiesEnabled ? "🌆 ON" : "🌆 OFF"}
-        </Text>
-
-<Text
           as="button"
           fontSize="xs"
           fontFamily="monospace"

@@ -163,8 +163,6 @@ const GlobeBackground = () => {
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
-  const aircraftEnabledRef = useRef(localStorage.getItem("globeAircraft") !== "0");
-  const citiesEnabledRef = useRef(localStorage.getItem("globeCities") !== "0");
   const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
   const lightningEnabledRef = useRef(localStorage.getItem("globeLightning") !== "0");
@@ -287,12 +285,6 @@ const GlobeBackground = () => {
       },
       globeSatellitesToggle: (e: Event) => {
         satellitesEnabledRef.current = (e as CustomEvent).detail.satellitesEnabled as boolean;
-      },
-      globeAircraftToggle: (e: Event) => {
-        aircraftEnabledRef.current = (e as CustomEvent).detail.aircraftEnabled as boolean;
-      },
-      globeCitiesToggle: (e: Event) => {
-        citiesEnabledRef.current = (e as CustomEvent).detail.citiesEnabled as boolean;
       },
       globeAirQualityToggle: (e: Event) => {
         airQualityEnabledRef.current = (e as CustomEvent).detail.airQualityEnabled as boolean;
