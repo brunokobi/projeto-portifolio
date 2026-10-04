@@ -640,6 +640,8 @@ const GlobeBackground = () => {
                 }
               }
 
+              // DEBUG: Terremotos desabilitados no hover
+              /*
               if (!over) {
                 // Terremotos
                 const quakePositions = quakeScreenPosRef.current;
@@ -675,6 +677,7 @@ const GlobeBackground = () => {
                   }
                 }
               }
+              */
 
               if (!over) {
                 // ISS
