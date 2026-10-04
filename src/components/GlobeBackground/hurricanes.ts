@@ -10,6 +10,8 @@ const NOAA_RSS_FEEDS = [
   "/api/noaa/index-at.xml", // Atlântico (Furacões/Tropical Storms/Depressions)
   "/api/noaa/index-ep.xml", // Pacífico Leste (Furacões/Tropical Storms)
   "/api/noaa/index-cp.xml", // Pacífico Central (Tufões/Tropical Storms)
+  "/api/noaa/index-io.xml", // Oceano Índico (Ciclones/Tempestades)
+  "/api/noaa/index-sh.xml", // Hemisfério Sul (Ciclones/Tempestades)
 ];
 
 // Cache pra evitar múltiplas requisições simultâneas

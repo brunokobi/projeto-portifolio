@@ -342,8 +342,6 @@ const GlobeBackground = () => {
     let techHubs: TechHub[] = [];
 
     // Carrega dados
-    // Desabilitado temporariamente para debug do erro "Cannot access 'M'"
-    /*
     Promise.all([
       loadSatellites().then((d) => { satellites = d; }),
       loadAircraft().then((d) => { aircraft = d; }),
@@ -352,7 +350,6 @@ const GlobeBackground = () => {
       loadLightning().then((d) => { lightning = d; }),
       loadTechHubs().then((d) => { techHubs = d; }),
     ]).catch(() => {});
-    */
 
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
