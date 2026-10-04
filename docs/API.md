@@ -163,22 +163,6 @@ const volcanoes = await loadVolcanoes();
 
 ---
 
-## NOAA NHC (ciclones tropicais)
-
-**Feeds RSS:** `https://www.nhc.noaa.gov/index-{at,ep,cp,io,sh}.xml` (Atlântico, Pacífico Leste, Pacífico Central, Índico, Hemisfério Sul)  
-**Autenticação:** Nenhuma  
-**CORS:** ❌ Bloqueado — o browser usa o proxy `/api/noaa/<feed>.xml` (regra `/api/noaa/*` em `public/_redirects`)  
-**Netlify Function:** `netlify/functions/noaa.ts` — proxy equivalente (User-Agent de browser, timeout 8s, `Cache-Control: public, max-age=300`, 404 pra feed fora da lista)  
-**Formato:** XML com namespace `nhc:` (`nhc:Cyclone` → `nhc:center`, `nhc:name`, `nhc:wind` em mph, `nhc:pressure`)
-
-### Uso no Código
-```typescript
-import { loadHurricanes } from './hurricanes';
-const hurricanes = await loadHurricanes(); // cache em memória de 60s
-```
-
----
-
 ## ArcGIS JavaScript SDK
 
 **Importado via:** `<script>` tag no HTML (CDN)  
@@ -205,7 +189,6 @@ const hurricanes = await loadHurricanes(); // cache em memória de 60s
 | wheretheiss | ~60 req/min | 1 min | Retry com backoff |
 | Open-Meteo | 10k/dia | 24h | Fallback: [] |
 | Vasturiano | ~1000 req/min (inferido) | 1 min | Fallback: [] |
-| NOAA NHC | Não documentado (cache 5 min no proxy) | - | Fallback: último cache em memória |
 
 ---
 

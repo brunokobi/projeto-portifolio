@@ -96,8 +96,6 @@ Veja `DESIGN_SYSTEM.md` pra tokens completos.
 - ✅ Correntes marítimas (Open-Meteo, grid global)
 - 🚧 Vulcões (425 vulcões, parsing OK, rendering pendente)
 - ✅ Vento (partículas com advection)
-- ✅ Furacões/ciclones (NOAA NHC, 5 feeds via proxy `/api/noaa/*`)
-- ✅ Cidades (`CITIES`, anéis pulsantes) com hora local, clima e AQI classificado no card de hover
 
 ### Próximas Prioridades
 1. **Vulcões:** Finish rendering + tooltips

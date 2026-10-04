@@ -5,11 +5,13 @@ const FETCH_TIMEOUT_MS = 30000;
 const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
 
 // NOAA feeds via Netlify proxy (/api/noaa/*) — resolve CORS bloqueado
-// Feeds disponíveis: Atlântico, Pacíficos
+// Cobre todo o planeta: Atlântico, Pacíficos, Índico, Hemisfério Sul
 const NOAA_RSS_FEEDS = [
   "/api/noaa/index-at.xml", // Atlântico (Furacões/Tropical Storms/Depressions)
   "/api/noaa/index-ep.xml", // Pacífico Leste (Furacões/Tropical Storms)
   "/api/noaa/index-cp.xml", // Pacífico Central (Tufões/Tropical Storms)
+  "/api/noaa/index-io.xml", // Oceano Índico (Ciclones/Tempestades)
+  "/api/noaa/index-sh.xml", // Hemisfério Sul (Ciclones/Tempestades)
 ];
 
 // Cache pra evitar múltiplas requisições simultâneas

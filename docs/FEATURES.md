@@ -184,31 +184,6 @@ Elevação: 3,776m
 
 ---
 
-## 🌀 Furacões (Hurricanes)
-
-**Arquivo:** `src/components/GlobeBackground/hurricanes.ts`  
-**Fonte:** NOAA National Hurricane Center (5 feeds RSS, ver [API.md](./API.md))  
-**Atualização:** Load único ao entrar na página (cache 60s)  
-**Status:** ✅ Completo
-
-- Parsing: `nhc:Cyclone` → nome, lat/lon, vento (mph → km/h), pressão, categoria Saffir-Simpson
-- Renderização: espiral colorida por categoria (`hurricaneColor`), raio por vento (`hurricaneRadius`)
-- Hover: nome, vento (km/h), pressão (mb), categoria
-- Toggle: `globeHurricanesToggle` (localStorage `globeHurricanes`)
-
----
-
-## 🏙️ Cidades e AQI
-
-**Arquivos:** `src/components/GlobeBackground/geo.ts` (`CITIES`, 42 cidades), `index.tsx`  
-**Clima/hora local:** Open-Meteo (`timezone=auto`), cache de 2h
-
-- Cada cidade é um anel verde pulsante; o card de hover mostra hora local, temperatura, clima e tags
-- AQI aparece só no card de hover, com classificação (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso
-- Não há mais pontos de AQI separados no mapa nem renderização de `TOP_CITIES`
-
----
-
 ## 🌬 Vento (Wind) — REMOVIDO
 
 **Arquivo:** `src/components/GlobeBackground/wind.ts`  
