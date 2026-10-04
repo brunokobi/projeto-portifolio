@@ -696,6 +696,8 @@ const GlobeBackground = () => {
                 }
               }
 
+              // TEMP: Vulcões desabilitados — problema de minificação
+              /*
               if (!over) {
                 // Vulcões
                 const volcanoPositions = volcanoScreenPosRef.current;
@@ -724,6 +726,7 @@ const GlobeBackground = () => {
                   }
                 }
               }
+              */
 
               if (!over) {
                 // Furacões
