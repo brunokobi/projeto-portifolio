@@ -317,7 +317,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {quakesEnabled ? "🌋 SISMOS ON" : "🌋 SISMOS OFF"}
+          {quakesEnabled ? "🌋 TERREMOTOS ON" : "🌋 TERREMOTOS OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
