@@ -640,6 +640,8 @@ const GlobeBackground = () => {
                 }
               }
 
+              // TEMP: Terremotos desabilitados — problema de minificação
+              /*
               if (!over) {
                 // Terremotos
                 const quakePositions = quakeScreenPosRef.current;
@@ -675,6 +677,7 @@ const GlobeBackground = () => {
                   }
                 }
               }
+              */
 
               if (!over) {
                 // ISS
