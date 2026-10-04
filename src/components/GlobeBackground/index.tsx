@@ -135,14 +135,14 @@ const GlobeBackground = () => {
   const cityScreenPosRef = useRef<Array<{ x: number; y: number } | null>>(
     new Array(CITIES.length).fill(null)
   );
-  const quakeScreenPosRef = useRef<Array<{ x: number; y: number; place: string; time: number } | null>>(
+  const quakeScreenPosRef = useRef<Array<{ x: number; y: number; place: string; time: number; magnitudeText: string } | null>>(
     []
   );
   const issScreenPosRef = useRef<{ x: number; y: number; lat: number; lon: number; altitude?: number; velocity?: number } | null>(
     null
   );
   const volcanoScreenPosRef = useRef<
-    Array<{ x: number; y: number; name: string; country: string; type: string } | null>
+    Array<{ x: number; y: number; name: string; country: string; type: string; elevationText: string } | null>
   >([]);
   const hurricaneScreenPosRef = useRef<
     Array<{ x: number; y: number; name: string; windSpeed: number; pressure: number; category: number } | null>
@@ -656,7 +656,7 @@ const GlobeBackground = () => {
                       const when = hoursAgo < 1 ? "há menos de 1h" : `há ${Math.round(hoursAgo)}h`;
                       const lines = [
                         "🌋 Terremoto",
-                        qp.place,
+                        `Magnitude ${qp.magnitudeText} — ${qp.place}`,
                         when,
                       ];
                       const nearbyAqi = findNearbyAQI(qp.x, qp.y);
@@ -696,8 +696,6 @@ const GlobeBackground = () => {
                 }
               }
 
-              // TEMP: Vulcões desabilitados — problema de minificação
-              /*
               if (!over) {
                 // Vulcões
                 const volcanoPositions = volcanoScreenPosRef.current;
@@ -714,6 +712,7 @@ const GlobeBackground = () => {
                       if (vp.name) lines.push(`${vp.name}`);
                       if (vp.country) lines.push(`${vp.country}`);
                       if (vp.type) lines.push(`Tipo: ${vp.type}`);
+                      if (vp.elevationText) lines.push(`Elevação: ${vp.elevationText} m`);
                       const nearbyAqi = findNearbyAQI(vp.x, vp.y);
                       if (nearbyAqi) {
                         lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
@@ -726,7 +725,6 @@ const GlobeBackground = () => {
                   }
                 }
               }
-              */
 
               if (!over) {
                 // Furacões
@@ -1008,13 +1006,10 @@ const GlobeBackground = () => {
                 // sismos de M4.5+ nas últimas 24h não muda tão rápido que
                 // precise de polling.
                 let quakes: Quake[] = [];
-                // DEBUG: Terremotos desabilitados — problema de minificação não resolvido
-                /*
                 loadQuakes().then((data) => {
                   if (!mountedRef.current) return;
                   quakes = data;
                 });
-                */
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
@@ -1197,7 +1192,8 @@ const GlobeBackground = () => {
                           new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
                         );
                         if (!sp) continue;
-                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time };
+                        const magnitudeText = q.mag.toFixed(1);
+                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
                         const color = quakeColor(q.mag);
                         const radius = quakeRadius(q.mag);
                         const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
@@ -1220,7 +1216,7 @@ const GlobeBackground = () => {
 
                         ctx.font = "bold 10px monospace";
                         ctx.fillStyle = color;
-                        ctx.fillText(`${q.mag.toFixed(1)}`, sp.x + radius + 6, sp.y + 3);
+                        ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
                       } catch {
                         // ponto fora do campo de visão
                       }
@@ -1344,7 +1340,8 @@ const GlobeBackground = () => {
                           new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
                         );
                         if (!sp) continue;
-                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type };
+                        const elevationText = v.elevation.toString();
+                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
 
                         const color = volcanoColor(v.type);
                         const radius = volcanoRadius(v.elevation);

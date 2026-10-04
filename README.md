@@ -554,7 +554,7 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 | **Qualidade do Ar** | 💨 | AQI estático por cidade (`CITIES`) | Estático | Sem pontos próprios no mapa — AQI aparece apenas no card de hover da cidade |
 | **Incêndios** | 🔥 | NASA FIRMS (simulado) | Estático | Nome, confidence, data |
 | **Raios** | ⚡ | Simulado | Estático | Latitude, longitude, intensidade |
-| **Vulcões** | 🌋 | GVP (425 vulcões) | Estático | Nome, país, status, última erupção |
+| **Vulcões** | 🌋 | GVP (425 vulcões) | Estático | Nome, país, status, última erupção (hover temporariamente desabilitado) |
 | **Furacões** | 🌀 | NOAA NHC (5 feeds RSS via proxy `/api/noaa/*`) | Único load | Categoria Saffir-Simpson, vento, pressão |
 
 ### Implementação técnica

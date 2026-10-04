@@ -43,9 +43,10 @@
 | Emoji | Label | Event | Estado Ref |
 |-------|-------|-------|-----------|
 | 🌊 | CORRENTES | globeOceanToggle | oceanEnabledRef |
-| 🌋 | SISMOS | globeQuakesToggle | quakesEnabledRef |
 | 🛰 | ISS | globeIssToggle | issEnabledRef |
-| 🌋 | VULCÕES | globeVolcanoesToggle | volcanoesEnabledRef |
+| 🌋 | VULCÕES | globoVolcanoesToggle | volcanoesEnabledRef |
+
+O botão de terremotos (SISMOS) foi removido; o listener `globeQuakesToggle` ainda existe em `GlobeBackground`, mas nada o dispara.
 
 ### Behavior
 - Dispara CustomEvent com `detail: { enabled: boolean }`

@@ -13,7 +13,7 @@ Toda a estrutura do projeto está documentada em `docs/`:
 - **[docs/README.md](docs/README.md)** — Índice e overview
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Arquitetura, fluxo de dados, renderização
 - **[docs/COMPONENTS.md](docs/COMPONENTS.md)** — Componentes React principais
-- **[docs/FEATURES.md](docs/FEATURES.md)** — Features em tempo real (terremotos, ISS, oceano, vulcões)
+- **[docs/FEATURES.md](docs/FEATURES.md)** — Features em tempo real (ISS, oceano, vulcões, furacões; terremotos desabilitados)
 - **[docs/API.md](docs/API.md)** — APIs externas (USGS, wheretheiss, Open-Meteo, vasturiano)
 - **[docs/STACK.md](docs/STACK.md)** — Stack técnico, dependências, versões
 - **[docs/SETUP.md](docs/SETUP.md)** — Setup local, troubleshooting, deploy
@@ -69,7 +69,7 @@ git commit -m "refactor: Claude sugeriu usar bilinear interpolation"
 | Arquivo | Responsabilidade |
 |---------|------------------|
 | `src/components/GlobeBackground/index.tsx` | Main component — renderiza globo + overlays |
-| `src/components/GlobeBackground/*.ts` | Data loaders (quakes, iss, ocean, volcanoes) |
+| `src/components/GlobeBackground/*.ts` | Data loaders (quakes [desabilitado], iss, ocean, volcanoes) |
 | `src/pages/DevBlog/` | Blog with posts |
 | `src/routes/index.tsx` | Route definitions |
 | `DESIGN_SYSTEM.md` | Visual identity + tokens |
@@ -91,16 +91,19 @@ Veja `DESIGN_SYSTEM.md` pra tokens completos.
 ## 🌍 Features em Tempo Real
 
 ### Status Atual
-- ✅ Terremotos (USGS, M4.5+, últimas 24h)
+- ⛔ Terremotos (USGS) — desabilitados: `loadQuakes()` comentado e ícone removido da WeatherBar
 - ✅ ISS (wheretheiss, 8s polling)
 - ✅ Correntes marítimas (Open-Meteo, grid global)
-- 🚧 Vulcões (425 vulcões, parsing OK, rendering pendente)
+- ⚠️ Vulcões (425) — pins desenhados, hover/tooltip desabilitado (bloco comentado)
 - ✅ Vento (partículas com advection)
 - ✅ Furacões/ciclones (NOAA NHC, 5 feeds via proxy `/api/noaa/*`)
 - ✅ Cidades (`CITIES`, anéis pulsantes) com hora local, clima e AQI classificado no card de hover
 
+### Bug conhecido: minificação (Vite/esbuild)
+Terremotos e vulcões (hover) estão desabilitados por um bug de minificação de nomes de propriedades de objetos guardados em refs, que causa `Cannot access X before initialization` em event handlers no build de produção. Ver `docs/FEATURES.md`. Não reativar sem resolver a causa.
+
 ### Próximas Prioridades
-1. **Vulcões:** Finish rendering + tooltips
+1. **Terremotos/Vulcões:** resolver o bug de minificação e reativar (quakes + hover de vulcões)
 2. **Performance:** Otimizar se detectar drop em FPS
 3. **Blog:** Adicionar mais posts técnicos
 

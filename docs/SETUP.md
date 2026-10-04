@@ -212,7 +212,7 @@ npm install
 Veja:
 - `ARCHITECTURE.md` — Estrutura geral + data flow
 - `COMPONENTS.md` — Componentes React
-- `FEATURES.md` — Features em tempo real (terremotos, ISS, etc)
+- `FEATURES.md` — Features em tempo real (ISS, oceano, vulcões; terremotos desabilitados)
 - `API.md` — Endpoints externos
 - `STACK.md` — Dependências + tech choices
 - `CLAUDE.md` — Conventions (commits, code style, etc)

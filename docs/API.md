@@ -2,6 +2,8 @@
 
 ## 🌋 USGS Earthquake Hazards Program
 
+> **Desabilitado:** `loadQuakes()` está comentado em `GlobeBackground/index.tsx` (bug de minificação, ver [FEATURES.md](./FEATURES.md#bug-de-minificação-em-refs)). Esta API não é chamada atualmente.
+
 **Endpoint:** `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson`  
 **Método:** GET  
 **Autenticação:** Nenhuma  

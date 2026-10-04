@@ -6,7 +6,11 @@
 **Fonte:** USGS Earthquake Hazards Program  
 **URL:** `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson`  
 **Atualização:** Live (últimas 24h)  
-**Status:** ✅ Completo
+**Status:** ⛔ Desabilitado
+
+> **Desabilitado completamente.** `loadQuakes()` está comentado em `GlobeBackground/index.tsx`, então nenhum dado é carregado e nada é renderizado nem aparece no hover. O botão de terremotos foi removido da `WeatherBar`. `quakes.ts` e os testes continuam no repositório.
+> **Motivo:** bug de minificação (Vite/esbuild) em nomes de propriedades de objetos armazenados em refs, que gera `Cannot access X before initialization` em event handlers. Ver [Bug de minificação](#bug-de-minificação-em-refs) abaixo.
+> As seções abaixo descrevem o comportamento original, para quando a feature for reativada.
 
 ### Data Structure
 ```typescript
@@ -140,7 +144,10 @@ interface OceanParticle {
 **URL:** `https://gist.githubusercontent.com/vasturiano/.../world_volcanoes.json`  
 **Total:** 425 vulcões  
 **Atualização:** Static (carregado 1x)  
-**Status:** 🚧 Em Progresso
+**Status:** ⛔ Hover desabilitado (pins ainda são desenhados)
+
+> **Hover/tooltip desabilitado:** o bloco de detecção de hover dos vulcões está comentado em `GlobeBackground/index.tsx` (marcado `TEMP`). O campo `elevation` foi removido de `volcanoScreenPosRef`, então o tooltip não exibe mais elevação. Os pins triangulares continuam sendo desenhados quando o toggle VULCÕES está ligado.
+> **Motivo:** bug de minificação (Vite/esbuild) em nomes de propriedades de objetos armazenados em refs. Ver [Bug de minificação](#bug-de-minificação-em-refs) abaixo.
 
 ### Data Structure
 ```typescript
@@ -159,12 +166,12 @@ interface Volcano {
 - Ignora: entries sem name ou lat/lon numérico
 - Defaults: country/type="" se ausente, elevation=0
 
-### Renderização (Pendente)
-- **Pin:** triângulo ou marcador vulcânico
-- **Color:** tipo de vulcão (Shield/Cinder/etc)
-- **Size:** elevação (maior = mais alto)
+### Renderização
+- **Pin:** triângulo desenhado no canvas
+- **Color:** `volcanoColor(type)`
+- **Size:** `volcanoRadius(elevation)`
 
-### Hover Tooltip (Pendente)
+### Hover Tooltip (desabilitado)
 ```
 🌋 Mount Fuji
 Japão (Japan)
@@ -176,11 +183,9 @@ Elevação: 3,776m
 - 4 test cases em `__tests__/volcanoes.test.ts`
 - Cobertura: parsing, default handling
 
-### Next Steps
-1. Adicionar `volcanoColor()` helper (type → color)
-2. Renderizar triangles em `drawPins()`
-3. Hit detection + tooltips
-4. Commit final
+### Para reativar
+1. Resolver o bug de minificação (ver abaixo)
+2. Descomentar o bloco de hover dos vulcões e restaurar `elevation` em `volcanoScreenPosRef`
 
 ---
 
@@ -230,6 +235,7 @@ Elevação: 3,776m
 
 ### Parallel Loading
 ```javascript
+// loadQuakes() está desabilitado (ver Terremotos)
 const [quakes, iss, ocean, volcanoes] = await Promise.all([
   loadQuakes(),
   loadIssPosition(),
@@ -244,7 +250,15 @@ const [quakes, iss, ocean, volcanoes] = await Promise.all([
 - Silent fail: não interrompe outras features
 
 ### Caching
-- Quakes: recarrega periodicamente (globeQuakesToggle event)
+- Quakes: desabilitado (não carrega)
 - ISS: polling contínuo (8s)
 - Ocean: load once (static)
 - Volcanoes: load once (static)
+
+---
+
+## Bug de minificação em refs
+
+Terremotos e vulcões (hover) foram desabilitados por um bug de minificação no build de produção (Vite/esbuild): ao acessar propriedades de objetos guardados em refs (`quakeScreenPosRef`, `volcanoScreenPosRef`) dentro de event handlers, ocorre `Cannot access X before initialization`. Tentativas anteriores (remover `elevation` do ref de vulcões) não resolveram. A causa raiz não está documentada no repositório.
+
+**Estado atual:** terremotos desabilitados por completo; vulcões sem hover. Reativação pendente de correção.

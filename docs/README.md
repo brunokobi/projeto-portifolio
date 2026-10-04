@@ -2,13 +2,13 @@
 
 **URL:** https://brunokobi.tech  
 **Repo:** `/home/bruno/projeto-portifolio`  
-**Status:** Em desenvolvimento (vulcões em progresso)
+**Status:** Em desenvolvimento (terremotos desabilitados; hover de vulcões desabilitado — bug de minificação, ver FEATURES.md)
 
 ## Índice Rápido
 
 - [**ARCHITECTURE.md**](./ARCHITECTURE.md) — Estrutura geral, fluxo de dados, renderização
 - [**COMPONENTS.md**](./COMPONENTS.md) — Componentes React principais
-- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (terremotos, ISS, oceano, vulcões)
+- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (ISS, oceano, vulcões, furacões; terremotos desabilitados)
 - [**API.md**](./API.md) — APIs externas e data sources
 - [**STACK.md**](./STACK.md) — Dependências e versões
 - [**SETUP.md**](./SETUP.md) — Como rodar localmente
@@ -20,15 +20,15 @@ Portfólio técnico com **globo 3D interativo** (ArcGIS SceneView) mostrando dad
 ### 🌍 Globo 3D
 - Renderização WebGL via ArcGIS JS SDK
 - Canvas layers pra partículas (vento, oceano)
-- Pins pra pontos de interesse (terremotos, ISS, vulcões)
+- Pins pra pontos de interesse (ISS, vulcões)
 
 ### 📡 Features em Tempo Real
 | Feature | Fonte | Atualização | Status |
 |---------|-------|-------------|--------|
-| Terremotos | USGS GeoJSON | Live (24h) | ✅ |
+| Terremotos | USGS GeoJSON | Live (24h) | ⛔ Desabilitado |
 | ISS | wheretheiss.at | 8s polling | ✅ |
 | Correntes Marítimas | Open-Meteo Marine | Load once | ✅ |
-| Vulcões | Vasturiano gist | Static (425) | 🚧 |
+| Vulcões | Vasturiano gist | Static (425) | ⚠️ Pins sim, hover desabilitado |
 | Vento | ERA5 (histórico) | Grid particle | ✅ |
 
 ### 📝 Blog Dev
