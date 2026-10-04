@@ -1180,9 +1180,6 @@ const GlobeBackground = () => {
                     }
                   });
 
-                  // DEBUG: Terremotos desabilitados - culprit encontrado!
-                  quakeScreenPosRef.current.fill(null);
-                  /*
                   // Terremotos reais (USGS, M4.5+ nas últimas 24h) — anel
                   // pulsante colorido/dimensionado pela magnitude.
                   if (quakeScreenPosRef.current.length !== quakes.length) {
@@ -1221,7 +1218,7 @@ const GlobeBackground = () => {
 
                         ctx.font = "bold 10px monospace";
                         ctx.fillStyle = color;
-                        ctx.fillText(`M${q.mag.toFixed(1)}`, sp.x + radius + 6, sp.y + 3);
+                        ctx.fillText(`${q.mag.toFixed(1)}`, sp.x + radius + 6, sp.y + 3);
                       } catch {
                         // ponto fora do campo de visão
                       }
@@ -1229,7 +1226,6 @@ const GlobeBackground = () => {
                   } else {
                     quakeScreenPosRef.current.fill(null);
                   }
-                  */
 
                   // Posição real da ISS — ponto azul pulsante com anel
                   issScreenPosRef.current = null;
