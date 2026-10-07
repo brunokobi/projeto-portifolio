@@ -10,15 +10,20 @@
 
 Toda a estrutura do projeto está documentada em `docs/`:
 
-- **[docs/README.md](docs/README.md)** — Índice e overview
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Arquitetura, fluxo de dados, renderização
-- **[docs/COMPONENTS.md](docs/COMPONENTS.md)** — Componentes React principais
-- **[docs/FEATURES.md](docs/FEATURES.md)** — Features em tempo real (ISS, vulcões, furacões; terremotos desabilitados)
-- **[docs/API.md](docs/API.md)** — APIs externas (USGS, wheretheiss, Open-Meteo clima, vasturiano)
-- **[docs/STACK.md](docs/STACK.md)** — Stack técnico, dependências, versões
+### 🚀 Para IAs / Novo Contexto (COMECE AQUI)
+- **[docs/AI_QUICKSTART.md](docs/AI_QUICKSTART.md)** ← 3 minutos, essencial
+- **[docs/INDEX.md](docs/INDEX.md)** ← Navegação completa por tópico
+
+### 📖 Documentação Detalhada
+- **[docs/README.md](docs/README.md)** — Visão geral e índice
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Fluxo de dados, renderização, estado
+- **[docs/COMPONENTS.md](docs/COMPONENTS.md)** — Componentes React, APIs, hooks, refs
+- **[docs/FEATURES.md](docs/FEATURES.md)** — Features em tempo real, status, detalhes
+- **[docs/API.md](docs/API.md)** — Data sources, rate limits, parsing
+- **[docs/STACK.md](docs/STACK.md)** — Dependências, versões, build config
 - **[docs/SETUP.md](docs/SETUP.md)** — Setup local, troubleshooting, deploy
 
-**QUALQUER IA (Continue, Claude, etc) deve ler esses arquivos primeiro.**
+**QUALQUER IA deve começar por AI_QUICKSTART.md, depois INDEX.md para navegação.**
 
 ---
 

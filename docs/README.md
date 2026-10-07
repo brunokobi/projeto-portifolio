@@ -6,12 +6,16 @@
 
 ## Índice Rápido
 
+### 🚀 Para IAs / Novo Contexto
+- **[AI_QUICKSTART.md](./AI_QUICKSTART.md)** ← **COMECE AQUI** (3 min, essencial)
+
+### 📚 Documentação Completa
 - [**ARCHITECTURE.md**](./ARCHITECTURE.md) — Estrutura geral, fluxo de dados, renderização
 - [**COMPONENTS.md**](./COMPONENTS.md) — Componentes React principais
-- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (ISS, vulcões, furacões; terremotos desabilitados)
-- [**API.md**](./API.md) — APIs externas e data sources
-- [**STACK.md**](./STACK.md) — Dependências e versões
-- [**SETUP.md**](./SETUP.md) — Como rodar localmente
+- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (status, detalhes técnicos)
+- [**API.md**](./API.md) — APIs externas, data sources, rate limits
+- [**STACK.md**](./STACK.md) — Dependências, versões, build config
+- [**SETUP.md**](./SETUP.md) — Setup local, troubleshooting, deploy
 
 ## O Projeto
 
