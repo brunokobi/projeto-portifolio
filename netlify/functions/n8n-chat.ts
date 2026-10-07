@@ -36,20 +36,20 @@ export const handler: Handler = async (event) => {
   });
 
   try {
+    console.log("[n8n-chat] Enviando para:", webhookUrl);
+    console.log("[n8n-chat] Body:", event.body);
+
     const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: event.body ?? "{}",
-      // 55s -- o modelo do chatBruno faz de 1 a 3 chamadas de LLM em sequência
-      // por pergunta (roteador + agente + eventual chamada de ferramenta
-      // MCP/Telegram); medido entre 6s e ~30s na maioria das perguntas, mas
-      // já passou de 90s em alguma. 55s é o teto real: Netlify mata a
-      // function em 60s fixos (não configurável) mesmo que o timeout abaixo
-      // seja maior -- não adianta subir isso além disso.
       signal: AbortSignal.timeout(55000),
     });
 
     const text = await res.text();
+    console.log("[n8n-chat] Resposta status:", res.status);
+    console.log("[n8n-chat] Resposta body:", text);
+
     span?.setAttribute("http.response_status_code", res.status);
     span?.setStatus(
       res.ok ? { code: SpanStatusCode.OK } : { code: SpanStatusCode.ERROR, message: `n8n retornou ${res.status}` }
