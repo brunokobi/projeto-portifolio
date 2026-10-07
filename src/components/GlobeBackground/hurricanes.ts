@@ -30,9 +30,6 @@ export interface Hurricane {
   movement: string; // direção (NW, SE, etc)
 }
 
-// Estado interno para simular movimento
-const hurricaneState = new Map<string, { lat: number; lon: number; vLat: number; vLon: number }>();
-
 interface RawHurricane {
   id?: unknown;
   name?: unknown;
@@ -63,22 +60,6 @@ export function parseHurricanes(json: unknown): Hurricane[] {
   }
   return hurricanes;
 }
-
-function movementToVector(movement: string): { vLat: number; vLon: number } {
-  // Converte direção (NW, SE, etc) em vetor de velocidade (graus/update)
-  const vectors: Record<string, { vLat: number; vLon: number }> = {
-    N: { vLat: 0.15, vLon: 0 },
-    NE: { vLat: 0.12, vLon: 0.12 },
-    E: { vLat: 0, vLon: 0.15 },
-    SE: { vLat: -0.12, vLon: 0.12 },
-    S: { vLat: -0.15, vLon: 0 },
-    SW: { vLat: -0.12, vLon: -0.12 },
-    W: { vLat: 0, vLon: -0.15 },
-    NW: { vLat: 0.12, vLon: -0.12 },
-  };
-  return vectors[movement] || { vLat: 0, vLon: 0 };
-}
-
 
 async function fetchNOAARSSFeed(url: string): Promise<Document | null> {
   try {
