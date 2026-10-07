@@ -17,6 +17,10 @@ import { sampleWind, type WindGrid } from "./wind";
 
 const MARINE_API_URL = "https://marine-api.open-meteo.com/v1/marine";
 const FETCH_TIMEOUT_MS = 15000;
+const OCEAN_CACHE_TTL_MS = 86400000; // 24h — Open-Meteo rate limit é apertado
+
+let oceanCacheData: WindGrid | null = null;
+let oceanCacheTime = 0;
 
 const LON_STEP = 10;
 const LAT_STEP = 10;
@@ -73,16 +77,26 @@ export function parseOceanResponse(json: unknown, coordCount: number): WindGrid 
 }
 
 export async function loadOceanGrid(): Promise<WindGrid | null> {
+  const now = Date.now();
+  if (oceanCacheData && now - oceanCacheTime < OCEAN_CACHE_TTL_MS) {
+    return oceanCacheData;
+  }
+
   try {
     const coords = buildOceanCoords();
     const lat = coords.map((c) => c.lat).join(",");
     const lon = coords.map((c) => c.lon).join(",");
     const url = `${MARINE_API_URL}?latitude=${lat}&longitude=${lon}&hourly=ocean_current_velocity,ocean_current_direction&forecast_days=1`;
     const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-    if (!res.ok) return null;
-    return parseOceanResponse(await res.json(), coords.length);
+    if (!res.ok) return oceanCacheData;
+    const grid = parseOceanResponse(await res.json(), coords.length);
+    if (grid) {
+      oceanCacheData = grid;
+      oceanCacheTime = now;
+    }
+    return grid;
   } catch {
-    return null;
+    return oceanCacheData;
   }
 }
 
