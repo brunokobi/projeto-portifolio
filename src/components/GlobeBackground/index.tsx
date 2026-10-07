@@ -232,16 +232,6 @@ const GlobeBackground = () => {
     return () => window.removeEventListener("globeWindToggle", handler);
   }, []);
 
-  // Escuta evento globeOceanToggle disparado pelo WeatherBar
-  useEffect(() => {
-    const handler = (e: Event) => {
-      oceanEnabledRef.current = (e as CustomEvent).detail.oceanEnabled as boolean;
-      clearWindCanvasIfBothOff();
-    };
-    window.addEventListener("globeOceanToggle", handler);
-    return () => window.removeEventListener("globeOceanToggle", handler);
-  }, []);
-
   // Escuta evento globeQuakesToggle disparado pelo WeatherBar
   useEffect(() => {
     const handler = (e: Event) => {
@@ -970,16 +960,6 @@ const GlobeBackground = () => {
                   windGrid = grid;
                   windParticles = Array.from({ length: WIND_PARTICLE_COUNT }, createRandomParticle);
                   windPrevScreen = new Array(WIND_PARTICLE_COUNT).fill(null);
-                });
-
-                let oceanGrid: WindGrid | null = null;
-                let oceanParticles: OceanParticle[] = [];
-                let oceanPrevScreen: Array<{ x: number; y: number } | null> = [];
-                loadOceanGrid().then((grid) => {
-                  if (!mountedRef.current || !grid) return;
-                  oceanGrid = grid;
-                  oceanParticles = Array.from({ length: OCEAN_PARTICLE_COUNT }, createRandomOceanParticle);
-                  oceanPrevScreen = new Array(OCEAN_PARTICLE_COUNT).fill(null);
                 });
 
                 // Terremotos: desabilitado
