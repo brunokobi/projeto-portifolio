@@ -1082,10 +1082,12 @@ const GlobeBackground = () => {
                     }
 
                     if (showOcean && oceanGrid) {
-                      windCtx.lineWidth = 1.8;
-                      // tracejado — leitura visual diferente do vento (que é
-                      // sólido), convenção comum em mapas pra corrente marítima.
-                      windCtx.setLineDash([3, 4]);
+                      windCtx.lineWidth = 3.5;
+                      windCtx.lineCap = "round";
+                      windCtx.lineJoin = "round";
+                      windCtx.shadowBlur = 6;
+                      windCtx.shadowColor = "rgba(100, 180, 220, 0.4)";
+                      windCtx.setLineDash([4, 3]);
                       for (let i = 0; i < oceanParticles.length; i++) {
                         const prevScreen = oceanPrevScreen[i];
                         oceanParticles[i] = advanceOceanParticle(oceanParticles[i], oceanGrid);
@@ -1103,11 +1105,14 @@ const GlobeBackground = () => {
                             const dx = sp.x - prevScreen.x, dy = sp.y - prevScreen.y;
                             if (dx * dx + dy * dy < WIND_MAX_TRAIL_JUMP_PX * WIND_MAX_TRAIL_JUMP_PX) {
                               const { u, v } = sampleWind(oceanGrid, p.lat, p.lon);
-                              windCtx.strokeStyle = oceanSpeedToColor(windSpeed(u, v));
+                              const baseColor = oceanSpeedToColor(windSpeed(u, v));
+                              windCtx.strokeStyle = baseColor;
+                              windCtx.globalAlpha = 0.8;
                               windCtx.beginPath();
                               windCtx.moveTo(prevScreen.x, prevScreen.y);
                               windCtx.lineTo(sp.x, sp.y);
                               windCtx.stroke();
+                              windCtx.globalAlpha = 1;
                             }
                           }
                           oceanPrevScreen[i] = { x: sp.x, y: sp.y };
@@ -1115,6 +1120,7 @@ const GlobeBackground = () => {
                           oceanPrevScreen[i] = null;
                         }
                       }
+                      windCtx.shadowBlur = 0;
                     }
 
                     windCtx.restore();
