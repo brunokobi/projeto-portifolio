@@ -152,6 +152,7 @@ const GlobeBackground = () => {
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
+  const volcanoesEnabledRef = useRef(localStorage.getItem("globeVolcanoes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
@@ -237,6 +238,15 @@ const GlobeBackground = () => {
     };
     window.addEventListener("globeQuakesToggle", handler);
     return () => window.removeEventListener("globeQuakesToggle", handler);
+  }, []);
+
+  // Escuta evento globeVolcanoesToggle disparado pelo WeatherBar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      volcanoesEnabledRef.current = (e as CustomEvent).detail.volcanoesEnabled as boolean;
+    };
+    window.addEventListener("globeVolcanoesToggle", handler);
+    return () => window.removeEventListener("globeVolcanoesToggle", handler);
   }, []);
 
   // Escuta evento globeIssToggle disparado pelo WeatherBar
@@ -960,12 +970,12 @@ const GlobeBackground = () => {
                   windPrevScreen = new Array(WIND_PARTICLE_COUNT).fill(null);
                 });
 
-                // Terremotos: desabilitado
+                // Terremotos: dados reais da USGS
                 let quakes: Quake[] = [];
-                // loadQuakes().then((data) => {
-                //   if (!mountedRef.current) return;
-                //   quakes = data;
-                // });
+                loadQuakes().then((data) => {
+                  if (!mountedRef.current) return;
+                  quakes = data;
+                });
 
                 // Posição real da ISS — se move rápido, precisa de polling.
                 let issPos: IssPosition | null = null;
@@ -978,12 +988,12 @@ const GlobeBackground = () => {
                 pollIss();
                 issIntervalId = setInterval(pollIss, ISS_POLL_INTERVAL_MS);
 
-                // Vulcões: desabilitado
+                // Vulcões: dados reais do Smithsonian
                 let volcanoes: Volcano[] = [];
-                // loadVolcanoes().then((data) => {
-                //   if (!mountedRef.current) return;
-                //   volcanoes = data;
-                // });
+                loadVolcanoes().then((data) => {
+                  if (!mountedRef.current) return;
+                  volcanoes = data;
+                });
 
                 // Furacões e tempestades tropicais (carrega ao entrar na página)
                 let hurricanes: Hurricane[] = [];
@@ -1097,51 +1107,51 @@ const GlobeBackground = () => {
                   });
 
                   // Terremotos: desabilitado
-                  // if (quakeScreenPosRef.current.length !== quakes.length) {
-                  //   quakeScreenPosRef.current = new Array(quakes.length).fill(null);
-                  // }
-                  // if (quakesEnabledRef.current) {
-                  //   for (let i = 0; i < quakes.length; i++) {
-                  //     quakeScreenPosRef.current[i] = null;
-                  //     const q = quakes[i];
-                  //     if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
-                  //     try {
-                  //       const sp = view.toScreen(
-                  //         new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
-                  //       );
-                  //       if (!sp) continue;
-                  //       const magnitudeText = q.mag.toFixed(1);
-                  //       quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
-                  //       const color = quakeColor(q.mag);
-                  //       const radius = quakeRadius(q.mag);
-                  //       const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
-                  //
-                  //       ctx.beginPath();
-                  //       ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
-                  //       ctx.strokeStyle = color;
-                  //       ctx.globalAlpha = 0.55 - pulse * 0.35;
-                  //       ctx.lineWidth = 2;
-                  //       ctx.stroke();
-                  //       ctx.globalAlpha = 1;
-                  //
-                  //       ctx.beginPath();
-                  //       ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
-                  //       ctx.fillStyle = color;
-                  //       ctx.shadowBlur = 8;
-                  //       ctx.shadowColor = color;
-                  //       ctx.fill();
-                  //       ctx.shadowBlur = 0;
-                  //
-                  //       ctx.font = "bold 10px monospace";
-                  //       ctx.fillStyle = color;
-                  //       ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
-                  //     } catch {
-                  //       // ponto fora do campo de visão
-                  //     }
-                  //   }
-                  // } else {
-                  //   quakeScreenPosRef.current.fill(null);
-                  // }
+                  if (quakeScreenPosRef.current.length !== quakes.length) {
+                    quakeScreenPosRef.current = new Array(quakes.length).fill(null);
+                  }
+                  if (quakesEnabledRef.current) {
+                    for (let i = 0; i < quakes.length; i++) {
+                      quakeScreenPosRef.current[i] = null;
+                      const q = quakes[i];
+                      if (!isFacing(cam.latitude, cam.longitude, q.lat, q.lon)) continue;
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: q.lon, latitude: q.lat, z: 40000 })
+                        );
+                        if (!sp) continue;
+                        const magnitudeText = q.mag.toFixed(1);
+                        quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
+                        const color = quakeColor(q.mag);
+                        const radius = quakeRadius(q.mag);
+                        const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
+
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
+                        ctx.strokeStyle = color;
+                        ctx.globalAlpha = 0.55 - pulse * 0.35;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = color;
+                        ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  } else {
+                    quakeScreenPosRef.current.fill(null);
+                  }
 
                   // Posição real da ISS — ponto azul pulsante com anel
                   issScreenPosRef.current = null;
@@ -1244,49 +1254,49 @@ const GlobeBackground = () => {
                     }
                   }
 
-                  // Vulcões: desabilitado
-                  // if (volcanoScreenPosRef.current.length !== volcanoes.length) {
-                  //   volcanoScreenPosRef.current = new Array(volcanoes.length).fill(null);
-                  // }
-                  // if (volcanoesEnabledRef.current) {
-                  //   for (let i = 0; i < volcanoes.length; i++) {
-                  //     volcanoScreenPosRef.current[i] = null;
-                  //     const v = volcanoes[i];
-                  //     if (!isFacing(cam.latitude, cam.longitude, v.lat, v.lon)) continue;
-                  //     try {
-                  //       const sp = view.toScreen(
-                  //         new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
-                  //       );
-                  //       if (!sp) continue;
-                  //       const elevationText = v.elevation.toString();
-                  //       volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
-                  //
-                  //       const color = volcanoColor(v.type);
-                  //       const radius = volcanoRadius(v.elevation);
-                  //
-                  //       // Triângulo (pico vulcânico)
-                  //       ctx.beginPath();
-                  //       ctx.moveTo(sp.x, sp.y - radius);
-                  //       ctx.lineTo(sp.x + radius, sp.y + radius / 2);
-                  //       ctx.lineTo(sp.x - radius, sp.y + radius / 2);
-                  //       ctx.closePath();
-                  //       ctx.fillStyle = color;
-                  //       ctx.shadowBlur = 6;
-                  //       ctx.shadowColor = color;
-                  //       ctx.fill();
-                  //       ctx.shadowBlur = 0;
-                  //
-                  //       // Borda
-                  //       ctx.strokeStyle = `rgba(255,255,255,0.6)`;
-                  //       ctx.lineWidth = 1;
-                  //       ctx.stroke();
-                  //     } catch {
-                  //       // ponto fora do campo de visão
-                  //     }
-                  //   }
-                  // } else {
-                  //   volcanoScreenPosRef.current.fill(null);
-                  // }
+                  // Vulcões: dados reais do Smithsonian
+                  if (volcanoScreenPosRef.current.length !== volcanoes.length) {
+                    volcanoScreenPosRef.current = new Array(volcanoes.length).fill(null);
+                  }
+                  if (volcanoesEnabledRef.current) {
+                    for (let i = 0; i < volcanoes.length; i++) {
+                      volcanoScreenPosRef.current[i] = null;
+                      const v = volcanoes[i];
+                      if (!isFacing(cam.latitude, cam.longitude, v.lat, v.lon)) continue;
+                      try {
+                        const sp = view.toScreen(
+                          new Point({ longitude: v.lon, latitude: v.lat, z: 50000 })
+                        );
+                        if (!sp) continue;
+                        const elevationText = v.elevation.toString();
+                        volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
+
+                        const color = volcanoColor(v.type);
+                        const radius = volcanoRadius(v.elevation);
+
+                        // Triângulo (pico vulcânico)
+                        ctx.beginPath();
+                        ctx.moveTo(sp.x, sp.y - radius);
+                        ctx.lineTo(sp.x + radius, sp.y + radius / 2);
+                        ctx.lineTo(sp.x - radius, sp.y + radius / 2);
+                        ctx.closePath();
+                        ctx.fillStyle = color;
+                        ctx.shadowBlur = 6;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Borda
+                        ctx.strokeStyle = `rgba(255,255,255,0.6)`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                      } catch {
+                        // ponto fora do campo de visão
+                      }
+                    }
+                  } else {
+                    volcanoScreenPosRef.current.fill(null);
+                  }
 
                   // Furacões — ícones de espiral coloridos pela categoria
                   if (hurricaneScreenPosRef.current.length !== hurricanes.length) {

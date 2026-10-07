@@ -95,6 +95,14 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeQuakesToggle", { detail: { quakesEnabled: next } }));
   }, [quakesEnabled]);
 
+  const [volcanoesEnabled, setVolcanoesEnabled] = useState(() => localStorage.getItem("globeVolcanoes") !== "0");
+  const toggleVolcanoes = useCallback(() => {
+    const next = !volcanoesEnabled;
+    setVolcanoesEnabled(next);
+    localStorage.setItem("globeVolcanoes", next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent("globeVolcanoesToggle", { detail: { volcanoesEnabled: next } }));
+  }, [volcanoesEnabled]);
+
   const [issEnabled, setIssEnabled] = useState(() => localStorage.getItem("globeIss") !== "0");
   const toggleIss = useCallback(() => {
     const next = !issEnabled;
@@ -301,6 +309,38 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {hurricanesEnabled ? "🌀 FURACÕES ON" : "🌀 FURACÕES OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleQuakes}
+          title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {quakesEnabled ? "📍 TREMOR ON" : "📍 TREMOR OFF"}
+        </Text>
+
+        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+        <Text
+          as="button"
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          letterSpacing="0.06em"
+          cursor="pointer"
+          onClick={toggleVolcanoes}
+          title={volcanoesEnabled ? "Desativar vulcões" : "Ativar vulcões"}
+          style={{ background: "none", border: "none", padding: 0 }}
+          _hover={{ opacity: 0.7 }}
+        >
+          {volcanoesEnabled ? "🌋 VULCÕES ON" : "🌋 VULCÕES OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
