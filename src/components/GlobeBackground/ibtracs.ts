@@ -1,7 +1,7 @@
 // src/components/GlobeBackground/ibtracs.ts
 // IBTrACS Tropical Cyclone Loader - compatible with NOAA format
 
-const IBTRACS_API = "https://ibtracs.brunokobi.duckdns.org/api/ibtracs";
+const IBTRACS_API = "https://130.61.140.66/api/ibtracs";
 const FETCH_TIMEOUT_MS = 30000;
 const IBTRACS_POLL_INTERVAL_MS = 3600000; // 1 hour cache
 
