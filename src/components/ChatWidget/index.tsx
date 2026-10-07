@@ -157,7 +157,16 @@ export function ChatWidget() {
             key={msg.id}
             justify={msg.role === 'user' ? 'flex-end' : 'flex-start'}
             w="100%"
+            align="flex-end"
+            spacing={2}
           >
+            {msg.role === 'assistant' && (
+              <img
+                src="https://jetsoftpro.com/wp-content/themes/JSP/img/jetty-and-starships/Jetty-hover.gif"
+                alt="AI avatar"
+                style={{ width: '32px', height: '32px', borderRadius: '50%' }}
+              />
+            )}
             <Box
               maxW="80%"
               bg={msg.role === 'user' ? `rgba(66, 201, 32, 0.2)` : `rgba(100, 100, 100, 0.2)`}
@@ -175,6 +184,13 @@ export function ChatWidget() {
                 })}
               </Text>
             </Box>
+            {msg.role === 'user' && (
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/9672/9672521.png"
+                alt="User avatar"
+                style={{ width: '32px', height: '32px', borderRadius: '50%' }}
+              />
+            )}
           </HStack>
         ))}
         <div ref={messagesEndRef} />

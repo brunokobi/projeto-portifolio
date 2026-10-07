@@ -12,7 +12,7 @@ export function ChatButton() {
       {/* Botão Flutuante */}
       <IconButton
         aria-label="Abrir chat"
-        icon={<span style={{ fontSize: '24px' }}>💬</span>}
+        icon={<img src="https://brunokobi.netlify.app/int-icon.png" style={{ width: '24px', height: '24px' }} />}
         onClick={onOpen}
         position="fixed"
         bottom="80px"
