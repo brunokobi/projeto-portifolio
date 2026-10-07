@@ -612,8 +612,6 @@ const GlobeBackground = () => {
                 }
               }
 
-              // DEBUG: Terremotos comentados — bug de minificação persiste
-              /*
               if (!over) {
                 // Terremotos
                 const quakePositions = quakeScreenPosRef.current;
@@ -629,7 +627,7 @@ const GlobeBackground = () => {
                       const hoursAgo = Math.max(0, (Date.now() - qp.time) / 3600000);
                       const when = hoursAgo < 1 ? "há menos de 1h" : `há ${Math.round(hoursAgo)}h`;
                       const lines = [
-                        "🌋 Terremoto",
+                        "🌍 Terremoto",
                         `Magnitude ${qp.magnitudeText} — ${qp.place}`,
                         when,
                       ];
@@ -649,7 +647,6 @@ const GlobeBackground = () => {
                   }
                 }
               }
-              */
 
               if (!over) {
                 // ISS
@@ -671,8 +668,6 @@ const GlobeBackground = () => {
                 }
               }
 
-              // DEBUG: Vulcões comentados — bug de minificação persiste
-              /*
               if (!over) {
                 // Vulcões
                 const volcanoPositions = volcanoScreenPosRef.current;
@@ -702,7 +697,6 @@ const GlobeBackground = () => {
                   }
                 }
               }
-              */
 
               if (!over) {
                 // Furacões
