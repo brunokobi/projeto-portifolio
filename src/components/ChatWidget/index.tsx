@@ -59,7 +59,7 @@ export function ChatWidget() {
     try {
       // Simulação de resposta da IA
       // Substitua isso por sua API real (OpenAI, Claude, n8n, etc)
-      const response = await generateAIResponse(inputValue, selectedLanguage);
+      const response = await generateAIResponse(inputValue);
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -238,11 +238,18 @@ export function ChatWidget() {
   );
 }
 
-// Substitua isso por sua API real
-async function generateAIResponse(message: string, language: string): Promise<string> {
-  // Exemplo simples - integre com OpenAI, Claude, n8n, etc
-  // Importante: adicione no prompt que deve responder em [language]
+// chatSessionId: o nó "When chat message received" (Chat Trigger) do n8n só
+// reconhece os campos chatInput/sessionId — qualquer outro nome de campo
+// (ex.: message/language, formato anterior) faz o workflow rejeitar a
+// requisição com 500 "Error in workflow". O sessionId também é o que dá à
+// Memória de Conversa (Window Buffer) do workflow contexto entre mensagens
+// da mesma visita; sem ele, cada mensagem seria tratada como conversa nova.
+const chatSessionId =
+  typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+async function generateAIResponse(message: string): Promise<string> {
   try {
     const response = await fetch('/.netlify/functions/n8n-chat', {
       method: 'POST',
@@ -250,8 +257,8 @@ async function generateAIResponse(message: string, language: string): Promise<st
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message,
-        language,
+        chatInput: message,
+        sessionId: chatSessionId,
       }),
     });
 
@@ -260,7 +267,9 @@ async function generateAIResponse(message: string, language: string): Promise<st
     }
 
     const data = await response.json();
-    return data.response || data.message || data.text || 'Desculpe, não consegui processar sua mensagem.';
+    // n8n (Chat Trigger) devolve a resposta no campo "output" — não
+    // "response"/"message"/"text", que nunca existiram nesse payload.
+    return data.output || 'Desculpe, não consegui processar sua mensagem.';
   } catch (error) {
     console.error('Erro ao comunicar com n8n:', error);
     return 'Desculpe, ocorreu um erro ao processar sua mensagem.';
