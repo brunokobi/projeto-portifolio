@@ -12,17 +12,17 @@
 ### Estado
 - `hoverInfo: { title: string; lines: string[]; x: number; y: number } | null`
 - Refs: `sceneViewRef`, `quakeScreenPosRef`, `issScreenPosRef`, `volcanoScreenPosRef`
-- Refs: `oceanEnabledRef`, `quakesEnabledRef`, `issEnabledRef`, `volcanoesEnabledRef`
+- Refs: `quakesEnabledRef`, `issEnabledRef`, `volcanoesEnabledRef`
 
 ### Ciclo de Vida
 1. **useEffect (setup):** ArcGIS init, event listeners
-2. **useEffect (data):** Load quakes/ISS/ocean/volcanoes in parallel
+2. **useEffect (data):** Load quakes/ISS/volcanoes in parallel
 3. **useEffect (render loop):** requestAnimationFrame → draw particles + pins
 4. **Cleanup:** AbortController, event listener removal
 
 ### Métodos Chave
 - `drawPins()` — renderiza circles/ellipses/triangles pra todos os pontos
-- `drawParticles()` — ocean + wind canvas layers com advection
+- `drawParticles()` — wind canvas layer com advection
 - `handlePointerMove()` — hit detection pra hover tooltips
 
 ### Estrutura JSX
@@ -42,7 +42,6 @@
 ### Buttons
 | Emoji | Label | Event | Estado Ref |
 |-------|-------|-------|-----------|
-| 🌊 | CORRENTES | globeOceanToggle | oceanEnabledRef |
 | 🛰 | ISS | globeIssToggle | issEnabledRef |
 | 🌋 | VULCÕES | globoVolcanoesToggle | volcanoesEnabledRef |
 
@@ -136,7 +135,7 @@ src/
 │   │   ├── index.tsx
 │   │   ├── quakes.ts
 │   │   ├── iss.ts
-│   │   ├── ocean.ts
+│   │   ├── ocean.ts (legado, sem uso)
 │   │   ├── volcanoes.ts
 │   │   ├── wind.ts (empty after removal)
 │   │   └── __tests__/

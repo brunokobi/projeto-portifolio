@@ -92,51 +92,6 @@ setInterval(() => loadIssPosition(), ISS_POLL_INTERVAL_MS);
 
 ---
 
-## 🌊 Correntes Marítimas (Ocean Currents)
-
-**Arquivo:** `src/components/GlobeBackground/ocean.ts`  
-**Fonte:** Open-Meteo Marine API  
-**URL:** `https://marine-api.open-meteo.com/v1/marine`  
-**Grid:** 36×17 points (10° spacing, global)  
-**Atualização:** 1x load (static)  
-**Status:** ✅ Completo
-
-### Data Structure
-```typescript
-interface OceanGrid {
-  lat: number[];
-  lon: number[];
-  u: number[][]; // velocidade zonal (E-W)
-  v: number[][]; // velocidade meridional (N-S)
-  mag: number[][]; // magnitude
-}
-
-interface OceanParticle {
-  lat: number;
-  lon: number;
-  age: number;
-}
-```
-
-### Rendering
-- **Lines:** traço dashed (3px solid, 4px gap)
-  - Diferencia visualmente do vento (solid)
-- **Color:** magnitude → gradiente azul→verde→vermelho
-  - Lento: azul (#0066ff)
-  - Médio: verde (#00ff00)
-  - Rápido: vermelho (#ff0000)
-
-### Physics
-- **Z-altitude:** 400km (bem acima do oceano visível)
-- **Time step:** 30000s (simulação lenta/fluida)
-- **Advection:** bilinear interpolation no grid U/V
-
-### Testing
-- 14 test cases em `__tests__/ocean.test.ts`
-- Cobertura: grid parsing, color interpolation, particle lifecycle
-
----
-
 ## 🌋 Vulcões (Volcanoes)
 
 **Arquivo:** `src/components/GlobeBackground/volcanoes.ts`  
@@ -236,10 +191,9 @@ Elevação: 3,776m
 ### Parallel Loading
 ```javascript
 // loadQuakes() está desabilitado (ver Terremotos)
-const [quakes, iss, ocean, volcanoes] = await Promise.all([
+const [quakes, iss, volcanoes] = await Promise.all([
   loadQuakes(),
   loadIssPosition(),
-  loadOceanGrid(),
   loadVolcanoes()
 ]);
 ```
@@ -252,7 +206,6 @@ const [quakes, iss, ocean, volcanoes] = await Promise.all([
 ### Caching
 - Quakes: desabilitado (não carrega)
 - ISS: polling contínuo (8s)
-- Ocean: load once (static)
 - Volcanoes: load once (static)
 
 ---

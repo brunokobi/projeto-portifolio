@@ -77,53 +77,6 @@ const iss = await loadIssPosition();
 
 ---
 
-## 🌊 Open-Meteo Marine API
-
-**Endpoint:** `https://marine-api.open-meteo.com/v1/marine`  
-**Método:** GET (com query params)  
-**Autenticação:** Nenhuma  
-**Rate Limit:** 10k requests/dia (free tier)  
-**CORS:** ✅ Habilitado  
-**Timeout:** 10s
-
-### Query Params
-```
-?latitude=0,10,20,...,90
-&longitude=-180,-170,...,170
-&current=ocean_surface_wave_significant_height,ocean_surface_wave_mean_wavelength,...
-&hourly=u_component_of_current_10m,v_component_of_current_10m
-```
-
-### Response Format (Simplificado)
-```json
-{
-  "latitude": [0, 10, 20, ...],
-  "longitude": [-180, -170, ...],
-  "hourly": {
-    "time": ["2026-09-27T00:00", ...],
-    "u_component_of_current_10m": [[...], ...],
-    "v_component_of_current_10m": [[...], ...]
-  }
-}
-```
-
-### Grid
-- Latitude: 0 to 90 (17 pontos, 10° spacing)
-- Longitude: -180 to 170 (36 pontos, 10° spacing)
-- Total: 612 pontos
-
-### Response Size
-- ~623 KB por request
-- Tempo de resposta: ~2.6s
-
-### Uso no Código
-```typescript
-import { loadOceanGrid, parseOceanResponse } from './ocean';
-const oceanGrid = await loadOceanGrid();
-```
-
----
-
 ## 🌋 Vasturiano Volcanoes Dataset
 
 **URL:** `https://gist.githubusercontent.com/vasturiano/3c27138769a04d1780562ce04afbedf2/raw/.../world_volcanoes.json`  

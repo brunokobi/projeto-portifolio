@@ -8,7 +8,7 @@
 
 - [**ARCHITECTURE.md**](./ARCHITECTURE.md) — Estrutura geral, fluxo de dados, renderização
 - [**COMPONENTS.md**](./COMPONENTS.md) — Componentes React principais
-- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (ISS, oceano, vulcões, furacões; terremotos desabilitados)
+- [**FEATURES.md**](./FEATURES.md) — Features em tempo real (ISS, vulcões, furacões; terremotos desabilitados)
 - [**API.md**](./API.md) — APIs externas e data sources
 - [**STACK.md**](./STACK.md) — Dependências e versões
 - [**SETUP.md**](./SETUP.md) — Como rodar localmente
@@ -19,7 +19,7 @@ Portfólio técnico com **globo 3D interativo** (ArcGIS SceneView) mostrando dad
 
 ### 🌍 Globo 3D
 - Renderização WebGL via ArcGIS JS SDK
-- Canvas layers pra partículas (vento, oceano)
+- Canvas layers pra partículas (vento)
 - Pins pra pontos de interesse (ISS, vulcões)
 
 ### 📡 Features em Tempo Real
@@ -27,7 +27,6 @@ Portfólio técnico com **globo 3D interativo** (ArcGIS SceneView) mostrando dad
 |---------|-------|-------------|--------|
 | Terremotos | USGS GeoJSON | Live (24h) | ⛔ Desabilitado |
 | ISS | wheretheiss.at | 8s polling | ✅ |
-| Correntes Marítimas | Open-Meteo Marine | Load once | ✅ |
 | Vulcões | Vasturiano gist | Static (425) | ⚠️ Pins sim, hover desabilitado |
 | Vento | ERA5 (histórico) | Grid particle | ✅ |
 

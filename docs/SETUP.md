@@ -90,7 +90,7 @@ projeto-portifolio/
 │   │   │   ├── index.tsx          ← Main globe component
 │   │   │   ├── quakes.ts          ← Earthquake data
 │   │   │   ├── iss.ts             ← ISS tracking
-│   │   │   ├── ocean.ts           ← Ocean currents
+│   │   │   ├── ocean.ts           ← Legado (correntes removidas, sem uso)
 │   │   │   ├── volcanoes.ts       ← Volcano data
 │   │   │   └── __tests__/         ← Unit tests
 │   │   ├── WeatherBar/            ← Feature toggles
@@ -212,7 +212,7 @@ npm install
 Veja:
 - `ARCHITECTURE.md` — Estrutura geral + data flow
 - `COMPONENTS.md` — Componentes React
-- `FEATURES.md` — Features em tempo real (ISS, oceano, vulcões; terremotos desabilitados)
+- `FEATURES.md` — Features em tempo real (ISS, vulcões; terremotos desabilitados)
 - `API.md` — Endpoints externos
 - `STACK.md` — Dependências + tech choices
 - `CLAUDE.md` — Conventions (commits, code style, etc)

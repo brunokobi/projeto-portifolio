@@ -13,7 +13,7 @@
 │  │  │  ArcGIS SceneView      │  │   │
 │  │  │  ┌──────────────────┐  │  │   │
 │  │  │  │ Canvas Layers    │  │  │   │
-│  │  │  │ (wind, ocean)    │  │  │   │
+│  │  │  │ (wind)           │  │  │   │
 │  │  │  ├──────────────────┤  │  │   │
 │  │  │  │ Graphics (pins)  │  │  │   │
 │  │  │  │ quakes/ISS/vol   │  │  │   │
@@ -40,7 +40,7 @@
 - **Responsabilidade:** Renderizar globo 3D + all overlays
 - **Ciclo de vida:** 
   1. Load (ArcGIS SDK setup)
-  2. Fetch data (ISS, ocean, volcanoes; quakes desabilitado)
+  2. Fetch data (ISS, volcanoes; quakes desabilitado)
   3. Render loop (requestAnimationFrame)
   4. Cleanup
 
@@ -48,7 +48,7 @@
 Arquivos de dados/parsing:
 - `quakes.ts` — USGS parsing + color/radius helpers
 - `iss.ts` — wheretheiss.at parsing
-- `ocean.ts` — Open-Meteo Marine grid + particle advection
+- `ocean.ts` — legado: correntes marítimas removidas, arquivo sem uso
 - `volcanoes.ts` — Vasturiano gist parsing
 - `wind.ts` — removed (heatmap removido)
 
@@ -58,14 +58,12 @@ Arquivos de dados/parsing:
 ```
 ISS:      load() → parseIssPosition() → 8s poll → update tooltips
 Quakes:   [desabilitado] loadQuakes() comentado — nada é carregado
-Ocean:    load() → parseOceanGrid() → 1x load (static)
 Volcanoes: load() → parseVolcanoes() → 1x load (static)
 ```
 
 ### Renderização
 
 #### Canvas Layers (Particles)
-- **Ocean:** drawLine() dashed (🌊 diferencia do vento)
 - **Wind:** drawLine() solid (removido heatmap)
 - Advection via bilinear interpolation
 
@@ -88,14 +86,14 @@ Refs (não precisa rerender):
 - `hoverInfo` — tooltip state (useState)
 
 Event Listeners:
-- `globeOceanToggle`, `globeIssToggle`, `globoVolcanoesToggle` (`globeQuakesToggle` sem emissor: terremotos desabilitados)
+- `globeIssToggle`, `globoVolcanoesToggle` (`globeQuakesToggle` sem emissor: terremotos desabilitados)
 - CustomEvent via window dispatchEvent (WeatherBar → GlobeBackground)
 
 ## Performance
 
 - **Canvas compositing:** destination-in pra motion trails
 - **Bilinear interpolation:** smooth particle advection sem resampling
-- **Parallel fetches:** Promise.all pra ocean/volcanoes
+- **Parallel fetches:** Promise.all pra ISS/volcanoes
 - **Screen-space hover:** só calcula quando mouse move
 
 ## Limitação conhecida: minificação em refs
