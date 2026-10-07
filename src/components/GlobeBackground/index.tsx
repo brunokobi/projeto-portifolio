@@ -283,9 +283,6 @@ const GlobeBackground = () => {
       globeHurricanesToggle: (e: Event) => {
         hurricanesEnabledRef.current = (e as CustomEvent).detail.hurricanesEnabled as boolean;
       },
-      globeIBTraCSToggle: (e: Event) => {
-        ibtracsEnabledRef.current = (e as CustomEvent).detail.ibtracsEnabled as boolean;
-      },
       globeSatellitesToggle: (e: Event) => {
         satellitesEnabledRef.current = (e as CustomEvent).detail.satellitesEnabled as boolean;
       },
@@ -744,29 +741,6 @@ const GlobeBackground = () => {
               }
 
               if (!over) {
-                // IBTrACS - Ciclones tropicais
-                const ibtracsPositions = ibtracsScreenPosRef.current;
-                for (let i = 0; i < ibtracsPositions.length; i++) {
-                  const ip = ibtracsPositions[i];
-                  if (!ip) continue;
-                  const dx = evt.x - ip.x, dy = evt.y - ip.y;
-                  if (dx * dx + dy * dy < 24 * 24) {
-                    over = true;
-                    const key = `ibtracs-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const lines = [`🌀 ${ip.name}`];
-                      if (ip.windSpeed) lines.push(`Vento: ${ip.windSpeed} km/h`);
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
-
-              if (!over) {
                 // Satélites
                 const satellitePositions = satelliteScreenPosRef.current;
                 for (let i = 0; i < satellitePositions.length; i++) {
@@ -1046,13 +1020,6 @@ const GlobeBackground = () => {
                 loadHurricanes().then((data) => {
                   if (!mountedRef.current) return;
                   hurricanes = data;
-                });
-
-                // IBTrACS - Ciclones tropicais
-                let ibtracs: IBTraCS[] = [];
-                loadIBTraCS().then((data) => {
-                  if (!mountedRef.current) return;
-                  ibtracs = data;
                 });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
@@ -1414,32 +1381,6 @@ const GlobeBackground = () => {
                     }
                   } else {
                     hurricaneScreenPosRef.current.fill(null);
-                  }
-
-                  // IBTrACS - Ciclones tropicais
-                  if (ibtracsScreenPosRef.current.length !== ibtracs.length) {
-                    ibtracsScreenPosRef.current = new Array(ibtracs.length).fill(null);
-                  }
-                  if (ibtracsEnabledRef.current) {
-                    for (let i = 0; i < ibtracs.length; i++) {
-                      ibtracsScreenPosRef.current[i] = null;
-                      const ibt = ibtracs[i];
-                      if (!isFacing(cam.latitude, cam.longitude, ibt.lat, ibt.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: ibt.lon, latitude: ibt.lat, z: 100000 })
-                        );
-                        if (!sp) continue;
-                        ibtracsScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: ibt.name, windSpeed: ibt.windSpeed };
-                        const color = ibtracsColor(ibt.type);
-                        const radius = ibtracsRadius(ibt.windSpeed);
-                        drawIBTraCSIcon(ctx, sp.x, sp.y, radius, color, ibt.name);
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    ibtracsScreenPosRef.current.fill(null);
                   }
 
                   // Satélites

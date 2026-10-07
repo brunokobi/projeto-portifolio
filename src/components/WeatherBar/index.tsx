@@ -120,14 +120,6 @@ const WeatherBar = () => {
     window.dispatchEvent(new CustomEvent("globeHurricanesToggle", { detail: { hurricanesEnabled: next } }));
   }, [hurricanesEnabled]);
 
-  const [ibtracsEnabled, setIBTraCSEnabled] = useState(() => localStorage.getItem("globeIBTraCS") !== "0");
-  const toggleIBTraCS = useCallback(() => {
-    const next = !ibtracsEnabled;
-    setIBTraCSEnabled(next);
-    localStorage.setItem("globeIBTraCS", next ? "1" : "0");
-    window.dispatchEvent(new CustomEvent("globeIBTraCSToggle", { detail: { ibtracsEnabled: next } }));
-  }, [ibtracsEnabled]);
-
   const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
   const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
   const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
@@ -333,21 +325,6 @@ const WeatherBar = () => {
           _hover={{ opacity: 0.7 }}
         >
           {hurricanesEnabled ? "🌀 FURACÕES ON" : "🌀 FURACÕES OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={toggleIBTraCS}
-          title={ibtracsEnabled ? "Desativar IBTrACS" : "Ativar IBTrACS"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {ibtracsEnabled ? "🌀 IBTRACS ON" : "🌀 IBTRACS OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
