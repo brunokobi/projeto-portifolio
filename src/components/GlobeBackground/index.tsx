@@ -23,13 +23,6 @@ import {
   type WindGrid,
   type WindParticle,
 } from "./wind";
-import {
-  loadOceanGrid,
-  createRandomOceanParticle,
-  advanceOceanParticle,
-  oceanSpeedToColor,
-  type OceanParticle,
-} from "./ocean";
 import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
@@ -158,7 +151,6 @@ const GlobeBackground = () => {
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
   const windEnabledRef = useRef(localStorage.getItem("globeWind") !== "0");
-  const oceanEnabledRef = useRef(localStorage.getItem("globeOcean") !== "0");
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
