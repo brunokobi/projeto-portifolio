@@ -4,7 +4,6 @@ import Router from "./routes";
 import { IntlProvider } from "react-intl";
 import VisitCounter from "./components/Contador/VisitCounter";
 import WeatherBar from "./components/WeatherBar";
-import N8nChatWidget from "./components/N8nChatWidget";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
@@ -68,7 +67,6 @@ function AppContent() {
       <IntlProvider locale={locale} messages={messages}>
         {!isNews && <WeatherBar />}
         {!isNews && <VisitCounter />}
-        <N8nChatWidget />
         <Router />
         <ToastContainer />
       </IntlProvider>
