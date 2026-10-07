@@ -21,6 +21,8 @@ export const handler: Handler = async (event) => {
   }
 
   const webhookUrl = process.env.N8N_WEBHOOK_URL;
+  console.log("[n8n-chat] N8N_WEBHOOK_URL value:", webhookUrl ? "CONFIGURADA" : "NÃO CONFIGURADA");
+
   if (!webhookUrl) {
     console.error("[n8n-chat] N8N_WEBHOOK_URL não configurada");
     return {
