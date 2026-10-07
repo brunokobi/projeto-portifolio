@@ -631,10 +631,6 @@ const GlobeBackground = () => {
                         `Magnitude ${qp.magnitudeText} — ${qp.place}`,
                         when,
                       ];
-                      const nearbyAqi = findNearbyAQI(qp.x, qp.y);
-                      if (nearbyAqi) {
-                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
-                      }
                       setHoverInfo({
                         x: evt.x,
                         y: evt.y,
@@ -685,10 +681,6 @@ const GlobeBackground = () => {
                       if (vp.country) lines.push(`${vp.country}`);
                       if (vp.type) lines.push(`Tipo: ${vp.type}`);
                       if (vp.elevationText) lines.push(`Elevação: ${vp.elevationText} m`);
-                      const nearbyAqi = findNearbyAQI(vp.x, vp.y);
-                      if (nearbyAqi) {
-                        lines.push(`💨 AQI: ${nearbyAqi.aqi}`);
-                      }
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
