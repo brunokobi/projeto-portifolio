@@ -34,7 +34,6 @@ import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
-import { loadIBTraCS, ibtracsColor, ibtracsRadius, drawIBTraCSIcon, type IBTraCS } from "./ibtracs";
 import { loadSatellites, satelliteColor, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
 import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
@@ -155,7 +154,6 @@ const GlobeBackground = () => {
   const wildfireScreenPosRef = useRef<Array<{ x: number; y: number; name: string; confidence: number } | null>>([]);
   const lightningScreenPosRef = useRef<Array<{ x: number; y: number } | null>>([]);
   const techHubScreenPosRef = useRef<Array<{ x: number; y: number; name: string; sector: string } | null>>([]);
-  const ibtracsScreenPosRef = useRef<Array<{ x: number; y: number; name: string; windSpeed: number } | null>>([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
@@ -164,7 +162,6 @@ const GlobeBackground = () => {
   const quakesEnabledRef = useRef(localStorage.getItem("globeQuakes") !== "0");
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
-  const ibtracsEnabledRef = useRef(localStorage.getItem("globeIBTraCS") !== "0");
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
   const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
