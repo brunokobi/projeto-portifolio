@@ -227,29 +227,26 @@ async function generateAIResponse(message: string, language: string): Promise<st
   // Exemplo simples - integre com OpenAI, Claude, n8n, etc
   // Importante: adicione no prompt que deve responder em [language]
 
-  const responses: Record<string, string[]> = {
-    'pt-BR': [
-      'Que pergunta interessante! Deixa eu pensar sobre isso...',
-      'Ótima questão! Posso te ajudar com isso.',
-      'Entendi sua pergunta. Aqui está minha resposta...',
-    ],
-    'en-US': [
-      'That\'s an interesting question! Let me think about it...',
-      'Great question! I can help you with that.',
-      'I understand your question. Here\'s my answer...',
-    ],
-    'es-ES': [
-      '¡Esa es una pregunta interesante! Déjame pensar...',
-      '¡Gran pregunta! Puedo ayudarte con eso.',
-      'Entiendo tu pregunta. Aquí está mi respuesta...',
-    ],
-    'fr-FR': [
-      'C\'est une question intéressante! Laissez-moi réfléchir...',
-      'Excellente question! Je peux vous aider avec ça.',
-      'Je comprends votre question. Voici ma réponse...',
-    ],
-  };
+  try {
+    const response = await fetch('/.netlify/functions/n8n-chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        language,
+      }),
+    });
 
-  const langResponses = responses[language] || responses['pt-BR'];
-  return langResponses[Math.floor(Math.random() * langResponses.length)];
+    if (!response.ok) {
+      throw new Error(`n8n error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.response || data.message || data.text || 'Desculpe, não consegui processar sua mensagem.';
+  } catch (error) {
+    console.error('Erro ao comunicar com n8n:', error);
+    return 'Desculpe, ocorreu um erro ao processar sua mensagem.';
+  }
 }
