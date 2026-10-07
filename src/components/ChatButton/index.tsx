@@ -15,7 +15,7 @@ export function ChatButton() {
         icon={<span style={{ fontSize: '24px' }}>💬</span>}
         onClick={onOpen}
         position="fixed"
-        bottom="20px"
+        bottom="80px"
         right="20px"
         zIndex={100}
         bg={`rgba(66, 201, 32, 0.1)`}
