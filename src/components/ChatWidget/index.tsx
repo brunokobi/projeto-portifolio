@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Box, Input, Button, VStack, HStack, Text, Select, IconButton } from '@chakra-ui/react';
+import { Box, Input, Button, VStack, HStack, Text } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { speak, stopSpeech } from '../../utils/textToSpeech';
 import styles from './ChatWidget.module.css';
@@ -122,39 +122,11 @@ export function ChatWidget() {
       <HStack
         p={4}
         borderBottom={`1px solid rgba(66, 201, 32, 0.2)`}
-        justify="space-between"
         bg="rgba(66, 201, 32, 0.05)"
       >
-        <HStack spacing={2}>
-          <Text fontSize="lg" fontWeight="bold" color={GREEN}>
-            💬 Chat IA
-          </Text>
-        </HStack>
-        <HStack spacing={2}>
-          <Select
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            size="sm"
-            w="130px"
-            bg="rgba(66, 201, 32, 0.1)"
-            borderColor={GREEN}
-            color="white"
-          >
-            <option value="pt-BR">🇧🇷 Português</option>
-            <option value="en-US">🇺🇸 English</option>
-            <option value="es-ES">🇪🇸 Español</option>
-            <option value="fr-FR">🇫🇷 Français</option>
-          </Select>
-          <IconButton
-            aria-label={audioEnabled ? 'Desativar áudio' : 'Ativar áudio'}
-            icon={<span>{audioEnabled ? '🔊' : '🔇'}</span>}
-            onClick={() => setAudioEnabled(!audioEnabled)}
-            size="sm"
-            bg="rgba(66, 201, 32, 0.1)"
-            borderColor={GREEN}
-            _hover={{ bg: `rgba(66, 201, 32, 0.2)` }}
-          />
-        </HStack>
+        <Text fontSize="lg" fontWeight="bold" color={GREEN}>
+          💬 Chat IA
+        </Text>
       </HStack>
 
       {/* Messages */}
