@@ -1,16 +1,14 @@
-// Furacões - Dados de tempestades tropicais em tempo real
-// Fonte: NOAA (National Hurricane Center) - Dados oficiais, sem autenticação
-
-const FETCH_TIMEOUT_MS = 30000;
-const HURRICANE_POLL_INTERVAL_MS = 30000; // Atualiza a cada 30s
-
-// NOAA feeds via Netlify proxy (/api/noaa/*) — resolve CORS bloqueado
-// Feeds disponíveis: Atlântico, Pacíficos
-const NOAA_RSS_FEEDS = [
-  "/api/noaa/index-at.xml", // Atlântico (Furacões/Tropical Storms/Depressions)
-  "/api/noaa/index-ep.xml", // Pacífico Leste (Furacões/Tropical Storms)
-  "/api/noaa/index-cp.xml", // Pacífico Central (Tufões/Tropical Storms)
-];
+// Furacões — posição observada mais recente de cada ciclone tropical ativo
+// no mundo. Fonte: ArcGIS Living Atlas "Active Hurricanes, Cyclones and
+// Typhoons" (esri_livefeeds2), que agrega NHC (Atlântico/Pacífico) + JTWC
+// (demais bacias — Índico, Hemisfério Sul, Pacífico Oeste), atualizado a
+// cada 15min. Cobre globo inteiro, ao contrário do RSS só-NOAA usado antes
+// (trocado em 08/10/2026) — não precisa mais de proxy Netlify pra CORS,
+// o serviço já libera CORS.
+const HURRICANE_SERVICE_URL =
+  "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer/1/query";
+const FETCH_TIMEOUT_MS = 20000;
+const HURRICANE_POLL_INTERVAL_MS = 5 * 60 * 1000; // serviço atualiza a cada 15min, 5min é margem segura
 
 // Cache pra evitar múltiplas requisições simultâneas
 let cachedHurricanes: Hurricane[] = [];
@@ -61,66 +59,32 @@ export function parseHurricanes(json: unknown): Hurricane[] {
   return hurricanes;
 }
 
-async function fetchNOAARSSFeed(url: string): Promise<Document | null> {
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-    if (!res.ok) return null;
-    const text = await res.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, "application/xml");
-    if (doc.getElementsByTagName("parsererror").length) return null;
-    return doc;
-  } catch {
-    return null;
-  }
+interface EsriHurricaneAttrs {
+  STORMID?: string | null;
+  STORMNAME?: string | null;
+  LAT?: number | null;
+  LON?: number | null;
+  INTENSITY?: number | null; // nós (kt)
+  MSLP?: number | null; // mb — 0 quando a agência de origem (ex.: JTWC) não reporta
+  SS?: number | null; // categoria Saffir-Simpson, 0-5 (-1/-2 = depressão/distúrbio, tratado como 0)
+  DTG?: number | null; // epoch ms da observação
 }
 
-function parseNOAACyclones(doc: Document): Hurricane[] {
-  const cyclones: Hurricane[] = [];
-  const items = doc.getElementsByTagName("item");
+async function fetchEsriHurricanePositions(): Promise<EsriHurricaneAttrs[]> {
+  const url = new URL(HURRICANE_SERVICE_URL);
+  url.searchParams.set("where", "1=1");
+  url.searchParams.set("outFields", "STORMID,STORMNAME,LAT,LON,INTENSITY,MSLP,SS,DTG");
+  // STORMID,DTG DESC: agrupa por tempestade com a observação mais recente
+  // primeiro — de-dup abaixo fica só com 1 (a mais recente) por STORMID.
+  url.searchParams.set("orderByFields", "STORMID,DTG DESC");
+  url.searchParams.set("outSR", "4326");
+  url.searchParams.set("f", "json");
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    const nhcCyclone = item.getElementsByTagName("nhc:Cyclone")[0];
-    if (!nhcCyclone) continue;
-
-    const centerText = nhcCyclone.getElementsByTagName("nhc:center")[0]?.textContent || "";
-    const [latStr, lonStr] = centerText.split(",").map((s) => s.trim());
-    const lat = parseFloat(latStr);
-    const lon = parseFloat(lonStr);
-
-    if (isNaN(lat) || isNaN(lon)) continue;
-
-    const name = nhcCyclone.getElementsByTagName("nhc:name")[0]?.textContent || "Storm";
-    const typeEl = nhcCyclone.getElementsByTagName("nhc:type")[0]?.textContent || "";
-    const windStr = nhcCyclone.getElementsByTagName("nhc:wind")[0]?.textContent || "0";
-    const pressureStr = nhcCyclone.getElementsByTagName("nhc:pressure")[0]?.textContent || "1013";
-
-    const windMph = parseInt(windStr) || 0;
-    const windKmh = Math.round(windMph * 1.60934);
-    const pressure = parseInt(pressureStr) || 1013;
-
-    // Saffir-Simpson: 74+ mph (119 km/h) = Cat 1, 96+ (154) = Cat 2, etc.
-    let category = 0;
-    if (windMph >= 157) category = 5;
-    else if (windMph >= 130) category = 4;
-    else if (windMph >= 111) category = 3;
-    else if (windMph >= 96) category = 2;
-    else if (windMph >= 74) category = 1;
-
-    cyclones.push({
-      id: `noaa-${name}-${lat}-${lon}`,
-      name,
-      lat,
-      lon,
-      windSpeed: windKmh,
-      pressure,
-      category,
-      movement: typeEl,
-    });
-  }
-
-  return cyclones;
+  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+  if (!res.ok) return [];
+  const data = await res.json();
+  if (data.error || !Array.isArray(data.features)) return [];
+  return data.features.map((f: { attributes: EsriHurricaneAttrs }) => f.attributes);
 }
 
 export async function loadHurricanes(): Promise<Hurricane[]> {
@@ -131,17 +95,29 @@ export async function loadHurricanes(): Promise<Hurricane[]> {
   }
 
   try {
-    const allStorms: Hurricane[] = [];
+    const posicoes = await fetchEsriHurricanePositions();
 
-    for (const feedUrl of NOAA_RSS_FEEDS) {
-      const doc = await fetchNOAARSSFeed(feedUrl);
-      if (doc) {
-        const cyclones = parseNOAACyclones(doc);
-        allStorms.push(...cyclones);
-      }
+    const vistos = new Set<string>();
+    const maisRecentes: EsriHurricaneAttrs[] = [];
+    for (const p of posicoes) {
+      if (!p.STORMID || vistos.has(p.STORMID)) continue;
+      vistos.add(p.STORMID);
+      maisRecentes.push(p);
     }
 
-    // Atualiza cache
+    const bruto = maisRecentes.map((p) => ({
+      id: p.STORMID,
+      name: p.STORMNAME,
+      lat: p.LAT,
+      lon: p.LON,
+      windSpeed: typeof p.INTENSITY === "number" ? Math.round(p.INTENSITY * 1.852) : 0, // kt -> km/h
+      pressure: p.MSLP || 0,
+      category: typeof p.SS === "number" ? Math.max(0, p.SS) : 0,
+      movement: "",
+    }));
+
+    const allStorms = parseHurricanes(bruto);
+
     cachedHurricanes = allStorms;
     cacheTimestamp = now;
 
