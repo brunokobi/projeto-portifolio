@@ -276,7 +276,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {windEnabled ? "🌬 VENTO ON" : "🌬 VENTO OFF"}
+          {windEnabled ? "🌬 ON" : "🌬 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -292,7 +292,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {issEnabled ? "🛰 ISS ON" : "🛰 ISS OFF"}
+          {issEnabled ? "🛰 ON" : "🛰 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -308,7 +308,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {hurricanesEnabled ? "🌀 FURACÕES ON" : "🌀 FURACÕES OFF"}
+          {hurricanesEnabled ? "🌀 ON" : "🌀 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -324,7 +324,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {quakesEnabled ? "📍 TREMOR ON" : "📍 TREMOR OFF"}
+          {quakesEnabled ? "📍 ON" : "📍 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -340,7 +340,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {volcanoesEnabled ? "🌋 VULCÕES ON" : "🌋 VULCÕES OFF"}
+          {volcanoesEnabled ? "🌋 ON" : "🌋 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -359,6 +359,7 @@ const WeatherBar = () => {
           }}
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
+          title={satellitesEnabled ? "Desativar satélites" : "Ativar satélites"}
         >
           🛰️ {satellitesEnabled ? "ON" : "OFF"}
         </Text>
@@ -376,6 +377,7 @@ const WeatherBar = () => {
           }}
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
+          title={wildfiresEnabled ? "Desativar incêndios" : "Ativar incêndios"}
         >
           {wildfiresEnabled ? "🔥 ON" : "🔥 OFF"}
         </Text>
@@ -393,6 +395,7 @@ const WeatherBar = () => {
           }}
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
+          title={capAlertsEnabled ? "Desativar alertas de emergência" : "Ativar alertas de emergência"}
         >
           {capAlertsEnabled ? "⚠️ ON" : "⚠️ OFF"}
         </Text>
@@ -411,7 +414,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {rotationEnabled ? "🔄 GIRO ON" : "⏸ GIRO OFF"}
+          {rotationEnabled ? "🔄 ON" : "⏸ OFF"}
         </Text>
       </HStack>
     </Box>
