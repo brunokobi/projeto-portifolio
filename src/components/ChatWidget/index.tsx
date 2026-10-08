@@ -42,6 +42,20 @@ export function ChatWidget() {
     scrollToBottom();
   }, [messages]);
 
+  // Fala a mensagem de boas-vindas ao montar o widget — mesma lógica de
+  // handleSendMessage, só que pra mensagem inicial estática (nunca passava
+  // por ali, então nunca tocava áudio). Nota: navegadores podem bloquear
+  // speechSynthesis sem uma interação do usuário antes — se o widget montar
+  // logo no carregamento da página, o áudio pode não tocar na primeira vez
+  // (limite do navegador, não bug daqui).
+  useEffect(() => {
+    if (!audioEnabled) return;
+    const mensagemInicial = messages[0]?.text;
+    if (!mensagemInicial) return;
+    respondWithAudio(mensagemInicial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
