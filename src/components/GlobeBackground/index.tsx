@@ -1412,14 +1412,6 @@ const GlobeBackground = () => {
                         wildfireScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: w.name, confidence: w.confidence };
                         ctx.font = "bold 14px Arial";
                         ctx.fillText("🔥", sp.x - 7, sp.y + 7);
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = wildfireColor(w.confidence);
-                        ctx.shadowBlur = 5;
-                        ctx.shadowColor = wildfireColor(w.confidence);
-                        // Legenda fixa — o detalhe (satélite/FRP/confiança) só aparece
-                        // no hover (lines mais abaixo), senão com até 500 pontos o
-                        // globo fica ilegível de texto sobreposto.
-                        ctx.fillText("Incêndio", sp.x + 14, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
