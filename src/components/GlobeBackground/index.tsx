@@ -1271,7 +1271,7 @@ const GlobeBackground = () => {
                         volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
 
                         const color = volcanoColor(v.type);
-                        const radius = volcanoRadius(v.elevation);
+                        const radius = volcanoRadius(v.elevation) * 0.8;
 
                         // Triângulo (pico vulcânico)
                         ctx.beginPath();
