@@ -3,9 +3,21 @@ import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
 
 /**
  * Proxy para o webhook público do workflow "chatBruno - Multi-Agente RAG" no n8n
- * (self-hosted, AWS EC2 / Oracle VPS). Mantém a URL real do n8n fora do bundle
- * do frontend — o widget (@n8n/chat embedado no index.html) fala só com esta
- * function, que repassa o body recebido e devolve a resposta do agente.
+ * (self-hosted, Oracle VPS). Mantém a URL real do n8n fora do bundle
+ * do frontend — o ChatWidget (src/components/ChatWidget) fala só com esta
+ * function, que repassa o body recebido e devolve a resposta do agente sem
+ * transformar nada.
+ *
+ * Contrato (definido pelo Chat Trigger do n8n):
+ * - Request:  POST { chatInput: string, sessionId: string }
+ *   Qualquer outro formato (ex.: { message, language }) faz o workflow
+ *   responder 500. O sessionId (UUID gerado por visita no frontend) é a chave
+ *   da Memória de Conversa do workflow.
+ * - Response: JSON { output: string } — texto da resposta do agente.
+ * - Workflow fixo em português: não há campo de idioma no payload.
+ *
+ * Env: N8N_WEBHOOK_URL (variável do Netlify, obrigatória; sem ela retorna 500).
+ * Timeout de 55s na chamada ao n8n; falha de rede/timeout retorna 502.
  */
 export const handler: Handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {

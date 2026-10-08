@@ -111,6 +111,26 @@ DevBlog copia esse design:
 
 ---
 
+## `ChatWidget`
+**Arquivo:** `src/components/ChatWidget/index.tsx`  
+**Responsabilidade:** UI de chat com o agente n8n (mensagens, seletor de idioma, toggle de áudio/TTS)
+
+- Sem props. Estado local: `messages`, `inputValue`, `isLoading`, `selectedLanguage`, `audioEnabled`, `isSpeaking`
+- `generateAIResponse(message)` (função de módulo) faz `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` e lê a resposta em `data.output`
+- `chatSessionId` é gerado uma vez por carregamento da página e mantém a memória de conversa no n8n
+- `selectedLanguage` **não é enviado ao n8n** (workflow fixo em português); só alimenta o áudio via `useChatWithAudio`
+- Detalhes do fluxo: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
+
+## `ChatButton`
+**Arquivo:** `src/components/ChatButton/index.tsx`  
+**Responsabilidade:** botão flutuante (canto inferior direito) que abre o `ChatWidget` num Drawer do Chakra
+
+- Sem props; controla abertura com `useDisclosure`
+- Renderizado em `App.tsx` em todas as páginas, exceto `/news`
+- O `ChatWidget` também é usado standalone na rota `/chat` (`src/pages/Chat.tsx`)
+
+---
+
 ## Componentes UI (Chakra)
 
 ### Used Throughout

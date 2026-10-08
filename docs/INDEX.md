@@ -30,6 +30,7 @@
 | 🌀 Furacões | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | NOAA RSS → hurricanes.ts → spirals |
 | 🛰 ISS | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | wheretheiss → iss.ts → polling |
 | 🌬 Vento | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | ERA5 grid → wind.ts → particles |
+| 💬 Chat IA | [FEATURES.md](./FEATURES.md#-chat-ia-n8n) + [COMPONENTS.md](./COMPONENTS.md) | ChatWidget → n8n-chat.ts → n8n |
 
 ### Para Setup Local
 | Tarefa | Arquivo | Commando |

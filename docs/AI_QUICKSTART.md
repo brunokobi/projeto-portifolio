@@ -27,6 +27,7 @@ Portfólio técnico com **globo 3D interativo** mostrando dados em tempo real:
 | 🏙️ Cidades | Hardcoded | ✅ Ativo | Hora local, clima, AQI |
 | 🌊 Correntes | Open-Meteo Marine | ❌ Removido | Retirado por taxa de API alta |
 | 🌙 Modo Noite | Local storage | ✅ Ativo | Toggle na WeatherBar |
+| 💬 Chat IA | n8n (via `netlify/functions/n8n-chat.ts`) | ✅ Ativo | Payload `{chatInput, sessionId}`, resposta em `data.output`; idioma da UI não afeta o n8n (ver [FEATURES.md](./FEATURES.md#-chat-ia-n8n)) |
 
 ---
 

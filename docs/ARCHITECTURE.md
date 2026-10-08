@@ -54,6 +54,17 @@ Arquivos de dados/parsing:
 
 ## Fluxo de Dados
 
+### Chat (n8n)
+```
+ChatWidget → POST /.netlify/functions/n8n-chat { chatInput, sessionId }
+          → n8n-chat.ts (proxy; URL real em N8N_WEBHOOK_URL, timeout 55s)
+          → webhook n8n (Chat Trigger → agentes + RAG)
+          ← { output } → ChatWidget exibe (e fala, se áudio ativo)
+```
+- `sessionId` único por visita (gerado no frontend) → Memória de Conversa do n8n
+- Idioma da UI não é enviado; workflow fixo em português
+- Detalhes: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
+
 ### Tempo Real (Polling)
 ```
 ISS:      load() → parseIssPosition() → 8s poll → update tooltips

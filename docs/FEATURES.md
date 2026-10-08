@@ -169,6 +169,21 @@ Elevação: 3,776m
 
 ---
 
+## 💬 Chat IA (n8n)
+
+**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatButton/index.tsx`, `netlify/functions/n8n-chat.ts`  
+**Backend:** workflow "chatBruno - Multi-Agente RAG" no n8n (self-hosted), acessado via proxy Netlify  
+**Status:** ✅ Ativo
+
+- Envio: `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` (formato do Chat Trigger do n8n; o formato antigo `{ message, language }` faz o workflow retornar 500)
+- Resposta: o texto vem em `data.output`; se vier vazio, o widget mostra mensagem de fallback; erro de rede/HTTP mostra mensagem de erro
+- `sessionId`: UUID gerado uma vez por carregamento da página (variável de módulo `chatSessionId`, `crypto.randomUUID()` com fallback). Mantém a Memória de Conversa do n8n entre mensagens da mesma visita; recarregar a página inicia conversa nova
+- Idioma: o seletor de idioma da UI **não tem efeito** no n8n (o workflow é fixo em português e o payload não leva idioma). Ele só afeta a voz do áudio (TTS)
+- Config: variável `N8N_WEBHOOK_URL` no Netlify (obrigatória; ausente → function retorna 500)
+- Pontos de entrada: botão flutuante global (`ChatButton`, abre o widget num Drawer; oculto em `/news`) e rota `/chat`
+
+---
+
 ## 🌬 Vento (Wind) — REMOVIDO
 
 **Arquivo:** `src/components/GlobeBackground/wind.ts`  

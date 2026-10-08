@@ -219,10 +219,9 @@ Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes es
 
 ```
 Usuário
-  → Widget @n8n/chat (injetado via useEffect em N8nChatWidget.tsx — não é
-    mais <script> cru no index.html: um <script type="module"> inline
-    importando URL externa não sobrevive ao vite build)
-  → POST /.netlify/functions/n8n-chat (proxy — esconde a URL real do n8n)
+  → ChatWidget (React, src/components/ChatWidget)
+  → POST /.netlify/functions/n8n-chat { chatInput, sessionId } (proxy — esconde
+    a URL real do n8n; resposta lida em `output`)
   → Cloudflare Tunnel (cloudflared, egress-only na VPS)
   → n8n self-hosted (Oracle Cloud VPS)
   → Agente Roteador (Gemini 2.5 Flash Lite) classifica intenção
