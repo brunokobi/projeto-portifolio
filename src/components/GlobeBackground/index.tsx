@@ -795,7 +795,7 @@ const GlobeBackground = () => {
                     const key = `wildfire-${i}`;
                     if (hoveredNameRef.current !== key) {
                       hoveredNameRef.current = key;
-                      const lines: string[] = ["🔥 Incêndio"];
+                      const lines: string[] = ["🔥"];
                       if (wp.name) lines.push(`${wp.name}`);
                       if (wp.confidence) lines.push(`Confiança: ${wp.confidence}%`);
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
