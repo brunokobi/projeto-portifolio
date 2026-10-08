@@ -17,7 +17,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Bom tardi! 👋 Aqui em Serra está mormo e agradável! 27°C com 😎 lindo demais O que posso te ajudar hoje?',
+      text: 'Boa Tarde! 👋 Aqui em Serra está morno e agradável! 27°C com céu lindo demais. O que posso te ajudar hoje?',
       role: 'assistant',
       timestamp: new Date(),
     },
