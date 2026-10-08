@@ -122,7 +122,7 @@ const WeatherBar = () => {
 
   const [satellitesEnabled, setSatellitesEnabled] = useState(() => localStorage.getItem("globeSatellites") !== "0");
   const [wildfiresEnabled, setWildfiresEnabled] = useState(() => localStorage.getItem("globeWildfires") !== "0");
-  const [lightningEnabled, setLightningEnabled] = useState(() => localStorage.getItem("globeLightning") !== "0");
+  const [capAlertsEnabled, setCapAlertsEnabled] = useState(() => localStorage.getItem("globeCapAlerts") !== "0");
 
   const [rotationEnabled, setRotationEnabled] = useState(
     () => localStorage.getItem("globeRotation") !== "0"
@@ -387,14 +387,14 @@ const WeatherBar = () => {
           color={GREEN}
           cursor="pointer"
           onClick={() => {
-            setLightningEnabled(!lightningEnabled);
-            localStorage.setItem("globeLightning", !lightningEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeLightningToggle", { detail: { lightningEnabled: !lightningEnabled } }));
+            setCapAlertsEnabled(!capAlertsEnabled);
+            localStorage.setItem("globeCapAlerts", !capAlertsEnabled ? "1" : "0");
+            window.dispatchEvent(new CustomEvent("globeCapAlertsToggle", { detail: { capAlertsEnabled: !capAlertsEnabled } }));
           }}
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {lightningEnabled ? "⚡ ON" : "⚡ OFF"}
+          {capAlertsEnabled ? "⚠️ ON" : "⚠️ OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />

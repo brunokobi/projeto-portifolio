@@ -30,7 +30,8 @@ import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, typ
 import { loadSatellites, satelliteColor, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
 import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
-import { loadAirQuality, loadWildfires, loadLightning, aqiColor, wildfireColor, lightningColor, type AirQuality, type Wildfire, type Lightning } from "./hazards";
+import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
+import { loadCapAlerts, capAlertColor, type CapAlert } from "./capAlerts";
 import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
 
 setDefaultOptions({ css: true });
@@ -145,7 +146,7 @@ const GlobeBackground = () => {
   const cityScreenPosRef2 = useRef<Array<{ x: number; y: number; name: string; population: number } | null>>([]);
   const airQualityScreenPosRef = useRef<Array<{ x: number; y: number; name: string; aqi: number } | null>>([]);
   const wildfireScreenPosRef = useRef<Array<{ x: number; y: number; name: string; confidence: number } | null>>([]);
-  const lightningScreenPosRef = useRef<Array<{ x: number; y: number } | null>>([]);
+  const capAlertScreenPosRef = useRef<Array<{ x: number; y: number; event: string; severity: string; areaDesc: string; senderName: string; countryCode: string } | null>>([]);
   const techHubScreenPosRef = useRef<Array<{ x: number; y: number; name: string; sector: string } | null>>([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
@@ -158,7 +159,7 @@ const GlobeBackground = () => {
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
   const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
-  const lightningEnabledRef = useRef(localStorage.getItem("globeLightning") !== "0");
+  const capAlertsEnabledRef = useRef(localStorage.getItem("globeCapAlerts") !== "0");
   const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
@@ -282,8 +283,8 @@ const GlobeBackground = () => {
       globeWildfiresToggle: (e: Event) => {
         wildfiresEnabledRef.current = (e as CustomEvent).detail.wildfiresEnabled as boolean;
       },
-      globeLightningToggle: (e: Event) => {
-        lightningEnabledRef.current = (e as CustomEvent).detail.lightningEnabled as boolean;
+      globeCapAlertsToggle: (e: Event) => {
+        capAlertsEnabledRef.current = (e as CustomEvent).detail.capAlertsEnabled as boolean;
       },
       globeTechHubsToggle: (e: Event) => {
         techHubsEnabledRef.current = (e as CustomEvent).detail.techHubsEnabled as boolean;
@@ -310,7 +311,6 @@ const GlobeBackground = () => {
     const cities: CityData[] = TOP_CITIES;
     let airQuality: AirQuality[] = [];
     let wildfires: Wildfire[] = [];
-    let lightning: Lightning[] = [];
     let techHubs: TechHub[] = [];
 
     // Carrega dados
@@ -319,7 +319,6 @@ const GlobeBackground = () => {
       // loadAircraft().then((d) => { aircraft = d; }), // Aviões: desabilitado (OpenSky CORS)
       loadAirQuality().then((d) => { airQuality = d; }),
       loadWildfires().then((d) => { wildfires = d; }),
-      loadLightning().then((d) => { lightning = d; }),
       loadTechHubs().then((d) => { techHubs = d; }),
     ]).catch(() => {});
 
@@ -805,18 +804,21 @@ const GlobeBackground = () => {
               }
 
               if (!over) {
-                // Raios
-                const lightningPositions = lightningScreenPosRef.current;
-                for (let i = 0; i < lightningPositions.length; i++) {
-                  const lp = lightningPositions[i];
-                  if (!lp) continue;
-                  const dx = evt.x - lp.x, dy = evt.y - lp.y;
-                  if (dx * dx + dy * dy < 12 * 12) {
+                // Alertas de emergência (CAP)
+                const capAlertPositions = capAlertScreenPosRef.current;
+                for (let i = 0; i < capAlertPositions.length; i++) {
+                  const ap = capAlertPositions[i];
+                  if (!ap) continue;
+                  const dx = evt.x - ap.x, dy = evt.y - ap.y;
+                  if (dx * dx + dy * dy < 16 * 16) {
                     over = true;
-                    const key = `lightning-${i}`;
+                    const key = `cap-alert-${i}`;
                     if (hoveredNameRef.current !== key) {
                       hoveredNameRef.current = key;
-                      const lines: string[] = ["⚡ Descarga Elétrica"];
+                      const lines: string[] = ["⚠️ Alerta de emergência", ap.event];
+                      if (ap.severity) lines.push(`Severidade: ${ap.severity}`);
+                      if (ap.areaDesc) lines.push(`Área: ${ap.areaDesc}`);
+                      if (ap.senderName || ap.countryCode) lines.push(`Fonte: ${ap.senderName || ap.countryCode}`);
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
@@ -986,6 +988,13 @@ const GlobeBackground = () => {
                 loadHurricanes().then((data) => {
                   if (!mountedRef.current) return;
                   hurricanes = data;
+                });
+
+                // Alertas de emergência (CAP) — clima severo/enchente/etc globais
+                let capAlerts: CapAlert[] = [];
+                loadCapAlerts().then((data) => {
+                  if (!mountedRef.current) return;
+                  capAlerts = data;
                 });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
@@ -1413,37 +1422,39 @@ const GlobeBackground = () => {
                     wildfireScreenPosRef.current.fill(null);
                   }
 
-                  // Raios
-                  if (lightningScreenPosRef.current.length !== lightning.length) {
-                    lightningScreenPosRef.current = new Array(lightning.length).fill(null);
+                  if (capAlertScreenPosRef.current.length !== capAlerts.length) {
+                    capAlertScreenPosRef.current = new Array(capAlerts.length).fill(null);
                   }
-                  if (lightningEnabledRef.current) {
-                    for (let i = 0; i < lightning.length; i++) {
-                      lightningScreenPosRef.current[i] = null;
-                      const l = lightning[i];
-                      if (!isFacing(cam.latitude, cam.longitude, l.lat, l.lon)) continue;
+                  if (capAlertsEnabledRef.current) {
+                    for (let i = 0; i < capAlerts.length; i++) {
+                      capAlertScreenPosRef.current[i] = null;
+                      const a = capAlerts[i];
+                      if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
                       try {
                         const sp = view.toScreen(
-                          new Point({ longitude: l.lon, latitude: l.lat, z: 50000 })
+                          new Point({ longitude: a.lon, latitude: a.lat, z: 50000 })
                         );
                         if (!sp) continue;
-                        lightningScreenPosRef.current[i] = { x: sp.x, y: sp.y };
+                        capAlertScreenPosRef.current[i] = {
+                          x: sp.x, y: sp.y, event: a.event, severity: a.severity,
+                          areaDesc: a.areaDesc, senderName: a.senderName, countryCode: a.countryCode,
+                        };
                         ctx.font = "bold 14px Arial";
-                        ctx.globalAlpha = 0.8;
-                        ctx.fillText("⚡", sp.x - 7, sp.y + 7);
-                        ctx.globalAlpha = 1;
-                        ctx.font = "bold 9px monospace";
-                        ctx.fillStyle = lightningColor();
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = lightningColor();
-                        ctx.fillText(`RAIO #${i + 1}`, sp.x + 12, sp.y + 4);
+                        ctx.fillText("⚠️", sp.x - 7, sp.y + 7);
+                        ctx.font = "bold 10px monospace";
+                        ctx.fillStyle = capAlertColor(a.severity);
+                        ctx.shadowBlur = 5;
+                        ctx.shadowColor = capAlertColor(a.severity);
+                        // Legenda fixa curta — detalhe (evento/área/fonte) só no hover,
+                        // mesmo motivo do incêndio: até 300 alertas simultâneos.
+                        ctx.fillText("Alerta", sp.x + 14, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
                       }
                     }
                   } else {
-                    lightningScreenPosRef.current.fill(null);
+                    capAlertScreenPosRef.current.fill(null);
                   }
 
 

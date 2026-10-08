@@ -1,7 +1,5 @@
 // Perigos/Eventos — Qualidade do Ar (OpenAQ via ArcGIS Living Atlas) e
-// Incêndios (NASA VIIRS via ArcGIS Living Atlas), ambos dados reais. Raios
-// continua simulado — não achamos fonte pública global gratuita de raios em
-// tempo real (ver loadLightning).
+// Incêndios (NASA VIIRS via ArcGIS Living Atlas), ambos dados reais.
 
 const ARCGIS_LIVEFEEDS_BASE = "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services";
 const FETCH_TIMEOUT_MS = 15000;
@@ -23,25 +21,6 @@ export interface Wildfire {
   confidence: number; // 0-100 (convertido da categoria VIIRS: low/nominal/high)
   date: string;
 }
-
-export interface Lightning {
-  id: string;
-  lat: number;
-  lon: number;
-  intensity: number; // relativo
-  timestamp: number;
-}
-
-// Simulação de raios (padrões de atividade) — mantido simulado: não há API
-// pública gratuita de raios em tempo real com cobertura global (ex.:
-// Blitzortung é comunitário, sem endpoint público estável).
-export const SAMPLE_LIGHTNING: Lightning[] = Array.from({ length: 15 }, (_, i) => ({
-  id: `lightning-${i}`,
-  lat: Math.random() * 180 - 90,
-  lon: Math.random() * 360 - 180,
-  intensity: Math.random() * 100,
-  timestamp: Date.now() - Math.random() * 60000, // últimos 60s
-}));
 
 /** Conversão PM2.5 (µg/m³) -> AQI (0-500), breakpoints padrão EPA. */
 function pm25ToAqi(pm25: number): number {
@@ -171,10 +150,6 @@ export async function loadWildfires(): Promise<Wildfire[]> {
   }
 }
 
-export async function loadLightning(): Promise<Lightning[]> {
-  return SAMPLE_LIGHTNING;
-}
-
 export function aqiColor(aqi: number): string {
   if (aqi <= 50) return "#00FF00"; // Good - Green
   if (aqi <= 100) return "#FFFF00"; // Moderate - Yellow
@@ -197,8 +172,4 @@ export function wildfireColor(confidence: number): string {
   if (confidence > 90) return "#FF0000"; // Bright red - high confidence
   if (confidence > 75) return "#FF6600"; // Orange - medium
   return "#FFCC00"; // Yellow - low
-}
-
-export function lightningColor(): string {
-  return "#FFFF00"; // Yellow - bright flash
 }
