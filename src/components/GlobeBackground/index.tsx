@@ -29,7 +29,7 @@ import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volc
 import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
 import { loadSatellites, satelliteColor, satelliteLabel, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
-import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
+import { TOP_CITIES, cityColor, cityRadius, enrichCitiesWithAirQuality, type City as CityData } from "./cities";
 import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
 import { loadCapAlerts, capAlertColor, type CapAlert } from "./capAlerts";
 import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
@@ -308,7 +308,11 @@ const GlobeBackground = () => {
     // 8 Novas features — variáveis no escopo do useEffect pra acessibilidade
     let satellites: Satellite[] = [];
     let aircraft: Aircraft[] = [];
-    const cities: CityData[] = TOP_CITIES;
+    let cities: CityData[] = TOP_CITIES;
+    enrichCitiesWithAirQuality(TOP_CITIES).then((d) => {
+      if (!mountedRef.current) return;
+      cities = d;
+    });
     let airQuality: AirQuality[] = [];
     let wildfires: Wildfire[] = [];
     let techHubs: TechHub[] = [];

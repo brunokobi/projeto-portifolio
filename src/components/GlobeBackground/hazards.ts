@@ -23,7 +23,7 @@ export interface Wildfire {
 }
 
 /** Conversão PM2.5 (µg/m³) -> AQI (0-500), breakpoints padrão EPA. */
-function pm25ToAqi(pm25: number): number {
+export function pm25ToAqi(pm25: number): number {
   const faixas: [number, number, number, number][] = [
     [0.0, 12.0, 0, 50],
     [12.1, 35.4, 51, 100],
