@@ -1440,13 +1440,6 @@ const GlobeBackground = () => {
                         };
                         ctx.font = "bold 14px Arial";
                         ctx.fillText("⚠️", sp.x - 7, sp.y + 7);
-                        ctx.font = "bold 10px monospace";
-                        ctx.fillStyle = capAlertColor(a.severity);
-                        ctx.shadowBlur = 5;
-                        ctx.shadowColor = capAlertColor(a.severity);
-                        // Legenda fixa curta — detalhe (evento/área/fonte) só no hover,
-                        // mesmo motivo do incêndio: até 300 alertas simultâneos.
-                        ctx.fillText("Alerta", sp.x + 14, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
