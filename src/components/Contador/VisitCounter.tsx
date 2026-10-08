@@ -46,8 +46,15 @@ const Rivet = ({
   />
 );
 
+// Duração total da contagem crescente, em ms. Curva ease-out (easeOutCubic)
+// — começa rápido e desacelera perto do valor final, efeito "odômetro" em
+// vez de incremento linear monótono.
+const COUNT_UP_DURATION_MS = 1400;
+const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+
 const VisitCounter = () => {
   const [visits, setVisits] = useState<number | null>(null);
+  const [displayValue, setDisplayValue] = useState(0);
   const intl = useIntl();
   const label = intl.formatMessage({ id: "visitas" });
 
@@ -59,6 +66,24 @@ const VisitCounter = () => {
     };
     updateCounter();
   }, []);
+
+  // Anima displayValue de 0 até `visits` assim que o valor real chega.
+  useEffect(() => {
+    if (visits === null) return;
+    const inicio = performance.now();
+    let frameId: number;
+
+    const tick = (agora: number) => {
+      const progresso = Math.min(1, (agora - inicio) / COUNT_UP_DURATION_MS);
+      setDisplayValue(Math.round(easeOutCubic(progresso) * visits));
+      if (progresso < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+    frameId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [visits]);
 
   return (
     <Box
@@ -209,7 +234,7 @@ const VisitCounter = () => {
                 fontVariantNumeric: "tabular-nums",
               }}
             >
-              {String(visits).padStart(4, "0")}
+              {String(displayValue).padStart(4, "0")}
             </Text>
           )}
         </Box>
