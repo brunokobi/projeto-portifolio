@@ -1400,7 +1400,10 @@ const GlobeBackground = () => {
                         ctx.fillStyle = wildfireColor(w.confidence);
                         ctx.shadowBlur = 5;
                         ctx.shadowColor = wildfireColor(w.confidence);
-                        ctx.fillText(`${w.name}`, sp.x + 14, sp.y + 4);
+                        // Legenda fixa — o detalhe (satélite/FRP/confiança) só aparece
+                        // no hover (lines mais abaixo), senão com até 500 pontos o
+                        // globo fica ilegível de texto sobreposto.
+                        ctx.fillText("Incêndio", sp.x + 14, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
