@@ -1,8 +1,19 @@
-// Satélites em órbita — Satellite.js library pra cálculos de posição
-// Mostra ISS, Starlink, satélites de comunicação em tempo real
+// Satélites em órbita — posição real calculada via SGP4 (satellite.js) a
+// partir de TLEs públicos do CelesTrak (sem chave, CORS liberado). A ISS
+// fica de fora daqui de propósito: já existe um tracker dedicado dela em
+// `iss.ts` (atualiza mais rápido, 8s) — incluir de novo aqui duplicaria o
+// marcador. Starlink tem 11 mil+ satélites ativos; amostramos um
+// subconjunto espalhado (não só os primeiros, que ficariam concentrados no
+// mesmo plano orbital de lançamento) pra dar variedade visual sem poluir o
+// globo.
+import * as satellite from "satellite.js";
+
+const CELESTRAK_BASE = "https://celestrak.org/NORAD/elements/gp.php";
+const TLE_CACHE_TTL_MS = 2 * 60 * 60 * 1000; // TLEs mudam pouco; 2h é sobra de margem
+const FETCH_TIMEOUT_MS = 20000;
+const STARLINK_SAMPLE_SIZE = 40;
 
 const SATELLITE_POLL_INTERVAL_MS = 10000; // Atualiza a cada 10s
-
 export const SATELLITE_POLL_INTERVAL = SATELLITE_POLL_INTERVAL_MS;
 
 export interface Satellite {
@@ -44,84 +55,116 @@ export function parseSatellites(json: unknown): Satellite[] {
   return satellites;
 }
 
-// Dados hardcoded de satélites populares (TLE - Two Line Element)
-// Em produção, puxar de celestrak.org via CORS proxy
-export async function loadSatellites(): Promise<Satellite[]> {
-  try {
-    const satellites: Satellite[] = [
-      {
-        id: "iss",
-        name: "ISS",
-        lat: Math.random() * 180 - 90,
-        lon: Math.random() * 360 - 180,
-        altitude: 408,
-        type: "iss",
-        velocity: 7.66,
-      },
-      // Starlink constellation sample (27 satélites em amostra)
-      ...Array.from({ length: 27 }, (_, i) => ({
-        id: `starlink-${i}`,
-        name: `Starlink ${i + 1}`,
-        lat: Math.random() * 180 - 90,
-        lon: Math.random() * 360 - 180,
-        altitude: 550,
-        type: "starlink" as const,
-        velocity: 7.36,
-      })),
-      // Satélites de comunicação (Intelsat, SES, etc)
-      {
-        id: "intelsat-901",
-        name: "Intelsat 901",
-        lat: 0.5,
-        lon: 45.0,
-        altitude: 35786,
-        type: "communication",
-        velocity: 3.07,
-      },
-      {
-        id: "ses-3",
-        name: "SES 3",
-        lat: -2.3,
-        lon: -57.0,
-        altitude: 35786,
-        type: "communication",
-        velocity: 3.07,
-      },
-      // Satélites de navegação (GPS, Galileo, GLONASS)
-      {
-        id: "gps-prn-01",
-        name: "GPS PRN-01",
-        lat: 35.0,
-        lon: -120.0,
-        altitude: 20180,
-        type: "navigation",
-        velocity: 3.87,
-      },
-      {
-        id: "galileo-01",
-        name: "Galileo-1",
-        lat: -40.0,
-        lon: 100.0,
-        altitude: 23222,
-        type: "navigation",
-        velocity: 3.73,
-      },
-      // Satélites de clima (NOAA, Copernicus)
-      {
-        id: "noaa-20",
-        name: "NOAA-20",
-        lat: 60.0,
-        lon: 30.0,
-        altitude: 833,
-        type: "weather",
-        velocity: 7.51,
-      },
-    ];
+interface TleEntry {
+  name: string;
+  line1: string;
+  line2: string;
+  type: Satellite["type"];
+}
 
-    return satellites;
-  } catch {
-    return [];
+interface CachedGroup {
+  entries: TleEntry[];
+  fetchedAt: number;
+}
+
+const groupCache = new Map<string, CachedGroup>();
+
+function amostrarEspacado<T>(arr: T[], n: number): T[] {
+  if (arr.length <= n) return arr;
+  const passo = arr.length / n;
+  const out: T[] = [];
+  for (let i = 0; i < n; i++) out.push(arr[Math.floor(i * passo)]);
+  return out;
+}
+
+function parseTleText(texto: string, tipo: Satellite["type"]): TleEntry[] {
+  const linhas = texto.split("\n").map((l) => l.trimEnd()).filter((l) => l.length > 0);
+  const entries: TleEntry[] = [];
+  for (let i = 0; i + 2 < linhas.length + 1 && i + 2 <= linhas.length; i += 3) {
+    const name = linhas[i]?.trim();
+    const line1 = linhas[i + 1];
+    const line2 = linhas[i + 2];
+    if (!name || !line1?.startsWith("1 ") || !line2?.startsWith("2 ")) continue;
+    entries.push({ name, line1, line2, type: tipo });
   }
+  return entries;
+}
+
+async function fetchGroup(group: string, tipo: Satellite["type"]): Promise<TleEntry[]> {
+  const cached = groupCache.get(group);
+  const now = Date.now();
+  if (cached && now - cached.fetchedAt < TLE_CACHE_TTL_MS) {
+    return cached.entries;
+  }
+
+  try {
+    const url = `${CELESTRAK_BASE}?GROUP=${group}&FORMAT=tle`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+    if (!res.ok) return cached?.entries ?? [];
+    const texto = await res.text();
+    const entries = parseTleText(texto, tipo);
+    // CelesTrak às vezes responde 200 com uma mensagem de texto tipo "GP data
+    // has not updated..." em vez do TLE (cortesia deles pra evitar pedir o
+    // mesmo grupo com frequência maior que a atualização real, a cada 2h).
+    // Nesse caso entries sai vazio — mantém o cache anterior em vez de
+    // zerar os satélites, e não atualiza fetchedAt (tenta de novo mais cedo).
+    if (entries.length === 0 && cached) {
+      return cached.entries;
+    }
+    groupCache.set(group, { entries, fetchedAt: now });
+    return entries;
+  } catch {
+    return cached?.entries ?? [];
+  }
+}
+
+function propagarParaSatelite(entry: TleEntry, idSufixo: string): Satellite | null {
+  try {
+    const satrec = satellite.twoline2satrec(entry.line1, entry.line2);
+    const agora = new Date();
+    const pv = satellite.propagate(satrec, agora);
+    if (!pv || typeof pv.position === "boolean" || typeof pv.velocity === "boolean") return null;
+
+    const gmst = satellite.gstime(agora);
+    const geo = satellite.eciToGeodetic(pv.position, gmst);
+    const lat = satellite.degreesLat(geo.latitude);
+    const lon = satellite.degreesLong(geo.longitude);
+    const velocidade = Math.sqrt(pv.velocity.x ** 2 + pv.velocity.y ** 2 + pv.velocity.z ** 2);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(geo.height)) return null;
+
+    return {
+      id: `${entry.type}-${idSufixo}`,
+      name: entry.name,
+      lat,
+      lon,
+      altitude: geo.height,
+      type: entry.type,
+      velocity: velocidade,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function loadSatellites(): Promise<Satellite[]> {
+  const [starlinkAll, gps, galileo, weather] = await Promise.all([
+    fetchGroup("starlink", "starlink"),
+    fetchGroup("gps-ops", "navigation"),
+    fetchGroup("galileo", "navigation"),
+    fetchGroup("weather", "weather"),
+  ]);
+
+  const starlink = amostrarEspacado(starlinkAll, STARLINK_SAMPLE_SIZE);
+  const todos = [...starlink, ...gps, ...galileo, ...weather];
+
+  const satellites: Satellite[] = [];
+  todos.forEach((entry, i) => {
+    const s = propagarParaSatelite(entry, String(i));
+    if (s) satellites.push(s);
+  });
+
+  return satellites;
 }
 
 /** Cor por tipo de satélite */

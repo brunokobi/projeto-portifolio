@@ -27,7 +27,7 @@ import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
-import { loadSatellites, satelliteColor, type Satellite } from "./satellites";
+import { loadSatellites, satelliteColor, satelliteLabel, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
 import { TOP_CITIES, cityColor, cityRadius, type City as CityData } from "./cities";
 import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
@@ -729,7 +729,7 @@ const GlobeBackground = () => {
                       hoveredNameRef.current = key;
                       const lines: string[] = ["🛰️ Satélite"];
                       if (sp.name) lines.push(`${sp.name}`);
-                      if (sp.altitude) lines.push(`Altitude: ${sp.altitude} km`);
+                      if (sp.altitude) lines.push(`Altitude: ${Math.round(sp.altitude)} km`);
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
@@ -1343,7 +1343,10 @@ const GlobeBackground = () => {
                         ctx.fillStyle = satelliteColor(s.type);
                         ctx.shadowBlur = 4;
                         ctx.shadowColor = satelliteColor(s.type);
-                        ctx.fillText(s.name, sp.x + 12, sp.y + 4);
+                        // Legenda fixa curta — nome completo (ex.: "GPS BIIR-5
+                        // (PRN 22)") só no hover, mesmo motivo do incêndio/alerta:
+                        // agora são ~150-190 satélites reais, não mais ~34 fixos.
+                        ctx.fillText(satelliteLabel(s.type), sp.x + 12, sp.y + 4);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
