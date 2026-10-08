@@ -213,7 +213,7 @@ const WeatherBar = () => {
       <style>{`@keyframes weatherFadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       <HStack spacing={3} align="center">
-        <Text fontSize="md" lineHeight={1} userSelect="none">
+        <Text fontSize="md" lineHeight={1} userSelect="none" title={wmo.label} cursor="help">
           {wmo.icon}
         </Text>
 
@@ -237,16 +237,6 @@ const WeatherBar = () => {
           </>
         )}
 
-        <Text
-          fontSize="xs"
-          color="whiteAlpha.400"
-          fontFamily="heading"
-          display={{ base: "none", md: "block" }}
-          letterSpacing="0.02em"
-        >
-          · {wmo.label}
-        </Text>
-
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
         <Text
           as="button"
@@ -260,7 +250,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {nightMode ? "☀ DIA" : "☾ NOITE"}
+          {nightMode ? "🌞 DIA" : "🌙 NOITE"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -276,7 +266,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {windEnabled ? "🌬 ON" : "🌬 OFF"}
+          {windEnabled ? "💨 ON" : "💨 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -292,7 +282,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {issEnabled ? "🛰 ON" : "🛰 OFF"}
+          {issEnabled ? "🧑‍🚀 ON" : "🧑‍🚀 OFF"}
         </Text>
 
         <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
@@ -414,7 +404,7 @@ const WeatherBar = () => {
           style={{ background: "none", border: "none", padding: 0 }}
           _hover={{ opacity: 0.7 }}
         >
-          {rotationEnabled ? "🔄 ON" : "⏸ OFF"}
+          {rotationEnabled ? "🌐 ON" : "🌐 OFF"}
         </Text>
       </HStack>
     </Box>
