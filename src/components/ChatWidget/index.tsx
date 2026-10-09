@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Box, Input, Button, VStack, HStack, Text } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { speak, stopSpeech } from '../../utils/textToSpeech';
+import { generateGreeting } from '../../utils/generateGreeting';
 import { JarvisCore } from './JarvisCore';
 import styles from './ChatWidget.module.css';
 
@@ -13,14 +14,13 @@ interface Message {
 }
 
 const GREEN = '#42c920';
-const GREETING = 'Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo. Como posso ser útil?';
 
 export function ChatWidget() {
-  const [greetingText, setGreetingText] = useState(GREETING);
+  const [greetingText, setGreetingText] = useState('Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: GREETING,
+      text: 'Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?',
       role: 'assistant',
       timestamp: new Date(),
     },
@@ -47,9 +47,21 @@ export function ChatWidget() {
   }, [messages]);
 
   useEffect(() => {
-    if (audioEnabled) {
-      respondWithAudio(GREETING);
-    }
+    generateGreeting().then((greeting) => {
+      setGreetingText(greeting);
+      setMessages([
+        {
+          id: '1',
+          text: greeting,
+          role: 'assistant',
+          timestamp: new Date(),
+        },
+      ]);
+
+      if (audioEnabled) {
+        respondWithAudio(greeting);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -253,9 +265,14 @@ async function generateAIResponse(message: string): Promise<string> {
     }
 
     const data = await response.json();
-    // n8n (Chat Trigger) devolve a resposta no campo "output" — não
-    // "response"/"message"/"text", que nunca existiram nesse payload.
-    return data.output || 'Desculpe, não consegui processar sua mensagem.';
+    // n8n (Chat Trigger) devolve a resposta no campo "output"
+    let output = data.output || 'Desculpe, não consegui processar sua mensagem.';
+
+    // Remove URL do site oficial das respostas
+    output = output.replace(/https?:\/\/brunokobi\.netlify\.app\/?/gi, '');
+    output = output.trim();
+
+    return output;
   } catch (error) {
     console.error('Erro ao comunicar com n8n:', error);
     return 'Desculpe, ocorreu um erro ao processar sua mensagem.';
