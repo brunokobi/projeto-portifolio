@@ -55,17 +55,24 @@ async function getWeatherData(lat: number, lon: number): Promise<WeatherData | n
   }
 }
 
-async function getLocalTime(timezone: string): Promise<string> {
+function getTimePeriod(timezone: string): string {
   try {
     const formatter = new Intl.DateTimeFormat('pt-BR', {
       timeZone: timezone,
       hour: '2-digit',
-      minute: '2-digit',
       hour12: false,
     });
-    return formatter.format(new Date());
+    const timeStr = formatter.format(new Date());
+    const hour = parseInt(timeStr, 10);
+
+    if (hour >= 5 && hour < 12) return 'Bom dia';
+    if (hour >= 12 && hour < 18) return 'Boa tarde';
+    return 'Boa noite';
   } catch {
-    return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Bom dia';
+    if (hour >= 12 && hour < 18) return 'Boa tarde';
+    return 'Boa noite';
   }
 }
 
@@ -86,8 +93,8 @@ export async function generateGreeting(): Promise<string> {
           return;
         }
 
-        const localTime = await getLocalTime(weather.timezone);
-        const greeting = `Olá! Eu sou o JARVIS, seu assistente virtual. Em ${weather.city} está ${weather.condition.toLowerCase()}, ${weather.temp}°C. Hora local: ${localTime}. Como posso ajudá-lo?`;
+        const timePeriod = getTimePeriod(weather.timezone);
+        const greeting = `${timePeriod}! Eu sou o JARVIS, seu assistente virtual. Em ${weather.city} está ${weather.condition.toLowerCase()}, ${weather.temp}°C. Como posso ajudá-lo?`;
         resolve(greeting);
       },
       () => {
