@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Box, Input, Button, VStack, HStack, Text } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { speak, stopSpeech } from '../../utils/textToSpeech';
-import { generateGreeting } from '../../utils/generateGreeting';
 import { JarvisCore } from './JarvisCore';
 import styles from './ChatWidget.module.css';
 
@@ -14,13 +13,14 @@ interface Message {
 }
 
 const GREEN = '#42c920';
+const GREETING = 'Olá! Como posso te ajudar a conhecer mais sobre mim e minha paixão por tecnologia? Se tiver alguma dúvida específica, pode perguntar! Se não, sinta-se à vontade para explorar meu site: https://brunokobi.netlify.app. Vamos construir o futuro juntos!';
 
 export function ChatWidget() {
-  const [greetingText, setGreetingText] = useState('Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?');
+  const [greetingText, setGreetingText] = useState(GREETING);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?',
+      text: GREETING,
       role: 'assistant',
       timestamp: new Date(),
     },
@@ -47,21 +47,9 @@ export function ChatWidget() {
   }, [messages]);
 
   useEffect(() => {
-    generateGreeting().then((greeting) => {
-      setGreetingText(greeting);
-      setMessages([
-        {
-          id: '1',
-          text: greeting,
-          role: 'assistant',
-          timestamp: new Date(),
-        },
-      ]);
-
-      if (audioEnabled) {
-        respondWithAudio(greeting);
-      }
-    });
+    if (audioEnabled) {
+      respondWithAudio(GREETING);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
