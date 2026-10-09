@@ -171,7 +171,7 @@ Elevação: 3,776m
 
 ## 💬 Chat IA (n8n)
 
-**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatButton/index.tsx`, `netlify/functions/n8n-chat.ts`  
+**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatWidget/JarvisCore.tsx`, `src/components/ChatButton/index.tsx`, `src/utils/textToSpeech.ts`, `netlify/functions/n8n-chat.ts`  
 **Backend:** workflow "chatBruno - Multi-Agente RAG" no n8n (self-hosted), acessado via proxy Netlify  
 **Status:** ✅ Ativo
 
@@ -181,6 +181,10 @@ Elevação: 3,776m
 - Idioma: o seletor de idioma da UI **não tem efeito** no n8n (o workflow é fixo em português e o payload não leva idioma). Ele só afeta a voz do áudio (TTS)
 - Config: variável `N8N_WEBHOOK_URL` no Netlify (obrigatória; ausente → function retorna 500)
 - Pontos de entrada: botão flutuante global (`ChatButton`, abre o widget num Drawer; oculto em `/news`) e rota `/chat`
+- Identidade: o assistente se apresenta como **JARVIS** (título do widget "JARVIS"). Mensagem inicial: "Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?" — falada ao montar o widget se o áudio estiver ativo (o navegador pode bloquear a fala sem interação prévia do usuário)
+- Voz: `speak()` em `textToSpeech.ts` (Web Speech API) prefere voz **masculina** de boa qualidade no idioma escolhido (nomes como David, Daniel, Paulo, "male"...); sem masculina, cai para voz de boa qualidade ou a primeira disponível — depende das vozes instaladas no navegador/SO
+- **JARVIS Core** (`JarvisCore`, renderizado no rodapé do widget com `isActive={isSpeaking}`): canvas 250x250 em ciano (`#00FFFF`) com 3 anéis concêntricos, núcleo central com glow/sombra e 16 barras radiais de "espectro" com glow. O espectro é **simulado** (valores aleatórios suavizados a cada frame via `requestAnimationFrame`), **não** vem do áudio real do TTS — a Web Speech API não expõe o áudio. Ativo: barras animadas, anéis/núcleo mais intensos e `drop-shadow`; inativo: animação parada, container com opacidade 0.5 e ícone de play (apenas visual, não clicável) no centro
+- Limitação: `isSpeaking` é ligado ao enviar uma resposta com áudio ativo e desligado por `setTimeout` de 1s (ou pelo botão de parar), então o JARVIS Core fica ativo ~1s, não pela duração real da fala
 
 ---
 

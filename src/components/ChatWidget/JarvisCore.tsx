@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 
-const CYAN = '#00FFFF';
+const GREEN = '#42c920';
 
 export function JarvisCore({ isActive }: { isActive: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -50,7 +50,7 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
     ctx.fillRect(0, 0, w, h);
 
     // Draw outer rings
-    ctx.strokeStyle = CYAN;
+    ctx.strokeStyle = GREEN;
     ctx.lineWidth = 1;
     ctx.globalAlpha = isActive ? 0.4 : 0.2;
 
@@ -86,10 +86,10 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
       const y2 = centerY + Math.sin(angle) * endRadius;
 
       // Bar glow
-      ctx.strokeStyle = CYAN;
+      ctx.strokeStyle = GREEN;
       ctx.lineWidth = 3;
       ctx.globalAlpha = 0.3 + value * 0.7;
-      ctx.shadowColor = CYAN;
+      ctx.shadowColor = GREEN;
       ctx.shadowBlur = 10;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -111,7 +111,7 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
     // Draw center glow
     ctx.globalAlpha = isActive ? 0.3 : 0.1;
     const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 25);
-    gradient.addColorStop(0, CYAN);
+    gradient.addColorStop(0, GREEN);
     gradient.addColorStop(1, 'transparent');
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -119,10 +119,10 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
     ctx.fill();
 
     // Draw core circle
-    ctx.strokeStyle = CYAN;
+    ctx.strokeStyle = GREEN;
     ctx.lineWidth = 3;
     ctx.globalAlpha = isActive ? 1 : 0.5;
-    ctx.shadowColor = CYAN;
+    ctx.shadowColor = GREEN;
     ctx.shadowBlur = 15;
     ctx.beginPath();
     ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
@@ -130,7 +130,7 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
 
     // Draw play button in center (if not speaking)
     if (!isActive) {
-      ctx.fillStyle = CYAN;
+      ctx.fillStyle = GREEN;
       ctx.globalAlpha = 0.4;
       ctx.beginPath();
       ctx.moveTo(centerX + 5, centerY - 8);
@@ -159,7 +159,7 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
           display: 'block',
           width: '100%',
           height: 'auto',
-          filter: isActive ? 'drop-shadow(0 0 20px #00FFFF)' : 'none',
+          filter: isActive ? 'drop-shadow(0 0 20px #42c920)' : 'none',
         }}
       />
     </Box>

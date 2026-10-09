@@ -119,7 +119,17 @@ DevBlog copia esse design:
 - `generateAIResponse(message)` (função de módulo) faz `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` e lê a resposta em `data.output`
 - `chatSessionId` é gerado uma vez por carregamento da página e mantém a memória de conversa no n8n
 - `selectedLanguage` **não é enviado ao n8n** (workflow fixo em português); só alimenta o áudio via `useChatWithAudio`
+- Título "JARVIS"; mensagem inicial de apresentação do JARVIS; renderiza `<JarvisCore isActive={isSpeaking} />` no rodapé
 - Detalhes do fluxo: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
+
+## `JarvisCore`
+**Arquivo:** `src/components/ChatWidget/JarvisCore.tsx`  
+**Responsabilidade:** visualizador em canvas (anéis concêntricos, núcleo com glow e 16 barras de espectro) exibido no `ChatWidget`
+
+- Props: `isActive: boolean` (true enquanto o widget considera que está falando)
+- Estado: `spectrum` (16 valores); um `useEffect` o atualiza a cada frame (`requestAnimationFrame`) com valores aleatórios suavizados enquanto `isActive`; outro `useEffect` redesenha o canvas a cada mudança de `spectrum`/`isActive`
+- O espectro é simulado, não analisa o áudio real
+- Inativo: sem animação, opacidade 0.5 e ícone de play central (decorativo)
 
 ## `ChatButton`
 **Arquivo:** `src/components/ChatButton/index.tsx`  
@@ -159,6 +169,9 @@ src/
 │   │   ├── volcanoes.ts
 │   │   ├── wind.ts (empty after removal)
 │   │   └── __tests__/
+│   ├── ChatWidget/
+│   │   ├── index.tsx
+│   │   └── JarvisCore.tsx
 │   ├── WeatherBar/
 │   ├── Nav/
 │   └── ...

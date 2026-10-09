@@ -276,57 +276,14 @@ $$ LANGUAGE sql;
 
 ---
 
-## 💬 Feature: Chat IA com Mensagens Personalizadas
+## 💬 Feature: Chat IA — JARVIS
 
-> **Complexidade:** ⭐⭐⭐⭐ — Geolocalização + timezone detection + Open-Meteo API + personalisação dinâmica
+Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, com resposta via agente n8n (chatBruno), voz (TTS) e uma interface visual em canvas.
 
-Widget de chat (chatBruno) com mensagem de boas-vindas **personalizada dinamicamente** baseada em contexto real do visitante: horário local, localização geográfica e condições climáticas.
-
-### Fluxo de personalização
-
-```
-Visitante abre o chat
-  → generatePersonalizedGreeting() dispara async
-  → navigator.geolocation (GPS do browser)
-    · Se permit: lat/lon precisão de metros
-    · Se recusa: fallback Nominatim para detectar erro → fallback hardcoded Serra, BR
-  → Reverse geocoding (Nominatim OSM API)
-    · Coordenadas → nome da cidade
-  → Open-Meteo: fetch clima + timezone
-    · Temperature, weather_code, timezone
-    · 2h cache (reutiliza se já consultou)
-  → Análise de tempo
-    · Hora local (detecta período: manhã 🌅, tarde ☀️, noite 🌆, madrugada 🌙)
-    · WMO código → emoji + descrição (☀️ lindo, 🌧️ chovendo, etc.)
-  → Análise de temperatura (thresholds dinâmicos)
-    · > 30°C: "está quentíssimo!"
-    · 25-30°C: "está morno e agradável!"
-    · 18-25°C: "está fresco e legal!"
-    · < 18°C: "tá friozinho!"
-  → Mensagem final renderizada
-    → Exemplo: "Bom dia! 🌅\nAqui em São Paulo está quentíssimo! 28°C ☀️ lindo demais!\nO que posso te ajudar hoje?"
-  → Chatbot.init({ welcomeMessage })
-```
-
-### Tratamento de erros
-
-Falhas em qualquer etapa da personalização retornam **fallback genérico**:
-```
-"Olá! 👋
-Seja bem-vindo(a)! Como posso te ajudar hoje?"
-```
-
-- **Geolocalização negada** → fallback serra, BR
-- **Nominatim fora** → "sua região" (genérico)
-- **Open-Meteo timeout** → clima genérico
-- **Qualquer Promise rejeitada** → fallback completo
-
-### Dados fetched
-
-- Geolocalização: navigator.geolocation (built-in, sem API key)
-- Reverse geocoding: Nominatim OSM (gratuito, sem API key)
-- Clima: Open-Meteo (gratuito, sem API key)
-- Timezone: Open-Meteo fornece junto com clima
+- **Apresentação:** a mensagem inicial é estática: "Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?" (falada ao abrir o widget, se o áudio estiver ativo e o navegador permitir)
+- **Voz:** Web Speech API; `src/utils/textToSpeech.ts` prefere voz masculina de boa qualidade no idioma escolhido, com fallback para as vozes disponíveis
+- **JARVIS Core:** `src/components/ChatWidget/JarvisCore.tsx` desenha anéis concêntricos, núcleo com glow/sombra e 16 barras de espectro que pulsam enquanto o widget está "falando"; o espectro é simulado (não analisa o áudio real) e, inativo, mostra um ícone de play decorativo
+- **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 
 ---
 

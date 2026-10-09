@@ -105,20 +105,20 @@ export function ChatWidget() {
   };
 
   return (
-    <Box
-      className={styles.chatWidget}
-      bg="rgba(0, 0, 0, 0.9)"
-      backdropFilter="blur(10px)"
-      borderRadius="12px"
-      border={`1px solid rgba(66, 201, 32, 0.2)`}
-      boxShadow={`0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(66, 201, 32, 0.1)`}
-      w="100%"
-      maxW="500px"
-      h="600px"
-      display="flex"
-      flexDirection="column"
-      overflow="hidden"
-    >
+    <Box w="100%" maxW="500px" display="flex" flexDirection="column" gap={4}>
+      <Box
+        className={styles.chatWidget}
+        bg="rgba(0, 0, 0, 0.9)"
+        backdropFilter="blur(10px)"
+        borderRadius="12px"
+        border={`1px solid rgba(66, 201, 32, 0.2)`}
+        boxShadow={`0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(66, 201, 32, 0.1)`}
+        w="100%"
+        h="600px"
+        display="flex"
+        flexDirection="column"
+        overflow="hidden"
+      >
       {/* Header */}
       <HStack
         p={4}
@@ -222,7 +222,9 @@ export function ChatWidget() {
         </Button>
       </HStack>
 
-      {/* JARVIS Core Interface */}
+      </Box>
+
+      {/* JARVIS Core Interface — abaixo do card */}
       <JarvisCore isActive={isSpeaking} />
     </Box>
   );
