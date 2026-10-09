@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Box, Input, Button, VStack, HStack, Text } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { speak, stopSpeech } from '../../utils/textToSpeech';
+import { generateGreeting } from '../../utils/generateGreeting';
 import { JarvisCore } from './JarvisCore';
 import styles from './ChatWidget.module.css';
 
@@ -15,10 +16,11 @@ interface Message {
 const GREEN = '#42c920';
 
 export function ChatWidget() {
+  const [greetingText, setGreetingText] = useState('Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?',
+      text: 'Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?',
       role: 'assistant',
       timestamp: new Date(),
     },
@@ -43,17 +45,22 @@ export function ChatWidget() {
     scrollToBottom();
   }, [messages]);
 
-  // Fala a mensagem de boas-vindas ao montar o widget — mesma lógica de
-  // handleSendMessage, só que pra mensagem inicial estática (nunca passava
-  // por ali, então nunca tocava áudio). Nota: navegadores podem bloquear
-  // speechSynthesis sem uma interação do usuário antes — se o widget montar
-  // logo no carregamento da página, o áudio pode não tocar na primeira vez
-  // (limite do navegador, não bug daqui).
   useEffect(() => {
-    if (!audioEnabled) return;
-    const mensagemInicial = messages[0]?.text;
-    if (!mensagemInicial) return;
-    respondWithAudio(mensagemInicial);
+    generateGreeting().then((greeting) => {
+      setGreetingText(greeting);
+      setMessages([
+        {
+          id: '1',
+          text: greeting,
+          role: 'assistant',
+          timestamp: new Date(),
+        },
+      ]);
+
+      if (audioEnabled) {
+        respondWithAudio(greeting);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -225,7 +232,7 @@ export function ChatWidget() {
       </Box>
 
       {/* JARVIS Core Interface — abaixo do card */}
-      <JarvisCore isActive={isSpeaking} />
+      <JarvisCore isActive={isSpeaking} greeting={greetingText} />
     </Box>
   );
 }

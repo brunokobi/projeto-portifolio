@@ -1,9 +1,9 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 
 const GREEN = '#42c920';
 
-export function JarvisCore({ isActive }: { isActive: boolean }) {
+export function JarvisCore({ isActive, greeting }: { isActive: boolean; greeting: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const [spectrum, setSpectrum] = useState<number[]>(Array(16).fill(0));
@@ -145,23 +145,47 @@ export function JarvisCore({ isActive }: { isActive: boolean }) {
     <Box
       position="relative"
       w="100%"
-      maxW="250px"
+      maxW="500px"
       mx="auto"
-      my={4}
-      opacity={isActive ? 1 : 0.5}
-      transition="all 0.3s"
+      display="flex"
+      flexDirection="column"
+      gap={3}
     >
-      <canvas
-        ref={canvasRef}
-        width={250}
-        height={250}
-        style={{
-          display: 'block',
-          width: '100%',
-          height: 'auto',
-          filter: isActive ? 'drop-shadow(0 0 20px #42c920)' : 'none',
-        }}
-      />
+      <Box
+        position="relative"
+        w="100%"
+        maxW="250px"
+        mx="auto"
+        opacity={isActive ? 1 : 0.5}
+        transition="all 0.3s"
+      >
+        <canvas
+          ref={canvasRef}
+          width={250}
+          height={250}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: 'auto',
+            filter: isActive ? 'drop-shadow(0 0 20px #42c920)' : 'none',
+          }}
+        />
+      </Box>
+
+      {/* Saudação abaixo da animação */}
+      {greeting && (
+        <Box
+          bg="rgba(66, 201, 32, 0.05)"
+          borderRadius="8px"
+          p={3}
+          borderLeft="3px solid #42c920"
+          textAlign="center"
+        >
+          <Text fontSize="xs" color="rgba(255, 255, 255, 0.8)" lineHeight="1.5">
+            {greeting}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 }
