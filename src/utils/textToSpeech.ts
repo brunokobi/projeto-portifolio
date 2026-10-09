@@ -8,13 +8,9 @@ interface SpeechOptions {
   volume?: number; // 0 - 1 (padrão 1)
 }
 
-// Nomes que indicam voz de qualidade melhor (nem toda engine marca isso da
-// mesma forma): Chrome expõe vozes "Google" (nuvem, soam bem mais naturais
-// que o sintetizador local do SO); Edge/Windows têm variantes "Natural" ou
-// "Online (Natural)"; macOS/iOS têm vozes "Enhanced"/"Premium". Sem
-// selecionar explicitamente, o navegador usa a primeira voz instalada pro
-// idioma — geralmente a pior (sintetizador local clássico, robótico).
+// Nomes que indicam voz de qualidade melhor e MASCULINA
 const INDICADORES_VOZ_BOA = ["google", "natural", "enhanced", "premium", "neural"];
+const INDICADORES_VOZ_MASCULINA = ["male", "man", "david", "daniel", "james", "mark", "michael", "john", "paulo"];
 
 let vozesCache: SpeechSynthesisVoice[] = [];
 
@@ -43,10 +39,24 @@ function escolherMelhorVoz(vozes: SpeechSynthesisVoice[], language: string): Spe
   if (candidatas.length === 0) return null;
 
   // Prioriza match exato de idioma (pt-BR antes de pt-PT quando pedimos
-  // pt-BR), e dentro disso prioriza nome com indicador de voz melhor.
+  // pt-BR), e dentro disso prioriza voz masculina + indicador de qualidade
   const exatas = candidatas.filter((v) => v.lang.toLowerCase() === language.toLowerCase());
   const pool = exatas.length > 0 ? exatas : candidatas;
 
+  // Tenta achar voz MASCULINA com boa qualidade
+  const masculinaGood = pool.find((v) =>
+    INDICADORES_VOZ_MASCULINA.some((ind) => v.name.toLowerCase().includes(ind)) &&
+    INDICADORES_VOZ_BOA.some((ind) => v.name.toLowerCase().includes(ind))
+  );
+  if (masculinaGood) return masculinaGood;
+
+  // Se não encontrou, tenta só voz masculina (qualquer qualidade)
+  const masculina = pool.find((v) =>
+    INDICADORES_VOZ_MASCULINA.some((ind) => v.name.toLowerCase().includes(ind))
+  );
+  if (masculina) return masculina;
+
+  // Fallback: voz de boa qualidade (pode ser feminina)
   const boa = pool.find((v) => INDICADORES_VOZ_BOA.some((ind) => v.name.toLowerCase().includes(ind)));
   return boa ?? pool[0];
 }

@@ -17,7 +17,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Boa Tarde! 👋 Aqui em Serra está morno e agradável! 27°C com céu lindo demais. O que posso te ajudar hoje?',
+      text: 'Boa Tarde. Aqui em Serra está morno e agradável. 27°C com céu lindo demais. O que posso te ajudar hoje?',
       role: 'assistant',
       timestamp: new Date(),
     },
@@ -125,7 +125,7 @@ export function ChatWidget() {
         bg="rgba(66, 201, 32, 0.05)"
       >
         <Text fontSize="lg" fontWeight="bold" color={GREEN}>
-          💬 Chat IA
+          JARVIS
         </Text>
       </HStack>
 
@@ -220,6 +220,36 @@ export function ChatWidget() {
           {isSpeaking ? '⏹' : '➤'}
         </Button>
       </HStack>
+
+      {/* JARVIS Agent Animation */}
+      {isSpeaking && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          h="80px"
+          gap={2}
+          opacity={isSpeaking ? 1 : 0.3}
+          transition="all 0.3s"
+        >
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Box
+              key={i}
+              w="8px"
+              bg={GREEN}
+              borderRadius="full"
+              animation={`pulse 0.8s ease-in-out ${i * 0.1}s infinite`}
+              css={{
+                '@keyframes pulse': {
+                  '0%, 100%': { height: '12px', opacity: 0.5 },
+                  '50%': { height: '32px', opacity: 1 },
+                },
+              }}
+              h="12px"
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }
