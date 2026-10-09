@@ -1,146 +1,167 @@
 import { Box } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 
 const CYAN = '#00FFFF';
 
 export function JarvisCore({ isActive }: { isActive: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>();
+  const [spectrum, setSpectrum] = useState<number[]>(Array(16).fill(0));
+
+  useEffect(() => {
+    if (!isActive) {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      return;
+    }
+
+    // Simula dados de áudio (espectro animado)
+    const animate = () => {
+      setSpectrum((prev) =>
+        prev.map((val) => {
+          const target = Math.random() * 0.8 + (isActive ? 0.2 : 0);
+          return val + (target - val) * 0.2;
+        })
+      );
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [isActive]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const w = canvas.width;
+    const h = canvas.height;
+    const centerX = w / 2;
+    const centerY = h / 2;
+    const innerRadius = 35;
+    const outerRadius = 85;
+
+    // Clear canvas
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw outer rings
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = isActive ? 0.4 : 0.2;
+
+    // Ring 3
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Ring 2
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Ring 1
+    ctx.globalAlpha = isActive ? 0.6 : 0.3;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, innerRadius + 15, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Draw spectrum bars (16 bars around the center)
+    ctx.globalAlpha = 1;
+    const barCount = 16;
+    spectrum.forEach((value, i) => {
+      const angle = (i / barCount) * Math.PI * 2;
+      const barHeight = (value * 25) + 5;
+      const startRadius = innerRadius;
+      const endRadius = startRadius + barHeight;
+
+      const x1 = centerX + Math.cos(angle) * startRadius;
+      const y1 = centerY + Math.sin(angle) * startRadius;
+      const x2 = centerX + Math.cos(angle) * endRadius;
+      const y2 = centerY + Math.sin(angle) * endRadius;
+
+      // Bar glow
+      ctx.strokeStyle = CYAN;
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 0.3 + value * 0.7;
+      ctx.shadowColor = CYAN;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      // Bar core
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.6 + value * 0.4;
+      ctx.shadowBlur = 5;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    });
+
+    ctx.shadowBlur = 0;
+
+    // Draw center glow
+    ctx.globalAlpha = isActive ? 0.3 : 0.1;
+    const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 25);
+    gradient.addColorStop(0, CYAN);
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw core circle
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = isActive ? 1 : 0.5;
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Draw play button in center (if not speaking)
+    if (!isActive) {
+      ctx.fillStyle = CYAN;
+      ctx.globalAlpha = 0.4;
+      ctx.beginPath();
+      ctx.moveTo(centerX + 5, centerY - 8);
+      ctx.lineTo(centerX + 5, centerY + 8);
+      ctx.lineTo(centerX - 5, centerY);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }, [spectrum, isActive]);
+
   return (
     <Box
       position="relative"
-      w="200px"
-      h="200px"
+      w="100%"
+      maxW="250px"
       mx="auto"
       my={4}
-      opacity={isActive ? 1 : 0.3}
+      opacity={isActive ? 1 : 0.5}
       transition="all 0.3s"
     >
-      <svg
-        width="200"
-        height="200"
-        viewBox="0 0 200 200"
-        style={{ position: 'absolute', top: 0, left: 0 }}
-      >
-        {/* Outer ring - rotating */}
-        <circle
-          cx="100"
-          cy="100"
-          r="95"
-          fill="none"
-          stroke={CYAN}
-          strokeWidth="1"
-          opacity={isActive ? 0.4 : 0.2}
-          style={{
-            animation: isActive ? 'rotate360 8s linear infinite' : 'none',
-          }}
-        />
-
-        {/* Ring 2 */}
-        <circle
-          cx="100"
-          cy="100"
-          r="75"
-          fill="none"
-          stroke={CYAN}
-          strokeWidth="1"
-          opacity={isActive ? 0.3 : 0.15}
-          style={{
-            animation: isActive ? 'rotate360-reverse 6s linear infinite' : 'none',
-          }}
-        />
-
-        {/* Ring 3 - inner */}
-        <circle
-          cx="100"
-          cy="100"
-          r="55"
-          fill="none"
-          stroke={CYAN}
-          strokeWidth="2"
-          opacity={isActive ? 0.6 : 0.3}
-        />
-
-        {/* Core glow */}
-        <circle
-          cx="100"
-          cy="100"
-          r="35"
-          fill={CYAN}
-          opacity={isActive ? 0.15 : 0.05}
-          style={{
-            filter: 'blur(8px)',
-            animation: isActive ? 'pulse-glow 1.5s ease-in-out infinite' : 'none',
-          }}
-        />
-
-        {/* Core circle */}
-        <circle
-          cx="100"
-          cy="100"
-          r="30"
-          fill="none"
-          stroke={CYAN}
-          strokeWidth="3"
-          opacity={isActive ? 1 : 0.5}
-          style={{
-            filter: `drop-shadow(0 0 ${isActive ? 12 : 4}px ${CYAN})`,
-          }}
-        />
-
-        {/* Inner core */}
-        <circle
-          cx="100"
-          cy="100"
-          r="20"
-          fill={CYAN}
-          opacity={isActive ? 0.3 : 0.1}
-        />
-
-        {/* Scan lines - horizontal */}
-        <g opacity={isActive ? 0.4 : 0.1}>
-          <line x1="50" y1="100" x2="150" y2="100" stroke={CYAN} strokeWidth="1" />
-          <line x1="45" y1="85" x2="155" y2="85" stroke={CYAN} strokeWidth="0.5" />
-          <line x1="45" y1="115" x2="155" y2="115" stroke={CYAN} strokeWidth="0.5" />
-        </g>
-
-        {/* Dots on rings */}
-        {[0, 90, 180, 270].map((angle) => {
-          const rad = (angle * Math.PI) / 180;
-          const x = 100 + 85 * Math.cos(rad);
-          const y = 100 + 85 * Math.sin(rad);
-          return (
-            <circle
-              key={`outer-${angle}`}
-              cx={x}
-              cy={y}
-              r="2"
-              fill={CYAN}
-              opacity={isActive ? 0.8 : 0.3}
-            />
-          );
-        })}
-      </svg>
-
-      <style>{`
-        @keyframes rotate360 {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        @keyframes rotate360-reverse {
-          from { transform: rotate(360deg); }
-          to { transform: rotate(0deg); }
-        }
-
-        @keyframes pulse-glow {
-          0%, 100% {
-            r: 35;
-            opacity: 0.15;
-          }
-          50% {
-            r: 40;
-            opacity: 0.25;
-          }
-        }
-      `}</style>
+      <canvas
+        ref={canvasRef}
+        width={250}
+        height={250}
+        style={{
+          display: 'block',
+          width: '100%',
+          height: 'auto',
+          filter: isActive ? 'drop-shadow(0 0 20px #00FFFF)' : 'none',
+        }}
+      />
     </Box>
   );
 }

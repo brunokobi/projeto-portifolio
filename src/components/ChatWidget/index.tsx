@@ -18,7 +18,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Boa Tarde. Aqui em Serra está morno e agradável. 27°C com céu lindo demais. O que posso te ajudar hoje?',
+      text: 'Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?',
       role: 'assistant',
       timestamp: new Date(),
     },
