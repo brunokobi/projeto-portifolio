@@ -335,7 +335,6 @@ const GlobeBackground = () => {
         "esri/views/SceneView",
         "esri/layers/TileLayer",
         "esri/layers/BaseTileLayer",
-        "esri/layers/ImageryLayer",
         "esri/Basemap",
         "esri/layers/ElevationLayer",
         "esri/layers/BaseElevationLayer",
@@ -351,7 +350,6 @@ const GlobeBackground = () => {
             SceneView,
             TileLayer,
             BaseTileLayer,
-            ImageryLayer,
             Basemap,
             ElevationLayer,
             BaseElevationLayer,
@@ -537,20 +535,6 @@ const GlobeBackground = () => {
                 symbol: { type: "mesh-3d", symbolLayers: [{ type: "fill" }] },
               })
             );
-
-            // Nuvens em tempo real (NOAA GOES) — adiciona camada de satélite
-            try {
-              const noaaClaudsLayer = new ImageryLayer({
-                portalItem: {
-                  id: "fcd711bfb5e44948b9cea0e8afc9baea", // NOAA GOES clouds (público)
-                },
-                opacity: 0.65,
-              });
-              map.add(noaaClaudsLayer);
-            } catch (err) {
-              console.warn("[GlobeBackground] Não foi possível carregar nuvens NOAA:", err);
-              // Continua com cloudsMesh estático se falhar
-            }
 
             // Rotação automática — pausa quando o usuário arrasta
             let userInteracting = false;
