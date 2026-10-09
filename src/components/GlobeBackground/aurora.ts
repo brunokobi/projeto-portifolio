@@ -22,7 +22,10 @@ export async function loadAuroraData(): Promise<Aurora[]> {
 
     // Pega o último índice (mais recente)
     const latest = data[data.length - 1];
-    const kpIndex = latest.kp_index;
+    let kpIndex = latest.kp_index;
+
+    // TESTE: força Kp alto pra demonstração (comentar para dados reais)
+    kpIndex = 7;
 
     // Kp < 4: sem aurora visível
     if (kpIndex < 4) return [];
