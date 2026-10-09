@@ -13,7 +13,7 @@ interface Message {
 }
 
 const GREEN = '#42c920';
-const GREETING = 'Olá! Como posso te ajudar a conhecer mais sobre mim e minha paixão por tecnologia? Se tiver alguma dúvida específica, pode perguntar! Se não, sinta-se à vontade para explorar meu site: https://brunokobi.netlify.app. Vamos construir o futuro juntos!';
+const GREETING = 'Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo. Como posso ser útil?';
 
 export function ChatWidget() {
   const [greetingText, setGreetingText] = useState(GREETING);
