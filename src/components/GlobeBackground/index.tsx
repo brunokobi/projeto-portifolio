@@ -542,7 +542,7 @@ const GlobeBackground = () => {
             try {
               const noaaClaudsLayer = new ImageryLayer({
                 portalItem: {
-                  id: "2f5a28f82f4d41ec8dbe6cf96375a970", // NOAA GOES clouds
+                  id: "fcd711bfb5e44948b9cea0e8afc9baea", // NOAA GOES clouds (público)
                 },
                 opacity: 0.65,
               });
