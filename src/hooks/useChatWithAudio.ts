@@ -17,7 +17,7 @@ export function useChatWithAudio({ selectedLanguage, audioEnabled, onSpeakingCha
         speak({
           text: responseText,
           language: selectedLanguage,
-          rate: 1,
+          rate: 1.4,
           pitch: 1,
           volume: 1,
           onEnd: () => onSpeakingChange?.(false),
