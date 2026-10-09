@@ -270,6 +270,10 @@ async function generateAIResponse(message: string): Promise<string> {
 
     // Remove URL do site oficial das respostas
     output = output.replace(/https?:\/\/brunokobi\.netlify\.app\/?/gi, '');
+
+    // Remove frase repetitiva do final
+    output = output.replace(/\s*Vamos construir o futuro juntos!\s*$/gi, '');
+
     output = output.trim();
 
     return output;
