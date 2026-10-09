@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Box, Input, Button, VStack, HStack, Text } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { speak, stopSpeech } from '../../utils/textToSpeech';
+import { JarvisCore } from './JarvisCore';
 import styles from './ChatWidget.module.css';
 
 interface Message {
@@ -221,35 +222,8 @@ export function ChatWidget() {
         </Button>
       </HStack>
 
-      {/* JARVIS Agent Animation */}
-      {isSpeaking && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          h="80px"
-          gap={2}
-          opacity={isSpeaking ? 1 : 0.3}
-          transition="all 0.3s"
-        >
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Box
-              key={i}
-              w="8px"
-              bg={GREEN}
-              borderRadius="full"
-              animation={`pulse 0.8s ease-in-out ${i * 0.1}s infinite`}
-              css={{
-                '@keyframes pulse': {
-                  '0%, 100%': { height: '12px', opacity: 0.5 },
-                  '50%': { height: '32px', opacity: 1 },
-                },
-              }}
-              h="12px"
-            />
-          ))}
-        </Box>
-      )}
+      {/* JARVIS Core Interface */}
+      <JarvisCore isActive={isSpeaking} />
     </Box>
   );
 }
