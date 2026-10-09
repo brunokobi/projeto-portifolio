@@ -35,6 +35,7 @@ export function ChatWidget() {
   const { respondWithAudio, stopAudio } = useChatWithAudio({
     selectedLanguage,
     audioEnabled,
+    onSpeakingChange: setIsSpeaking,
   });
 
   const scrollToBottom = () => {
@@ -94,9 +95,7 @@ export function ChatWidget() {
 
       // Fala a resposta se áudio habilitado
       if (audioEnabled) {
-        setIsSpeaking(true);
         respondWithAudio(response);
-        setTimeout(() => setIsSpeaking(false), 1000);
       }
     } catch (error) {
       console.error('Erro ao gerar resposta:', error);

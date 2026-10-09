@@ -5,7 +5,6 @@ interface WeatherData {
   timezone: string;
   temp: number;
   condition: string;
-  icon: string;
 }
 
 async function getWeatherData(lat: number, lon: number): Promise<WeatherData | null> {
@@ -24,23 +23,17 @@ async function getWeatherData(lat: number, lon: number): Promise<WeatherData | n
     // Código de condição meteorológica WMO
     const weatherCode = current.weather_code;
     let condition = 'Céu limpo';
-    let icon = '☀️';
 
     if (weatherCode >= 45 && weatherCode <= 48) {
       condition = 'Nublado';
-      icon = '🌫️';
     } else if (weatherCode >= 51 && weatherCode <= 67) {
       condition = 'Chuva';
-      icon = '🌧️';
     } else if (weatherCode >= 71 && weatherCode <= 85) {
       condition = 'Neve';
-      icon = '❄️';
     } else if (weatherCode >= 80 && weatherCode <= 82) {
       condition = 'Chuva forte';
-      icon = '⛈️';
     } else if (weatherCode === 95 || weatherCode === 96 || weatherCode === 99) {
       condition = 'Tempestade';
-      icon = '⚡';
     }
 
     // Nominatim reverso para pegar cidade
@@ -56,7 +49,6 @@ async function getWeatherData(lat: number, lon: number): Promise<WeatherData | n
       timezone,
       temp: Math.round(current.temperature_2m),
       condition,
-      icon,
     };
   } catch {
     return null;
@@ -95,7 +87,7 @@ export async function generateGreeting(): Promise<string> {
         }
 
         const localTime = await getLocalTime(weather.timezone);
-        const greeting = `Olá! Eu sou o JARVIS, seu assistente virtual. ${weather.icon} Em ${weather.city} está ${weather.condition.toLowerCase()}, ${weather.temp}°C. Hora local: ${localTime}. Como posso ajudá-lo?`;
+        const greeting = `Olá! Eu sou o JARVIS, seu assistente virtual. Em ${weather.city} está ${weather.condition.toLowerCase()}, ${weather.temp}°C. Hora local: ${localTime}. Como posso ajudá-lo?`;
         resolve(greeting);
       },
       () => {

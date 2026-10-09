@@ -6,6 +6,7 @@ interface SpeechOptions {
   rate?: number; // 0.5 - 2.0 (padrão 1)
   pitch?: number; // 0.5 - 2.0 (padrão 1)
   volume?: number; // 0 - 1 (padrão 1)
+  onEnd?: () => void;
 }
 
 // Nomes que indicam voz de qualidade melhor e MASCULINA
@@ -62,7 +63,7 @@ function escolherMelhorVoz(vozes: SpeechSynthesisVoice[], language: string): Spe
 }
 
 export async function speak(options: SpeechOptions): Promise<void> {
-  const { text, language, rate = 1, pitch = 1, volume = 1 } = options;
+  const { text, language, rate = 1, pitch = 1, volume = 1, onEnd } = options;
 
   // Cancela fala anterior se estiver rodando
   window.speechSynthesis.cancel();
@@ -80,6 +81,10 @@ export async function speak(options: SpeechOptions): Promise<void> {
   const melhorVoz = escolherMelhorVoz(vozesCache, language);
   if (melhorVoz) {
     utterance.voice = melhorVoz;
+  }
+
+  if (onEnd) {
+    utterance.onend = onEnd;
   }
 
   window.speechSynthesis.speak(utterance);
