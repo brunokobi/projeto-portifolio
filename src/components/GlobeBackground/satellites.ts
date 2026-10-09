@@ -148,15 +148,13 @@ function propagarParaSatelite(entry: TleEntry, idSufixo: string): Satellite | nu
 }
 
 export async function loadSatellites(): Promise<Satellite[]> {
-  const [starlinkAll, gps, galileo, weather] = await Promise.all([
-    fetchGroup("starlink", "starlink"),
+  const [gps, galileo, weather] = await Promise.all([
     fetchGroup("gps-ops", "navigation"),
     fetchGroup("galileo", "navigation"),
     fetchGroup("weather", "weather"),
   ]);
 
-  const starlink = amostrarEspacado(starlinkAll, STARLINK_SAMPLE_SIZE);
-  const todos = [...starlink, ...gps, ...galileo, ...weather];
+  const todos = [...gps, ...galileo, ...weather];
 
   const satellites: Satellite[] = [];
   todos.forEach((entry, i) => {
