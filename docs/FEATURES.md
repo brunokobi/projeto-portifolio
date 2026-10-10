@@ -171,20 +171,23 @@ Elevação: 3,776m
 
 ## 💬 Chat IA (n8n)
 
-**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatWidget/JarvisCore.tsx`, `src/components/ChatButton/index.tsx`, `src/utils/textToSpeech.ts`, `netlify/functions/n8n-chat.ts`  
+**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatWidget/JarvisCore.tsx`, `src/components/ChatButton/index.tsx`, `src/hooks/useChatWithAudio.ts`, `src/utils/generateGreeting.ts`, `src/utils/textToSpeech.ts`, `netlify/functions/n8n-chat.ts`  
 **Backend:** workflow "chatBruno - Multi-Agente RAG" no n8n (self-hosted), acessado via proxy Netlify  
 **Status:** ✅ Ativo
 
 - Envio: `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` (formato do Chat Trigger do n8n; o formato antigo `{ message, language }` faz o workflow retornar 500)
 - Resposta: o texto vem em `data.output`; se vier vazio, o widget mostra mensagem de fallback; erro de rede/HTTP mostra mensagem de erro
+- Pós-processamento (em `generateAIResponse`): o widget remove da resposta a URL `https://brunokobi.netlify.app` e a frase final "Vamos construir o futuro juntos!" (regex no cliente; o workflow n8n em si não foi alterado por este repositório)
 - `sessionId`: UUID gerado uma vez por carregamento da página (variável de módulo `chatSessionId`, `crypto.randomUUID()` com fallback). Mantém a Memória de Conversa do n8n entre mensagens da mesma visita; recarregar a página inicia conversa nova
 - Idioma: o seletor de idioma da UI **não tem efeito** no n8n (o workflow é fixo em português e o payload não leva idioma). Ele só afeta a voz do áudio (TTS)
 - Config: variável `N8N_WEBHOOK_URL` no Netlify (obrigatória; ausente → function retorna 500)
 - Pontos de entrada: botão flutuante global (`ChatButton`, abre o widget num Drawer; oculto em `/news`) e rota `/chat`
-- Identidade: o assistente se apresenta como **JARVIS** (título do widget "JARVIS"). Mensagem inicial: "Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?" — falada ao montar o widget se o áudio estiver ativo (o navegador pode bloquear a fala sem interação prévia do usuário)
+- Identidade: o assistente se apresenta como **JARVIS** (título do widget "JARVIS")
+- Saudação dinâmica: ao montar o widget, `generateGreeting()` (`src/utils/generateGreeting.ts`) pede geolocalização ao navegador, consulta Open-Meteo (temperatura e condição) e Nominatim (cidade) e monta: "{Bom dia|Boa tarde|Boa noite}! Eu sou o JARVIS, seu assistente virtual. Em {cidade} está {condição}, {temp}°C. Como posso ajudá-lo?". O período do dia usa a hora local do fuso retornado pelo Open-Meteo (5h–11h59 bom dia; 12h–17h59 boa tarde; demais boa noite). Sem geolocalização (negada/indisponível) ou se o clima falhar (timeout 5s por request), usa o texto fixo "Olá. Eu sou o JARVIS, seu assistente virtual. Como posso ajudá-lo?". A saudação vira a primeira mensagem do chat, aparece também sob o JARVIS Core e é falada se o áudio estiver ativo (o navegador pode bloquear a fala sem interação prévia do usuário)
 - Voz: `speak()` em `textToSpeech.ts` (Web Speech API) prefere voz **masculina** de boa qualidade no idioma escolhido (nomes como David, Daniel, Paulo, "male"...); sem masculina, cai para voz de boa qualidade ou a primeira disponível — depende das vozes instaladas no navegador/SO
-- **JARVIS Core** (`JarvisCore`, renderizado no rodapé do widget com `isActive={isSpeaking}`): canvas 250x250 em ciano (`#00FFFF`) com 3 anéis concêntricos, núcleo central com glow/sombra e 16 barras radiais de "espectro" com glow. O espectro é **simulado** (valores aleatórios suavizados a cada frame via `requestAnimationFrame`), **não** vem do áudio real do TTS — a Web Speech API não expõe o áudio. Ativo: barras animadas, anéis/núcleo mais intensos e `drop-shadow`; inativo: animação parada, container com opacidade 0.5 e ícone de play (apenas visual, não clicável) no centro
-- Limitação: `isSpeaking` é ligado ao enviar uma resposta com áudio ativo e desligado por `setTimeout` de 1s (ou pelo botão de parar), então o JARVIS Core fica ativo ~1s, não pela duração real da fala
+- Velocidade de fala: `useChatWithAudio` (`respondWithAudio`) chama `speak()` com `rate: 1.4` (pitch 1, volume 1). O padrão de `speak()` continua `rate = 1` para quem chamar sem informar
+- **JARVIS Core** (`JarvisCore`, renderizado abaixo do card do chat com `isActive={isSpeaking}` e `greeting={greetingText}`): canvas 250x250 em verde da marca (`#42c920`) com 3 anéis concêntricos, núcleo central com glow/sombra e 16 barras radiais de "espectro" com glow. O espectro é **simulado** (valores aleatórios suavizados a cada frame via `requestAnimationFrame`), **não** vem do áudio real do TTS — a Web Speech API não expõe o áudio. Ativo: barras animadas, anéis/núcleo mais intensos e `drop-shadow`; inativo: animação parada, container com opacidade 0.5 e ícone de play (apenas visual, não clicável) no centro. Sob o canvas exibe a saudação em um box
+- `isSpeaking`: `respondWithAudio` liga `isSpeaking` e o desliga no `onEnd` do utterance (fim real da fala) ou pelo botão de parar
 
 ---
 

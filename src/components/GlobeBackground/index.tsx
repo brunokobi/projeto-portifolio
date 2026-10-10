@@ -33,7 +33,7 @@ import { TOP_CITIES, cityColor, cityRadius, enrichCitiesWithAirQuality, type Cit
 import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
 import { loadCapAlerts, capAlertColor, type CapAlert } from "./capAlerts";
 import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
-import { loadAuroraData, auroraColor, auroraRadius, type Aurora } from "./aurora";
+// import { loadAuroraData, auroraColor, auroraRadius, type Aurora } from "./aurora";
 
 setDefaultOptions({ css: true });
 
@@ -1026,12 +1026,12 @@ const GlobeBackground = () => {
                   capAlerts = data;
                 });
 
-                // Aurora Boreal em tempo real (NOAA Kp-index)
-                let aurora: Aurora[] = [];
-                loadAuroraData().then((data) => {
-                  if (!mountedRef.current) return;
-                  aurora = data;
-                });
+                // Aurora Boreal em tempo real (NOAA Kp-index) — DESABILITADA
+                // let aurora: Aurora[] = [];
+                // loadAuroraData().then((data) => {
+                //   if (!mountedRef.current) return;
+                //   aurora = data;
+                // });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -1482,38 +1482,39 @@ const GlobeBackground = () => {
                   }
 
                   // Aurora Boreal (NOAA Kp-index)
-                  if (auroraScreenPosRef.current.length !== aurora.length) {
-                    auroraScreenPosRef.current = new Array(aurora.length).fill(null);
-                  }
-                  if (aurora.length > 0) {
-                    for (let i = 0; i < aurora.length; i++) {
-                      auroraScreenPosRef.current[i] = null;
-                      const aur = aurora[i];
-                      if (!isFacing(cam.latitude, cam.longitude, aur.lat, aur.lon)) continue;
-                      try {
-                        const sp = view.toScreen(
-                          new Point({ longitude: aur.lon, latitude: aur.lat, z: 50000 })
-                        );
-                        if (!sp) continue;
-                        auroraScreenPosRef.current[i] = { x: sp.x, y: sp.y, kpIndex: aur.kpIndex, intensity: aur.intensity };
-
-                        const radius = auroraRadius(aur.intensity);
-                        const color = auroraColor(aur.intensity);
-
-                        ctx.fillStyle = color;
-                        ctx.shadowBlur = 15;
-                        ctx.shadowColor = color;
-                        ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, radius, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                      } catch {
-                        // ponto fora do campo de visão
-                      }
-                    }
-                  } else {
-                    auroraScreenPosRef.current.fill(null);
-                  }
+                  // Aurora Boreal rendering — DESABILITADA
+                  // if (auroraScreenPosRef.current.length !== aurora.length) {
+                  //   auroraScreenPosRef.current = new Array(aurora.length).fill(null);
+                  // }
+                  // if (aurora.length > 0) {
+                  //   for (let i = 0; i < aurora.length; i++) {
+                  //     auroraScreenPosRef.current[i] = null;
+                  //     const aur = aurora[i];
+                  //     if (!isFacing(cam.latitude, cam.longitude, aur.lat, aur.lon)) continue;
+                  //     try {
+                  //       const sp = view.toScreen(
+                  //         new Point({ longitude: aur.lon, latitude: aur.lat, z: 50000 })
+                  //       );
+                  //       if (!sp) continue;
+                  //       auroraScreenPosRef.current[i] = { x: sp.x, y: sp.y, kpIndex: aur.kpIndex, intensity: aur.intensity };
+                  //
+                  //       const radius = auroraRadius(aur.intensity);
+                  //       const color = auroraColor(aur.intensity);
+                  //
+                  //       ctx.fillStyle = color;
+                  //       ctx.shadowBlur = 15;
+                  //       ctx.shadowColor = color;
+                  //       ctx.beginPath();
+                  //       ctx.arc(sp.x, sp.y, radius, 0, Math.PI * 2);
+                  //       ctx.fill();
+                  //       ctx.shadowBlur = 0;
+                  //     } catch {
+                  //       // ponto fora do campo de visão
+                  //     }
+                  //   }
+                  // } else {
+                  //   auroraScreenPosRef.current.fill(null);
+                  // }
 
                   // Arco de voo animado
                   const arc = activeArcRef.current;

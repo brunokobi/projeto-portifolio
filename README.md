@@ -280,8 +280,8 @@ $$ LANGUAGE sql;
 
 Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, com resposta via agente n8n (chatBruno), voz (TTS) e uma interface visual em canvas.
 
-- **Apresentação:** a mensagem inicial é estática: "Olá. Eu sou o JARVIS, seu assistente virtual. Estou aqui para ajudá-lo em qualquer coisa que você precisar. Como posso ser útil hoje?" (falada ao abrir o widget, se o áudio estiver ativo e o navegador permitir)
-- **Voz:** Web Speech API; `src/utils/textToSpeech.ts` prefere voz masculina de boa qualidade no idioma escolhido, com fallback para as vozes disponíveis
+- **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, condição e temperatura; sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
+- **Voz:** Web Speech API; `src/utils/textToSpeech.ts` prefere voz masculina de boa qualidade no idioma escolhido, com fallback para as vozes disponíveis; a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
 - **JARVIS Core:** `src/components/ChatWidget/JarvisCore.tsx` desenha anéis concêntricos, núcleo com glow/sombra e 16 barras de espectro que pulsam enquanto o widget está "falando"; o espectro é simulado (não analisa o áudio real) e, inativo, mostra um ícone de play decorativo
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 
