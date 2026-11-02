@@ -74,7 +74,7 @@ git commit -m "refactor: Claude sugeriu usar bilinear interpolation"
 | Arquivo | Responsabilidade |
 |---------|------------------|
 | `src/components/GlobeBackground/index.tsx` | Main component — renderiza globo + overlays |
-| `src/components/GlobeBackground/*.ts` | Loaders das camadas (satellites, iss, hazards, capAlerts, quakes, volcanoes, hurricanes, wind) e `iconScale.ts`; `aircraft.ts`, `aurora.ts`, `infrastructure.ts` e `ocean.ts` estão sem uso no globo |
+| `src/components/GlobeBackground/*.ts` | Loaders das camadas (satellites, iss, hazards, capAlerts, quakes, volcanoes, hurricanes, wind) e `iconScale.ts`; `cities.ts` busca o AQI real no hover da cidade |
 | `src/pages/DevBlog/` | Blog with posts |
 | `src/routes/index.tsx` | Route definitions |
 | `DESIGN_SYSTEM.md` | Visual identity + tokens |
@@ -122,7 +122,7 @@ Todas as camadas usam dados reais. Detalhes em `docs/FEATURES.md`.
 git clone ...
 cd projeto-portifolio
 npm install
-npm start            # http://localhost:5173
+npm start            # http://localhost:3000
 npm run test         # Unit tests
 npm run build        # Production build
 ```

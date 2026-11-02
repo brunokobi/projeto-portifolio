@@ -28,12 +28,9 @@ import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
 import { loadSatellites, satelliteColor, satelliteLabel, SATELLITE_POLL_INTERVAL_MS, type Satellite } from "./satellites";
-import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
-import { TOP_CITIES, cityColor, cityRadius, enrichCitiesWithAirQuality, type City as CityData } from "./cities";
-import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
-import { loadCapAlerts, capAlertColor, type CapAlert } from "./capAlerts";
-import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
-// import { loadAuroraData, auroraColor, auroraRadius, type Aurora } from "./aurora";
+import { fetchCityAqi } from "./cities";
+import { loadWildfires, type Wildfire } from "./hazards";
+import { loadCapAlerts, type CapAlert } from "./capAlerts";
 
 import { markGlobeReady, resetGlobeReady } from "../../utils/globeReady";
 import { iconScaleForAltitude, scaledFontPx, SHORT_LABEL_MIN_SCALE } from "./iconScale";
@@ -43,7 +40,6 @@ setDefaultOptions({ css: true });
 // Partículas suficientes pra dar sensação de correntes contínuas sem pesar
 // demais no toScreen() (projeção 3D→2D) chamado por partícula a cada frame.
 const WIND_PARTICLE_COUNT = 700;
-const OCEAN_PARTICLE_COUNT = 400;
 // Alpha do "destination-in" aplicado no canvas de vento a cada frame — abaixo
 // de 1 multiplica a opacidade existente, criando o efeito de rastro que
 // desbota (em vez de limpar tudo, como o canvas dos pins das cidades faz).
@@ -146,13 +142,8 @@ const GlobeBackground = () => {
     Array<{ x: number; y: number; name: string; windSpeed: number; pressure: number; category: number } | null>
   >([]);
   const satelliteScreenPosRef = useRef<Array<{ x: number; y: number; name: string; altitude: number } | null>>([]);
-  const aircraftScreenPosRef = useRef<Array<{ x: number; y: number; callsign: string; altitude: number } | null>>([]);
-  const cityScreenPosRef2 = useRef<Array<{ x: number; y: number; name: string; population: number } | null>>([]);
-  const airQualityScreenPosRef = useRef<Array<{ x: number; y: number; name: string; aqi: number } | null>>([]);
   const wildfireScreenPosRef = useRef<Array<{ x: number; y: number; name: string; confidence: number } | null>>([]);
   const capAlertScreenPosRef = useRef<Array<{ x: number; y: number; event: string; severity: string; areaDesc: string; senderName: string; countryCode: string } | null>>([]);
-  const techHubScreenPosRef = useRef<Array<{ x: number; y: number; name: string; sector: string } | null>>([]);
-  const auroraScreenPosRef = useRef<Array<{ x: number; y: number; kpIndex: number; intensity: number } | null>>([]);
   const [hoverInfo, setHoverInfo] = useState<{ x: number; y: number; lines: string[] } | null>(null);
   const dayLayerRef = useRef<EsriAny>(null);
   const nightLayerRef = useRef<EsriAny>(null);
@@ -162,13 +153,12 @@ const GlobeBackground = () => {
   const issEnabledRef = useRef(localStorage.getItem("globeIss") !== "0");
   const hurricanesEnabledRef = useRef(localStorage.getItem("globeHurricanes") !== "0");
   const satellitesEnabledRef = useRef(localStorage.getItem("globeSatellites") !== "0");
-  const airQualityEnabledRef = useRef(localStorage.getItem("globeAirQuality") !== "0");
   const wildfiresEnabledRef = useRef(localStorage.getItem("globeWildfires") !== "0");
   const capAlertsEnabledRef = useRef(localStorage.getItem("globeCapAlerts") !== "0");
-  const techHubsEnabledRef = useRef(localStorage.getItem("globeTechHubs") !== "0");
   const rotationEnabledRef = useRef(localStorage.getItem("globeRotation") !== "0");
   const isHoveringRef = useRef(false);
   const hoveredNameRef = useRef<string | null>(null);
+  const aqiRequestedRef = useRef(new Set<string>());
   const [hoverCity, setHoverCity] = useState<{ city: City; x: number; y: number } | null>(null);
 
   // Geolocalização do visitante → pin especial no globo
@@ -282,17 +272,11 @@ const GlobeBackground = () => {
       globeSatellitesToggle: (e: Event) => {
         satellitesEnabledRef.current = (e as CustomEvent).detail.satellitesEnabled as boolean;
       },
-      globeAirQualityToggle: (e: Event) => {
-        airQualityEnabledRef.current = (e as CustomEvent).detail.airQualityEnabled as boolean;
-      },
       globeWildfiresToggle: (e: Event) => {
         wildfiresEnabledRef.current = (e as CustomEvent).detail.wildfiresEnabled as boolean;
       },
       globeCapAlertsToggle: (e: Event) => {
         capAlertsEnabledRef.current = (e as CustomEvent).detail.capAlertsEnabled as boolean;
-      },
-      globeTechHubsToggle: (e: Event) => {
-        techHubsEnabledRef.current = (e as CustomEvent).detail.techHubsEnabled as boolean;
       },
     };
     Object.entries(handlers).forEach(([event, handler]) => {
@@ -313,23 +297,11 @@ const GlobeBackground = () => {
 
     // 8 Novas features — variáveis no escopo do useEffect pra acessibilidade
     let satellites: Satellite[] = [];
-    let aircraft: Aircraft[] = [];
-    let cities: CityData[] = TOP_CITIES;
-    enrichCitiesWithAirQuality(TOP_CITIES).then((d) => {
-      if (!mountedRef.current) return;
-      cities = d;
-    });
-    let airQuality: AirQuality[] = [];
     let wildfires: Wildfire[] = [];
-    let techHubs: TechHub[] = [];
 
-    // Carrega dados
     Promise.all([
       loadSatellites().then((d) => { satellites = d; }),
-      // loadAircraft().then((d) => { aircraft = d; }), // Aviões: desabilitado (OpenSky CORS)
-      loadAirQuality().then((d) => { airQuality = d; }),
       loadWildfires().then((d) => { wildfires = d; }),
-      loadTechHubs().then((d) => { techHubs = d; }),
     ]).catch(() => {});
 
     satelliteIntervalId = setInterval(() => {
@@ -620,6 +592,14 @@ const GlobeBackground = () => {
                     } else {
                       setHoverCity({ city, x: evt.x, y: evt.y });
                     }
+                    if (!aqiRequestedRef.current.has(city.name)) {
+                      aqiRequestedRef.current.add(city.name);
+                      fetchCityAqi(city.lat, city.lon).then((aqi) => {
+                        if (aqi === null || !mountedRef.current) return;
+                        city.aqi = aqi;
+                        setHoverCity((prev) => (prev && prev.city.name === city.name ? { ...prev, city } : prev));
+                      });
+                    }
                     setHoverInfo(null);
                   }
                   isHoveringRef.current = true;
@@ -756,46 +736,6 @@ const GlobeBackground = () => {
               }
 
               if (!over) {
-                // Aviões
-                const aircraftPositions = aircraftScreenPosRef.current;
-                for (let i = 0; i < aircraftPositions.length; i++) {
-                  const ap = aircraftPositions[i];
-                  if (!ap) continue;
-                  const dx = evt.x - ap.x, dy = evt.y - ap.y;
-                  if (dx * dx + dy * dy < 16 * 16) {
-                    over = true;
-                    const key = `aircraft-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const lines: string[] = ["✈️ Voo"];
-                      if (ap.callsign) lines.push(`${ap.callsign}`);
-                      if (ap.altitude) lines.push(`Altitude: ${Math.round(ap.altitude / 1000)} km`);
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
-
-
-              // Função helper: detectar AQI próximo a um ponto
-              const findNearbyAQI = (x: number, y: number) => {
-                const aqiPositions = airQualityScreenPosRef.current;
-                for (let i = 0; i < aqiPositions.length; i++) {
-                  const aqip = aqiPositions[i];
-                  if (!aqip) continue;
-                  const dx = x - aqip.x, dy = y - aqip.y;
-                  if (dx * dx + dy * dy < 30 * 30) {
-                    return aqip;
-                  }
-                }
-                return null;
-              };
-
-
-              if (!over) {
                 // Incêndios
                 const wildfirePositions = wildfireScreenPosRef.current;
                 for (let i = 0; i < wildfirePositions.length; i++) {
@@ -835,53 +775,6 @@ const GlobeBackground = () => {
                       if (ap.severity) lines.push(`Severidade: ${ap.severity}`);
                       if (ap.areaDesc) lines.push(`Área: ${ap.areaDesc}`);
                       if (ap.senderName || ap.countryCode) lines.push(`Fonte: ${ap.senderName || ap.countryCode}`);
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
-
-              if (!over) {
-                // Tech Hubs
-                const techHubPositions = techHubScreenPosRef.current;
-                for (let i = 0; i < techHubPositions.length; i++) {
-                  const tp = techHubPositions[i];
-                  if (!tp) continue;
-                  const dx = evt.x - tp.x, dy = evt.y - tp.y;
-                  if (dx * dx + dy * dy < 16 * 16) {
-                    over = true;
-                    const key = `techub-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const lines: string[] = ["💻 Tech Hub"];
-                      if (tp.name) lines.push(`${tp.name}`);
-                      if (tp.sector) lines.push(`Setor: ${tp.sector}`);
-                      setHoverInfo({ x: evt.x, y: evt.y, lines });
-                      setHoverCity(null);
-                    }
-                    isHoveringRef.current = true;
-                    break;
-                  }
-                }
-              }
-
-              if (!over) {
-                // Aurora Boreal
-                const auroraPositions = auroraScreenPosRef.current;
-                for (let i = 0; i < auroraPositions.length; i++) {
-                  const aurPos = auroraPositions[i];
-                  if (!aurPos) continue;
-                  const dx = evt.x - aurPos.x, dy = evt.y - aurPos.y;
-                  if (dx * dx + dy * dy < 20 * 20) {
-                    over = true;
-                    const key = `aurora-${i}`;
-                    if (hoveredNameRef.current !== key) {
-                      hoveredNameRef.current = key;
-                      const intensityLabel = aurPos.intensity < 0.3 ? "Fraca" : aurPos.intensity < 0.6 ? "Moderada" : "Forte";
-                      const lines: string[] = ["✨ Aurora Boreal", `Kp-index: ${aurPos.kpIndex}`, `Intensidade: ${intensityLabel}`];
                       setHoverInfo({ x: evt.x, y: evt.y, lines });
                       setHoverCity(null);
                     }
@@ -1036,13 +929,6 @@ const GlobeBackground = () => {
                   if (!mountedRef.current) return;
                   capAlerts = data;
                 });
-
-                // Aurora Boreal em tempo real (NOAA Kp-index) — DESABILITADA
-                // let aurora: Aurora[] = [];
-                // loadAuroraData().then((data) => {
-                //   if (!mountedRef.current) return;
-                //   aurora = data;
-                // });
 
                 // lon 0–360 (formato da grade) → -180..180 (formato do ArcGIS Point)
                 const toArcgisLon = (lon: number) => (lon > 180 ? lon - 360 : lon);
@@ -1405,41 +1291,6 @@ const GlobeBackground = () => {
                     satelliteScreenPosRef.current.fill(null);
                   }
 
-                  // Aviões: desabilitado
-                  // if (aircraftScreenPosRef.current.length !== aircraft.length) {
-                  //   aircraftScreenPosRef.current = new Array(aircraft.length).fill(null);
-                  // }
-                  // if (aircraftEnabledRef.current) {
-                  //   for (let i = 0; i < aircraft.length; i++) {
-                  //     aircraftScreenPosRef.current[i] = null;
-                  //     const a = aircraft[i];
-                  //     if (!isFacing(cam.latitude, cam.longitude, a.lat, a.lon)) continue;
-                  //     try {
-                  //       const sp = view.toScreen(
-                  //         new Point({ longitude: a.lon, latitude: a.lat, z: 60000 })
-                  //       );
-                  //       if (!sp) continue;
-                  //       aircraftScreenPosRef.current[i] = { x: sp.x, y: sp.y, callsign: a.callsign, altitude: a.altitude };
-                  //       ctx.font = "bold 12px Arial";
-                  //       ctx.fillText("✈️", sp.x - 6, sp.y + 6);
-                  //       ctx.font = "bold 9px monospace";
-                  //       ctx.fillStyle = aircraftColor(a.altitude);
-                  //       ctx.shadowBlur = 4;
-                  //       ctx.shadowColor = aircraftColor(a.altitude);
-                  //       ctx.fillText(a.callsign, sp.x + 12, sp.y + 4);
-                  //       ctx.shadowBlur = 0;
-                  //     } catch {
-                  //       // ponto fora do campo de visão
-                  //     }
-                  //   }
-                  // } else {
-                  //   aircraftScreenPosRef.current.fill(null);
-                  // }
-
-                  // Renderização de TOP_CITIES removida - usar apenas CITIES com anéis pulsantes
-
-                  // Qualidade do Ar (AQI renderizado apenas nos cards de hover das cidades, não como pontos separados)
-
                   // Incêndios
                   if (wildfireScreenPosRef.current.length !== wildfires.length) {
                     wildfireScreenPosRef.current = new Array(wildfires.length).fill(null);
@@ -1493,41 +1344,6 @@ const GlobeBackground = () => {
                   } else {
                     capAlertScreenPosRef.current.fill(null);
                   }
-
-                  // Aurora Boreal (NOAA Kp-index)
-                  // Aurora Boreal rendering — DESABILITADA
-                  // if (auroraScreenPosRef.current.length !== aurora.length) {
-                  //   auroraScreenPosRef.current = new Array(aurora.length).fill(null);
-                  // }
-                  // if (aurora.length > 0) {
-                  //   for (let i = 0; i < aurora.length; i++) {
-                  //     auroraScreenPosRef.current[i] = null;
-                  //     const aur = aurora[i];
-                  //     if (!isFacing(cam.latitude, cam.longitude, aur.lat, aur.lon)) continue;
-                  //     try {
-                  //       const sp = view.toScreen(
-                  //         new Point({ longitude: aur.lon, latitude: aur.lat, z: 50000 })
-                  //       );
-                  //       if (!sp) continue;
-                  //       auroraScreenPosRef.current[i] = { x: sp.x, y: sp.y, kpIndex: aur.kpIndex, intensity: aur.intensity };
-                  //
-                  //       const radius = auroraRadius(aur.intensity);
-                  //       const color = auroraColor(aur.intensity);
-                  //
-                  //       ctx.fillStyle = color;
-                  //       ctx.shadowBlur = 15;
-                  //       ctx.shadowColor = color;
-                  //       ctx.beginPath();
-                  //       ctx.arc(sp.x, sp.y, radius, 0, Math.PI * 2);
-                  //       ctx.fill();
-                  //       ctx.shadowBlur = 0;
-                  //     } catch {
-                  //       // ponto fora do campo de visão
-                  //     }
-                  //   }
-                  // } else {
-                  //   auroraScreenPosRef.current.fill(null);
-                  // }
 
                   // Arco de voo animado
                   const arc = activeArcRef.current;
@@ -1747,7 +1563,7 @@ const GlobeBackground = () => {
               {WMO[hoverCity.city.weather_code]?.icon || "❓"} {hoverCity.city.temp}°C
             </div>
           )}
-          {(hoverCity.city.tags.length > 0 || hoverCity.city.aqi) && (
+          {(hoverCity.city.tags.length > 0 || hoverCity.city.aqi != null) && (
             <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
               {hoverCity.city.tags.map((tag) => (
                 <span
@@ -1764,7 +1580,7 @@ const GlobeBackground = () => {
                   {tag}
                 </span>
               ))}
-              {hoverCity.city.aqi && (
+              {hoverCity.city.aqi != null && (
                 <span
                   style={{
                     background: "rgba(66,201,32,0.15)",

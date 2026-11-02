@@ -1,17 +1,7 @@
-// Perigos/Eventos — Qualidade do Ar (OpenAQ via ArcGIS Living Atlas) e
-// Incêndios (NASA VIIRS via ArcGIS Living Atlas), ambos dados reais.
+// Incêndios (NASA VIIRS via ArcGIS Living Atlas) e conversão PM2.5 → AQI (EPA).
 
 const ARCGIS_LIVEFEEDS_BASE = "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services";
 const FETCH_TIMEOUT_MS = 15000;
-
-export interface AirQuality {
-  id: string;
-  name: string;
-  lat: number;
-  lon: number;
-  aqi: number; // 0-500 (0-50 good, 51-100 moderate, etc) — convertido de PM2.5 (EPA)
-  pm25: number;
-}
 
 export interface Wildfire {
   id: string;
@@ -63,48 +53,6 @@ async function queryArcgisLiveFeed<T>(
   return data.features;
 }
 
-interface AirQualityAttrs {
-  city?: string | null;
-  country_name?: string | null;
-  value?: number | null;
-}
-
-export async function loadAirQuality(): Promise<AirQuality[]> {
-  try {
-    const agora = new Date();
-    const corte = new Date(agora.getTime() - 48 * 60 * 60 * 1000); // só leituras das últimas 48h
-    const cortIso = corte.toISOString().replace("T", " ").slice(0, 19);
-
-    const features = await queryArcgisLiveFeed<AirQualityAttrs>(
-      "Air_Quality_PM25_Latest_Results",
-      0,
-      {
-        where: `parameter='pm25' AND value IS NOT NULL AND value > 0 AND value < 500 AND lastUpdated >= TIMESTAMP '${cortIso}'`,
-        outFields: "city,country_name,value",
-        orderByFields: "value DESC",
-        resultRecordCount: "60",
-      }
-    );
-
-    return features
-      .filter((f) => f.geometry)
-      .map((f, i) => {
-        const nomeCru = (f.attributes.city || f.attributes.country_name || "Estação").replace(/^"|"$/g, "");
-        const pm25 = f.attributes.value ?? 0;
-        return {
-          id: `aqi-${i}-${f.geometry!.x.toFixed(2)}-${f.geometry!.y.toFixed(2)}`,
-          name: nomeCru,
-          lat: f.geometry!.y,
-          lon: f.geometry!.x,
-          pm25,
-          aqi: pm25ToAqi(pm25),
-        };
-      });
-  } catch {
-    return [];
-  }
-}
-
 interface WildfireAttrs {
   latitude?: number | null;
   longitude?: number | null;
@@ -150,26 +98,3 @@ export async function loadWildfires(): Promise<Wildfire[]> {
   }
 }
 
-export function aqiColor(aqi: number): string {
-  if (aqi <= 50) return "#00FF00"; // Good - Green
-  if (aqi <= 100) return "#FFFF00"; // Moderate - Yellow
-  if (aqi <= 150) return "#FF9900"; // Unhealthy for Sensitive - Orange
-  if (aqi <= 200) return "#FF3333"; // Unhealthy - Red
-  if (aqi <= 300) return "#990099"; // Very Unhealthy - Purple
-  return "#663300"; // Hazardous - Brown
-}
-
-export function aqiLabel(aqi: number): string {
-  if (aqi <= 50) return "Good";
-  if (aqi <= 100) return "Moderate";
-  if (aqi <= 150) return "USG";
-  if (aqi <= 200) return "Unhealthy";
-  if (aqi <= 300) return "Very Bad";
-  return "Hazardous";
-}
-
-export function wildfireColor(confidence: number): string {
-  if (confidence > 90) return "#FF0000"; // Bright red - high confidence
-  if (confidence > 75) return "#FF6600"; // Orange - medium
-  return "#FFCC00"; // Yellow - low
-}

@@ -13,7 +13,7 @@ Nenhuma.
 - `<camada>EnabledRef` — ON/OFF de cada camada, iniciado do `localStorage` (`globeSatellites`, `globeQuakes`, ...)
 
 ### Ciclo de Vida
-1. Monta: listeners dos `CustomEvent` da `WeatherBar`; carrega satélites, AQI e incêndios; liga o polling dos satélites (10s).
+1. Monta: listeners dos `CustomEvent` da `WeatherBar`; carrega satélites e incêndios (o AQI da cidade é buscado no hover); liga o polling dos satélites (10s).
 2. Após 3s: carrega o ArcGIS SDK e cria o `SceneView`.
 3. `view.when`: `markGlobeReady()`. Depois do primeiro carregamento: terremotos, ISS (8s), vulcões, furacões, alertas e rotação.
 4. Loop `requestAnimationFrame`: vento + `drawPins()`.
@@ -172,14 +172,13 @@ src/
 │   │   ├── satellites.ts    (CelesTrak + SGP4)
 │   │   ├── iss.ts
 │   │   ├── cities.ts, geo.ts
-│   │   ├── hazards.ts       (incêndios, AQI)
+│   │   ├── hazards.ts       (incêndios, PM2.5 → AQI)
 │   │   ├── capAlerts.ts
 │   │   ├── quakes.ts
 │   │   ├── volcanoes.ts
 │   │   ├── hurricanes.ts
 │   │   ├── wind.ts
 │   │   ├── iconScale.ts     (tamanho dos ícones pelo zoom)
-│   │   ├── aircraft.ts, aurora.ts, infrastructure.ts, ocean.ts (sem uso no globo)
 │   │   └── __tests__/
 │   ├── ChatWidget/
 │   │   ├── index.tsx

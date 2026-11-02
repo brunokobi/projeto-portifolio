@@ -89,9 +89,3 @@ export async function loadCapAlerts(): Promise<CapAlert[]> {
   }
 }
 
-export function capAlertColor(severity: string): string {
-  if (severity === "Extreme") return "#FF0000";
-  if (severity === "Severe") return "#FF9900";
-  if (severity === "Moderate") return "#FFFF00";
-  return "#CCCCCC";
-}

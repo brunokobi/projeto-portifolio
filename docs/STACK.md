@@ -94,7 +94,7 @@
 ### Dev Server
 ```bash
 npm start
-# Vite dev server em http://localhost:5173
+# Vite dev server em http://localhost:3000
 ```
 
 ### Build Production

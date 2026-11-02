@@ -39,7 +39,7 @@
 ### Loaders (`src/components/GlobeBackground/*.ts`)
 - `satellites.ts` — TLEs do CelesTrak + SGP4 (cache de TLE 2h)
 - `iss.ts` — wheretheiss.at
-- `cities.ts`, `geo.ts` — cidades, AQI (OpenAQ via ArcGIS)
+- `geo.ts` — cidades (`CITIES`); `cities.ts` — AQI real (OpenAQ via ArcGIS), buscado no primeiro hover de cada cidade
 - `hazards.ts` — incêndios (NASA VIIRS via ArcGIS)
 - `capAlerts.ts` — alertas CAP (ArcGIS)
 - `quakes.ts` — USGS
@@ -47,7 +47,7 @@
 - `hurricanes.ts` — Active Hurricanes (ArcGIS)
 - `wind.ts` — grade de vento GFS
 - `iconScale.ts` — fator de tamanho dos ícones pela altitude da câmera
-- Sem uso no globo: `aircraft.ts` (OpenSky bloqueia CORS), `aurora.ts` (removida), `infrastructure.ts` (tech hubs não são desenhados), `ocean.ts` (legado)
+- Removidos em 02/11/2026 por não estarem em uso: `aircraft.ts` (OpenSky bloqueia CORS), `aurora.ts`, `infrastructure.ts`, `ocean.ts`
 
 ## Fluxo de Dados
 

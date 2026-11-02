@@ -36,7 +36,7 @@ Nota: todos os dados são públicos (CelesTrak, ArcGIS Living Atlas, USGS, Open-
 npm start
 ```
 
-Acesse: `http://localhost:5173`
+Acesse: `http://localhost:3000`
 
 ## Comandos Principais
 
@@ -91,7 +91,6 @@ projeto-portifolio/
 │   │   │   ├── index.tsx          ← Main globe component
 │   │   │   ├── quakes.ts          ← Earthquake data
 │   │   │   ├── iss.ts             ← ISS tracking
-│   │   │   ├── ocean.ts           ← Legado (correntes removidas, sem uso)
 │   │   │   ├── volcanoes.ts       ← Volcano data
 │   │   │   └── __tests__/         ← Unit tests
 │   │   ├── WeatherBar/            ← Feature toggles
@@ -133,7 +132,7 @@ projeto-portifolio/
 1. Criar branch: `git checkout -b feat/volcano-rendering`
 2. Implementar em `src/components/GlobeBackground/volcanoes.ts`
 3. Testar com `npm run test`
-4. Verificar no browser: `http://localhost:5173`
+4. Verificar no browser: `http://localhost:3000`
 5. Commit (sem "Claude" na mensagem):
    ```bash
    git commit -m "feat: renderização de vulcões com hover tooltips"
@@ -144,7 +143,7 @@ projeto-portifolio/
 1. Edit `src/pages/DevBlog/posts.ts`
 2. Adicionar novo Post object ao array `posts`
 3. Usar Block[] type pra estrutura (heading, paragraph, code, etc)
-4. Testar em `http://localhost:5173/blog`
+4. Testar em `http://localhost:3000/blog`
 
 ### Atualizar Design System
 1. Edit `DESIGN_SYSTEM.md`

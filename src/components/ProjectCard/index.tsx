@@ -16,6 +16,8 @@ import { useRef } from "react";
 import { useObserver } from "../../pages/About/observers";
 import falar from "../TextAudio";
 
+const MotionStack = motion.create(Stack);
+
 const ProjectCard = ({
   link,
   title,
@@ -50,8 +52,7 @@ const ProjectCard = ({
       zIndex={1}
       position="relative"
     >
-      <Stack
-        as={motion.div}
+      <MotionStack
         borderRadius="lg"
         w={{ base: "95vw", sm: "350px", md: "640px" }}
         maxW="640px"
@@ -191,7 +192,7 @@ const ProjectCard = ({
             </Button>
           </Stack>
         </Stack>
-      </Stack>
+      </MotionStack>
     </Center>
   );
 };

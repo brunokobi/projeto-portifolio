@@ -131,7 +131,7 @@ const volcanoes = await loadVolcanoes();
 | `CAP_Alerts_Feed` (0) | Alertas de emergência | `capAlerts.ts` | centroide da área (`returnCentroid`) |
 | `Air_Quality_PM25_Latest_Results` (0) | AQI das cidades | `cities.ts`, `hazards.ts` | estação a até 50 km; leituras das últimas 48h |
 
-Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA e o proxy `netlify/functions/noaa.ts` / `/api/noaa/*` ficaram sem uso pelo globo desde 08/10/2026.
+Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA deixou de ser usado em 08/10/2026 e o proxy `noaa.ts` / `/api/noaa/*` foi removido em 02/11/2026.
 
 ---
 

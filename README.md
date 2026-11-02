@@ -60,7 +60,7 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 ```
 ┌─────────────────────────────────────────────────────────┐
 │              Browser (React 18 + Vite 5)                │
-│  i18n · WeatherBar · NewsPanel · ArcGIS · TextToSpeech  │
+│  i18n · WeatherBar · ArcGIS · TextToSpeech · JARVIS     │
 │  ServiceStatus (ping ao vivo da infra própria)          │
 └──────────────────┬──────────────────────────────────────┘
                    │ HTTPS
@@ -532,7 +532,7 @@ Aviões (OpenSky) estão desligados porque a API bloqueia chamadas do navegador 
 
 **Interação:**
 - Hover detection com `mousemove` — detecta proximidade de pontos em pixels (10–15px de raio)
-- Pontos de cidade (`CITIES`) são anéis verdes pulsantes; o AQI não é mais desenhado como ponto separado no mapa, só no card de hover da cidade
+- Pontos de cidade (`CITIES`) são anéis verdes pulsantes; o AQI não é desenhado como ponto no mapa, só no card de hover da cidade, buscado na hora do primeiro hover (estação real a até 50 km; sem estação, o card fica sem AQI)
 - Clique em pins abre tooltip customizado com dados contextuais
 
 **Tamanho pelo zoom:**
@@ -622,7 +622,7 @@ Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) in
 - **Hover interativo** — tooltip mostra nome, categoria, velocidade do vento (km/h) e pressão (mb)
 - **Toggle ON/OFF** — botão `🌀` na WeatherBar, com persistência em localStorage
 
-Até 08/10/2026 os dados vinham de 5 feeds RSS da NOAA por um proxy (`/api/noaa/*` em `public/_redirects` e `netlify/functions/noaa.ts`). Esse proxy continua no repositório, mas o globo não usa mais.
+Até 08/10/2026 os dados vinham de 5 feeds RSS da NOAA por um proxy (`/api/noaa/*` em `public/_redirects` e `netlify/functions/noaa.ts`). Esse proxy foi removido do repositório em 02/11/2026.
 
 ### Categorias de cor (Saffir-Simpson)
 

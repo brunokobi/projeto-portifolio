@@ -16,7 +16,7 @@ Cada camada tem um botão ON/OFF na barra de cima (`WeatherBar`), que dispara um
 | Furacões | `hurricanes.ts` | Active Hurricanes (ArcGIS Living Atlas) | Ao carregar a página | 🌀 |
 | Vento | `wind.ts` | Grade GFS (`firestorm-wind-data`) | Ao carregar a página | 💨 |
 
-Desligadas: aviões (`aircraft.ts`, o OpenSky bloqueia CORS) e aurora boreal (`aurora.ts`, removida do globo a pedido).
+Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo a pedido). Os loaders `aircraft.ts` e `aurora.ts` foram apagados em 02/11/2026.
 
 ---
 
@@ -58,7 +58,7 @@ Desligadas: aviões (`aircraft.ts`, o OpenSky bloqueia CORS) e aurora boreal (`a
 
 - Cada cidade é um anel verde pulsante com o nome ao lado.
 - O card de hover mostra hora local, temperatura, clima e AQI classificado (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso.
-- O AQI não tem pontos próprios no mapa; aparece só no card da cidade.
+- O AQI não tem pontos próprios no mapa; aparece só no card da cidade. É buscado (`fetchCityAqi`) no primeiro hover de cada cidade; sem estação próxima, o card fica sem AQI. Até 02/11/2026 o card mostrava valores fixos no código, já removidos.
 
 ---
 
@@ -120,7 +120,7 @@ Desligadas: aviões (`aircraft.ts`, o OpenSky bloqueia CORS) e aurora boreal (`a
 - Carregado uma vez quando o globo monta. `HURRICANE_POLL_INTERVAL` existe em `hurricanes.ts`, mas o globo não faz polling.
 - Renderização: espiral colorida pela categoria (`hurricaneColor`) e com raio pelo vento (`hurricaneRadius`), desenhada por `drawHurricaneIcon`.
 - Hover: nome, categoria Saffir-Simpson, velocidade do vento (km/h) e pressão (mb).
-- O RSS da NOAA (`netlify/functions/noaa.ts` e a regra `/api/noaa/*` em `public/_redirects`) não é mais usado pelo globo desde 08/10/2026.
+- O RSS da NOAA deixou de ser usado em 08/10/2026; a função `noaa.ts` e a regra `/api/noaa/*` foram removidas em 02/11/2026.
 - Teste: `__tests__/hurricanes.test.ts`.
 
 ---
