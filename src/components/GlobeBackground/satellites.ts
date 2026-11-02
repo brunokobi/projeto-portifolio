@@ -1,9 +1,9 @@
 // Satélites em órbita — posição real calculada via SGP4 (satellite.js) a
 // partir de TLEs públicos do CelesTrak (sem chave, CORS liberado). A ISS
 // fica de fora daqui de propósito: já existe um tracker dedicado dela em
-// `iss.ts`. Os TLEs ficam em cache por 2h; a posição é recalculada a cada
-// chamada de loadSatellites(), então chamar a cada poucos segundos não gera
-// requisição nova.
+// `iss.ts`. Os TLEs ficam em cache por 2h (memória e localStorage); a posição é
+// recalculada a cada chamada de loadSatellites(), então chamar a cada poucos
+// segundos não gera requisição nova.
 import * as satellite from "satellite.js";
 
 const CELESTRAK_BASE = "https://celestrak.org/NORAD/elements/gp.php";
@@ -63,7 +63,49 @@ interface CachedGroup {
   fetchedAt: number;
 }
 
+// O CelesTrak bloqueia no firewall o IP que repete pedidos com frequência.
+// Por isso: TLE guardado também no localStorage (recarregar a página não pede
+// de novo), um pedido por grupo por vez e, depois de uma falha, 30 min sem tentar.
+const RETRY_AFTER_FAILURE_MS = 30 * 60 * 1000;
+const STORAGE_PREFIX = "celestrak-tle:";
+
 const groupCache = new Map<string, CachedGroup>();
+const lastFailureAt = new Map<string, number>();
+const inFlight = new Map<string, Promise<TleEntry[]>>();
+
+export function resetSatelliteCache() {
+  groupCache.clear();
+  lastFailureAt.clear();
+  inFlight.clear();
+  try {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith(STORAGE_PREFIX))
+      .forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // localStorage indisponível
+  }
+}
+
+function readStoredGroup(group: string): CachedGroup | undefined {
+  try {
+    const raw = localStorage.getItem(STORAGE_PREFIX + group);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw) as Partial<CachedGroup>;
+    if (!Array.isArray(parsed.entries) || typeof parsed.fetchedAt !== "number") return undefined;
+    return { entries: parsed.entries, fetchedAt: parsed.fetchedAt };
+  } catch {
+    return undefined;
+  }
+}
+
+function saveGroup(group: string, cache: CachedGroup) {
+  groupCache.set(group, cache);
+  try {
+    localStorage.setItem(STORAGE_PREFIX + group, JSON.stringify(cache));
+  } catch {
+    // localStorage cheio ou bloqueado: fica só o cache em memória
+  }
+}
 
 function parseTleText(texto: string, tipo: Satellite["type"]): TleEntry[] {
   const linhas = texto.split("\n").map((l) => l.trimEnd()).filter((l) => l.length > 0);
@@ -78,32 +120,50 @@ function parseTleText(texto: string, tipo: Satellite["type"]): TleEntry[] {
   return entries;
 }
 
-async function fetchGroup(group: string, tipo: Satellite["type"]): Promise<TleEntry[]> {
-  const cached = groupCache.get(group);
+async function requestGroup(group: string, tipo: Satellite["type"], cached?: CachedGroup): Promise<TleEntry[]> {
   const now = Date.now();
-  if (cached && now - cached.fetchedAt < TLE_CACHE_TTL_MS) {
-    return cached.entries;
-  }
-
   try {
     const url = `${CELESTRAK_BASE}?GROUP=${group}&FORMAT=tle`;
     const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-    if (!res.ok) return cached?.entries ?? [];
-    const texto = await res.text();
-    const entries = parseTleText(texto, tipo);
-    // CelesTrak às vezes responde 200 com uma mensagem de texto tipo "GP data
-    // has not updated..." em vez do TLE (cortesia deles pra evitar pedir o
-    // mesmo grupo com frequência maior que a atualização real, a cada 2h).
-    // Nesse caso entries sai vazio — mantém o cache anterior em vez de
-    // zerar os satélites, e não atualiza fetchedAt (tenta de novo mais cedo).
-    if (entries.length === 0 && cached) {
-      return cached.entries;
+    if (!res.ok) throw new Error(`CelesTrak respondeu ${res.status}`);
+    const entries = parseTleText(await res.text(), tipo);
+    if (entries.length === 0) {
+      // Resposta 200 com "GP data has not updated...": o CelesTrak pede para
+      // não repetir antes da próxima atualização, então o cache vale por mais 2h.
+      if (cached) {
+        saveGroup(group, { entries: cached.entries, fetchedAt: now });
+        return cached.entries;
+      }
+      lastFailureAt.set(group, now);
+      return [];
     }
-    groupCache.set(group, { entries, fetchedAt: now });
+    lastFailureAt.delete(group);
+    saveGroup(group, { entries, fetchedAt: now });
     return entries;
   } catch {
+    lastFailureAt.set(group, now);
     return cached?.entries ?? [];
   }
+}
+
+async function fetchGroup(group: string, tipo: Satellite["type"]): Promise<TleEntry[]> {
+  const now = Date.now();
+  let cached = groupCache.get(group);
+  if (!cached) {
+    cached = readStoredGroup(group);
+    if (cached) groupCache.set(group, cached);
+  }
+  if (cached && now - cached.fetchedAt < TLE_CACHE_TTL_MS) return cached.entries;
+
+  const failedAt = lastFailureAt.get(group);
+  if (failedAt !== undefined && now - failedAt < RETRY_AFTER_FAILURE_MS) return cached?.entries ?? [];
+
+  const pending = inFlight.get(group);
+  if (pending) return pending;
+
+  const request = requestGroup(group, tipo, cached).finally(() => inFlight.delete(group));
+  inFlight.set(group, request);
+  return request;
 }
 
 function propagarParaSatelite(entry: TleEntry, idSufixo: string): Satellite | null {
