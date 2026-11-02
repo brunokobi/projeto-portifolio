@@ -49,7 +49,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), globo 3D interativo com **8 overlays geoespaciais em tempo real** (satélites, aviões, cidades com clima & hora local, qualidade do ar, incêndios, raios, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), globo 3D interativo com **overlays geoespaciais em tempo real** (satélites, ISS, cidades com clima & hora local, qualidade do ar, incêndios, alertas, terremotos, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -494,24 +494,28 @@ Clique no pin
 
 ---
 
-## 🌍 Feature: Globo 3D com 8 Overlays Geoespaciais em Tempo Real
+## 🌍 Feature: Globo 3D com Overlays Geoespaciais em Tempo Real
 
 > **Complexidade:** ⭐⭐⭐⭐⭐ — Canvas overlay + coordinate transformation (lat/lon → screen) + 2h weather cache + real-time API polling + toggle UI + localStorage persistence
 
-Sistema completo de visualização de dados geoespaciais em tempo real sobre o globo 3D interativo. **8 tipos de features** aparecem sobre o mapa com hover interativo, informações dinâmicas e controles ON/OFF individuais.
+Sistema completo de visualização de dados geoespaciais em tempo real sobre o globo 3D interativo. As features abaixo aparecem sobre o mapa com hover interativo, informações dinâmicas e controles ON/OFF individuais.
 
 ### Features suportadas
 
-| Feature | Ícone | API | Atualização | Hover Info |
+| Feature | Ícone | Fonte | Atualização | Hover Info |
 |---|---|---|---|---|
 | **Satélites** | 🛰️ | CelesTrak (TLE de GPS, Galileo e meteorológicos) + SGP4 (`satellite.js`) | Posição recalculada a cada 10s (TLE em cache por 2h) | Nome e altitude |
-| **Aviões** | ✈️ | OpenSky Network | 8s | Flight ID, altitude, velocidade |
-| **Cidades** | 🏙️ | `CITIES` (42 cidades, `geo.ts`) + Open-Meteo | Estático (clima com cache 2h) | Hora local, temp, clima, AQI com classificação, país |
-| **Qualidade do Ar** | 💨 | AQI estático por cidade (`CITIES`) | Estático | Sem pontos próprios no mapa — AQI aparece apenas no card de hover da cidade |
-| **Incêndios** | 🔥 | NASA FIRMS (simulado) | Estático | Nome, confidence, data |
-| **Raios** | ⚡ | Simulado | Estático | Latitude, longitude, intensidade |
-| **Vulcões** | 🌋 | GVP (425 vulcões) | Estático | Nome, país, status, última erupção (hover temporariamente desabilitado) |
-| **Furacões** | 🌀 | NOAA NHC (5 feeds RSS via proxy `/api/noaa/*`) | Único load | Categoria Saffir-Simpson, vento, pressão |
+| **ISS** | 🛰️ | wheretheiss.at | 8s | Altitude e velocidade |
+| **Cidades** | 🏙️ | `CITIES` (`geo.ts`) + Open-Meteo | Clima com cache de 2h | Hora local, temperatura, clima, AQI, país |
+| **Qualidade do Ar** | 💨 | OpenAQ PM2.5 via ArcGIS Living Atlas (estação a até 50 km da cidade) | Ao carregar a página | Só no card de hover da cidade |
+| **Incêndios** | 🔥 | NASA VIIRS via ArcGIS Living Atlas (últimas 6h, confiança alta) | Ao carregar a página | Local e confiança da detecção |
+| **Alertas** | ⚠️ | CAP Alerts Feed via ArcGIS Living Atlas (avisos oficiais) | Ao carregar a página | Evento, severidade, área e órgão emissor |
+| **Terremotos** | 🌍 | USGS (M4.5+ das últimas 24h) | Ao carregar a página | Sem hover (desativado pelo bug de minificação) |
+| **Vulcões** | 🌋 | Smithsonian GVP | Ao carregar a página | Nome, país, tipo e elevação |
+| **Furacões** | 🌀 | Active Hurricanes via ArcGIS Living Atlas (NHC + JTWC) | Ao carregar a página | Nome, categoria, velocidade do vento e pressão |
+| **Vento** | 💨 | Grade de vento de superfície (modelo GFS, 1°) do repositório público `firestorm-wind-data` | Ao carregar a página (o repositório é atualizado periodicamente) | — |
+
+Aviões (OpenSky) estão desligados porque a API bloqueia chamadas do navegador (CORS).
 
 ### Implementação técnica
 
@@ -535,7 +539,7 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 
 Botões toggle individuais para cada feature na barra de clima (superior):
 ```
-🛰️ SAT  ✈️ AVN  🏙️ CITY  💨 AQI  🔥 FIRE  ⚡ LGT  🌋 VOL  🌀 FUR
+🌙 NOITE  💨 VENTO  🛰️ ISS  🌀 FUR  🌍 TERREMOTOS  🌋 VULCÕES  🛰️ SAT  🔥 FOGO  ⚠️ ALERTAS
 ```
 
 - Cada toggle emite CustomEvent capturado pelo GlobeBackground
@@ -942,7 +946,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D + 8 overlays        | 42 cidades com clima & hora local + 8 features geoespaciais (aviões, satélites, AQI, incêndios, raios, vulcões, furacões) + toggle UI + 2h cache weather |
+| 🌐 Globo 3D + overlays          | cidades com clima & hora local + features geoespaciais (satélites, ISS, AQI, incêndios, alertas, terremotos, vulcões, furacões) + toggle UI + 2h cache weather |
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
