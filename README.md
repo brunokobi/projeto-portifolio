@@ -504,7 +504,7 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 
 | Feature | Ícone | API | Atualização | Hover Info |
 |---|---|---|---|---|
-| **Satélites** | 🛰️ | Simulado | Estático | Altitude, velocidade, NORAD ID |
+| **Satélites** | 🛰️ | CelesTrak (TLE de GPS, Galileo e meteorológicos) + SGP4 (`satellite.js`) | Posição recalculada a cada 10s (TLE em cache por 2h) | Nome e altitude |
 | **Aviões** | ✈️ | OpenSky Network | 8s | Flight ID, altitude, velocidade |
 | **Cidades** | 🏙️ | `CITIES` (42 cidades, `geo.ts`) + Open-Meteo | Estático (clima com cache 2h) | Hora local, temp, clima, AQI com classificação, país |
 | **Qualidade do Ar** | 💨 | AQI estático por cidade (`CITIES`) | Estático | Sem pontos próprios no mapa — AQI aparece apenas no card de hover da cidade |
