@@ -59,8 +59,9 @@ const Home = () => {
       <IconsBackground />
 
       <Flex
-        minH="100vh"
-        w={{ base: "90%", sm: "100%", md: "60%", lg: "100%" }}
+        minH={{ base: "calc(100vh - 80px)", md: "calc(100vh - 70px)", lg: "calc(100vh - 60px)" }}
+        w="100%"
+        px="3%"
         direction="column"
         justify="center"
         align="center"
@@ -69,7 +70,6 @@ const Home = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        margin="3%"
         pointerEvents="none"
       >
         <Stack
