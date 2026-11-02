@@ -157,7 +157,8 @@ export function drawHurricaneIcon(
   y: number,
   radius: number,
   color: string,
-  name: string
+  name: string,
+  labelFontPx = 10
 ): void {
   ctx.save();
   ctx.translate(x, y);
@@ -191,7 +192,7 @@ export function drawHurricaneIcon(
   ctx.restore();
 
   // Label com nome do furacão
-  ctx.font = "bold 10px monospace";
+  ctx.font = `bold ${labelFontPx}px monospace`;
   ctx.fillStyle = color;
   ctx.shadowBlur = 4;
   ctx.shadowColor = color;

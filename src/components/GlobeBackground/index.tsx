@@ -36,6 +36,7 @@ import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
 // import { loadAuroraData, auroraColor, auroraRadius, type Aurora } from "./aurora";
 
 import { markGlobeReady, resetGlobeReady } from "../../utils/globeReady";
+import { iconScaleForAltitude, scaledFontPx, SHORT_LABEL_MIN_SCALE } from "./iconScale";
 
 setDefaultOptions({ css: true });
 
@@ -1052,6 +1053,8 @@ const GlobeBackground = () => {
                   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
                   const cam = view.camera.position;
+                  const k = iconScaleForAltitude(cam.z);
+                  const fpx = (px: number) => scaledFontPx(px, k);
 
                   // Correntes de vento e marítimas — cada partícula deixa uma
                   // linha curta da posição anterior pra atual, colorida pela
@@ -1117,21 +1120,21 @@ const GlobeBackground = () => {
 
                       // Anel externo pulsante
                       ctx.beginPath();
-                      ctx.arc(sp.x, sp.y, 6 + pulse * 10, 0, Math.PI * 2);
+                      ctx.arc(sp.x, sp.y, (6 + pulse * 10) * k, 0, Math.PI * 2);
                       ctx.strokeStyle = `rgba(0,255,65,${0.5 - pulse * 0.38})`;
                       ctx.lineWidth = 1.5;
                       ctx.stroke();
 
                       // Anel interno fixo
                       ctx.beginPath();
-                      ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                      ctx.arc(sp.x, sp.y, 4 * k, 0, Math.PI * 2);
                       ctx.strokeStyle = "rgba(0,255,65,0.7)";
                       ctx.lineWidth = 1;
                       ctx.stroke();
 
                       // Ponto central com glow
                       ctx.beginPath();
-                      ctx.arc(sp.x, sp.y, 2.5, 0, Math.PI * 2);
+                      ctx.arc(sp.x, sp.y, 2.5 * k, 0, Math.PI * 2);
                       ctx.fillStyle = "#00ff41";
                       ctx.shadowBlur = 7;
                       ctx.shadowColor = "#00ff41";
@@ -1139,9 +1142,9 @@ const GlobeBackground = () => {
                       ctx.shadowBlur = 0;
 
                       // Label
-                      ctx.font = "11px monospace";
+                      ctx.font = `${fpx(11)}px monospace`;
                       ctx.fillStyle = "rgba(0,255,65,0.85)";
-                      ctx.fillText(CITIES[i].name, sp.x + 9, sp.y + 4);
+                      ctx.fillText(CITIES[i].name, sp.x + 9 * k, sp.y + 4 * k);
                     } catch {
                       // ponto fora do campo de visão
                     }
@@ -1164,11 +1167,11 @@ const GlobeBackground = () => {
                         const magnitudeText = q.mag.toFixed(1);
                         quakeScreenPosRef.current[i] = { x: sp.x, y: sp.y, place: q.place, time: q.time, magnitudeText };
                         const color = quakeColor(q.mag);
-                        const radius = quakeRadius(q.mag);
+                        const radius = quakeRadius(q.mag) * k;
                         const pulse = (Math.sin(frame * 0.05 + i * 1.7) + 1) / 2;
 
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, radius + pulse * 8, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, radius + pulse * 8 * k, 0, Math.PI * 2);
                         ctx.strokeStyle = color;
                         ctx.globalAlpha = 0.55 - pulse * 0.35;
                         ctx.lineWidth = 2;
@@ -1176,16 +1179,16 @@ const GlobeBackground = () => {
                         ctx.globalAlpha = 1;
 
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, 3 * k, 0, Math.PI * 2);
                         ctx.fillStyle = color;
                         ctx.shadowBlur = 8;
                         ctx.shadowColor = color;
                         ctx.fill();
                         ctx.shadowBlur = 0;
 
-                        ctx.font = "bold 10px monospace";
+                        ctx.font = `bold ${fpx(10)}px monospace`;
                         ctx.fillStyle = color;
-                        ctx.fillText(magnitudeText, sp.x + radius + 6, sp.y + 3);
+                        ctx.fillText(magnitudeText, sp.x + radius + 6 * k, sp.y + 3 * k);
                       } catch {
                         // ponto fora do campo de visão
                       }
@@ -1215,21 +1218,21 @@ const GlobeBackground = () => {
 
                           // Anel pulsante azul (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 16 + pulse * 20, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, (16 + pulse * 20) * k, 0, Math.PI * 2);
                           ctx.strokeStyle = `rgba(100,200,255,${0.5 - pulse * 0.35})`;
                           ctx.lineWidth = 2;
                           ctx.stroke();
 
                           // Anel fixo (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 10, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, 10 * k, 0, Math.PI * 2);
                           ctx.strokeStyle = "rgba(100,200,255,0.7)";
                           ctx.lineWidth = 1;
                           ctx.stroke();
 
                           // Ponto central azul escuro (2x maior)
                           ctx.beginPath();
-                          ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+                          ctx.arc(sp.x, sp.y, 5 * k, 0, Math.PI * 2);
                           ctx.fillStyle = "#0066ff";
                           ctx.shadowBlur = 8;
                           ctx.shadowColor = "#0066ff";
@@ -1237,9 +1240,9 @@ const GlobeBackground = () => {
                           ctx.shadowBlur = 0;
 
                           // Texto "ISS"
-                          ctx.font = "bold 10px monospace";
+                          ctx.font = `bold ${fpx(10)}px monospace`;
                           ctx.fillStyle = "#0066ff";
-                          ctx.fillText("🛰 ISS", sp.x + 14, sp.y - 4);
+                          ctx.fillText("🛰 ISS", sp.x + 14 * k, sp.y - 4 * k);
                         }
                       } catch {
                         // ponto fora do campo de visão
@@ -1264,21 +1267,21 @@ const GlobeBackground = () => {
 
                         // Anel pulsante amarelo
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 7 + blink * 9, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, (7 + blink * 9) * k, 0, Math.PI * 2);
                         ctx.strokeStyle = `rgba(255,220,0,${0.55 - blink * 0.42})`;
                         ctx.lineWidth = 2;
                         ctx.stroke();
 
                         // Anel fixo
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 5, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, 5 * k, 0, Math.PI * 2);
                         ctx.strokeStyle = "rgba(255,220,0,0.8)";
                         ctx.lineWidth = 1.5;
                         ctx.stroke();
 
                         // Core
                         ctx.beginPath();
-                        ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+                        ctx.arc(sp.x, sp.y, 3 * k, 0, Math.PI * 2);
                         ctx.fillStyle = "#ffdc00";
                         ctx.shadowBlur = 10;
                         ctx.shadowColor = "#ffdc00";
@@ -1286,9 +1289,9 @@ const GlobeBackground = () => {
                         ctx.shadowBlur = 0;
 
                         // Label
-                        ctx.font = "bold 11px monospace";
+                        ctx.font = `bold ${fpx(11)}px monospace`;
                         ctx.fillStyle = "#ffdc00";
-                        ctx.fillText(`📍 ${userLoc.name}`, sp.x + 10, sp.y + 4);
+                        ctx.fillText(`📍 ${userLoc.name}`, sp.x + 10 * k, sp.y + 4 * k);
                       }
                     } catch {
                       // ponto fora do campo de visão
@@ -1313,7 +1316,7 @@ const GlobeBackground = () => {
                         volcanoScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: v.name, country: v.country, type: v.type, elevationText };
 
                         const color = volcanoColor(v.type);
-                        const radius = volcanoRadius(v.elevation) * 0.8;
+                        const radius = volcanoRadius(v.elevation) * 0.8 * k;
 
                         // Triângulo (pico vulcânico)
                         ctx.beginPath();
@@ -1356,10 +1359,10 @@ const GlobeBackground = () => {
                         hurricaneScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: h.name, windSpeed: h.windSpeed, pressure: h.pressure, category: h.category };
 
                         const color = hurricaneColor(h.category);
-                        const radius = hurricaneRadius(h.windSpeed);
+                        const radius = hurricaneRadius(h.windSpeed) * k;
 
                         // Renderiza ícone de furacão
-                        drawHurricaneIcon(ctx, sp.x, sp.y, radius, color, h.name);
+                        drawHurricaneIcon(ctx, sp.x, sp.y, radius, color, h.name, fpx(10));
                       } catch {
                         // ponto fora do campo de visão
                       }
@@ -1383,16 +1386,16 @@ const GlobeBackground = () => {
                         );
                         if (!sp) continue;
                         satelliteScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: s.name, altitude: s.altitude };
-                        ctx.font = "bold 12px Arial";
-                        ctx.fillText("🛰️", sp.x - 6, sp.y + 6);
-                        ctx.font = "bold 9px monospace";
+                        ctx.font = `bold ${fpx(12)}px Arial`;
+                        ctx.fillText("🛰️", sp.x - 6 * k, sp.y + 6 * k);
+                        ctx.font = `bold ${fpx(9)}px monospace`;
                         ctx.fillStyle = satelliteColor(s.type);
                         ctx.shadowBlur = 4;
                         ctx.shadowColor = satelliteColor(s.type);
                         // Legenda fixa curta — nome completo (ex.: "GPS BIIR-5
                         // (PRN 22)") só no hover, mesmo motivo do incêndio/alerta:
                         // agora são ~150-190 satélites reais, não mais ~34 fixos.
-                        ctx.fillText(satelliteLabel(s.type), sp.x + 12, sp.y + 4);
+                        if (k >= SHORT_LABEL_MIN_SCALE) ctx.fillText(satelliteLabel(s.type), sp.x + 12 * k, sp.y + 4 * k);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
@@ -1452,8 +1455,8 @@ const GlobeBackground = () => {
                         );
                         if (!sp) continue;
                         wildfireScreenPosRef.current[i] = { x: sp.x, y: sp.y, name: w.name, confidence: w.confidence };
-                        ctx.font = "bold 14px Arial";
-                        ctx.fillText("🔥", sp.x - 7, sp.y + 7);
+                        ctx.font = `bold ${fpx(14)}px Arial`;
+                        ctx.fillText("🔥", sp.x - 7 * k, sp.y + 7 * k);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
@@ -1480,8 +1483,8 @@ const GlobeBackground = () => {
                           x: sp.x, y: sp.y, event: a.event, severity: a.severity,
                           areaDesc: a.areaDesc, senderName: a.senderName, countryCode: a.countryCode,
                         };
-                        ctx.font = "bold 14px Arial";
-                        ctx.fillText("⚠️", sp.x - 7, sp.y + 7);
+                        ctx.font = `bold ${fpx(14)}px Arial`;
+                        ctx.fillText("⚠️", sp.x - 7 * k, sp.y + 7 * k);
                         ctx.shadowBlur = 0;
                       } catch {
                         // ponto fora do campo de visão
