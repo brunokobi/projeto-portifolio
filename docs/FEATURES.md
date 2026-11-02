@@ -1,171 +1,173 @@
 # Features em Tempo Real
 
-## 🌋 Terremotos (Earthquakes)
+Todas as camadas do globo usam dados reais. Nenhuma camada usa dado simulado ou mockado.
 
-**Arquivo:** `src/components/GlobeBackground/quakes.ts`  
-**Fonte:** USGS Earthquake Hazards Program  
-**URL:** `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson`  
-**Atualização:** Live (últimas 24h)  
-**Status:** ⛔ Desabilitado
+Cada camada tem um botão ON/OFF na barra de cima (`WeatherBar`), que dispara um `CustomEvent` (`globe<Camada>Toggle`) e grava a escolha no `localStorage`. O loop de desenho fica em `src/components/GlobeBackground/index.tsx` (função `drawPins`); cada fonte de dados tem seu próprio arquivo na mesma pasta.
 
-> **Desabilitado completamente.** `loadQuakes()` está comentado em `GlobeBackground/index.tsx`, então nenhum dado é carregado e nada é renderizado nem aparece no hover. O botão de terremotos foi removido da `WeatherBar`. `quakes.ts` e os testes continuam no repositório.
-> **Motivo:** bug de minificação (Vite/esbuild) em nomes de propriedades de objetos armazenados em refs, que gera `Cannot access X before initialization` em event handlers. Ver [Bug de minificação](#bug-de-minificação-em-refs) abaixo.
-> As seções abaixo descrevem o comportamento original, para quando a feature for reativada.
+| Camada | Arquivo | Fonte | Atualização | Botão |
+|---|---|---|---|---|
+| Satélites | `satellites.ts` | CelesTrak (TLE) + SGP4 | Posição a cada 10s | 🛰️ |
+| ISS | `iss.ts` | wheretheiss.at | 8s | 🛰 ISS |
+| Cidades + AQI | `geo.ts`, `cities.ts` | Open-Meteo + OpenAQ | Clima com cache de 2h | — |
+| Incêndios | `hazards.ts` | NASA VIIRS (ArcGIS Living Atlas) | Ao carregar a página | 🔥 |
+| Alertas | `capAlerts.ts` | CAP Alerts Feed (ArcGIS Living Atlas) | Ao carregar a página | ⚠️ |
+| Terremotos | `quakes.ts` | USGS | Ao carregar a página | 🌍 |
+| Vulcões | `volcanoes.ts` | Smithsonian GVP | Ao carregar a página | 🌋 |
+| Furacões | `hurricanes.ts` | Active Hurricanes (ArcGIS Living Atlas) | Ao carregar a página | 🌀 |
+| Vento | `wind.ts` | Grade GFS (`firestorm-wind-data`) | Ao carregar a página | 💨 |
 
-### Data Structure
-```typescript
-interface Quake {
-  lat: number;
-  lon: number;
-  mag: number;
-  place: string;
-  time: number; // epoch ms
-}
-```
+Desligadas: aviões (`aircraft.ts`, o OpenSky bloqueia CORS) e aurora boreal (`aurora.ts`, removida do globo a pedido).
 
-### Parsing
-- GeoJSON features → extract coords, magnitude, place, time
-- Ignora: features sem magnitude ou sem coordenadas válidas
+---
 
-### Renderização
-- **Ring:** círculo com raio baseado em magnitude
-  - `baseRadius + (mag - 4.5) * 6px`
-  - Pulsing animation (fade in/out)
-- **Cor:** magnitude → amarelo/laranja/vermelho
-  - `M4.6: #ffdc00` (amarelo)
-  - `M5.2: #ffa300` (laranja)
-  - `M5.7: #ff6a00` (laranja escuro)
-  - `M6.0+: #ff2d2d` (vermelho)
+## 🛰️ Satélites
 
-### Hover Tooltip
-```
-🌋 Terremoto
-M5.2 (escala Richter) — 35 km NNE of Ruteng, Indonesia
-há 2h
-```
+**Arquivo:** `src/components/GlobeBackground/satellites.ts`  
+**Fonte:** CelesTrak, grupos `gps-ops`, `galileo` e `weather` (`https://celestrak.org/NORAD/elements/gp.php?GROUP=<grupo>&FORMAT=tle`, CORS liberado)  
+**Total:** cerca de 137 satélites (32 GPS, 32 Galileo, 73 meteorológicos em 02/11/2026)  
+**Status:** ✅ Ativo
 
-### Testing
-- 4 test cases em `__tests__/quakes.test.ts`
-- Cobertura: parsing, color scaling, radius calculation
+- A posição é calculada no navegador com SGP4 (`satellite.js`) a partir dos TLEs.
+- Os TLEs ficam em cache por 2h (`TLE_CACHE_TTL_MS`). Se o CelesTrak responder sem TLE ou falhar, o cache anterior é mantido.
+- O globo chama `loadSatellites()` a cada 10s (`SATELLITE_POLL_INTERVAL_MS`). Dentro das 2h de cache isso só recalcula a posição, sem requisição nova, e os satélites se movem no globo.
+- A ISS fica de fora: tem tracker próprio em `iss.ts`.
+- Renderização: emoji 🛰️ com legenda curta ("Nav", "Weather") na cor do tipo. A legenda some quando o globo está afastado (ver [Tamanho dos ícones](#tamanho-dos-ícones-conforme-o-zoom)).
+- Hover: nome do satélite e altitude em km.
+- Teste: `__tests__/satellites.test.ts` (posição muda com o tempo usando uma única requisição).
 
 ---
 
 ## 🛰 ISS (International Space Station)
 
 **Arquivo:** `src/components/GlobeBackground/iss.ts`  
-**Fonte:** wheretheiss.at API  
-**URL:** `https://api.wheretheiss.at/v1/satellites/25544`  
-**Polling:** 8 segundos  
-**Status:** ✅ Completo
+**Fonte:** `https://api.wheretheiss.at/v1/satellites/25544`  
+**Polling:** 8 segundos (`ISS_POLL_INTERVAL_MS`)  
+**Status:** ✅ Ativo
 
-### Data Structure
-```typescript
-interface IssPosition {
-  lat: number;
-  lon: number;
-  altitude?: number; // km acima da Terra
-  velocity?: number; // km/s
-}
-```
-
-### Polling
-```typescript
-const ISS_POLL_INTERVAL_MS = 8000;
-setInterval(() => loadIssPosition(), ISS_POLL_INTERVAL_MS);
-```
-
-### Renderização
-- **Ellipse:** 20x15px, color #00f (azul brilhante)
-- **Blink effect:** opacity oscila (0.5 → 1.0)
-  - Indica movimento rápido/ativo
-
-### Hover Tooltip
-```
-🛰 ISS
-40,000 km de altitude
-27,600 km/h
-```
-
-### Testing
-- 4 test cases em `__tests__/iss.test.ts`
-- Cobertura: parsing, NaN validation
-
----
-
-## 🌋 Vulcões (Volcanoes)
-
-**Arquivo:** `src/components/GlobeBackground/volcanoes.ts`  
-**Fonte:** Vasturiano gist (OSU dataset)  
-**URL:** `https://gist.githubusercontent.com/vasturiano/.../world_volcanoes.json`  
-**Total:** 425 vulcões  
-**Atualização:** Static (carregado 1x)  
-**Status:** ⛔ Hover desabilitado (pins ainda são desenhados)
-
-> **Hover/tooltip desabilitado:** o bloco de detecção de hover dos vulcões está comentado em `GlobeBackground/index.tsx` (marcado `TEMP`). O campo `elevation` foi removido de `volcanoScreenPosRef`, então o tooltip não exibe mais elevação. Os pins triangulares continuam sendo desenhados quando o toggle VULCÕES está ligado.
-> **Motivo:** bug de minificação (Vite/esbuild) em nomes de propriedades de objetos armazenados em refs. Ver [Bug de minificação](#bug-de-minificação-em-refs) abaixo.
-
-### Data Structure
-```typescript
-interface Volcano {
-  name: string;
-  country: string;
-  type: string; // Shield, Cinder, Composite, etc
-  lat: number;
-  lon: number;
-  elevation: number; // metros
-}
-```
-
-### Parsing
-- JSON array → extract name/country/type/lat/lon/elevation
-- Ignora: entries sem name ou lat/lon numérico
-- Defaults: country/type="" se ausente, elevation=0
-
-### Renderização
-- **Pin:** triângulo desenhado no canvas
-- **Color:** `volcanoColor(type)`
-- **Size:** `volcanoRadius(elevation)`
-
-### Hover Tooltip (desabilitado)
-```
-🌋 Mount Fuji
-Japão (Japan)
-Tipo: Stratocone
-Elevação: 3,776m
-```
-
-### Testing
-- 4 test cases em `__tests__/volcanoes.test.ts`
-- Cobertura: parsing, default handling
-
-### Para reativar
-1. Resolver o bug de minificação (ver abaixo)
-2. Descomentar o bloco de hover dos vulcões e restaurar `elevation` em `volcanoScreenPosRef`
-
----
-
-## 🌀 Furacões (Hurricanes)
-
-**Arquivo:** `src/components/GlobeBackground/hurricanes.ts`  
-**Fonte:** NOAA National Hurricane Center (5 feeds RSS, ver [API.md](./API.md))  
-**Atualização:** Load único ao entrar na página (cache 60s)  
-**Status:** ✅ Completo
-
-- Parsing: `nhc:Cyclone` → nome, lat/lon, vento (mph → km/h), pressão, categoria Saffir-Simpson
-- Renderização: espiral colorida por categoria (`hurricaneColor`), raio por vento (`hurricaneRadius`)
-- Hover: nome, vento (km/h), pressão (mb), categoria
-- Toggle: `globeHurricanesToggle` (localStorage `globeHurricanes`)
+- Renderização: anel azul pulsante, anel fixo e ponto central, com o texto "🛰 ISS".
+- Hover: altitude (km) e velocidade (km/h).
+- Teste: `__tests__/iss.test.ts`.
 
 ---
 
 ## 🏙️ Cidades e AQI
 
-**Arquivos:** `src/components/GlobeBackground/geo.ts` (`CITIES`, 42 cidades), `index.tsx`  
-**Clima/hora local:** Open-Meteo (`timezone=auto`), cache de 2h
+**Arquivos:** `src/components/GlobeBackground/geo.ts` (`CITIES`), `cities.ts`, `index.tsx`  
+**Clima/hora local:** Open-Meteo (`timezone=auto`), cache de 2h  
+**AQI:** OpenAQ PM2.5 via ArcGIS Living Atlas (`Air_Quality_PM25_Latest_Results`), estação a até 50 km da cidade, convertido para AQI (EPA)
 
-- Cada cidade é um anel verde pulsante; o card de hover mostra hora local, temperatura, clima e tags
-- AQI aparece só no card de hover, com classificação (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso
-- Não há mais pontos de AQI separados no mapa nem renderização de `TOP_CITIES`
+- Cada cidade é um anel verde pulsante com o nome ao lado.
+- O card de hover mostra hora local, temperatura, clima e AQI classificado (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso.
+- O AQI não tem pontos próprios no mapa; aparece só no card da cidade.
+
+---
+
+## 🔥 Incêndios
+
+**Arquivo:** `src/components/GlobeBackground/hazards.ts` (`loadWildfires`)  
+**Fonte:** NASA VIIRS via ArcGIS Living Atlas (`Satellite_VIIRS_Thermal_Hotspots_and_Fire_Activity`)  
+**Filtro:** últimas 6h, confiança alta e FRP ≥ 10 (até 500 focos)  
+**Status:** ✅ Ativo
+
+- Sem o filtro vêm mais de 100 mil focos por dia no mundo, o que é inviável de desenhar.
+- Renderização: emoji 🔥.
+- Hover: satélite e potência do fogo (FRP) no nome, mais a confiança da detecção.
+
+---
+
+## ⚠️ Alertas de emergência (CAP)
+
+**Arquivo:** `src/components/GlobeBackground/capAlerts.ts`  
+**Fonte:** CAP Alerts Feed via ArcGIS Living Atlas (avisos oficiais de agências de vários países)  
+**Status:** ✅ Ativo
+
+- A área do alerta é um polígono; o globo plota o centroide (`returnCentroid`).
+- Renderização: emoji ⚠️.
+- Hover: evento, severidade, área e órgão emissor.
+
+---
+
+## 🌍 Terremotos
+
+**Arquivo:** `src/components/GlobeBackground/quakes.ts`  
+**Fonte:** USGS, magnitude 4.5+ das últimas 24h (`https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson`)  
+**Status:** ✅ Ativo
+
+- Renderização: anel pulsante com raio pela magnitude (`quakeRadius`) e cor pela magnitude (`quakeColor`: amarelo → laranja → vermelho), com a magnitude escrita ao lado.
+- Hover: magnitude, local e há quanto tempo ocorreu.
+- Teste: `__tests__/quakes.test.ts`.
+
+---
+
+## 🌋 Vulcões
+
+**Arquivo:** `src/components/GlobeBackground/volcanoes.ts`  
+**Fonte:** Smithsonian GVP, via gist público do vasturiano (`world_volcanoes.json`, 425 vulcões)  
+**Status:** ✅ Ativo
+
+- Renderização: triângulo colorido pelo tipo (`volcanoColor`) e com tamanho pela elevação (`volcanoRadius`, reduzido em 20%).
+- Hover: nome, país, tipo e elevação.
+- Teste: `__tests__/volcanoes.test.ts`.
+
+---
+
+## 🌀 Furacões
+
+**Arquivo:** `src/components/GlobeBackground/hurricanes.ts`  
+**Fonte:** ArcGIS Living Atlas "Active Hurricanes, Cyclones and Typhoons" (`Active_Hurricanes_v1`), que junta NHC (Atlântico e Pacífico) e JTWC (demais bacias). Cobre o globo inteiro e libera CORS.  
+**Status:** ✅ Ativo
+
+- Carregado uma vez quando o globo monta. `HURRICANE_POLL_INTERVAL` existe em `hurricanes.ts`, mas o globo não faz polling.
+- Renderização: espiral colorida pela categoria (`hurricaneColor`) e com raio pelo vento (`hurricaneRadius`), desenhada por `drawHurricaneIcon`.
+- Hover: nome, categoria Saffir-Simpson, velocidade do vento (km/h) e pressão (mb).
+- O RSS da NOAA (`netlify/functions/noaa.ts` e a regra `/api/noaa/*` em `public/_redirects`) não é mais usado pelo globo desde 08/10/2026.
+- Teste: `__tests__/hurricanes.test.ts`.
+
+---
+
+## 💨 Vento
+
+**Arquivo:** `src/components/GlobeBackground/wind.ts`  
+**Fonte:** grade de vento de superfície do modelo GFS (1°), do repositório público `Deasus/firestorm-wind-data` (`current-wind-surface.json`, atualizado periodicamente pelo repositório)  
+**Status:** ✅ Ativo
+
+- 700 partículas (`WIND_PARTICLE_COUNT`) andam pelo campo de vento e deixam rastro que desbota, coloridas pela velocidade (`speedToColor`).
+- O heatmap de vento foi removido; só as partículas ficaram.
+- Teste: `__tests__/wind.test.ts`.
+
+---
+
+## Tamanho dos ícones conforme o zoom
+
+**Arquivo:** `src/components/GlobeBackground/iconScale.ts`
+
+- A cada quadro, `iconScaleForAltitude(cam.z)` calcula um fator pela altitude da câmera: 1 até 8.000 km e caindo aos poucos até 0,5 a partir de 22.000 km. O zoom do globo vai de 4.000 km a 25.000 km, e a visão inicial fica perto de 20.000 km.
+- O fator multiplica raios, offsets e fontes de cidades, satélites, ISS, localização do visitante, incêndios, alertas, vulcões, furacões e terremotos. `scaledFontPx` não deixa fonte abaixo de 7px.
+- Com fator abaixo de 0,75 (`SHORT_LABEL_MIN_SCALE`), as legendas curtas dos satélites somem. O nome continua no hover.
+- Teste: `__tests__/iconScale.test.ts`.
+
+---
+
+## Barra de camadas (WeatherBar)
+
+**Arquivo:** `src/components/WeatherBar/index.tsx`
+
+- Na Home, a barra aparece quando o globo termina de carregar (`markGlobeReady()` em `view.when`, lido com `useGlobeReady()` de `src/utils/globeReady.ts`). Nas outras páginas aparece na hora.
+- Os botões não dependem do clima. Temperatura e cidade aparecem quando o clima carrega e ficam ocultas se ele falhar.
+- Localização: geolocalização do navegador com timeout de 8s; se negada ou sem resposta, cai para `ipapi.co`.
+
+---
+
+## Carregamento e erros
+
+- Cada loader usa `AbortSignal.timeout` e devolve `[]` se falhar, sem derrubar as outras camadas.
+- Satélites (10s) e ISS (8s) têm polling. As demais camadas carregam uma vez quando o globo monta.
+
+---
+
+## Minificação desligada
+
+Terremotos e o hover dos vulcões já ficaram desligados por um bug de minificação do build de produção: acessar propriedades de objetos guardados em refs dentro de event handlers dava `Cannot access X before initialization`. A correção foi desligar a minificação (`build.minify: false` em `vite.config.ts`). Com isso, as duas camadas voltaram a funcionar. Não reative a minificação sem testar o hover no build de produção.
 
 ---
 
@@ -188,52 +190,3 @@ Elevação: 3,776m
 - Velocidade de fala: `useChatWithAudio` (`respondWithAudio`) chama `speak()` com `rate: 1.4` (pitch 1, volume 1). O padrão de `speak()` continua `rate = 1` para quem chamar sem informar
 - **JARVIS Core** (`JarvisCore`, renderizado abaixo do card do chat com `isActive={isSpeaking}` e `greeting={greetingText}`): canvas 250x250 em verde da marca (`#42c920`) com 3 anéis concêntricos, núcleo central com glow/sombra e 16 barras radiais de "espectro" com glow. O espectro é **simulado** (valores aleatórios suavizados a cada frame via `requestAnimationFrame`), **não** vem do áudio real do TTS — a Web Speech API não expõe o áudio. Ativo: barras animadas, anéis/núcleo mais intensos e `drop-shadow`; inativo: animação parada, container com opacidade 0.5 e ícone de play (apenas visual, não clicável) no centro. Sob o canvas exibe a saudação em um box
 - `isSpeaking`: `respondWithAudio` liga `isSpeaking` e o desliga no `onEnd` do utterance (fim real da fala) ou pelo botão de parar
-
----
-
-## 🌬 Vento (Wind) — REMOVIDO
-
-**Arquivo:** `src/components/GlobeBackground/wind.ts`  
-**Status:** ❌ Removido (heatmap removido, partículas ainda rodando)
-
-### O que foi removido
-- `buildHeatmapPixels()` — Uint8ClampedArray RGBA generator
-- `addWindHeatmapLayer()` — heatmap graphic creation
-- Heatmap layer toggle
-
-### O que permanece
-- Particle advection (solid lines)
-- Grid-based vector field sampling
-- Renderização via canvas
-
----
-
-## Data Loading Strategy
-
-### Parallel Loading
-```javascript
-// loadQuakes() está desabilitado (ver Terremotos)
-const [quakes, iss, volcanoes] = await Promise.all([
-  loadQuakes(),
-  loadIssPosition(),
-  loadVolcanoes()
-]);
-```
-
-### Error Handling
-- Timeout: 10s por request (AbortSignal.timeout)
-- Fallback: retorna `[]` se falhar
-- Silent fail: não interrompe outras features
-
-### Caching
-- Quakes: desabilitado (não carrega)
-- ISS: polling contínuo (8s)
-- Volcanoes: load once (static)
-
----
-
-## Bug de minificação em refs
-
-Terremotos e vulcões (hover) foram desabilitados por um bug de minificação no build de produção (Vite/esbuild): ao acessar propriedades de objetos guardados em refs (`quakeScreenPosRef`, `volcanoScreenPosRef`) dentro de event handlers, ocorre `Cannot access X before initialization`. Tentativas anteriores (remover `elevation` do ref de vulcões) não resolveram. A causa raiz não está documentada no repositório.
-
-**Estado atual:** terremotos desabilitados por completo; vulcões sem hover. Reativação pendente de correção.

@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-126%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-119%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -104,7 +104,7 @@ Resend API (email transacional)
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
 | Voz             | Web Speech API               | Text-to-Speech nativo                              |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 72 testes unitários + E2E Chromium                 |
+| Testes          | Vitest + Playwright          | 119 testes unitários + E2E Chromium                |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
 | Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + orquestração Multi-Agente |
 | IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
@@ -510,7 +510,7 @@ Sistema completo de visualização de dados geoespaciais em tempo real sobre o g
 | **Qualidade do Ar** | 💨 | OpenAQ PM2.5 via ArcGIS Living Atlas (estação a até 50 km da cidade) | Ao carregar a página | Só no card de hover da cidade |
 | **Incêndios** | 🔥 | NASA VIIRS via ArcGIS Living Atlas (últimas 6h, confiança alta) | Ao carregar a página | Local e confiança da detecção |
 | **Alertas** | ⚠️ | CAP Alerts Feed via ArcGIS Living Atlas (avisos oficiais) | Ao carregar a página | Evento, severidade, área e órgão emissor |
-| **Terremotos** | 🌍 | USGS (M4.5+ das últimas 24h) | Ao carregar a página | Sem hover (desativado pelo bug de minificação) |
+| **Terremotos** | 🌍 | USGS (M4.5+ das últimas 24h) | Ao carregar a página | Magnitude, local e há quanto tempo |
 | **Vulcões** | 🌋 | Smithsonian GVP | Ao carregar a página | Nome, país, tipo e elevação |
 | **Furacões** | 🌀 | Active Hurricanes via ArcGIS Living Atlas (NHC + JTWC) | Ao carregar a página | Nome, categoria, velocidade do vento e pressão |
 | **Vento** | 💨 | Grade de vento de superfície (modelo GFS, 1°) do repositório público `firestorm-wind-data` | Ao carregar a página (o repositório é atualizado periodicamente) | — |
@@ -530,7 +530,12 @@ Aviões (OpenSky) estão desligados porque a API bloqueia chamadas do navegador 
 - Pontos de cidade (`CITIES`) são anéis verdes pulsantes; o AQI não é mais desenhado como ponto separado no mapa, só no card de hover da cidade
 - Clique em pins abre tooltip customizado com dados contextuais
 
+**Tamanho pelo zoom:**
+- `iconScale.ts` calcula um fator pela altitude da câmera: tamanho cheio até 8.000 km e metade a partir de 22.000 km. Raios, offsets e fontes de todas as camadas são multiplicados por ele (fonte mínima de 7px).
+- Com o globo afastado, as legendas curtas dos satélites ("Nav", "Weather") somem; o nome continua no hover.
+
 **Performance:**
+- Satélites: polling de 10s só recalcula a posição pelo SGP4; o TLE é baixado do CelesTrak no máximo a cada 2h
 - Weather cache com 2h TTL — previne overload da Open-Meteo API ao fazer hover repetido
 - Lazy loading dos dados — arrays de screen positions resetados apenas quando feature toggled ou dados mudaram
 - RequestAnimationFrame — todos os cálculos sincronizados com frame do navegador
@@ -542,6 +547,9 @@ Botões toggle individuais para cada feature na barra de clima (superior):
 🌙 NOITE  💨 VENTO  🛰️ ISS  🌀 FUR  🌍 TERREMOTOS  🌋 VULCÕES  🛰️ SAT  🔥 FOGO  ⚠️ ALERTAS
 ```
 
+- Na Home, a barra aparece quando o globo termina de carregar (`src/utils/globeReady.ts`); nas outras páginas aparece na hora
+- Os botões não dependem do clima: temperatura e cidade entram quando o Open-Meteo responde e ficam ocultas se falhar
+- Geolocalização do navegador com timeout de 8s; sem resposta ou negada, cai para `ipapi.co`
 - Cada toggle emite CustomEvent capturado pelo GlobeBackground
 - Estado salvo em localStorage — preferências persistem entre sessões
 - Visual feedback: botão ativo (verde) vs. inativo (cinza)
@@ -570,10 +578,14 @@ Fintech  IA  DeFi  💨 AQI: 45 (Bom)
 | Fonte | Endpoint | Limite Free | Uso |
 |---|---|---|---|
 | Open-Meteo | `api.open-meteo.com/v1/forecast` | Ilimitado | Clima + timezone (2h cache) |
-| OpenSky Network | `opensky-network.org/api/states/all` | 400 req/dia | Aviões em tempo real (8s polling) |
-| NASA FIRMS | Via MapTiler | Mensal | Incêndios (mock temporário) |
-| NOAA NHC | `www.nhc.noaa.gov/index-{at,ep,cp,io,sh}.xml` (via `/api/noaa/*`) | Sem chave | Furacões, tufões e ciclones (RSS) |
-| GVP | Volcano data (local) | — | 425 vulcões (sem API, dados estáticos) |
+| CelesTrak | `celestrak.org/NORAD/elements/gp.php` | ~1 consulta por grupo a cada 2h | TLEs de GPS, Galileo e meteorológicos (satélites) |
+| wheretheiss.at | `api.wheretheiss.at/v1/satellites/25544` | Sem chave | Posição da ISS (8s) |
+| ArcGIS Living Atlas | `services9.arcgis.com/.../FeatureServer` | Sem chave | Furacões (NHC + JTWC), incêndios (NASA VIIRS), alertas CAP, AQI (OpenAQ PM2.5) |
+| USGS | `earthquake.usgs.gov/.../4.5_day.geojson` | Sem chave | Terremotos M4.5+ das últimas 24h |
+| Smithsonian GVP | gist público `world_volcanoes.json` | — | 425 vulcões |
+| firestorm-wind-data | GitHub raw `current-wind-surface.json` | — | Grade de vento GFS |
+
+Aviões (OpenSky) estão desligados: a API bloqueia chamadas do navegador (CORS).
 
 ---
 
@@ -592,27 +604,20 @@ Módulo de mapa dedicado (`/map`) com a **ESRI ArcGIS Maps SDK** em WebGL:
 
 ## 🌀 Feature: Furacões e Tempestades em Tempo Real
 
-> **Complexidade:** ⭐⭐⭐⭐ — 5 feeds RSS NOAA NHC + proxy anti-CORS + parsing XML + rendering canvas + toggle ON/OFF + localStorage persistence
+> **Complexidade:** ⭐⭐⭐⭐ — feed global do ArcGIS Living Atlas + de-dup por tempestade + rendering canvas + toggle ON/OFF + localStorage persistence
 
-Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) integrado ao globo 3D, com dados oficiais do National Hurricane Center (NOAA), sem chave de API.
+Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) integrado ao globo 3D, sem chave de API.
 
 ### Funcionamento
 
-- **Dados reais via NOAA NHC** — 5 feeds RSS: Atlântico (`index-at`), Pacífico Leste (`index-ep`), Pacífico Central (`index-cp`), Oceano Índico (`index-io`) e Hemisfério Sul (`index-sh`)
-- **Proxy anti-CORS** — o browser chama `/api/noaa/<feed>.xml` (ex.: `/api/noaa/index-at.xml`); em `public/_redirects` essa rota é repassada para `https://www.nhc.noaa.gov/`
-- **Carregamento único** — dados carregam ao entrar na página (sem polling contínuo); cache em memória de 60 s
+- **Dados reais via ArcGIS Living Atlas** — serviço "Active Hurricanes, Cyclones and Typhoons" (`Active_Hurricanes_v1`), que junta o NHC (Atlântico e Pacífico) e o JTWC (Índico, Hemisfério Sul e Pacífico Oeste). Cobre o globo inteiro e libera CORS, sem proxy.
+- **Uma posição por tempestade** — a consulta ordena por `STORMID, DTG DESC` e o código fica só com a observação mais recente de cada uma.
+- **Carregamento único** — dados carregam quando o globo monta (sem polling contínuo); cache em memória de 60 s
 - **Renderização visual** — espirais coloridas no mapa 3D, raio pela velocidade do vento e cor pela categoria Saffir-Simpson
-- **Hover interativo** — tooltip mostra nome, velocidade do vento (km/h), pressão (mb) e categoria
-- **Toggle ON/OFF** — botão `🌀 FURACÕES` na WeatherBar, com persistência em localStorage
+- **Hover interativo** — tooltip mostra nome, categoria, velocidade do vento (km/h) e pressão (mb)
+- **Toggle ON/OFF** — botão `🌀` na WeatherBar, com persistência em localStorage
 
-### Netlify Function `noaa.ts`
-
-`netlify/functions/noaa.ts` é um proxy equivalente em serverless para os mesmos 5 feeds:
-
-- Aceita o nome do feed no último segmento do path (`index-at.xml`, `index-ep.xml`, `index-cp.xml`, `index-io.xml`, `index-sh.xml`); outro valor retorna 404
-- Faz `fetch` no feed NOAA com `User-Agent` de browser e timeout de 8 s
-- Responde XML com `Access-Control-Allow-Origin: *` e `Cache-Control: public, max-age=300` (5 min); responde também ao preflight `OPTIONS`
-- Erros: repassa o status do NOAA ou retorna 500 (`Failed to fetch NOAA data`)
+Até 08/10/2026 os dados vinham de 5 feeds RSS da NOAA por um proxy (`/api/noaa/*` em `public/_redirects` e `netlify/functions/noaa.ts`). Esse proxy continua no repositório, mas o globo não usa mais.
 
 ### Categorias de cor (Saffir-Simpson)
 
@@ -630,7 +635,7 @@ Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) in
 Os eventos aparecem como marcadores animados sobrepostos ao mapa 3D:
 - Latitude/longitude posicionadas em tempo real
 - Símbolos de espiral com label do nome
-- Visíveis em qualquer zoom do globo
+- Diminuem conforme a câmera se afasta, como os outros ícones do globo
 - Desaparecem quando o toggle é desligado
 
 Não há variável de ambiente nem chave de API para essa feature (a antiga `VITE_OPENWEATHER_KEY` e os dados mock Milton/Helene não existem mais no código).
@@ -652,9 +657,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 126 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 119 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (126 testes unitários)
+### Suítes de teste (119 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -665,7 +670,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `newsFunctions`        | `isSpam`, `isRelevant`, `scoreArticle`, `isTooOld`, `importanceLevel`                    |
 | `utils/rss`            | `timeAgo`, `cleanDesc`, `parseRSS` (RSS 2.0, Atom, inválido), `translationCache`        |
 | `utils/geoip`          | Fetch com cache, erro retorna `{}`, reutilização de promise                              |
-| `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente     |
+| `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente, botões visíveis sem clima, espera do globo na Home |
+| `satellites`           | Posição recalculada com o tempo usando uma única requisição ao CelesTrak                 |
+| `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
 | `ServiceStatus`        | checking/online/offline via mock de `Image` (onload/onerror)                            |
 | `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
@@ -692,7 +699,7 @@ A cada push ou Pull Request para `main`:
 
 1. `npx tsc --noEmit` — TypeScript sem erros
 2. `npm run lint` — ESLint 9 zero erros
-3. `vitest run` — 72 testes unitários
+3. `vitest run` — todos os testes unitários
 4. `vite build` — bundle de produção sem quebrar
 5. `playwright test` — 5 testes E2E Chromium
 6. Lighthouse CI — audita performance, a11y e SEO em produção
@@ -950,7 +957,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
-| 🧪 72 testes + E2E              | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
+| 🧪 119 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
 | 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
 | ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |

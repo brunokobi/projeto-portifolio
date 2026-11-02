@@ -2,7 +2,7 @@
 
 **URL:** https://brunokobi.tech  
 **Repo:** `/home/bruno/projeto-portifolio`  
-**Status:** Em desenvolvimento (terremotos desabilitados; hover de vulcões desabilitado — bug de minificação, ver FEATURES.md)
+**Status:** Em produção. Todas as camadas do globo ativas, exceto aviões (CORS do OpenSky).
 
 ## Índice Rápido
 
@@ -23,16 +23,25 @@ Portfólio técnico com **globo 3D interativo** (ArcGIS SceneView) mostrando dad
 
 ### 🌍 Globo 3D
 - Renderização WebGL via ArcGIS JS SDK
-- Canvas layers pra partículas (vento)
-- Pins pra pontos de interesse (ISS, vulcões)
+- Canvas de partículas para o vento e canvas 2D para os pins das camadas
+- Ícones diminuem conforme a câmera se afasta (`iconScale.ts`)
+- Botões ON/OFF por camada na `WeatherBar`, que aparece junto com o globo
 
 ### 📡 Features em Tempo Real
+Todas com dados reais. Detalhes em [FEATURES.md](./FEATURES.md).
+
 | Feature | Fonte | Atualização | Status |
 |---------|-------|-------------|--------|
-| Terremotos | USGS GeoJSON | Live (24h) | ⛔ Desabilitado |
-| ISS | wheretheiss.at | 8s polling | ✅ |
-| Vulcões | Vasturiano gist | Static (425) | ⚠️ Pins sim, hover desabilitado |
-| Vento | ERA5 (histórico) | Grid particle | ✅ |
+| Satélites | CelesTrak (TLE) + SGP4 | Posição a cada 10s | ✅ |
+| ISS | wheretheiss.at | 8s | ✅ |
+| Cidades + AQI | Open-Meteo + OpenAQ | Clima com cache 2h | ✅ |
+| Incêndios | NASA VIIRS (ArcGIS) | Ao carregar | ✅ |
+| Alertas | CAP Alerts (ArcGIS) | Ao carregar | ✅ |
+| Terremotos | USGS (M4.5+, 24h) | Ao carregar | ✅ |
+| Vulcões | Smithsonian GVP (425) | Ao carregar | ✅ |
+| Furacões | Active Hurricanes (ArcGIS, NHC + JTWC) | Ao carregar | ✅ |
+| Vento | Grade GFS (`firestorm-wind-data`) | Ao carregar | ✅ |
+| Aviões | OpenSky | — | ⛔ CORS bloqueado |
 
 ### 📝 Blog Dev
 - `/pages/DevBlog` — Posts técnicos em Markdown

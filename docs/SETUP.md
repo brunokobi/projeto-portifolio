@@ -29,11 +29,11 @@ VITE_API_KEY_ARCGIS=your_key_if_needed
 # Nenhuma key obrigatória no dev
 ```
 
-Nota: Todos os dados são públicos (USGS, Open-Meteo, wheretheiss, Vasturiano gist).
+Nota: todos os dados são públicos (CelesTrak, ArcGIS Living Atlas, USGS, Open-Meteo, wheretheiss, gist dos vulcões).
 
 ### 4. Inicie o dev server
 ```bash
-npm run dev
+npm start
 ```
 
 Acesse: `http://localhost:5173`
@@ -42,11 +42,12 @@ Acesse: `http://localhost:5173`
 
 ### Desenvolvimento
 ```bash
-npm run dev       # Dev server com HMR
+npm start         # Dev server com HMR
 npm run build     # Build production
 npm run preview   # Preview da build
 npm run test      # Unit tests (watch mode)
-npm run test:ui   # Vitest UI
+npm run test:run  # Unit tests uma vez (sem watch)
+npm run e2e       # Testes E2E (Playwright)
 ```
 
 ### Linting & Formatting
@@ -61,7 +62,7 @@ npm run format    # Prettier
 ```bash
 # Limpar cache
 rm -rf node_modules/.vite
-npm run dev
+npm start
 ```
 
 ### Globo 3D não renderiza
@@ -212,7 +213,7 @@ npm install
 Veja:
 - `ARCHITECTURE.md` — Estrutura geral + data flow
 - `COMPONENTS.md` — Componentes React
-- `FEATURES.md` — Features em tempo real (ISS, vulcões; terremotos desabilitados)
+- `FEATURES.md` — Camadas do globo em tempo real (satélites, ISS, incêndios, alertas, terremotos, vulcões, furacões, vento) e chat
 - `API.md` — Endpoints externos
 - `STACK.md` — Dependências + tech choices
 - `CLAUDE.md` — Conventions (commits, code style, etc)

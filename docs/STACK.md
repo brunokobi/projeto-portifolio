@@ -93,7 +93,7 @@
 
 ### Dev Server
 ```bash
-npm run dev
+npm start
 # Vite dev server em http://localhost:5173
 ```
 

@@ -27,16 +27,19 @@
 |---------|---------|----------|
 | 🌍 Terremotos | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | USGS → quakes.ts → render loop |
 | 🌋 Vulcões | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | Smithsonian → volcanoes.ts → triangles |
-| 🌀 Furacões | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | NOAA RSS → hurricanes.ts → spirals |
+| 🌀 Furacões | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | ArcGIS Active Hurricanes → hurricanes.ts → spirals |
 | 🛰 ISS | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | wheretheiss → iss.ts → polling |
-| 🌬 Vento | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | ERA5 grid → wind.ts → particles |
+| 🌬 Vento | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | Grade GFS → wind.ts → particles |
+| 🛰️ Satélites | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | CelesTrak TLE → satellites.ts (SGP4) → polling 10s |
+| 🔥 Incêndios / ⚠️ Alertas | [FEATURES.md](./FEATURES.md) + [API.md](./API.md) | ArcGIS Living Atlas → hazards.ts / capAlerts.ts |
+| 📏 Tamanho dos ícones | [FEATURES.md](./FEATURES.md) | altitude da câmera → iconScale.ts → drawPins |
 | 💬 Chat IA | [FEATURES.md](./FEATURES.md#-chat-ia-n8n) + [COMPONENTS.md](./COMPONENTS.md) | ChatWidget → n8n-chat.ts → n8n |
 
 ### Para Setup Local
 | Tarefa | Arquivo | Commando |
 |--------|---------|----------|
 | Instalar deps | [SETUP.md](./SETUP.md) | `npm install` |
-| Rodar dev | [SETUP.md](./SETUP.md) | `npm run build` |
+| Rodar dev | [SETUP.md](./SETUP.md) | `npm start` |
 | Testes | [SETUP.md](./SETUP.md) | `npm run test` |
 | Deploy | [SETUP.md](./SETUP.md) | `git push origin main` |
 
@@ -48,9 +51,10 @@
 |--------|------|-----------|-------|
 | USGS Earthquakes | [API.md](./API.md) | 1 req/sec | 60s |
 | Smithsonian Volcanoes | [API.md](./API.md) | None (gist) | Static (reboot) |
-| NOAA NHC (Hurricanes) | [API.md](./API.md) | RSS, no limit | 60s |
+| ArcGIS Living Atlas (furacões, incêndios, alertas, AQI) | [API.md](./API.md) | Não documentado | Furacões 60s; demais carregam 1x |
+| CelesTrak (satélites) | [API.md](./API.md) | ~1 consulta/grupo a cada 2h | TLE 2h, posição a cada 10s |
 | wheretheiss (ISS) | [API.md](./API.md) | None | Polling 8s |
-| ERA5 (Wind grid) | [API.md](./API.md) | None (histórico) | In-memory |
+| firestorm-wind-data (grade GFS) | [API.md](./API.md) | GitHub raw | Carrega 1x |
 | Vasturiano (data) | [API.md](./API.md) | Gist, no limit | Static (reboot) |
 
 ---
@@ -93,23 +97,29 @@
 
 **"Por que..."**
 - Minify está desabilitado? → [AI_QUICKSTART.md](./AI_QUICKSTART.md) Gotchas #1
-- NOAA não tem tufões? → [AI_QUICKSTART.md](./AI_QUICKSTART.md) Gotchas #3
+- Ícone novo no globo não diminui com o zoom? → [AI_QUICKSTART.md](./AI_QUICKSTART.md) Gotchas #3
 - Sem dados mockados? → [AI_QUICKSTART.md](./AI_QUICKSTART.md) Gotchas #4
 
 ---
 
-## 📊 Status de Features (Oct 2026)
+## 📊 Status de Features (Nov 2026)
 
-✅ **Ativo:**
+✅ **Ativo (todos com dados reais):**
+- Satélites (CelesTrak + SGP4, posição a cada 10s)
 - ISS (polling 8s)
-- Vento (partículas, advection)
-- Terremotos (USGS, circles pulsantes, hover tooltips)
-- Vulcões (425 Smithsonian, triangles, hover tooltips)
-- Furacões (NOAA 3 feeds, spirals)
-- Cidades (hardcoded, hora local + clima)
-- Modo Noite (toggle)
+- Cidades (hora local, clima, AQI no hover)
+- Incêndios (NASA VIIRS)
+- Alertas de emergência (CAP)
+- Terremotos (USGS, hover)
+- Vulcões (425, Smithsonian, hover)
+- Furacões (Active Hurricanes — NHC + JTWC)
+- Vento (grade GFS, partículas)
+- Modo Noite e rotação (botões na WeatherBar)
+- Ícones diminuem conforme o zoom (`iconScale.ts`)
 
-❌ **Removido:**
+⛔ **Desligado ou removido:**
+- Aviões (OpenSky bloqueia CORS)
+- Aurora boreal (removida do globo)
 - Correntes marítimas (Open-Meteo, taxa alta)
 
 ---
@@ -122,5 +132,5 @@
 
 ---
 
-**Última atualização:** 2026-10-07  
+**Última atualização:** 2026-11-02  
 **Próximo dev que entra?** Leia AI_QUICKSTART.md primeiro (3 min), depois deepdive os arquivos específicos.

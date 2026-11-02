@@ -2,7 +2,7 @@
 
 ## 🌋 USGS Earthquake Hazards Program
 
-> **Desabilitado:** `loadQuakes()` está comentado em `GlobeBackground/index.tsx` (bug de minificação, ver [FEATURES.md](./FEATURES.md#bug-de-minificação-em-refs)). Esta API não é chamada atualmente.
+> **Ativo:** carregado uma vez quando o globo termina de montar (`loadQuakes()` em `GlobeBackground/index.tsx`).
 
 **Endpoint:** `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson`  
 **Método:** GET  
@@ -118,19 +118,43 @@ const volcanoes = await loadVolcanoes();
 
 ---
 
-## NOAA NHC (ciclones tropicais)
+## ArcGIS Living Atlas (feeds ao vivo)
 
-**Feeds RSS:** `https://www.nhc.noaa.gov/index-{at,ep,cp,io,sh}.xml` (Atlântico, Pacífico Leste, Pacífico Central, Índico, Hemisfério Sul)  
-**Autenticação:** Nenhuma  
-**CORS:** ❌ Bloqueado — o browser usa o proxy `/api/noaa/<feed>.xml` (regra `/api/noaa/*` em `public/_redirects`)  
-**Netlify Function:** `netlify/functions/noaa.ts` — proxy equivalente (User-Agent de browser, timeout 8s, `Cache-Control: public, max-age=300`, 404 pra feed fora da lista)  
-**Formato:** XML com namespace `nhc:` (`nhc:Cyclone` → `nhc:center`, `nhc:name`, `nhc:wind` em mph, `nhc:pressure`)
+**Base:** `https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/<serviço>/FeatureServer/<camada>/query`  
+**Autenticação:** nenhuma  
+**CORS:** ✅ liberado (não precisa de proxy)
 
-### Uso no Código
-```typescript
-import { loadHurricanes } from './hurricanes';
-const hurricanes = await loadHurricanes(); // cache em memória de 60s
-```
+| Serviço | Uso | Arquivo | Filtro |
+|---|---|---|---|
+| `Active_Hurricanes_v1` (camada 1) | Furacões (NHC + JTWC) | `hurricanes.ts` | observação mais recente por `STORMID` |
+| `Satellite_VIIRS_Thermal_Hotspots_and_Fire_Activity` (0) | Incêndios | `hazards.ts` | `hours_old<=6 AND confidence='high' AND frp>=10`, até 500 |
+| `CAP_Alerts_Feed` (0) | Alertas de emergência | `capAlerts.ts` | centroide da área (`returnCentroid`) |
+| `Air_Quality_PM25_Latest_Results` (0) | AQI das cidades | `cities.ts`, `hazards.ts` | estação a até 50 km; leituras das últimas 48h |
+
+Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA e o proxy `netlify/functions/noaa.ts` / `/api/noaa/*` ficaram sem uso pelo globo desde 08/10/2026.
+
+---
+
+## CelesTrak (satélites)
+
+**Endpoint:** `https://celestrak.org/NORAD/elements/gp.php?GROUP=<grupo>&FORMAT=tle`  
+**Grupos usados:** `gps-ops`, `galileo`, `weather`  
+**Autenticação:** nenhuma  
+**CORS:** ✅ liberado  
+**Formato:** TLE em texto (3 linhas por satélite)
+
+- A posição é calculada no navegador com SGP4 (`satellite.js`).
+- O CelesTrak atualiza os grupos a cada ~2h e pede para não consultar com mais frequência. Por isso o TLE fica em cache por 2h; o polling de 10s só recalcula a posição.
+- Às vezes responde 200 com uma mensagem de texto em vez de TLE. Nesse caso o cache anterior é mantido.
+- O grupo `starlink` foi retirado (o CelesTrak retornava 403).
+
+---
+
+## Vento (GFS)
+
+**Endpoint:** `https://raw.githubusercontent.com/Deasus/firestorm-wind-data/main/data/current-wind-surface.json`  
+**Formato:** duas grades 360×181 (componentes U e V do vento a 1°), mesmo formato do earth.nullschool  
+**Atualização:** o repositório é atualizado periodicamente (último commit em 31/10/2026 quando conferido)
 
 ---
 
@@ -159,8 +183,9 @@ const hurricanes = await loadHurricanes(); // cache em memória de 60s
 | USGS | Ilimitado | - | N/A |
 | wheretheiss | ~60 req/min | 1 min | Retry com backoff |
 | Open-Meteo | 10k/dia | 24h | Fallback: [] |
-| Vasturiano | ~1000 req/min (inferido) | 1 min | Fallback: [] |
-| NOAA NHC | Não documentado (cache 5 min no proxy) | - | Fallback: último cache em memória |
+| Vasturiano (vulcões) | ~1000 req/min (inferido) | 1 min | Fallback: [] |
+| ArcGIS Living Atlas | Não documentado | - | Fallback: [] (furacões: último cache) |
+| CelesTrak | ~1 consulta por grupo a cada 2h | 2h | Mantém o TLE em cache |
 
 ---
 

@@ -1,56 +1,59 @@
 # Componentes Principais
 
-## `GlobeBackground` 
+## `GlobeBackground`
 **Arquivo:** `src/components/GlobeBackground/index.tsx`  
-**Responsabilidade:** Renderização do globo 3D + overlays
+**Responsabilidade:** globo 3D (ArcGIS SceneView) e todas as camadas de dados em tempo real. Carregado com `lazy()` só na Home.
 
 ### Props
-```typescript
-// Nenhuma (self-contained)
-```
+Nenhuma.
 
 ### Estado
-- `hoverInfo: { title: string; lines: string[]; x: number; y: number } | null`
-- Refs: `sceneViewRef`, `quakeScreenPosRef`, `issScreenPosRef`, `volcanoScreenPosRef`
-- Refs: `quakesEnabledRef`, `issEnabledRef`, `volcanoesEnabledRef`
+- `hoverInfo` / `hoverCity` (useState) — tooltip e card de cidade
+- `<camada>ScreenPosRef` — posições de tela para o hover (`satelliteScreenPosRef`, `issScreenPosRef`, `quakeScreenPosRef`, `volcanoScreenPosRef`, `hurricaneScreenPosRef`, `wildfireScreenPosRef`, `capAlertScreenPosRef`, `cityScreenPosRef`)
+- `<camada>EnabledRef` — ON/OFF de cada camada, iniciado do `localStorage` (`globeSatellites`, `globeQuakes`, ...)
 
 ### Ciclo de Vida
-1. **useEffect (setup):** ArcGIS init, event listeners
-2. **useEffect (data):** Load quakes/ISS/volcanoes in parallel
-3. **useEffect (render loop):** requestAnimationFrame → draw particles + pins
-4. **Cleanup:** AbortController, event listener removal
+1. Monta: listeners dos `CustomEvent` da `WeatherBar`; carrega satélites, AQI e incêndios; liga o polling dos satélites (10s).
+2. Após 3s: carrega o ArcGIS SDK e cria o `SceneView`.
+3. `view.when`: `markGlobeReady()`. Depois do primeiro carregamento: terremotos, ISS (8s), vulcões, furacões, alertas e rotação.
+4. Loop `requestAnimationFrame`: vento + `drawPins()`.
+5. Desmonta: limpa timers e intervals e chama `resetGlobeReady()`.
 
-### Métodos Chave
-- `drawPins()` — renderiza circles/ellipses/triangles pra todos os pontos
-- `drawParticles()` — wind canvas layer com advection
-- `handlePointerMove()` — hit detection pra hover tooltips
-
-### Estrutura JSX
-```jsx
-<div ref={mapContainer}>
-  <canvas ref={canvasRef} /> {/* Partículas */}
-  {hoverInfo && <Tooltip />}
-</div>
-```
+### Funções Chave
+- `drawPins()` — desenha todas as camadas no canvas; tamanhos escalados por `iconScaleForAltitude(cam.z)` (`iconScale.ts`)
+- `drawHurricaneIcon()` (`hurricanes.ts`) — espiral do furacão; recebe o tamanho da fonte da legenda
+- Handler de `pointer-move` — hit test < 16px e tooltip
 
 ---
 
 ## `WeatherBar`
 **Arquivo:** `src/components/WeatherBar/index.tsx`  
-**Responsabilidade:** Toggles pra features do globo
+**Responsabilidade:** barra fixa no topo com clima local e os botões ON/OFF das camadas do globo.
 
-### Buttons
-| Emoji | Label | Event | Estado Ref |
-|-------|-------|-------|-----------|
-| 🛰 | ISS | globeIssToggle | issEnabledRef |
-| 🌋 | VULCÕES | globoVolcanoesToggle | volcanoesEnabledRef |
+### Props
+| Prop | Tipo | Uso |
+|---|---|---|
+| `waitForGlobe` | `boolean` | `true` na Home (`App.tsx`): a barra só aparece depois de `markGlobeReady()` |
 
-O botão de terremotos (SISMOS) foi removido; o listener `globeQuakesToggle` ainda existe em `GlobeBackground`, mas nada o dispara.
+### Botões
+| Ícone | Evento | `detail` |
+|---|---|---|
+| 🌙 / 🌞 | `globeNightToggle` | modo noite |
+| 💨 | `globeWindToggle` | `windEnabled` |
+| 🛰 ISS | `globeIssToggle` | `issEnabled` |
+| 🌀 | `globeHurricanesToggle` | `hurricanesEnabled` |
+| 🌍 | `globeQuakesToggle` | `quakesEnabled` |
+| 🌋 | `globeVolcanoesToggle` | `volcanoesEnabled` |
+| 🛰️ | `globeSatellitesToggle` | `satellitesEnabled` |
+| 🔥 | `globeWildfiresToggle` | `wildfiresEnabled` |
+| ⚠️ | `globeCapAlertsToggle` | `capAlertsEnabled` |
+| 🌐 | `globeRotationToggle` | rotação do globo |
 
-### Behavior
-- Dispara CustomEvent com `detail: { enabled: boolean }`
-- Listener em GlobeBackground atualiza os Refs
-- Render loop só desenha se enabled
+### Comportamento
+- Cada botão grava a escolha no `localStorage` e dispara o `CustomEvent`; o globo atualiza o `EnabledRef` e o loop de desenho respeita.
+- O clima não bloqueia a barra: temperatura e cidade aparecem quando o Open-Meteo responde e ficam ocultas se falhar.
+- Localização: geolocalização do navegador (timeout 8s) com fallback para `ipapi.co`.
+- Testes: `__tests__/WeatherBar.test.tsx` (inclui "botões aparecem mesmo com o clima falhando" e "na Home espera o globo").
 
 ---
 
@@ -165,27 +168,33 @@ DevBlog copia esse design:
 src/
 ├── components/
 │   ├── GlobeBackground/
-│   │   ├── index.tsx
-│   │   ├── quakes.ts
+│   │   ├── index.tsx        (globo + drawPins + hover)
+│   │   ├── satellites.ts    (CelesTrak + SGP4)
 │   │   ├── iss.ts
-│   │   ├── ocean.ts (legado, sem uso)
+│   │   ├── cities.ts, geo.ts
+│   │   ├── hazards.ts       (incêndios, AQI)
+│   │   ├── capAlerts.ts
+│   │   ├── quakes.ts
 │   │   ├── volcanoes.ts
-│   │   ├── wind.ts (empty after removal)
+│   │   ├── hurricanes.ts
+│   │   ├── wind.ts
+│   │   ├── iconScale.ts     (tamanho dos ícones pelo zoom)
+│   │   ├── aircraft.ts, aurora.ts, infrastructure.ts, ocean.ts (sem uso no globo)
 │   │   └── __tests__/
 │   ├── ChatWidget/
 │   │   ├── index.tsx
-│   │   └── JarvisCore.tsx (hook em src/hooks/useChatWithAudio.ts, saudação em src/utils/generateGreeting.ts)
+│   │   └── JarvisCore.tsx
 │   ├── WeatherBar/
 │   ├── Nav/
 │   └── ...
 ├── pages/
-│   ├── Home.tsx
-│   ├── About.tsx
-│   ├── DevBlog/
-│   │   ├── index.tsx
-│   │   ├── PostRenderer.tsx
-│   │   └── posts.ts
+│   ├── Home/index.tsx
+│   ├── About/
+│   ├── DevBlog/ (index.tsx, PostRenderer.tsx, posts.ts)
 │   └── ...
-└── routes/
-    └── index.tsx
+├── hooks/useChatWithAudio.ts
+├── utils/
+│   ├── globeReady.ts        (sinal "globo pronto" para a WeatherBar)
+│   ├── generateGreeting.ts, textToSpeech.ts, geoip.ts, ...
+└── routes/index.tsx
 ```

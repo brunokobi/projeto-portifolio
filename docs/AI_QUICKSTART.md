@@ -9,7 +9,7 @@
 Portfólio técnico com **globo 3D interativo** mostrando dados em tempo real:
 - **Framework:** React 18 + TypeScript + Chakra UI
 - **Mapa:** ArcGIS SceneView (WebGL)
-- **Dados:** ISS, terremotos, vulcões, vento, furacões (APIs públicas)
+- **Dados:** satélites, ISS, cidades, incêndios, alertas, terremotos, vulcões, furacões, vento (APIs públicas, só dados reais)
 - **Deploy:** Netlify (automático via GitHub)
 - **URL:** https://brunokobi.tech
 
@@ -19,14 +19,18 @@ Portfólio técnico com **globo 3D interativo** mostrando dados em tempo real:
 
 | Feature | Fonte | Status | Observação |
 |---------|-------|--------|-----------|
+| 🛰️ Satélites | CelesTrak (TLE) + SGP4 | ✅ Ativo | ~137 satélites; posição recalculada a cada 10s |
 | 🛰 ISS | wheretheiss.at | ✅ Ativo | Polling a cada 8s |
-| 🌬 Vento | ERA5 (histórico) | ✅ Ativo | Partículas com advection |
-| 🌍 Terremotos | USGS GeoJSON | ✅ Reativado | Círculos pulsantes, hover com info |
-| 🌋 Vulcões | Vasturiano gist | ✅ Reativado | 425 pontos, triângulos, hover com info |
-| 🌀 Furacões | NOAA NHC RSS | ✅ Ativo | 3 feeds (Atlântico, Pacífico E/C) |
-| 🏙️ Cidades | Hardcoded | ✅ Ativo | Hora local, clima, AQI |
-| 🌊 Correntes | Open-Meteo Marine | ❌ Removido | Retirado por taxa de API alta |
-| 🌙 Modo Noite | Local storage | ✅ Ativo | Toggle na WeatherBar |
+| 🏙️ Cidades + AQI | `CITIES` + Open-Meteo + OpenAQ | ✅ Ativo | Hora local, clima, AQI no hover |
+| 🔥 Incêndios | NASA VIIRS (ArcGIS) | ✅ Ativo | Últimas 6h, confiança alta |
+| ⚠️ Alertas | CAP Alerts (ArcGIS) | ✅ Ativo | Avisos oficiais |
+| 🌍 Terremotos | USGS GeoJSON | ✅ Ativo | M4.5+ das últimas 24h |
+| 🌋 Vulcões | Smithsonian GVP | ✅ Ativo | 425 pontos |
+| 🌀 Furacões | Active Hurricanes (ArcGIS) | ✅ Ativo | NHC + JTWC, globo inteiro |
+| 💨 Vento | Grade GFS (`firestorm-wind-data`) | ✅ Ativo | Partículas com advecção |
+| 🌙 Modo Noite | localStorage | ✅ Ativo | Botão na WeatherBar |
+| ✈️ Aviões | OpenSky | ⛔ Desligado | CORS bloqueado |
+| ✨ Aurora | NOAA Kp | ⛔ Removida | Tirada do globo a pedido |
 | 💬 Chat IA (JARVIS) | n8n (via `netlify/functions/n8n-chat.ts`) | ✅ Ativo | Payload `{chatInput, sessionId}`, resposta em `data.output`; idioma da UI não afeta o n8n; UI "JARVIS Core" em canvas com espectro simulado (ver [FEATURES.md](./FEATURES.md#-chat-ia-n8n)) |
 
 ---
@@ -37,13 +41,16 @@ Portfólio técnico com **globo 3D interativo** mostrando dados em tempo real:
 index.tsx (entry)
   └─ GlobeBackground/
       ├─ index.tsx (main component, renderização)
-      ├─ quakes.ts (USGS loader + parsing)
-      ├─ volcanoes.ts (Smithsonian data + color/size)
-      ├─ hurricanes.ts (NOAA RSS parser)
-      ├─ wind.ts (ERA5 grid + particle physics)
-      └─ iss.ts (position polling)
+      ├─ satellites.ts (CelesTrak + SGP4, polling 10s)
+      ├─ iss.ts (polling 8s)
+      ├─ hazards.ts / capAlerts.ts (incêndios, AQI, alertas — ArcGIS)
+      ├─ quakes.ts (USGS)
+      ├─ volcanoes.ts (Smithsonian)
+      ├─ hurricanes.ts (Active Hurricanes — ArcGIS)
+      ├─ wind.ts (grade GFS + partículas)
+      └─ iconScale.ts (tamanho dos ícones pelo zoom)
   └─ WeatherBar/
-      └─ index.tsx (toggles, hora local, clima)
+      └─ index.tsx (botões das camadas + clima; aparece com o globo)
   └─ DevBlog/
       └─ index.tsx (renderizador de posts)
 ```
@@ -93,10 +100,8 @@ const screenPos = view.toScreen(
 ```
 **Copia esse padrão** ao adicionar nova feature.
 
-### 3. **NOAA Não Cobre Pacífico Oeste**
-- NOAA: até 180°W (Havaí)
-- Typhoon 27 (Japão): fora da cobertura
-- Solução futura: JMA API (não existe ainda pública)
+### 3. **Tamanho dos Ícones**
+Ao desenhar algo novo em `drawPins`, multiplique raios, offsets e fontes por `k` (`iconScaleForAltitude(cam.z)`) e use `fpx(px)` para fontes. Assim o ícone diminui quando a câmera se afasta, igual aos outros.
 
 ### 4. **Sem Dados Mockados**
 Regra firme do projeto: **ZERO mock data**.
@@ -137,11 +142,10 @@ projeto-portifolio/
 │  ├─ components/
 │  │  ├─ GlobeBackground/       ← MAIN logic aqui
 │  │  │  ├─ index.tsx (renderização)
-│  │  │  ├─ quakes.ts
-│  │  │  ├─ volcanoes.ts
-│  │  │  ├─ hurricanes.ts
-│  │  │  ├─ wind.ts
-│  │  │  ├─ iss.ts
+│  │  │  ├─ satellites.ts, iss.ts
+│  │  │  ├─ hazards.ts, capAlerts.ts, cities.ts
+│  │  │  ├─ quakes.ts, volcanoes.ts, hurricanes.ts
+│  │  │  ├─ wind.ts, iconScale.ts
 │  │  │  └─ __tests__/
 │  │  ├─ WeatherBar/
 │  │  └─ TextAudio/
@@ -168,7 +172,8 @@ projeto-portifolio/
 
 2. **Entenda o padrão:**
    - ISS usa polling + local var
-   - Vulcões/Terremotos usam renderização no loop + refs pra screenPos
+   - Satélites usam polling (10s) que só recalcula posição; rede só a cada 2h
+   - Demais camadas: carregam uma vez + renderização no loop + refs pra screenPos
    - Vento usa particle grid + advection
 
 3. **Teste seu change:**
@@ -215,5 +220,5 @@ projeto-portifolio/
 
 ---
 
-**Última atualização:** 2026-10-07  
-**Status:** Vulcões ✅ Terremotos ✅ Furacões ✅ Hover ✅ Tooltips ✅
+**Última atualização:** 2026-11-02  
+**Status:** todas as camadas do globo ativas com dados reais, exceto aviões (CORS)

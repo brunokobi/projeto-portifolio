@@ -74,7 +74,7 @@ git commit -m "refactor: Claude sugeriu usar bilinear interpolation"
 | Arquivo | Responsabilidade |
 |---------|------------------|
 | `src/components/GlobeBackground/index.tsx` | Main component — renderiza globo + overlays |
-| `src/components/GlobeBackground/*.ts` | Data loaders (quakes [desabilitado], iss, volcanoes; `ocean.ts` é código legado sem uso) |
+| `src/components/GlobeBackground/*.ts` | Loaders das camadas (satellites, iss, hazards, capAlerts, quakes, volcanoes, hurricanes, wind) e `iconScale.ts`; `aircraft.ts`, `aurora.ts`, `infrastructure.ts` e `ocean.ts` estão sem uso no globo |
 | `src/pages/DevBlog/` | Blog with posts |
 | `src/routes/index.tsx` | Route definitions |
 | `DESIGN_SYSTEM.md` | Visual identity + tokens |
@@ -96,20 +96,23 @@ Veja `DESIGN_SYSTEM.md` pra tokens completos.
 ## 🌍 Features em Tempo Real
 
 ### Status Atual
-- ⛔ Terremotos (USGS) — desabilitados: `loadQuakes()` comentado e ícone removido da WeatherBar
+Todas as camadas usam dados reais. Detalhes em `docs/FEATURES.md`.
+- ✅ Satélites (CelesTrak + SGP4, posição recalculada a cada 10s, TLE em cache 2h)
 - ✅ ISS (wheretheiss, 8s polling)
-- ⛔ Vulcões (425) — desabilitados: carregamento e rendering comentados
-- ✅ Vento (partículas com advection)
-- ✅ Furacões/ciclones (NOAA NHC, 5 feeds via proxy `/api/noaa/*`)
-- ✅ Cidades (`CITIES`, anéis pulsantes) com hora local, clima e AQI classificado no card de hover
+- ✅ Cidades (`CITIES`, anéis pulsantes) com hora local, clima e AQI no card de hover
+- ✅ Incêndios (NASA VIIRS) e alertas de emergência (CAP), via ArcGIS Living Atlas
+- ✅ Terremotos (USGS) e vulcões (425, Smithsonian), com hover
+- ✅ Furacões/ciclones (ArcGIS Active Hurricanes, NHC + JTWC)
+- ✅ Vento (grade GFS, partículas com advecção)
+- ⛔ Aviões (OpenSky bloqueia CORS) e aurora boreal (removida do globo)
+- Ícones diminuem conforme a câmera se afasta (`iconScale.ts`); a `WeatherBar` aparece junto com o globo (`src/utils/globeReady.ts`)
 
-### Bug conhecido: minificação (Vite/esbuild)
-Terremotos e vulcões (hover) estão desabilitados por um bug de minificação de nomes de propriedades de objetos guardados em refs, que causa `Cannot access X before initialization` em event handlers no build de produção. Ver `docs/FEATURES.md`. Não reativar sem resolver a causa.
+### Minificação desligada
+`build.minify: false` em `vite.config.ts`. A minificação causava `Cannot access X before initialization` em event handlers que liam objetos guardados em refs (foi o que desligou terremotos e o hover dos vulcões no passado). Não reativar sem testar o hover no build de produção.
 
 ### Próximas Prioridades
-1. **Terremotos/Vulcões:** resolver o bug de minificação e reativar (quakes + hover de vulcões)
-2. **Performance:** Otimizar se detectar drop em FPS
-3. **Blog:** Adicionar mais posts técnicos
+1. **Performance:** Otimizar se detectar drop em FPS
+2. **Blog:** Adicionar mais posts técnicos
 
 ---
 
@@ -119,7 +122,7 @@ Terremotos e vulcões (hover) estão desabilitados por um bug de minificação d
 git clone ...
 cd projeto-portifolio
 npm install
-npm run dev          # http://localhost:5173
+npm start            # http://localhost:5173
 npm run test         # Unit tests
 npm run build        # Production build
 ```
@@ -136,7 +139,7 @@ Veja `docs/SETUP.md` pra troubleshooting.
 
 ```bash
 npm run test         # Watch mode
-npm run test:ui      # Browser UI
+npm run test:run     # Uma vez, sem watch
 ```
 
 Novo código deve incluir testes. Se não conseguir (componentes UI complexos), documente por quê.
