@@ -116,26 +116,26 @@ DevBlog copia esse design:
 
 ## `ChatWidget`
 **Arquivo:** `src/components/ChatWidget/index.tsx`  
-**Responsabilidade:** UI de chat com o agente n8n (mensagens, seletor de idioma, toggle de áudio/TTS)
+**Responsabilidade:** UI de chat com o agente n8n: cabeçalho com o JARVIS Core e o status, mensagens, sugestões, indicador de digitando, microfone e campo de texto
 
-- Sem props. Estado local: `messages`, `inputValue`, `isLoading`, `selectedLanguage`, `audioEnabled`, `isSpeaking`
-- `generateAIResponse(message)` (função de módulo) faz `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` e lê a resposta em `data.output`
+- Sem props. Ocupa 100% da altura do contêiner pai (Drawer do `ChatButton` ou página `/chat`)
+- Estado local: `messages`, `inputValue`, `isLoading`, `isSpeaking`; o reconhecimento de voz vem de `useSpeechRecognition`
+- `sendMessage(text)` serve para o campo, as sugestões e o microfone: adiciona a mensagem, liga o "digitando", chama `generateAIResponse` e fala a resposta
+- `generateAIResponse(message)` (função de módulo) faz `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }`, lê `data.output` e remove a URL do site e "Vamos construir o futuro juntos!"
 - `chatSessionId` é gerado uma vez por carregamento da página e mantém a memória de conversa no n8n
-- `selectedLanguage` **não é enviado ao n8n** (workflow fixo em português); só alimenta o áudio via `useChatWithAudio`
-- Título "JARVIS"; ao montar, `generateGreeting()` (`src/utils/generateGreeting.ts`) gera a saudação dinâmica (bom dia/boa tarde/boa noite + cidade, clima e temperatura; texto fixo se não houver geolocalização) e ela vira a primeira mensagem; `generateAIResponse` remove da resposta do n8n a URL do site e "Vamos construir o futuro juntos!"
-- Áudio via `useChatWithAudio` (`src/hooks/useChatWithAudio.ts`), que fala com `rate: 1.4`
-- Renderiza `<JarvisCore isActive={isSpeaking} greeting={greetingText} />` abaixo do card do chat
+- Idioma fixo em pt-BR (o n8n é fixo em português)
+- Respostas do assistente renderizadas por `formatMessage` (`formatMessage.tsx`); sugestões em `suggestions.ts`
+- Testes: `__tests__/ChatWidget.test.tsx` (sugestões, digitando, formatação, microfone) e `__tests__/formatMessage.test.tsx`
 - Detalhes do fluxo: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
 
 ## `JarvisCore`
 **Arquivo:** `src/components/ChatWidget/JarvisCore.tsx`  
-**Responsabilidade:** visualizador em canvas (anéis concêntricos, núcleo com glow e 16 barras de espectro) exibido no `ChatWidget`
+**Responsabilidade:** núcleo animado em canvas exibido no cabeçalho do `ChatWidget`
 
-- Props: `isActive: boolean` (true enquanto o widget está falando), `greeting: string` (texto exibido num box abaixo do canvas)
-- Estado: `spectrum` (16 valores); um `useEffect` o atualiza a cada frame (`requestAnimationFrame`) com valores aleatórios suavizados enquanto `isActive`; outro `useEffect` redesenha o canvas a cada mudança de `spectrum`/`isActive`
-- O espectro é simulado, não analisa o áudio real
-- Cor: verde da marca `#42c920`
-- Inativo: sem animação, opacidade 0.5 e ícone de play central (decorativo)
+- Props: `state: 'idle' | 'thinking' | 'speaking' | 'listening'`, `size?: number` (padrão 72; o widget usa 56)
+- Desenha com `requestAnimationFrame` direto no canvas; o estado atual é lido de um ref, então trocar de estado não reinicia a animação
+- O espectro é animado, não analisa o áudio real
+- Respeita `prefers-reduced-motion`
 
 ## `ChatButton`
 **Arquivo:** `src/components/ChatButton/index.tsx`  

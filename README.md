@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-119%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-128%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -104,7 +104,7 @@ Resend API (email transacional)
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
 | Voz             | Web Speech API               | Text-to-Speech nativo                              |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 119 testes unitários + E2E Chromium                |
+| Testes          | Vitest + Playwright          | 128 testes unitários + E2E Chromium                |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
 | Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + orquestração Multi-Agente |
 | IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
@@ -280,9 +280,14 @@ $$ LANGUAGE sql;
 
 Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, com resposta via agente n8n (chatBruno), voz (TTS) e uma interface visual em canvas.
 
-- **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, condição e temperatura; sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
+- **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, temperatura e condição ("Em Serra agora faz 27°C, com chuva"); sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
 - **Voz:** Web Speech API; `src/utils/textToSpeech.ts` prefere voz masculina de boa qualidade no idioma escolhido, com fallback para as vozes disponíveis; a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
-- **JARVIS Core:** `src/components/ChatWidget/JarvisCore.tsx` desenha anéis concêntricos, núcleo com glow/sombra e 16 barras de espectro que pulsam enquanto o widget está "falando"; o espectro é simulado (não analisa o áudio real) e, inativo, mostra um ícone de play decorativo
+- **JARVIS Core:** núcleo animado em canvas no cabeçalho do chat (`src/components/ChatWidget/JarvisCore.tsx`), com quatro estados mostrados também em texto: Online, Pensando..., Falando... e Ouvindo...; o espectro é animado e não analisa o áudio real
+- **Sugestões de perguntas:** botões prontos (Quem é o Bruno?, Projetos, Tecnologias, Experiência, Contato) até o visitante fazer a primeira pergunta
+- **Indicador de digitando:** três pontos animados enquanto o agente responde
+- **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
+- **Perguntar por voz:** botão de microfone com o reconhecimento de voz do navegador em pt-BR (`src/hooks/useSpeechRecognition.ts`); envia a pergunta quando o visitante para de falar. Aparece no Chrome, Edge e Safari
+- **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 
 ---
@@ -657,9 +662,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 119 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 128 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (119 testes unitários)
+### Suítes de teste (128 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -673,6 +678,8 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente, botões visíveis sem clima, espera do globo na Home |
 | `satellites`           | Posição recalculada com o tempo usando uma única requisição ao CelesTrak                 |
 | `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
+| `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte)      |
+| `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
 | `ServiceStatus`        | checking/online/offline via mock de `Image` (onload/onerror)                            |
 | `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
@@ -957,7 +964,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
-| 🧪 119 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
+| 🧪 128 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
 | 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
 | ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |

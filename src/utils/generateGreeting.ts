@@ -7,6 +7,10 @@ interface WeatherData {
   condition: string;
 }
 
+function weatherPhrase(condition: string): string {
+  return condition === 'Nublado' ? 'tempo nublado' : condition.toLowerCase();
+}
+
 async function getWeatherData(lat: number, lon: number): Promise<WeatherData | null> {
   try {
     // Open-Meteo (gratuito, sem chave)
@@ -94,7 +98,7 @@ export async function generateGreeting(): Promise<string> {
         }
 
         const timePeriod = getTimePeriod(weather.timezone);
-        const greeting = `${timePeriod}! Eu sou o JARVIS, seu assistente virtual. Em ${weather.city} está ${weather.condition.toLowerCase()}, ${weather.temp}°C. Como posso ajudá-lo?`;
+        const greeting = `${timePeriod}! Eu sou o JARVIS, seu assistente virtual. Em ${weather.city} agora faz ${weather.temp}°C, com ${weatherPhrase(weather.condition)}. Como posso ajudá-lo?`;
         resolve(greeting);
       },
       () => {

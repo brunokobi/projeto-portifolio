@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { IconButton, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
+import { IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
 import { ChatWidget } from '../ChatWidget';
 
 const GREEN = '#42c920';
@@ -38,15 +37,15 @@ export function ChatButton() {
 
       {/* Modal do Chat */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
-        <DrawerOverlay />
+        <DrawerOverlay zIndex={1000001} />
         <DrawerContent
+          containerProps={{ zIndex: 1000002 }}
           bg="rgba(0, 0, 0, 0.95)"
           borderLeft={`1px solid rgba(66, 201, 32, 0.2)`}
           backdropFilter="blur(10px)"
         >
-          <DrawerCloseButton color={GREEN} />
-          <DrawerHeader />
-          <DrawerBody p={0}>
+          <DrawerCloseButton color={GREEN} top={4} right={4} zIndex={1} />
+          <DrawerBody p={2} display="flex" overflow="hidden">
             <ChatWidget />
           </DrawerBody>
         </DrawerContent>

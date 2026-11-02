@@ -1,191 +1,111 @@
-import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-const GREEN = '#42c920';
+export type JarvisState = 'idle' | 'thinking' | 'speaking' | 'listening';
 
-export function JarvisCore({ isActive, greeting }: { isActive: boolean; greeting: string }) {
+const GREEN = '66, 201, 32';
+const BAR_COUNT = 24;
+
+// O espectro é animado, não vem do áudio real: a Web Speech API não expõe o sinal do TTS.
+export function JarvisCore({ state, size = 72 }: { state: JarvisState; size?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
-  const [spectrum, setSpectrum] = useState<number[]>(Array(16).fill(0));
+  const stateRef = useRef(state);
 
   useEffect(() => {
-    if (!isActive) {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      return;
-    }
-
-    // Simula dados de áudio (espectro animado)
-    const animate = () => {
-      setSpectrum((prev) =>
-        prev.map((val) => {
-          const target = Math.random() * 0.8 + (isActive ? 0.2 : 0);
-          return val + (target - val) * 0.2;
-        })
-      );
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [isActive]);
+    stateRef.current = state;
+  }, [state]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.scale(dpr, dpr);
 
-    const w = canvas.width;
-    const h = canvas.height;
-    const centerX = w / 2;
-    const centerY = h / 2;
-    const innerRadius = 35;
-    const outerRadius = 85;
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const bars = new Array(BAR_COUNT).fill(0);
+    const c = size / 2;
+    const inner = size * 0.24;
+    let frame = 0;
+    let raf = 0;
 
-    // Clear canvas
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
-    ctx.fillRect(0, 0, w, h);
+    const draw = () => {
+      const s = stateRef.current;
+      const active = s !== 'idle';
+      const t = reduceMotion ? 0 : frame / 60;
+      ctx.clearRect(0, 0, size, size);
 
-    // Draw outer rings
-    ctx.strokeStyle = GREEN;
-    ctx.lineWidth = 1;
-    ctx.globalAlpha = isActive ? 0.4 : 0.2;
-
-    // Ring 3
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Ring 2
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Ring 1
-    ctx.globalAlpha = isActive ? 0.6 : 0.3;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, innerRadius + 15, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Draw spectrum bars (16 bars around the center)
-    ctx.globalAlpha = 1;
-    const barCount = 16;
-    spectrum.forEach((value, i) => {
-      const angle = (i / barCount) * Math.PI * 2;
-      const barHeight = (value * 25) + 5;
-      const startRadius = innerRadius;
-      const endRadius = startRadius + barHeight;
-
-      const x1 = centerX + Math.cos(angle) * startRadius;
-      const y1 = centerY + Math.sin(angle) * startRadius;
-      const x2 = centerX + Math.cos(angle) * endRadius;
-      const y2 = centerY + Math.sin(angle) * endRadius;
-
-      // Bar glow
-      ctx.strokeStyle = GREEN;
-      ctx.lineWidth = 3;
-      ctx.globalAlpha = 0.3 + value * 0.7;
-      ctx.shadowColor = GREEN;
-      ctx.shadowBlur = 10;
+      ctx.strokeStyle = `rgba(${GREEN}, ${active ? 0.35 : 0.2})`;
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
+      ctx.arc(c, c, size * 0.47, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Bar core
-      ctx.lineWidth = 2;
-      ctx.globalAlpha = 0.6 + value * 0.4;
-      ctx.shadowBlur = 5;
+      if (s === 'thinking' || s === 'listening') {
+        const speed = s === 'thinking' ? 3 : 1.5;
+        ctx.strokeStyle = `rgba(${GREEN}, 0.9)`;
+        ctx.lineWidth = 2;
+        for (let k = 0; k < 3; k++) {
+          const start = t * speed + (k * Math.PI * 2) / 3;
+          ctx.beginPath();
+          ctx.arc(c, c, size * 0.4, start, start + Math.PI / 4);
+          ctx.stroke();
+        }
+      }
+
+      for (let i = 0; i < BAR_COUNT; i++) {
+        const target =
+          s === 'speaking'
+            ? 0.35 + Math.random() * 0.65
+            : s === 'listening'
+              ? 0.2 + 0.3 * Math.abs(Math.sin(t * 4 + i))
+              : 0.12 + 0.06 * Math.sin(t * 1.5 + i * 0.5);
+        bars[i] += (target - bars[i]) * 0.25;
+        const angle = (i / BAR_COUNT) * Math.PI * 2;
+        const len = bars[i] * size * 0.14;
+        ctx.strokeStyle = `rgba(${GREEN}, ${0.35 + bars[i] * 0.65})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(c + Math.cos(angle) * inner, c + Math.sin(angle) * inner);
+        ctx.lineTo(c + Math.cos(angle) * (inner + len), c + Math.sin(angle) * (inner + len));
+        ctx.stroke();
+      }
+
+      const pulse = active ? 0.5 + 0.5 * Math.sin(t * 5) : 0.3;
+      const glow = ctx.createRadialGradient(c, c, 1, c, c, inner);
+      glow.addColorStop(0, `rgba(${GREEN}, ${0.35 + pulse * 0.4})`);
+      glow.addColorStop(1, `rgba(${GREEN}, 0)`);
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
-    });
-
-    ctx.shadowBlur = 0;
-
-    // Draw center glow
-    ctx.globalAlpha = isActive ? 0.3 : 0.1;
-    const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 25);
-    gradient.addColorStop(0, GREEN);
-    gradient.addColorStop(1, 'transparent');
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 25, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Draw core circle
-    ctx.strokeStyle = GREEN;
-    ctx.lineWidth = 3;
-    ctx.globalAlpha = isActive ? 1 : 0.5;
-    ctx.shadowColor = GREEN;
-    ctx.shadowBlur = 15;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Draw play button in center (if not speaking)
-    if (!isActive) {
-      ctx.fillStyle = GREEN;
-      ctx.globalAlpha = 0.4;
-      ctx.beginPath();
-      ctx.moveTo(centerX + 5, centerY - 8);
-      ctx.lineTo(centerX + 5, centerY + 8);
-      ctx.lineTo(centerX - 5, centerY);
-      ctx.closePath();
+      ctx.arc(c, c, inner, 0, Math.PI * 2);
       ctx.fill();
-    }
-  }, [spectrum, isActive]);
+
+      ctx.strokeStyle = `rgba(${GREEN}, ${active ? 1 : 0.6})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(c, c, inner * 0.7, 0, Math.PI * 2);
+      ctx.stroke();
+
+      frame++;
+      raf = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, [size]);
 
   return (
-    <Box
-      position="relative"
-      w="100%"
-      maxW="500px"
-      mx="auto"
-      display="flex"
-      flexDirection="column"
-      gap={3}
-    >
-      <Box
-        position="relative"
-        w="100%"
-        maxW="250px"
-        mx="auto"
-        opacity={isActive ? 1 : 0.5}
-        transition="all 0.3s"
-      >
-        <canvas
-          ref={canvasRef}
-          width={250}
-          height={250}
-          style={{
-            display: 'block',
-            width: '100%',
-            height: 'auto',
-            filter: isActive ? 'drop-shadow(0 0 20px #42c920)' : 'none',
-          }}
-        />
-      </Box>
-
-      {/* Saudação abaixo da animação */}
-      {greeting && (
-        <Box
-          bg="rgba(66, 201, 32, 0.05)"
-          borderRadius="8px"
-          p={3}
-          borderLeft="3px solid #42c920"
-          textAlign="center"
-        >
-          <Text fontSize="xs" color="rgba(255, 255, 255, 0.8)" lineHeight="1.5">
-            {greeting}
-          </Text>
-        </Box>
-      )}
-    </Box>
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      style={{
+        width: size,
+        height: size,
+        flexShrink: 0,
+        filter: state === 'idle' ? 'none' : `drop-shadow(0 0 8px rgba(${GREEN}, 0.6))`,
+      }}
+    />
   );
 }

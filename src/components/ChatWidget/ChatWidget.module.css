@@ -25,3 +25,41 @@
 .messagesContainer::-webkit-scrollbar-thumb:hover {
   background: rgba(66, 201, 32, 0.5);
 }
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #42c920;
+  display: inline-block;
+  animation: jarvisDot 1.2s infinite ease-in-out;
+}
+
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes jarvisDot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+.blink {
+  animation: jarvisBlink 1s infinite ease-in-out;
+}
+
+@keyframes jarvisBlink {
+  50% { opacity: 0.3; }
+}
+
+.listening {
+  animation: jarvisListen 1.4s infinite ease-out;
+}
+
+@keyframes jarvisListen {
+  0% { box-shadow: 0 0 0 0 rgba(66, 201, 32, 0.6); }
+  100% { box-shadow: 0 0 0 10px rgba(66, 201, 32, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot, .blink, .listening { animation: none; }
+}

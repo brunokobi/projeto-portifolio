@@ -1,4 +1,4 @@
-import { Box, Container, VStack } from '@chakra-ui/react';
+import { Box, Container } from '@chakra-ui/react';
 import { ChatWidget } from '../components/ChatWidget';
 
 export default function ChatPage() {
@@ -11,10 +11,8 @@ export default function ChatPage() {
       justifyContent="center"
       py={8}
     >
-      <Container maxW="600px">
-        <VStack spacing={8} align="center">
-          <ChatWidget />
-        </VStack>
+      <Container maxW="600px" h="min(720px, calc(100vh - 140px))" display="flex">
+        <ChatWidget />
       </Container>
     </Box>
   );

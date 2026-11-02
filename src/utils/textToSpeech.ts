@@ -84,7 +84,9 @@ export async function speak(options: SpeechOptions): Promise<void> {
   }
 
   if (onEnd) {
+    // O navegador bloqueia fala sem interação prévia e dispara onerror, não onend.
     utterance.onend = onEnd;
+    utterance.onerror = onEnd;
   }
 
   window.speechSynthesis.speak(utterance);

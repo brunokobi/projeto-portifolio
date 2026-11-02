@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { speak, stopSpeech } from '../utils/textToSpeech';
 
 interface UseChatWithAudioProps {
@@ -8,24 +8,29 @@ interface UseChatWithAudioProps {
 }
 
 export function useChatWithAudio({ selectedLanguage, audioEnabled, onSpeakingChange }: UseChatWithAudioProps) {
+  const speechIdRef = useRef(0);
+
   const respondWithAudio = useCallback(
     (responseText: string) => {
       if (!audioEnabled) return;
 
-      try {
-        onSpeakingChange?.(true);
-        speak({
-          text: responseText,
-          language: selectedLanguage,
-          rate: 1.4,
-          pitch: 1,
-          volume: 1,
-          onEnd: () => onSpeakingChange?.(false),
-        });
-      } catch (error) {
+      const id = ++speechIdRef.current;
+      const finish = () => {
+        if (speechIdRef.current === id) onSpeakingChange?.(false);
+      };
+
+      onSpeakingChange?.(true);
+      speak({
+        text: responseText,
+        language: selectedLanguage,
+        rate: 1.4,
+        pitch: 1,
+        volume: 1,
+        onEnd: finish,
+      }).catch((error) => {
         console.error('Erro ao gerar áudio:', error);
-        onSpeakingChange?.(false);
-      }
+        finish();
+      });
     },
     [selectedLanguage, audioEnabled, onSpeakingChange]
   );
