@@ -66,7 +66,7 @@ function AppContent() {
   return (
     <>
       <IntlProvider locale={locale} messages={messages}>
-        {!isNews && <WeatherBar />}
+        {!isNews && <WeatherBar waitForGlobe={pathname === "/"} />}
         {!isNews && <VisitCounter />}
         {!isNews && <ChatButton />}
         <Router />

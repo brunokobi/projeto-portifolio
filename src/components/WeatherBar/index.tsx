@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Box, HStack, Text, Divider } from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
+import { useGlobeReady } from "../../utils/globeReady";
 import falar from "../TextAudio";
 
 const WMO: Record<number, { icon: string; label: string }> = {
@@ -53,7 +54,8 @@ const getCoords = () =>
               city: g.city ?? null,
               country: g.country_code ?? null,
             })
-          )
+          ),
+        { timeout: 8000 }
       );
     } else {
       getGeoIP().then((g) =>
@@ -69,7 +71,8 @@ const getCoords = () =>
 
 type WeatherData = { temp: number; code: number; city: string | null };
 
-const WeatherBar = () => {
+const WeatherBar = ({ waitForGlobe }: { waitForGlobe: boolean }) => {
+  const globeReady = useGlobeReady();
   const [nightMode, setNightMode] = useState(() => localStorage.getItem("globeNight") === "1");
   const [windEnabled, setWindEnabled] = useState(() => localStorage.getItem("globeWind") !== "0");
 
@@ -185,10 +188,10 @@ const WeatherBar = () => {
     };
   }, []);
 
-  // Não mostra nada enquanto carrega ou se falhou
-  if (!data) return null;
+  // Na Home a barra aparece junto com o globo; o clima entra quando carregar.
+  if (waitForGlobe && !globeReady) return null;
 
-  const wmo = WMO[data.code] ?? { icon: "🌡️", label: "" };
+  const wmo = data ? WMO[data.code] ?? { icon: "🌡️", label: "" } : null;
 
   return (
     <Box
@@ -198,6 +201,7 @@ const WeatherBar = () => {
       zIndex={1000000}
       bg="rgba(0,0,0,0.82)"
       onMouseEnter={() => {
+        if (!data || !wmo) return;
         const city = data.city ? `, ${data.city}` : "";
         falar(`${data.temp} graus${city}, ${wmo.label}`);
       }}
@@ -213,31 +217,35 @@ const WeatherBar = () => {
       <style>{`@keyframes weatherFadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       <HStack spacing={3} align="center">
-        <Text fontSize="md" lineHeight={1} userSelect="none" title={wmo.label} cursor="help">
-          {wmo.icon}
-        </Text>
-
-        <Text
-          fontSize="sm"
-          fontWeight="700"
-          color={GREEN}
-          fontFamily="heading"
-          letterSpacing="0.04em"
-          style={{ textShadow: GREEN_GLOW }}
-        >
-          {data.temp}°C
-        </Text>
-
-        {data.city && (
+        {data && wmo && (
           <>
-            <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-            <Text fontSize="xs" color="whiteAlpha.600" fontFamily="heading" letterSpacing="0.03em">
-              {data.city}
+            <Text fontSize="md" lineHeight={1} userSelect="none" title={wmo.label} cursor="help">
+              {wmo.icon}
             </Text>
+
+            <Text
+              fontSize="sm"
+              fontWeight="700"
+              color={GREEN}
+              fontFamily="heading"
+              letterSpacing="0.04em"
+              style={{ textShadow: GREEN_GLOW }}
+            >
+              {data.temp}°C
+            </Text>
+
+            {data.city && (
+              <>
+                <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+                <Text fontSize="xs" color="whiteAlpha.600" fontFamily="heading" letterSpacing="0.03em">
+                  {data.city}
+                </Text>
+              </>
+            )}
+
+            <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
           </>
         )}
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
         <Text
           as="button"
           fontSize="xs"

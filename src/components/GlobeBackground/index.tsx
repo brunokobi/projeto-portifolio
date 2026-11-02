@@ -35,6 +35,8 @@ import { loadCapAlerts, capAlertColor, type CapAlert } from "./capAlerts";
 import { loadTechHubs, techHubColor, type TechHub } from "./infrastructure";
 // import { loadAuroraData, auroraColor, auroraRadius, type Aurora } from "./aurora";
 
+import { markGlobeReady, resetGlobeReady } from "../../utils/globeReady";
+
 setDefaultOptions({ css: true });
 
 // Partículas suficientes pra dar sensação de correntes contínuas sem pesar
@@ -899,6 +901,7 @@ const GlobeBackground = () => {
             });
 
             view.when(() => {
+              markGlobeReady();
               watchUtils.whenFalseOnce(view, "updating", () => {
                 // Loop de rotação — só inicia após a animação de entrada
                 const rotate = () => {
@@ -1606,6 +1609,7 @@ const GlobeBackground = () => {
       cleanupResize();
       if (issIntervalId) clearInterval(issIntervalId);
       if (satelliteIntervalId) clearInterval(satelliteIntervalId);
+      resetGlobeReady();
       document.getElementById("esri-bg-override")?.remove();
     };
   }, []);
