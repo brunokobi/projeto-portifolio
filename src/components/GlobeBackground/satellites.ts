@@ -1,20 +1,16 @@
 // Satélites em órbita — posição real calculada via SGP4 (satellite.js) a
 // partir de TLEs públicos do CelesTrak (sem chave, CORS liberado). A ISS
 // fica de fora daqui de propósito: já existe um tracker dedicado dela em
-// `iss.ts` (atualiza mais rápido, 8s) — incluir de novo aqui duplicaria o
-// marcador. Starlink tem 11 mil+ satélites ativos; amostramos um
-// subconjunto espalhado (não só os primeiros, que ficariam concentrados no
-// mesmo plano orbital de lançamento) pra dar variedade visual sem poluir o
-// globo.
+// `iss.ts`. Os TLEs ficam em cache por 2h; a posição é recalculada a cada
+// chamada de loadSatellites(), então chamar a cada poucos segundos não gera
+// requisição nova.
 import * as satellite from "satellite.js";
 
 const CELESTRAK_BASE = "https://celestrak.org/NORAD/elements/gp.php";
 const TLE_CACHE_TTL_MS = 2 * 60 * 60 * 1000; // TLEs mudam pouco; 2h é sobra de margem
 const FETCH_TIMEOUT_MS = 20000;
-const STARLINK_SAMPLE_SIZE = 40;
 
-const SATELLITE_POLL_INTERVAL_MS = 10000; // Atualiza a cada 10s
-export const SATELLITE_POLL_INTERVAL = SATELLITE_POLL_INTERVAL_MS;
+export const SATELLITE_POLL_INTERVAL_MS = 10000;
 
 export interface Satellite {
   id: string;
@@ -22,7 +18,7 @@ export interface Satellite {
   lat: number;
   lon: number;
   altitude: number; // km
-  type: "iss" | "starlink" | "communication" | "navigation" | "weather";
+  type: "iss" | "communication" | "navigation" | "weather";
   velocity: number; // km/s
 }
 
@@ -68,14 +64,6 @@ interface CachedGroup {
 }
 
 const groupCache = new Map<string, CachedGroup>();
-
-function amostrarEspacado<T>(arr: T[], n: number): T[] {
-  if (arr.length <= n) return arr;
-  const passo = arr.length / n;
-  const out: T[] = [];
-  for (let i = 0; i < n; i++) out.push(arr[Math.floor(i * passo)]);
-  return out;
-}
 
 function parseTleText(texto: string, tipo: Satellite["type"]): TleEntry[] {
   const linhas = texto.split("\n").map((l) => l.trimEnd()).filter((l) => l.length > 0);
@@ -170,8 +158,6 @@ export function satelliteColor(type: Satellite["type"]): string {
   switch (type) {
     case "iss":
       return "#00FF00"; // Verde brilhante
-    case "starlink":
-      return "#0099FF"; // Azul Starlink
     case "communication":
       return "#FF9900"; // Laranja
     case "navigation":
@@ -185,7 +171,7 @@ export function satelliteColor(type: Satellite["type"]): string {
 
 /** Raio do ícone (baseado altitude e tipo) */
 export function satelliteRadius(altitude: number, type: Satellite["type"]): number {
-  const base = type === "iss" ? 6 : type === "starlink" ? 3 : 4;
+  const base = type === "iss" ? 6 : 4;
   return Math.max(2, Math.min(base, 8));
 }
 
@@ -193,7 +179,6 @@ export function satelliteRadius(altitude: number, type: Satellite["type"]): numb
 export function satelliteLabel(type: Satellite["type"]): string {
   const labels: Record<Satellite["type"], string> = {
     iss: "ISS",
-    starlink: "Starlink",
     communication: "Comm",
     navigation: "Nav",
     weather: "Weather",

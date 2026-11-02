@@ -27,7 +27,7 @@ import { loadQuakes, quakeColor, quakeRadius, type Quake } from "./quakes";
 import { loadIssPosition, ISS_POLL_INTERVAL_MS, type IssPosition } from "./iss";
 import { loadVolcanoes, volcanoColor, volcanoRadius, type Volcano } from "./volcanoes";
 import { loadHurricanes, hurricaneColor, hurricaneRadius, drawHurricaneIcon, type Hurricane } from "./hurricanes";
-import { loadSatellites, satelliteColor, satelliteLabel, type Satellite } from "./satellites";
+import { loadSatellites, satelliteColor, satelliteLabel, SATELLITE_POLL_INTERVAL_MS, type Satellite } from "./satellites";
 import { loadAircraft, aircraftColor, type Aircraft } from "./aircraft";
 import { TOP_CITIES, cityColor, cityRadius, enrichCitiesWithAirQuality, type City as CityData } from "./cities";
 import { loadAirQuality, loadWildfires, aqiColor, wildfireColor, type AirQuality, type Wildfire } from "./hazards";
@@ -306,6 +306,7 @@ const GlobeBackground = () => {
     mountedRef.current = true;
     let cleanupResize = () => {};
     let issIntervalId: ReturnType<typeof setInterval> | null = null;
+    let satelliteIntervalId: ReturnType<typeof setInterval> | null = null;
 
     // 8 Novas features — variáveis no escopo do useEffect pra acessibilidade
     let satellites: Satellite[] = [];
@@ -327,6 +328,12 @@ const GlobeBackground = () => {
       loadWildfires().then((d) => { wildfires = d; }),
       loadTechHubs().then((d) => { techHubs = d; }),
     ]).catch(() => {});
+
+    satelliteIntervalId = setInterval(() => {
+      loadSatellites().then((d) => {
+        if (mountedRef.current && d.length > 0) satellites = d;
+      });
+    }, SATELLITE_POLL_INTERVAL_MS);
 
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -1598,6 +1605,7 @@ const GlobeBackground = () => {
       clearTimeout(timer);
       cleanupResize();
       if (issIntervalId) clearInterval(issIntervalId);
+      if (satelliteIntervalId) clearInterval(satelliteIntervalId);
       document.getElementById("esri-bg-override")?.remove();
     };
   }, []);
