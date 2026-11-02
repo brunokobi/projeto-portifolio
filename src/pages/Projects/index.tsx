@@ -8,22 +8,22 @@ import { useEffect, useRef, useMemo } from "react";
 import { track } from "../../utils/track";
 import { motion, AnimatePresence } from "framer-motion";
 
-import placas from "../../assets/img/placas.png";
-import bio from "../../assets/img/bio.png";
-import guia from "../../assets/img/guia.png";
-import etica from "../../assets/img/etica.png";
-import mestrado from "../../assets/img/mestrado.png";
-import face from "../../assets/img/face.jpg";
-import portifolio from "../../assets/img/portifolio.png";
-import portifolio3d from "../../assets/img/3dgame.png";
-import bpfcheck from "../../assets/img/bpfcheck.png";
-import arkon from "../../assets/img/arkon.png";
-import loteria from "../../assets/img/loteria.png";
-import chatbruno from "../../assets/img/chatbruno.png";
-import frota from "../../assets/img/frota.png";
-import grandeVitoria from "../../assets/img/grande-vitoria-dashboard.png";
-import tabelaAcfdv from "../../assets/img/tabela-acfdv.png";
-import letrinhasMagicas from "../../assets/img/letrinhas-magicas.png";
+import placas from "../../assets/img/placas.webp";
+import bio from "../../assets/img/bio.webp";
+import guia from "../../assets/img/guia.webp";
+import etica from "../../assets/img/etica.webp";
+import mestrado from "../../assets/img/mestrado.webp";
+import face from "../../assets/img/face.webp";
+import portifolio from "../../assets/img/portifolio.webp";
+import portifolio3d from "../../assets/img/3dgame.webp";
+import bpfcheck from "../../assets/img/bpfcheck.webp";
+import arkon from "../../assets/img/arkon.webp";
+import loteria from "../../assets/img/loteria.webp";
+import chatbruno from "../../assets/img/chatbruno.webp";
+import frota from "../../assets/img/frota.webp";
+import grandeVitoria from "../../assets/img/grande-vitoria-dashboard.webp";
+import tabelaAcfdv from "../../assets/img/tabela-acfdv.webp";
+import letrinhasMagicas from "../../assets/img/letrinhas-magicas.webp";
 
 const Projects = () => {
   const constraintsRef = useRef(null);

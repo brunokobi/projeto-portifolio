@@ -31,7 +31,7 @@
 - **Responsabilidade:** renderizar o globo 3D e todas as camadas.
 - **Ciclo de vida:**
   1. Ao montar, dispara satélites, qualidade do ar e incêndios em paralelo e liga o polling de satélites (10s).
-  2. Depois de 3s carrega o ArcGIS SDK e cria o `SceneView`.
+  2. Na montagem já baixa os módulos do ArcGIS SDK (com `preconnect` no `index.html`); depois de 3s (fim da animação de abertura) cria o `SceneView`. Ao desmontar, chama `view.destroy()` para liberar o contexto WebGL.
   3. Quando a view fica pronta (`view.when`), chama `markGlobeReady()`, que libera a `WeatherBar` na Home. Quando o globo termina o primeiro carregamento (`whenFalseOnce(view, "updating")`), carrega terremotos, ISS (polling 8s), vulcões, furacões e alertas, e começa a rotação.
   4. Loop de desenho com `requestAnimationFrame` (`drawPins`).
   5. Ao desmontar: limpa timers e intervals e chama `resetGlobeReady()`.
@@ -101,6 +101,6 @@ Globo pronto:
 - **Polling barato dos satélites:** a cada 10s só recalcula a posição; rede só a cada 2h
 - **Hover em espaço de tela:** só calcula quando o mouse se move
 
-## Minificação desligada
+## Minificação sem renomear identificadores
 
-`build.minify: false` em `vite.config.ts`. A minificação causava `Cannot access X before initialization` em event handlers que liam objetos guardados em refs, o que desligou terremotos e o hover dos vulcões no passado. Com a minificação desligada, as duas camadas voltaram. Não reative sem testar o hover no build de produção.
+`build.minify: "esbuild"` com `esbuild.minifyIdentifiers: false` em `vite.config.ts` (desde 02/11/2026): minifica espaços e sintaxe, mas não renomeia identificadores. A renomeação causava `Cannot access X before initialization` em event handlers que liam objetos guardados em refs (foi o que desligou terremotos e o hover dos vulcões no passado). Não ligue `minifyIdentifiers` sem testar o hover no build de produção num navegador com GPU (o Chromium headless usa SwiftShader e o ArcGIS não renderiza o globo nele).

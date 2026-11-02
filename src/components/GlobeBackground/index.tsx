@@ -310,10 +310,10 @@ const GlobeBackground = () => {
       });
     }, SATELLITE_POLL_INTERVAL_MS);
 
-    const timer = setTimeout(() => {
-      if (!mountedRef.current) return;
+    let sceneView: EsriAny = null;
 
-      loadModules([
+    // O download dos módulos começa já na montagem; o globo só é criado ao fim da animação de abertura.
+    const modulesPromise = loadModules([
         "esri/config",
         "esri/Map",
         "esri/views/SceneView",
@@ -326,7 +326,13 @@ const GlobeBackground = () => {
         "esri/geometry/Point",
         "esri/geometry/Mesh",
         "esri/core/watchUtils",
-      ])
+      ]);
+    modulesPromise.catch(() => {});
+
+    const timer = setTimeout(() => {
+      if (!mountedRef.current) return;
+
+      modulesPromise
         .then(
           ([
             esriConfig,
@@ -443,7 +449,7 @@ const GlobeBackground = () => {
               },
             });
 
-            const view = new SceneView({
+            const view = (sceneView = new SceneView({
               container: "globeBgDiv",
               map,
               alphaCompositingEnabled: true,
@@ -463,7 +469,7 @@ const GlobeBackground = () => {
                 altitude: { min: 4000000, max: 70000000 },
               },
               ui: { components: [] },
-            });
+            }));
 
             // Override CSS do ESRI que pode opacificar o container
             const esriOverride = document.createElement("style");
@@ -799,7 +805,7 @@ const GlobeBackground = () => {
               watchUtils.whenFalseOnce(view, "updating", () => {
                 // Loop de rotação — só inicia após a animação de entrada
                 const rotate = () => {
-                  if (!mountedRef.current) return;
+                  if (!mountedRef.current || view.destroyed) return;
                   if (!userInteracting && !isHoveringRef.current) {
                     const arc = activeArcRef.current;
                     const arcActive = arc && (arc.phase === "drawing" || arc.phase === "holding");
@@ -935,7 +941,7 @@ const GlobeBackground = () => {
 
                 let frame = 0;
                 const drawPins = () => {
-                  if (!mountedRef.current) return;
+                  if (!mountedRef.current || view.destroyed) return;
                   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
                   const cam = view.camera.position;
@@ -1428,6 +1434,8 @@ const GlobeBackground = () => {
       cleanupResize();
       if (issIntervalId) clearInterval(issIntervalId);
       if (satelliteIntervalId) clearInterval(satelliteIntervalId);
+      sceneView?.destroy();
+      sceneView = null;
       resetGlobeReady();
       document.getElementById("esri-bg-override")?.remove();
     };

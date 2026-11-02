@@ -14,7 +14,7 @@ Nenhuma.
 
 ### Ciclo de Vida
 1. Monta: listeners dos `CustomEvent` da `WeatherBar`; carrega satélites e incêndios (o AQI da cidade é buscado no hover); liga o polling dos satélites (10s).
-2. Após 3s: carrega o ArcGIS SDK e cria o `SceneView`.
+2. Na montagem: começa a baixar os módulos do ArcGIS SDK. Após 3s (fim da animação de abertura): cria o `SceneView`. Ao desmontar: `view.destroy()`.
 3. `view.when`: `markGlobeReady()`. Depois do primeiro carregamento: terremotos, ISS (8s), vulcões, furacões, alertas e rotação.
 4. Loop `requestAnimationFrame`: vento + `drawPins()`.
 5. Desmonta: limpa timers e intervals e chama `resetGlobeReady()`.

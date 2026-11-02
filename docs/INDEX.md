@@ -63,7 +63,7 @@
 
 | Problema | Solução | Arquivo |
 |----------|---------|---------|
-| Hover em vulcões/terremotos falha | Minification bug (já resolvido: minify: false) | [AI_QUICKSTART.md](./AI_QUICKSTART.md) |
+| Hover em vulcões/terremotos falha | Minification bug (já resolvido: minifyIdentifiers: false) | [AI_QUICKSTART.md](./AI_QUICKSTART.md) |
 | Nova feature não renderiza com globo | Segue rendering pattern de ISS/vulcões? | [COMPONENTS.md](./COMPONENTS.md) |
 | API retorna 429 | Cache aumentado ou feature removida | [API.md](./API.md) |
 | Build falha | `npm run test`, `npm run lint` | [SETUP.md](./SETUP.md) |

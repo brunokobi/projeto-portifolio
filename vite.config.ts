@@ -26,7 +26,9 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: false,
-    minify: false,
+    // Minifica espaços e sintaxe, mas não renomeia identificadores: a renomeação
+    // causava "Cannot access X before initialization" no hover do globo.
+    minify: "esbuild",
     rollupOptions: {
       output: {
         manualChunks: {
@@ -39,7 +41,7 @@ export default defineConfig({
       },
     },
   },
-  esbuild: { loader: "tsx", include: /src\/.*\.tsx?$/, exclude: [] },
+  esbuild: { loader: "tsx", include: /src\/.*\.tsx?$/, exclude: [], minifyIdentifiers: false },
   optimizeDeps: { esbuildOptions: { loader: { ".tsx": "tsx" } } },
   define: { global: "window" },
 });

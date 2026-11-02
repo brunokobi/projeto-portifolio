@@ -70,7 +70,7 @@ index.tsx (entry)
 | **Language** | TypeScript + React 18 |
 | **UI** | Chakra UI (componentes) |
 | **Map** | ArcGIS JS SDK (SceneView WebGL) |
-| **Build** | Vite (minify: false para evitar TDZ bug) |
+| **Build** | Vite (minify esbuild sem renomear identificadores, para evitar o bug de TDZ) |
 | **Test** | Vitest |
 | **Deploy** | Netlify (auto via git push) |
 
@@ -78,15 +78,13 @@ index.tsx (entry)
 
 ## 🐛 Gotchas Críticos
 
-### 1. **Minificação Desabilitada**
+### 1. **Minificação sem renomear identificadores**
 ```typescript
 // vite.config.ts
-build: {
-  minify: false,  // ← IMPORTANTE
-  // ...
-}
+build: { minify: "esbuild" },
+esbuild: { /* ... */ minifyIdentifiers: false },  // ← IMPORTANTE
 ```
-**Por quê?** esbuild minify criava colisões de nomes em event handlers → ReferenceError ao hover.  
+**Por quê?** a renomeação de identificadores do esbuild causava ReferenceError ao hover.  
 **Quando tocar:** Se alterar event handlers ou closures em terremotos/vulcões, retestar.
 
 ### 2. **Rendering Pattern para Features**
@@ -155,7 +153,7 @@ projeto-portifolio/
 │  ├─ utils/
 │  └─ App.tsx
 ├─ docs/              ← Documentação (você está aqui)
-├─ vite.config.ts     ← minify: false aqui
+├─ vite.config.ts     ← minifyIdentifiers: false aqui
 ├─ CLAUDE.md          ← Conventions
 └─ package.json
 ```
@@ -210,7 +208,7 @@ projeto-portifolio/
 → Leia `API.md`, crie loader em `src/components/GlobeBackground/seu-loader.ts`, siga rendering pattern de vulcões/terremotos.
 
 **"Hover de feature X não funciona?"**
-→ Provavelmente bug de minificação (já resolvido: minify: false). Se novo, check `screenPosRef` tá sendo setado.
+→ Provavelmente bug de minificação (já resolvido: minifyIdentifiers: false). Se novo, check `screenPosRef` tá sendo setado.
 
 **"Deploy não sobe?"**
 → `npm run build` passa local? Se não, fix. Se sim, git push e acompanha Netlify.

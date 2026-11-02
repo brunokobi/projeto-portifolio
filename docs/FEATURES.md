@@ -165,9 +165,9 @@ Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo
 
 ---
 
-## Minificação desligada
+## Minificação sem renomear identificadores
 
-Terremotos e o hover dos vulcões já ficaram desligados por um bug de minificação do build de produção: acessar propriedades de objetos guardados em refs dentro de event handlers dava `Cannot access X before initialization`. A correção foi desligar a minificação (`build.minify: false` em `vite.config.ts`). Com isso, as duas camadas voltaram a funcionar. Não reative a minificação sem testar o hover no build de produção.
+`build.minify: "esbuild"` com `esbuild.minifyIdentifiers: false` em `vite.config.ts` (desde 02/11/2026): minifica espaços e sintaxe, mas não renomeia identificadores. A renomeação causava `Cannot access X before initialization` em event handlers que liam objetos guardados em refs (foi o que desligou terremotos e o hover dos vulcões no passado). Não ligue `minifyIdentifiers` sem testar o hover no build de produção num navegador com GPU (o Chromium headless usa SwiftShader e o ArcGIS não renderiza o globo nele).
 
 ---
 
