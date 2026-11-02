@@ -1,5 +1,6 @@
 import type { Handler } from "@netlify/functions";
 import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
+import { buildChatAlert, locationFromNetlifyGeo, registerAlert, sendTelegramText } from "../lib/chatAlert";
 
 /**
  * Proxy para o webhook público do workflow "chatBruno - Multi-Agente RAG" no n8n
@@ -18,7 +19,55 @@ import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
  *
  * Env: N8N_WEBHOOK_URL (variável do Netlify, obrigatória; sem ela retorna 500).
  * Timeout de 55s na chamada ao n8n; falha de rede/timeout retorna 502.
+ *
+ * Cada pergunta e resposta também vai para o Telegram do Bruno pelo bot de
+ * avisos (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID, os mesmos do track.ts), em
+ * texto puro e com limite por conversa. Falha no Telegram não afeta o chat.
  */
+async function notifyTelegram(
+  event: Parameters<Handler>[0],
+  question: string,
+  sessionId: string,
+  result: { answer?: string; failedStatus?: number }
+) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId || !question) return;
+
+  const { allowed, isNew } = registerAlert(sessionId);
+  if (!allowed) return;
+
+  const text = buildChatAlert({
+    sessionId,
+    question,
+    ...result,
+    location: locationFromNetlifyGeo(event.headers["x-nf-geo"]),
+    isNewConversation: isNew,
+  });
+  await sendTelegramText(token, chatId, text);
+}
+
+function readChatInput(body: string | null): { question: string; sessionId: string } {
+  try {
+    const parsed = JSON.parse(body ?? "{}") as { chatInput?: unknown; sessionId?: unknown };
+    return {
+      question: typeof parsed.chatInput === "string" ? parsed.chatInput : "",
+      sessionId: typeof parsed.sessionId === "string" && parsed.sessionId ? parsed.sessionId : "sem-sessao",
+    };
+  } catch {
+    return { question: "", sessionId: "sem-sessao" };
+  }
+}
+
+function readAnswer(text: string): string | undefined {
+  try {
+    const parsed = JSON.parse(text) as { output?: unknown };
+    return typeof parsed.output === "string" ? parsed.output : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export const handler: Handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -63,6 +112,14 @@ export const handler: Handler = async (event) => {
     const text = await res.text();
     console.log("[n8n-chat] Resposta status:", res.status);
     console.log("[n8n-chat] Resposta body:", text);
+
+    const { question, sessionId } = readChatInput(event.body);
+    await notifyTelegram(
+      event,
+      question,
+      sessionId,
+      res.ok ? { answer: readAnswer(text) } : { failedStatus: res.status }
+    );
 
     span?.setAttribute("http.response_status_code", res.status);
     span?.setStatus(

@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-128%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-138%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -104,7 +104,7 @@ Resend API (email transacional)
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
 | Voz             | Web Speech API               | Text-to-Speech nativo                              |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 128 testes unitários + E2E Chromium                |
+| Testes          | Vitest + Playwright          | 138 testes unitários + E2E Chromium                |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
 | Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + orquestração Multi-Agente |
 | IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
@@ -662,9 +662,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 128 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 138 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (128 testes unitários)
+### Suítes de teste (138 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -680,6 +680,7 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
 | `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte)      |
 | `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
+| `chatAlert`            | Aviso do JARVIS no Telegram: texto, corte, limite por conversa, local, falha do Telegram  |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
 | `ServiceStatus`        | checking/online/offline via mock de `Image` (onload/onerror)                            |
 | `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
@@ -788,6 +789,27 @@ Cada ação relevante do visitante dispara uma notificação instantânea no Tel
 | `map_opened` | 🗺️ | Acesso ao mapa 3D ESRI |
 | `news_opened` | 📰 | Abertura do painel de notícias |
 | `link_click` | 🔗 | Clique em link externo (LinkedIn, GitHub…) |
+
+### Conversas do JARVIS
+
+Cada pergunta feita ao JARVIS chega no Telegram junto com a resposta, enviada pelo servidor em `netlify/functions/n8n-chat.ts` (lógica em `netlify/lib/chatAlert.ts`) com o mesmo bot e as mesmas variáveis (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`):
+
+```
+🤖 JARVIS: nova conversa
+🌍 Serra, ES — BR
+🆔 1a2b3c4d
+
+👤 Visitante: Quem é o Bruno?
+
+💬 JARVIS: O Bruno é desenvolvedor full stack...
+```
+
+- A primeira mensagem de cada visita vem marcada como "nova conversa"; o `🆔` agrupa as mensagens da mesma visita
+- Local pelo header de geolocalização da Netlify (`x-nf-geo`), sem pedir permissão ao visitante
+- Texto puro (sem Markdown), para caracteres como `*` e `_` digitados pelo visitante não fazerem o Telegram rejeitar a mensagem
+- Limite de 30 avisos por conversa por hora; textos acima de 1500 caracteres são cortados
+- Se o n8n falhar, chega um aviso "⚠️ JARVIS falhou" com a pergunta
+- Tempo limite de 3s para o Telegram; se ele falhar, o chat continua funcionando normalmente
 
 ### Fluxo
 
@@ -964,7 +986,7 @@ Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúd
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
-| 🧪 128 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
+| 🧪 138 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
 | 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
 | ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |
