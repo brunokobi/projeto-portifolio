@@ -71,3 +71,24 @@ describe("ErrorBoundary", () => {
     expect(screen.getByText("Recuperado com sucesso")).toBeInTheDocument();
   });
 });
+
+describe("ErrorBoundary com chunk desatualizado", () => {
+  it("recarrega a página uma vez quando um chunk do deploy anterior some", () => {
+    const reload = vi.fn();
+    const original = window.location;
+    Object.defineProperty(window, "location", { configurable: true, value: { ...original, reload } });
+    window.sessionStorage.clear();
+
+    const StaleChunk = () => {
+      throw new TypeError("Failed to fetch dynamically imported module: https://brunokobi.tech/assets/index-old.js");
+    };
+    render(
+      <ErrorBoundary>
+        <StaleChunk />
+      </ErrorBoundary>
+    );
+
+    expect(reload).toHaveBeenCalledTimes(1);
+    Object.defineProperty(window, "location", { configurable: true, value: original });
+  });
+});

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Heading, Text, Button } from "@chakra-ui/react";
+import { isStaleChunkError, reloadOnceForStaleChunk } from "../../utils/staleChunk";
 
 class ErrorBoundary extends Component<{ children: React.ReactNode }> {
   state = { hasError: false };
@@ -9,6 +10,7 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
+    if (isStaleChunkError(error) && reloadOnceForStaleChunk()) return;
     console.error("ErrorBoundary caught:", error, info);
   }
 

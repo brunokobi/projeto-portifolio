@@ -10,6 +10,11 @@
     Cache-Control = "public, max-age=300"
 
 [[redirects]]
+  from = "/assets/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

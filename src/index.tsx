@@ -11,6 +11,11 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router } from "react-router-dom";
 // Importa o tema customizado definido no projeto
 import { theme } from "./styles";
+import { reloadOnceForStaleChunk } from "./utils/staleChunk";
+
+window.addEventListener("vite:preloadError", (event) => {
+  if (reloadOnceForStaleChunk()) event.preventDefault();
+});
 
 // Cria a raiz do React no elemento HTML com o ID "root"
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
