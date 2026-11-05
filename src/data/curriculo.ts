@@ -78,7 +78,7 @@ export const CURRICULO = {
     "Frota Realtime RJ — monitoramento GPS via WebGL, +4.000 pontos simultâneos (Node.js, MapLibre, Netlify Edge) · github.com/brunokobi/frotarealtime",
     "Arkon: A Fenda do Aglomerado — browser game multiplayer 2D estilo Tibia (React, Vite, Phaser 4, Supabase) · github.com/brunokobi/arkon-game",
     "BPF Check — PWA offline-first para auditoria de vistorias sanitárias (RDC 216) (React, TypeScript, Tailwind, Supabase) · github.com/brunokobi/bpfcheck",
-    "chatBruno / JARVIS — o assistente deste site, construído com n8n e Google Gemini",
+    "JARVIS (chatBruno) — o assistente deste site: n8n self-hosted, NVIDIA Nemotron 3 Ultra via OpenRouter, responde só com este perfil",
   ],
   certificacoes: [
     "Fev/2025 — Análise Avançada de Imagens e Texto com IA na AWS (Nexa / DIO, 10h)",
