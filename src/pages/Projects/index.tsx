@@ -1,5 +1,6 @@
 import { Box, Flex, Link, Icon } from "@chakra-ui/react";
 import ProjectCard from "../../components/ProjectCard";
+import ServiceStatus from "../../components/ServiceStatus";
 import { useIntl } from "react-intl";
 
 import { BsChevronDoubleUp } from "react-icons/bs";
@@ -298,6 +299,7 @@ const Projects = () => {
             maxW={{ base: "100%", md: "700px" }}
             gap={{ base: 4, md: 8 }}
           >
+            <ServiceStatus />
             {projects.map((project, i) => (
               <ProjectCard key={i} i={i} {...project} />
             ))}

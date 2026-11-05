@@ -2,9 +2,9 @@ import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import ServiceStatus from "../ServiceStatus";
+import ServiceStatus from "..";
 
-vi.mock("../../../components/TextAudio", () => ({ default: vi.fn() }));
+vi.mock("../../TextAudio", () => ({ default: vi.fn() }));
 
 type ImgOutcome = "load" | "error" | "pending";
 let imgOutcome: ImgOutcome = "pending";

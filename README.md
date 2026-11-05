@@ -756,7 +756,7 @@ $$;
 
 > **Complexidade:** ⭐⭐⭐ — Ping cross-origin client-side, sem backend novo
 
-Widget na página `/about` que confere, na hora, se o chatBruno (n8n) e o Dataset Grande Vitória estão no ar — prova visual de que a infra própria descrita nesse README roda de verdade, não é só documentação.
+Widget no topo da página `/projects` (`src/components/ServiceStatus`), acima dos cards, que confere, na hora, se o chatBruno (n8n) e o Dataset Grande Vitória estão no ar — prova visual de que a infra própria descrita nesse README roda de verdade, não é só documentação.
 
 100% client-side: cada visitante faz a própria checagem, sem depender de um serviço de status centralizado.
 

@@ -10,7 +10,7 @@
 // não sofre esse bloqueio e é a técnica clássica de "ping" cross-origin.
 import { useEffect, useState } from "react";
 import { Box, HStack, Stack, Text } from "@chakra-ui/react";
-import falar from "../../components/TextAudio";
+import falar from "../TextAudio";
 
 type Status = "checking" | "up" | "down";
 
@@ -22,7 +22,7 @@ interface Service {
 }
 
 const SERVICES: Service[] = [
-  { label: "chatBruno (n8n, AWS/Oracle self-hosted)", pingUrl: "https://n8n.brunokobi.tech/favicon.ico" },
+  { label: "JARVIS / chatBruno (n8n self-hosted)", pingUrl: "https://n8n.brunokobi.tech/favicon.ico" },
   { label: "Dataset Grande Vitória (351k empresas)", pingUrl: "https://empresas.brunokobi.tech/og-image.png" },
 ];
 
