@@ -173,9 +173,14 @@ Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo
 
 ## 💬 Chat IA (n8n)
 
-**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatWidget/JarvisCore.tsx`, `src/components/ChatButton/index.tsx`, `src/hooks/useChatWithAudio.ts`, `src/utils/generateGreeting.ts`, `src/utils/textToSpeech.ts`, `netlify/functions/n8n-chat.ts`  
-**Backend:** workflow "chatBruno - Multi-Agente RAG" no n8n (self-hosted), acessado via proxy Netlify  
+**Arquivos:** `src/components/ChatWidget/index.tsx`, `src/components/ChatWidget/JarvisCore.tsx`, `src/components/ChatButton/index.tsx`, `src/hooks/useChatWithAudio.ts`, `src/utils/generateGreeting.ts`, `src/utils/textToSpeech.ts`, `src/utils/jarvisProfile.ts`, `netlify/functions/n8n-chat.ts`  
+**Backend:** workflow "chatBruno - JARVIS (perfil único)" no n8n (self-hosted em `n8n.brunokobi.tech`), acessado via proxy Netlify  
 **Status:** ✅ Ativo
+
+- **De onde vêm as respostas:** o build publica `/jarvis/perfil.md`, gerado por `buildJarvisProfile` (`src/utils/jarvisProfile.ts`) a partir das mesmas fontes do site: `sobre1-3`, `experienciaN*`, `educacao1` e `projectN*` do `src/i18n/messages/pt.json` e os labels de `src/pages/About/skills.ts`, mais contato fixo (GitHub, LinkedIn, e-mail; sem telefone). O plugin `jarvisProfile` em `vite.config.ts` emite o arquivo no build e o serve em `npm start`. Header em `netlify.toml` (`text/markdown`, CORS aberto, cache de 5 min)
+- **Workflow n8n:** Chat Trigger → `Perfil` (HTTP Request que baixa `https://brunokobi.tech/jarvis/perfil.md`) → um único AI Agent `JARVIS` (modelo `nvidia/nemotron-3-ultra-550b-a55b:free` via OpenRouter, credencial "OpenRouter (JARVIS)" no n8n, temperatura 0.2, Memória de Conversa de 10 mensagens pelo `sessionId`). O prompt manda responder só com o perfil, em terceira pessoa, e dizer que não tem a informação quando ela não estiver lá. Substituiu o desenho antigo (roteador + 7 agentes + busca vetorial no Supabase), que inventava experiência porque os agentes não tinham fatos no prompt e nem sempre chamavam a busca
+- **Para mudar o que o JARVIS sabe:** edite o currículo/projetos no `pt.json` (ou as skills) e faça deploy; o workflow lê o perfil novo sozinho. Experiência nova precisa entrar também em `EXPERIENCE_ORDER` (o teste `jarvisProfile.test.ts` falha se faltar)
+- **Modelo e cota:** saiu do Gemini porque a cota gratuita do projeto era de 20 pedidos/dia e derrubava o chat. Modelos `:free` do OpenRouter aceitam ~1.000 pedidos/dia em conta com créditos. Uma chamada ao LLM por pergunta; a resposta leva de 3 a 45 s (o proxy `n8n-chat.ts` corta em 55 s)
 
 - Envio: `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }` (formato do Chat Trigger do n8n; o formato antigo `{ message, language }` faz o workflow retornar 500)
 - Resposta: o texto vem em `data.output`; se vier vazio, o widget mostra mensagem de fallback; erro de rede/HTTP mostra mensagem de erro

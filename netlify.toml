@@ -2,6 +2,13 @@
   command = "npm run build"
   publish = "dist"
 
+[[headers]]
+  for = "/jarvis/*"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=300"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
