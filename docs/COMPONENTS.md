@@ -105,12 +105,14 @@ DevBlog copia esse design:
 
 ## `Nav`
 **Arquivo:** `src/components/Nav/index.tsx`  
-**Responsabilidade:** Navegação principal
+**Responsabilidade:** Navegação principal (barra fixa embaixo)
 
-### Links
-- `/` (Home)
-- `/about` (About)
-- `/blog` (DevBlog) ← adicionado recentemente
+- Só ícones; o nome aparece num tooltip verde ao passar o mouse (e é falado pelo `TextAudio`). O item da página atual vira uma pílula verde com o nome (o nome some no celular)
+- Grupo 1, páginas do site: Home `/`, Sobre `/about`, Projetos `/projects`, Contato (abre o modal do `ContactForm`), Mapa `/map`, Notícias `/news`, Blog `/blog`
+- Grupo 2, links externos (tooltip com "↗"): Portfolio 3D, Empresas GV, LinkedIn, GitHub
+- Idioma: `LanguageMenu`, um botão com a bandeira atual que abre para cima a lista dos 9 idiomas. Na primeira visita o idioma vem do país (GeoIP), como antes
+- `Item` (`Nav/Item/index.tsx`) recebe `url` (interno ou `http...`) ou `onClick`. A página ativa vem de `isActivePath` (`Nav/isActivePath.ts`): Home só na raiz, as demais também nas subrotas (`/blog/post` ativa Blog)
+- Cabe sem rolagem a partir de 375px de largura
 
 ---
 
