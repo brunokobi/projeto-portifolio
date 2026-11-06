@@ -18,3 +18,18 @@ export function iconScaleForAltitude(altitudeM: number): number {
 export function scaledFontPx(px: number, scale: number): number {
   return Math.max(MIN_FONT_PX, Math.round(px * scale));
 }
+
+// Espessura das linhas de vento: mais grossas com a câmera perto, finas com o
+// globo afastado. Na altitude inicial (~20.000 km) fica perto de 1,3px.
+const WIND_NEAR_ALTITUDE_M = 4_000_000;
+const WIND_FAR_ALTITUDE_M = 22_000_000;
+const WIND_MAX_LINE_PX = 3.5;
+const WIND_MIN_LINE_PX = 1.1;
+
+export function windLineWidthForAltitude(altitudeM: number): number {
+  const t = Math.min(
+    1,
+    Math.max(0, (altitudeM - WIND_NEAR_ALTITUDE_M) / (WIND_FAR_ALTITUDE_M - WIND_NEAR_ALTITUDE_M))
+  );
+  return WIND_MAX_LINE_PX - t * (WIND_MAX_LINE_PX - WIND_MIN_LINE_PX);
+}

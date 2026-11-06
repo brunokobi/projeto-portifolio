@@ -105,7 +105,7 @@ Todas as camadas usam dados reais. Detalhes em `docs/FEATURES.md`.
 - ✅ Furacões/ciclones (ArcGIS Active Hurricanes, NHC + JTWC)
 - ✅ Vento (grade GFS, partículas com advecção)
 - ⛔ Aviões (OpenSky bloqueia CORS) e aurora boreal (removida do globo)
-- Ícones diminuem conforme a câmera se afasta (`iconScale.ts`); a `WeatherBar` aparece junto com o globo (`src/utils/globeReady.ts`)
+- Ícones diminuem conforme a câmera se afasta e as linhas de vento engrossam com ela perto (`iconScale.ts`); a `WeatherBar` aparece junto com o globo (`src/utils/globeReady.ts`)
 
 ### Minificação sem renomear identificadores
 `build.minify: "esbuild"` com `esbuild.minifyIdentifiers: false` em `vite.config.ts` (desde 02/11/2026): minifica espaços e sintaxe, mas não renomeia identificadores. A renomeação causava `Cannot access X before initialization` em event handlers que liam objetos guardados em refs (foi o que desligou terremotos e o hover dos vulcões no passado). Não ligue `minifyIdentifiers` sem testar o hover no build de produção num navegador com GPU (o Chromium headless usa SwiftShader e o ArcGIS não renderiza o globo nele).

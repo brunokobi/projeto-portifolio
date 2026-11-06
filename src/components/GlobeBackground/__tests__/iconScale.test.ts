@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { iconScaleForAltitude, scaledFontPx } from "../iconScale";
+import { iconScaleForAltitude, scaledFontPx, windLineWidthForAltitude } from "../iconScale";
 
 describe("iconScaleForAltitude", () => {
   it("mantém o tamanho cheio com o zoom de perto", () => {
@@ -22,5 +22,17 @@ describe("scaledFontPx", () => {
     expect(scaledFontPx(14, 1)).toBe(14);
     expect(scaledFontPx(14, 0.5)).toBe(7);
     expect(scaledFontPx(9, 0.5)).toBe(7);
+  });
+});
+
+describe("windLineWidthForAltitude", () => {
+  it("engrossa as linhas com a câmera perto", () => {
+    expect(windLineWidthForAltitude(4_000_000)).toBe(3.5);
+    expect(windLineWidthForAltitude(10_000_000)).toBeCloseTo(2.7);
+  });
+
+  it("mantém a espessura atual na altitude inicial e afina ao afastar", () => {
+    expect(windLineWidthForAltitude(19_921_223)).toBeCloseTo(1.38, 1);
+    expect(windLineWidthForAltitude(70_000_000)).toBe(1.1);
   });
 });

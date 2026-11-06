@@ -33,7 +33,7 @@ import { loadWildfires, type Wildfire } from "./hazards";
 import { loadCapAlerts, type CapAlert } from "./capAlerts";
 
 import { markGlobeReady, resetGlobeReady } from "../../utils/globeReady";
-import { iconScaleForAltitude, scaledFontPx, SHORT_LABEL_MIN_SCALE } from "./iconScale";
+import { iconScaleForAltitude, scaledFontPx, SHORT_LABEL_MIN_SCALE, windLineWidthForAltitude } from "./iconScale";
 
 setDefaultOptions({ css: true });
 
@@ -963,7 +963,7 @@ const GlobeBackground = () => {
                     windCtx.lineCap = "round";
 
                     if (showWind && windGrid) {
-                      windCtx.lineWidth = 1.3;
+                      windCtx.lineWidth = windLineWidthForAltitude(cam.z);
                       windCtx.setLineDash([]);
                       for (let i = 0; i < windParticles.length; i++) {
                         const prevScreen = windPrevScreen[i];

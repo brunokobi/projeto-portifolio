@@ -144,6 +144,7 @@ Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo
 - A cada quadro, `iconScaleForAltitude(cam.z)` calcula um fator pela altitude da câmera: 1 até 8.000 km e caindo aos poucos até 0,5 a partir de 22.000 km. O zoom do globo vai de 4.000 km a 25.000 km, e a visão inicial fica perto de 20.000 km.
 - O fator multiplica raios, offsets e fontes de cidades, satélites, ISS, localização do visitante, incêndios, alertas, vulcões, furacões e terremotos. `scaledFontPx` não deixa fonte abaixo de 7px.
 - Com fator abaixo de 0,75 (`SHORT_LABEL_MIN_SCALE`), as legendas curtas dos satélites somem. O nome continua no hover.
+- As linhas de vento fazem o contrário e engrossam com a câmera perto: `windLineWidthForAltitude(cam.z)` vai de 3,5px a 4.000 km até 1,1px a partir de 22.000 km (~1,3px na visão inicial).
 - Teste: `__tests__/iconScale.test.ts`.
 
 ---

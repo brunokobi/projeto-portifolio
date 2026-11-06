@@ -536,7 +536,7 @@ Aviões (OpenSky) estão desligados porque a API bloqueia chamadas do navegador 
 - Clique em pins abre tooltip customizado com dados contextuais
 
 **Tamanho pelo zoom:**
-- `iconScale.ts` calcula um fator pela altitude da câmera: tamanho cheio até 8.000 km e metade a partir de 22.000 km. Raios, offsets e fontes de todas as camadas são multiplicados por ele (fonte mínima de 7px).
+- `iconScale.ts` calcula um fator pela altitude da câmera: tamanho cheio até 8.000 km e metade a partir de 22.000 km. Raios, offsets e fontes de todas as camadas são multiplicados por ele (fonte mínima de 7px). As linhas de vento fazem o contrário e engrossam com a câmera perto (3,5px a 4.000 km, 1,1px a partir de 22.000 km).
 - Com o globo afastado, as legendas curtas dos satélites ("Nav", "Weather") somem; o nome continua no hover.
 
 **Performance:**
