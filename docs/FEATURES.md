@@ -58,6 +58,7 @@ Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo
 
 - Cada cidade é um anel verde pulsante com o nome ao lado.
 - O card de hover mostra hora local, temperatura, clima e AQI classificado (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso.
+- O card tem botão de fechar (×) e some quando o mouse sai do globo. Se o clima chega depois que o mouse já saiu da cidade, o card não abre (antes ficava preso na tela).
 - O AQI não tem pontos próprios no mapa; aparece só no card da cidade. É buscado (`fetchCityAqi`) no primeiro hover de cada cidade; sem estação próxima, o card fica sem AQI. Até 02/11/2026 o card mostrava valores fixos no código, já removidos.
 
 ---

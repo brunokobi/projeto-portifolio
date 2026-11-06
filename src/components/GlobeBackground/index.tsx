@@ -572,6 +572,13 @@ const GlobeBackground = () => {
               }
             });
 
+            view.on("pointer-leave", () => {
+              isHoveringRef.current = false;
+              hoveredNameRef.current = null;
+              setHoverCity(null);
+              setHoverInfo(null);
+            });
+
             // Cursor pointer e hover modal/legenda ao passar sobre um pin
             view.on("pointer-move", (evt: { x: number; y: number }) => {
               const positions = cityScreenPosRef.current;
@@ -586,14 +593,14 @@ const GlobeBackground = () => {
                   if (hoveredNameRef.current !== city.name) {
                     hoveredNameRef.current = city.name;
                     // Buscar clima se não tiver em cache
-                    if (!city.temp || !city.weather_code) {
+                    if (city.temp == null || city.weather_code == null) {
                       fetchCityWeather(city.lat, city.lon).then((weather) => {
-                        if (weather && mountedRef.current) {
-                          city.temp = weather.temp;
-                          city.weather_code = weather.code;
-                          city.timezone = weather.timezone;
-                          setHoverCity({ city, x: evt.x, y: evt.y });
-                        }
+                        if (!weather || !mountedRef.current) return;
+                        city.temp = weather.temp;
+                        city.weather_code = weather.code;
+                        city.timezone = weather.timezone;
+                        // O mouse pode ter saído da cidade antes do clima chegar: aí o card não abre.
+                        if (hoveredNameRef.current === city.name) setHoverCity({ city, x: evt.x, y: evt.y });
                       });
                     } else {
                       setHoverCity({ city, x: evt.x, y: evt.y });
@@ -1551,6 +1558,34 @@ const GlobeBackground = () => {
             ) : (
               <span style={{ fontSize: "10px", color: "#00cc33" }}>{hoverCity.city.country}</span>
             )}
+            <button
+              type="button"
+              aria-label="Fechar"
+              title="Fechar"
+              onClick={() => {
+                isHoveringRef.current = false;
+                hoveredNameRef.current = null;
+                setHoverCity(null);
+              }}
+              style={{
+                marginLeft: "auto",
+                alignSelf: "center",
+                pointerEvents: "auto",
+                cursor: "pointer",
+                background: "transparent",
+                border: "1px solid rgba(0,255,65,0.45)",
+                borderRadius: "4px",
+                color: "#42ff6b",
+                fontFamily: "monospace",
+                fontSize: "12px",
+                lineHeight: 1,
+                width: "20px",
+                height: "20px",
+                padding: 0,
+              }}
+            >
+              ×
+            </button>
           </div>
           <div style={{ fontSize: "11px", color: "#00e055", lineHeight: "1.6" }}>
             {intl.formatMessage(
