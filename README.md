@@ -682,7 +682,7 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
 | `chatAlert`            | Aviso do JARVIS no Telegram: texto, corte, limite por conversa, local, falha do Telegram  |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
-| `ServiceStatus`        | checking/online/offline via mock de `Image` (onload/onerror)                            |
+| `ServiceStatus`        | checking/online/offline, latência e números do dataset (mock de `Image` e `fetch`)      |
 | `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
 | `Map`                  | Smoke test — campos de lat/lon, monta/desmonta sem quebrar                              |
 | `NewsPage`             | Fluxo real fetch→parse→score sai do loading sem lançar erro (fetch/translate mockados)   |
@@ -754,17 +754,19 @@ $$;
 
 ## 🟢 Feature: Selo de Status ao Vivo dos Serviços em Produção
 
-> **Complexidade:** ⭐⭐⭐ — Ping cross-origin client-side, sem backend novo
+> **Complexidade:** ⭐⭐⭐ — Ping cross-origin client-side + números do dataset via Netlify Function
 
 Widget no topo da página `/projects` (`src/components/ServiceStatus`), acima dos cards, que confere, na hora, se o chatBruno (n8n) e o Dataset Grande Vitória estão no ar — prova visual de que a infra própria descrita nesse README roda de verdade, não é só documentação.
 
-100% client-side: cada visitante faz a própria checagem, sem depender de um serviço de status centralizado.
+Status e latência são medidos no navegador de cada visitante, sem serviço de status centralizado. A checagem repete a cada 60s, tem botão "Verificar de novo" e mostra o horário da última.
 
 ```
 Cada serviço → carrega uma imagem estática conhecida (favicon.ico, og-image.png)
-             → onload → 🟢 online
+             → onload → 🟢 online + latência em ms (performance.now)
              → onerror / timeout 6s → 🔴 offline
 ```
+
+Abaixo do status aparecem os números atuais do dataset (empresas, municípios, empresas com pendência, processos judiciais e sócios), lidos do `GET /estatisticas` da API. Como a API não libera CORS, quem lê é a function `netlify/functions/infra-stats.ts`: busca só essa URL fixa (não é proxy aberto), guarda por 5 min e devolve JSON. Se a API falhar, o bloco de números some; nada é inventado no lugar.
 
 ### Por que `<img>` e não `fetch`
 

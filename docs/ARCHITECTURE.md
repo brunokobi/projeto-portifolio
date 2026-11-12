@@ -62,6 +62,14 @@ ChatWidget → POST /.netlify/functions/n8n-chat { chatInput, sessionId }
 - Idioma da UI não é enviado; workflow fixo em português
 - Detalhes: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
 
+### Status da infra (página Projetos)
+```
+ServiceStatus → <img> de ping em n8n.brunokobi.tech e empresas.brunokobi.tech (status + latência, a cada 60s)
+              → GET /.netlify/functions/infra-stats
+              → infra-stats.ts → GET https://empresas.brunokobi.tech/estatisticas (cache 5 min)
+              ← { empresas, municipios, processosJudiciais, socios, empresasComPendencia, fetchedAt }
+```
+
 ### Tempo Real (Polling)
 ```
 Satélites: loadSatellites() a cada 10s → recalcula posição (TLE em cache 2h)
