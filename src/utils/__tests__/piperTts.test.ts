@@ -1,0 +1,105 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  buildPiperUrl,
+  piperLang,
+  playPiper,
+  prepareText,
+  splitIntoChunks,
+  stopPiper,
+} from "../piperTts";
+
+type Outcome = "ends" | "fails" | "blocked" | "hangs";
+
+class FakeAudio {
+  static outcome: Outcome = "ends";
+  static played: string[] = [];
+  onended: (() => void) | null = null;
+  onerror: (() => void) | null = null;
+  preload = "";
+  constructor(public src: string) {}
+  play() {
+    FakeAudio.played.push(this.src);
+    if (FakeAudio.outcome === "blocked") return Promise.reject(new Error("NotAllowedError"));
+    if (FakeAudio.outcome === "ends") queueMicrotask(() => this.onended?.());
+    if (FakeAudio.outcome === "fails") queueMicrotask(() => this.onerror?.());
+    return Promise.resolve();
+  }
+  pause() {}
+  removeAttribute() {}
+}
+
+beforeEach(() => {
+  FakeAudio.outcome = "ends";
+  FakeAudio.played = [];
+  vi.stubGlobal("Audio", FakeAudio);
+});
+
+afterEach(() => {
+  stopPiper();
+  vi.unstubAllGlobals();
+});
+
+describe("piperLang", () => {
+  it("aceita só os idiomas com voz no Piper", () => {
+    expect(piperLang("pt-BR")).toBe("pt");
+    expect(piperLang("ar")).toBe("ar");
+    expect(piperLang("zh-CN")).toBeNull();
+    expect(piperLang("kl")).toBeNull();
+  });
+});
+
+describe("prepareText", () => {
+  it("tira markdown e links e ajusta a pronúncia", () => {
+    expect(prepareText("Sou o **JARVIS**. Veja [o GitHub](https://github.com/x) em `Github`", "pt")).toBe(
+      "Sou o Járvis. Veja o Git Hub em Git Hub"
+    );
+  });
+});
+
+describe("splitIntoChunks", () => {
+  it("junta frases até o limite e não corta no meio de uma frase curta", () => {
+    expect(splitIntoChunks("Primeira frase. Segunda frase! Terceira?", 30)).toEqual([
+      "Primeira frase. Segunda frase!",
+      "Terceira?",
+    ]);
+  });
+
+  it("quebra frase maior que o limite", () => {
+    expect(splitIntoChunks("a".repeat(25), 10)).toEqual(["a".repeat(10), "a".repeat(10), "a".repeat(5)]);
+  });
+});
+
+describe("buildPiperUrl", () => {
+  it("monta a URL com velocidade arredondada", () => {
+    expect(buildPiperUrl("Olá mundo", "pt", 1.43)).toBe(
+      "https://tts.brunokobi.tech/tts.mp3?text=Ol%C3%A1+mundo&lang=pt&speed=1.4"
+    );
+  });
+});
+
+describe("playPiper", () => {
+  it("toca cada trecho em sequência", async () => {
+    await expect(playPiper("Primeira frase. Segunda frase.", "pt-BR", 1)).resolves.toBe("done");
+    expect(FakeAudio.played).toHaveLength(1);
+    expect(FakeAudio.played[0]).toContain("lang=pt");
+  });
+
+  it("rejeita quando nada tocou, para o chamador usar a voz do navegador", async () => {
+    FakeAudio.outcome = "fails";
+    await expect(playPiper("Oi", "pt-BR", 1)).rejects.toThrow();
+    FakeAudio.outcome = "blocked";
+    await expect(playPiper("Oi", "pt-BR", 1)).rejects.toThrow();
+  });
+
+  it("rejeita idioma sem voz no Piper", async () => {
+    await expect(playPiper("你好", "zh-CN", 1)).rejects.toThrow();
+  });
+
+  it("termina como 'stopped' quando outra fala interrompe", async () => {
+    FakeAudio.outcome = "hangs";
+    const first = playPiper("Fala longa", "pt-BR", 1);
+    await Promise.resolve();
+    stopPiper();
+    await expect(first).resolves.toBe("stopped");
+  });
+});

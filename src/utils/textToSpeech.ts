@@ -1,4 +1,6 @@
-// Text-to-Speech usando Web Speech API (gratuito, nativo do browser)
+// Text-to-Speech: voz neural do Piper (VPS) quando o idioma tem voz lá; voz do
+// navegador (Web Speech API) para os outros idiomas ou se o Piper falhar.
+import { piperLang, playPiper, stopPiper } from "./piperTts";
 
 interface SpeechOptions {
   text: string;
@@ -63,9 +65,27 @@ function escolherMelhorVoz(vozes: SpeechSynthesisVoice[], language: string): Spe
 }
 
 export async function speak(options: SpeechOptions): Promise<void> {
+  const { text, language, rate = 1, onEnd } = options;
+
+  stopSpeech();
+
+  if (piperLang(language)) {
+    try {
+      await playPiper(text, language, rate);
+      // Também quando foi interrompida: o botão de parar precisa tirar o "Falando...".
+      onEnd?.();
+      return;
+    } catch {
+      // Piper fora do ar, áudio bloqueado ou erro de rede: segue com a voz do navegador.
+    }
+  }
+
+  await speakWithBrowser(options);
+}
+
+async function speakWithBrowser(options: SpeechOptions): Promise<void> {
   const { text, language, rate = 1, pitch = 1, volume = 1, onEnd } = options;
 
-  // Cancela fala anterior se estiver rodando
   window.speechSynthesis.cancel();
 
   if (vozesCache.length === 0) {
@@ -93,6 +113,7 @@ export async function speak(options: SpeechOptions): Promise<void> {
 }
 
 export function stopSpeech(): void {
+  stopPiper();
   window.speechSynthesis.cancel();
 }
 

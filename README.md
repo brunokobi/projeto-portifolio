@@ -102,7 +102,7 @@ Resend API (email transacional)
 | UI              | Chakra UI v2                 | Design system responsivo                           |
 | Animação        | Framer Motion v11            | Transições e stagger animations                    |
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
-| Voz             | Web Speech API               | Text-to-Speech nativo                              |
+| Voz             | Piper (VPS) + Web Speech API | Voz neural; voz do navegador como alternativa      |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
 | Testes          | Vitest + Playwright          | 138 testes unitários + E2E Chromium                |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
@@ -281,7 +281,7 @@ $$ LANGUAGE sql;
 Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, com resposta via agente n8n (chatBruno), voz (TTS) e uma interface visual em canvas.
 
 - **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, temperatura e condição ("Em Serra agora faz 27°C, com chuva"); sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
-- **Voz:** Web Speech API; `src/utils/textToSpeech.ts` prefere voz masculina de boa qualidade no idioma escolhido, com fallback para as vozes disponíveis; a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
+- **Voz:** voz neural **Piper** servida pela VPS em `tts.brunokobi.tech` (pt, en, es, fr, de, ru e ar), com a voz do navegador (Web Speech API) para o chinês e como alternativa se o Piper falhar (`src/utils/piperTts.ts` e `src/utils/textToSpeech.ts`); a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
 - **JARVIS Core:** núcleo animado em canvas no cabeçalho do chat (`src/components/ChatWidget/JarvisCore.tsx`), com quatro estados mostrados também em texto: Online, Pensando..., Falando... e Ouvindo...; o espectro é animado e não analisa o áudio real
 - **Sugestões de perguntas:** botões prontos (Quem é o Bruno?, Projetos, Tecnologias, Experiência, Contato) até o visitante fazer a primeira pergunta
 - **Indicador de digitando:** três pontos animados enquanto o agente responde
@@ -941,9 +941,9 @@ As variáveis devem ser configuradas no painel do Netlify (não no `.env.local`,
 
 ## ♿ Feature: Acessibilidade com Síntese de Voz
 
-> **Complexidade:** ⭐⭐ — Web Speech API nativa, zero dependências
+> **Complexidade:** ⭐⭐⭐ — Piper self-hosted + Web Speech API como alternativa
 
-Text-to-Speech via **Web Speech API** — hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado. Atributos ARIA em todos os elementos interativos (`aria-label`, `aria-pressed`, `aria-live` no carrossel).
+Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado (`src/components/TextAudio`), com voz neural **Piper** servida pela VPS em `tts.brunokobi.tech` (pt, en, es, fr, de, ru e ar), com a voz do navegador (Web Speech API) para o chinês e como alternativa se o Piper falhar. As frases repetidas ficam em cache na Cloudflare (`Cache-Control` de 30 dias). Atributos ARIA em todos os elementos interativos (`aria-label`, `aria-pressed`, `aria-live` no carrossel).
 
 ---
 
