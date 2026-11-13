@@ -286,7 +286,7 @@ Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, 
 - **Sugestões de perguntas:** botões prontos (Quem é o Bruno?, Projetos, Tecnologias, Experiência, Contato) até o visitante fazer a primeira pergunta
 - **Indicador de digitando:** três pontos animados enquanto o agente responde
 - **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
-- **Perguntar por voz:** botão de microfone com o reconhecimento de voz do navegador em pt-BR (`src/hooks/useSpeechRecognition.ts`); envia a pergunta quando o visitante para de falar. Aparece no Chrome, Edge e Safari
+- **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
 - **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 

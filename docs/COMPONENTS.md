@@ -121,7 +121,7 @@ DevBlog copia esse design:
 **Responsabilidade:** UI de chat com o agente n8n: cabeçalho com o JARVIS Core e o status, mensagens, sugestões, indicador de digitando, microfone e campo de texto
 
 - Sem props. Ocupa 100% da altura do contêiner pai (Drawer do `ChatButton` ou página `/chat`)
-- Estado local: `messages`, `inputValue`, `isLoading`, `isSpeaking`; o reconhecimento de voz vem de `useSpeechRecognition`
+- Estado local: `messages`, `inputValue`, `isLoading`, `isSpeaking`; o microfone usa `useWhisperRecorder` (Whisper da VPS) e cai para `useSpeechRecognition` quando o navegador não grava áudio
 - `sendMessage(text)` serve para o campo, as sugestões e o microfone: adiciona a mensagem, liga o "digitando", chama `generateAIResponse` e fala a resposta
 - `generateAIResponse(message)` (função de módulo) faz `POST /.netlify/functions/n8n-chat` com `{ chatInput, sessionId }`, lê `data.output` e remove a URL do site e "Vamos construir o futuro juntos!"
 - `chatSessionId` é gerado uma vez por carregamento da página e mantém a memória de conversa no n8n

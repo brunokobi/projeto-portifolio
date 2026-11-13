@@ -92,4 +92,53 @@ describe('ChatWidget', () => {
     const body = JSON.parse((fetchMock.mock.calls[0] as unknown as [string, { body: string }])[1].body);
     expect(body.chatInput).toBe('quem é o Bruno');
   });
+
+  it('grava, transcreve no Whisper e envia a pergunta', async () => {
+    const fetchMock = vi.fn((url: string) =>
+      Promise.resolve(
+        url.includes('whisper')
+          ? { ok: true, json: () => Promise.resolve({ text: ' quem é o Bruno [BLANK_AUDIO]\n' }) }
+          : { ok: true, json: () => Promise.resolve({ output: 'Oi!' }) }
+      )
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    let recorder: { onstop: () => void; ondataavailable: (e: { data: Blob }) => void } | null = null;
+    class FakeRecorder {
+      state = 'inactive';
+      mimeType = 'audio/webm';
+      ondataavailable: ((e: { data: Blob }) => void) | null = null;
+      onstop: (() => void) | null = null;
+      constructor() {
+        recorder = this as never;
+      }
+      start() {
+        this.state = 'recording';
+      }
+      stop() {
+        this.state = 'inactive';
+        this.ondataavailable?.({ data: new Blob(['audio'], { type: 'audio/webm' }) });
+        this.onstop?.();
+      }
+    }
+    vi.stubGlobal('MediaRecorder', FakeRecorder);
+    const stream = { getTracks: () => [{ stop: vi.fn() }] };
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: { getUserMedia: vi.fn(() => Promise.resolve(stream)) },
+    });
+    renderWidget();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Perguntar por voz' }));
+    await waitFor(() => expect(screen.getByText('Ouvindo...')).toBeInTheDocument());
+    expect(recorder).not.toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Parar de ouvir' }));
+
+    await waitFor(() => expect(screen.getByText('Oi!')).toBeInTheDocument());
+    const [whisperUrl] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(whisperUrl).toBe('https://whisper.brunokobi.tech/inference');
+    const body = JSON.parse((fetchMock.mock.calls[1] as unknown as [string, { body: string }])[1].body);
+    expect(body.chatInput).toBe('quem é o Bruno');
+    delete (navigator as unknown as Record<string, unknown>).mediaDevices;
+  });
 });

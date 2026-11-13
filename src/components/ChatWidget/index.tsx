@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, type FormEvent } from 'react'
 import { Box, Input, IconButton, VStack, HStack, Text, Wrap, WrapItem, Button } from '@chakra-ui/react';
 import { useChatWithAudio } from '../../hooks/useChatWithAudio';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
+import { useWhisperRecorder } from '../../hooks/useWhisperRecorder';
 import { stopSpeech } from '../../utils/textToSpeech';
 import { generateGreeting } from '../../utils/generateGreeting';
 import { JarvisCore, type JarvisState } from './JarvisCore';
@@ -74,13 +75,20 @@ export function ChatWidget() {
     [isLoading, respondWithAudio]
   );
 
-  const speech = useSpeechRecognition({
-    lang: LANGUAGE,
-    onInterim: setInputValue,
-    onFinal: (text) => {
+  const handleVoiceText = useCallback(
+    (text: string) => {
       void sendMessage(text);
     },
+    [sendMessage]
+  );
+  // Whisper (VPS) quando o navegador consegue gravar; senão, o reconhecimento do navegador.
+  const whisper = useWhisperRecorder({ language: LANGUAGE.split('-')[0], onFinal: handleVoiceText });
+  const browserSpeech = useSpeechRecognition({
+    lang: LANGUAGE,
+    onInterim: setInputValue,
+    onFinal: handleVoiceText,
   });
+  const speech = whisper.supported ? whisper : { ...browserSpeech, isTranscribing: false };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView?.({ behavior: 'smooth' });
@@ -108,12 +116,12 @@ export function ChatWidget() {
       return;
     }
     handleStopAudio();
-    speech.start();
+    void speech.start();
   };
 
   const coreState: JarvisState = speech.isListening
     ? 'listening'
-    : isLoading
+    : isLoading || speech.isTranscribing
       ? 'thinking'
       : isSpeaking
         ? 'speaking'
@@ -141,7 +149,7 @@ export function ChatWidget() {
           </Text>
           <HStack spacing={1.5} fontSize="xs" color="whiteAlpha.700" role="status" aria-live="polite">
             <Box w="6px" h="6px" borderRadius="full" bg={GREEN} className={coreState === 'idle' ? undefined : styles.blink} />
-            <Text>{STATUS_LABEL[coreState]}</Text>
+            <Text>{speech.isTranscribing ? 'Transcrevendo...' : STATUS_LABEL[coreState]}</Text>
           </HStack>
         </Box>
       </HStack>
@@ -234,7 +242,7 @@ export function ChatWidget() {
             title={speech.isListening ? 'Parar de ouvir' : 'Perguntar por voz'}
             icon={<MicIcon />}
             onClick={toggleMic}
-            isDisabled={isLoading}
+            isDisabled={isLoading || speech.isTranscribing}
             variant="outline"
             borderColor={GREEN}
             color={speech.isListening ? 'black' : GREEN}
@@ -246,7 +254,9 @@ export function ChatWidget() {
         <Input
           id="jarvis-input"
           aria-label="Mensagem para o JARVIS"
-          placeholder={speech.isListening ? 'Ouvindo...' : 'Digite sua pergunta...'}
+          placeholder={
+            speech.isListening ? 'Ouvindo...' : speech.isTranscribing ? 'Transcrevendo...' : 'Digite sua pergunta...'
+          }
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           isDisabled={isLoading}
