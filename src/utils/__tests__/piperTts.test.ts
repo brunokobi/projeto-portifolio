@@ -64,6 +64,17 @@ describe("splitIntoChunks", () => {
     ]);
   });
 
+  it("deixa o primeiro trecho mais curto para a fala começar logo", () => {
+    expect(splitIntoChunks("Oi, tudo bem? Hoje vou contar sobre os projetos. E sobre a infra.", 60, 15)).toEqual([
+      "Oi, tudo bem?",
+      "Hoje vou contar sobre os projetos. E sobre a infra.",
+    ]);
+  });
+
+  it("quebra frase longa no último espaço, sem cortar palavra", () => {
+    expect(splitIntoChunks("um dois tres quatro cinco seis", 12)).toEqual(["um dois tres", "quatro cinco", "seis"]);
+  });
+
   it("quebra frase maior que o limite", () => {
     expect(splitIntoChunks("a".repeat(25), 10)).toEqual(["a".repeat(10), "a".repeat(10), "a".repeat(5)]);
   });

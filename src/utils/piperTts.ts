@@ -4,6 +4,8 @@ export const PIPER_TTS_URL = "https://tts.brunokobi.tech/tts.mp3";
 
 const PIPER_LANGS = new Set(["pt", "en", "es", "fr", "de", "ru", "ar"]);
 const MAX_CHUNK_CHARS = 400;
+// Na VPS cada 100 caracteres levam ~1,5s: o primeiro trecho curto faz a fala começar logo.
+const FIRST_CHUNK_CHARS = 120;
 
 const PRONUNCIATION: Record<string, [RegExp, string][]> = {
   pt: [[/\bJARVIS\b/gi, "Járvis"], [/\bGithub\b/gi, "Git Hub"]],
@@ -31,25 +33,31 @@ export function prepareText(text: string, lang: string): string {
 }
 
 // Frases curtas começam a tocar antes e não passam do limite do servidor.
-export function splitIntoChunks(text: string, maxChars = MAX_CHUNK_CHARS): string[] {
+export function splitIntoChunks(text: string, maxChars = MAX_CHUNK_CHARS, firstMaxChars = maxChars): string[] {
   const sentences = text.match(/[^.!?。！？]+[.!?。！？]*\s*/g) ?? [text];
   const chunks: string[] = [];
   let current = "";
+  const limit = () => (chunks.length === 0 ? firstMaxChars : maxChars);
   for (const raw of sentences) {
     const sentence = raw.trim();
     if (!sentence) continue;
-    if (sentence.length > maxChars) {
-      if (current) chunks.push(current);
+    if (current && current.length + sentence.length + 1 > limit()) {
+      chunks.push(current);
       current = "";
-      for (let i = 0; i < sentence.length; i += maxChars) chunks.push(sentence.slice(i, i + maxChars));
+    }
+    if (current) {
+      current = `${current} ${sentence}`;
       continue;
     }
-    if (current && current.length + sentence.length + 1 > maxChars) {
-      chunks.push(current);
-      current = sentence;
-    } else {
-      current = current ? `${current} ${sentence}` : sentence;
+    let rest = sentence;
+    while (rest.length > limit()) {
+      const size = limit();
+      const space = rest.lastIndexOf(" ", size);
+      const cut = space > size / 2 ? space : size;
+      chunks.push(rest.slice(0, cut).trim());
+      rest = rest.slice(cut).trim();
     }
+    current = rest;
   }
   if (current) chunks.push(current);
   return chunks;
@@ -101,7 +109,7 @@ function playOne(url: string, id: number, next?: string): Promise<void> {
 export async function playPiper(text: string, language: string, speed: number): Promise<"done" | "stopped"> {
   const lang = piperLang(language);
   if (!lang) throw new Error(`piper: idioma sem voz (${language})`);
-  const chunks = splitIntoChunks(prepareText(text, lang));
+  const chunks = splitIntoChunks(prepareText(text, lang), MAX_CHUNK_CHARS, FIRST_CHUNK_CHARS);
   if (chunks.length === 0) return "done";
 
   stopPiper();
