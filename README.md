@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-138%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-174%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -18,13 +18,14 @@
   <img src="https://img.shields.io/badge/TypeScript_strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
   <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
-  <img src="https://img.shields.io/badge/Supabase_pgvector-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
   <img src="https://img.shields.io/badge/Oracle_Cloud_VPS-F80000?style=for-the-badge&logo=oracle&logoColor=white" />
-  <img src="https://img.shields.io/badge/Cloudflare_Tunnel-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" />
-  <img src="https://img.shields.io/badge/LangChain_RAG-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" />
+  <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" />
+  <img src="https://img.shields.io/badge/Piper_TTS-1C3C3C?style=for-the-badge&logoColor=white" />
+  <img src="https://img.shields.io/badge/Whisper-412991?style=for-the-badge&logoColor=white" />
   <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
 </p>
 
@@ -49,7 +50,7 @@
 
 A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **Multi-Agente + RAG** self-hosted numa VPS própria (Oracle Cloud, atrás de Cloudflare Tunnel), globo 3D interativo com **overlays geoespaciais em tempo real** (satélites, ISS, cidades com clima & hora local, qualidade do ar, incêndios, alertas, terremotos, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
+Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **JARVIS** com voz (n8n, voz neural Piper e transcrição Whisper, tudo self-hosted numa VPS própria na Oracle Cloud, atrás de Cloudflare), globo 3D interativo com **overlays geoespaciais em tempo real** (satélites, ISS, cidades com clima & hora local, qualidade do ar, incêndios, alertas, terremotos, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
 
 Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
 
@@ -64,24 +65,23 @@ Cada feature foi pensada para demonstrar **profundidade técnica real** — não
 │  ServiceStatus (ping ao vivo da infra própria)          │
 └──────────────────┬──────────────────────────────────────┘
                    │ HTTPS
-      ┌────────────┼────────────────────┐
-      │            │                    │
-      ▼            ▼                    ▼
-Netlify Fn     Supabase (BaaS)      Netlify Fn: n8n-chat.ts
-TypeScript     PostgreSQL + RLS     (proxy, esconde a URL real)
-- Proxy RSS    JWT Auth                     │
-- Contato      Shared Client                ▼
-  → Resend API (notif. direta)      Cloudflare Tunnel (cloudflared)
-               │                            │ egress-only, contorna
-               Supabase pgvector            │ bloqueio de rede AWS↔Oracle
-               (base vetorial)              ▼
-                                     Oracle Cloud VPS (self-hosted)
-                                     ┌──────────────────────┐
-                                     │  chatBruno (n8n)     │
-                                     │  Multi-Agente + RAG  │
-                                     │  LangChain + Gemini  │
-                                     │  pgvector search     │
-                                     └──────────────────────┘
+      ┌────────────┼──────────────────┬──────────────────────┐
+      │            │                  │                      │
+      ▼            ▼                  ▼                      ▼
+Netlify Fn     Supabase (BaaS)    Netlify Fn: n8n-chat.ts   Áudio direto do navegador
+TypeScript     PostgreSQL + RLS   (proxy, esconde a URL)    (CORS só para o site)
+- Proxy RSS    JWT Auth                 │                      │
+- Contato      Shared Client            │                      │
+  → Resend     - infra-stats            ▼                      ▼
+                          Cloudflare (proxy) → Traefik (Coolify)
+                                         │
+                          Oracle Cloud VPS (ARM64, self-hosted)
+                          ┌──────────────────────────────────────┐
+                          │ n8n: JARVIS (agente único + perfil)   │
+                          │ Piper TTS   tts.brunokobi.tech        │
+                          │ Whisper     whisper.brunokobi.tech    │
+                          │ API do Dataset Grande Vitória         │
+                          └──────────────────────────────────────┘
 
 Open-Meteo API (clima)
 ipapi.co (geolocalização)
@@ -104,15 +104,15 @@ Resend API (email transacional)
 | i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
 | Voz             | Piper (VPS) + Web Speech API | Voz neural; voz do navegador como alternativa      |
 | Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 138 testes unitários + E2E Chromium                |
+| Testes          | Vitest + Playwright          | 174 testes unitários + E2E Chromium                |
 | Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
-| Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + orquestração Multi-Agente |
-| IA — LLM        | Google Gemini 2.5 Flash Lite | chatBruno + análise de contato                     |
-| IA — Embeddings | Google Gemini Embedding 001  | Vetorização base de conhecimento (768 dim)         |
-| RAG Pipeline    | LangChain Tools (via n8n)    | Busca semântica autônoma por agente                |
-| Banco Vetorial  | Supabase pgvector (ivfflat)  | Similaridade cosseno em 22 chunks                  |
+| Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + agente JARVIS             |
+| IA — Chat       | Nemotron 3 Ultra (OpenRouter, via n8n) | JARVIS, com o perfil gerado no build como única fonte |
+| IA — Contato    | Google Gemini 2.5 Flash Lite | Análise das mensagens do formulário de contato     |
+| Voz (fala)      | Piper TTS (VPS)              | Voz neural em 7 idiomas, cache na Cloudflare       |
+| Voz (ouvido)    | Whisper (VPS)                | Transcrição das perguntas faladas ao JARVIS        |
 | Email           | Resend                       | Transacional                                       |
-| Infra           | Oracle Cloud VPS + Cloudflare Tunnel | Hospedagem self-hosted do n8n, tunnel contorna bloqueio de rede entre nuvens |
+| Infra           | Oracle Cloud VPS + Cloudflare + Traefik | n8n, Piper, Whisper e API do dataset self-hosted |
 | Deploy          | Netlify                      | CI/CD + Serverless Functions                       |
 | GIS             | ESRI ArcGIS                  | Mapas 3D interativos                               |
 | Clima           | Open-Meteo                   | API gratuita, sem chave                            |
@@ -201,78 +201,42 @@ Globo 3D em tempo real renderizado com **ArcGIS SceneView** com iluminação vir
 
 ---
 
-## 🤖 Feature: chatBruno — Assistente Virtual Multi-Agente com RAG
+## 🤖 Feature: JARVIS — Assistente Virtual com Voz
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — Multi-Agent Architecture + RAG Pipeline + pgvector + LangChain Tools + self-hosted em VPS própria, atrás de Cloudflare Tunnel
+> **Complexidade:** ⭐⭐⭐⭐⭐ — agente n8n com perfil gerado no build + voz neural Piper + transcrição Whisper, tudo self-hosted em VPS própria
 
-Assistente virtual que demonstra arquitetura de IA de produção: **8 agentes especializados** orquestrados por um Agente Roteador, base de conhecimento vetorial em **Supabase pgvector**, e widget de chat embedado via React (injetado em runtime, não no HTML estático — ver nota de arquitetura abaixo).
+Assistente que responde sobre o Bruno por texto e por voz: o visitante fala, o **Whisper** transcreve, o agente do **n8n** responde e o **Piper** lê a resposta em voz alta. Os três rodam na VPS da Oracle Cloud, atrás da Cloudflare.
 
-### Por que Multi-Agente + RAG?
+### Por que um agente só, com o perfil no prompt?
 
-| Abordagem                 | Limitação                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| System prompt estático    | Contexto fixo, sem atualização dinâmica, tokens desperdiçados                |
-| Agente único com RAG      | Responde tudo sem especialização por domínio                                 |
-| **Multi-Agente + RAG** ✅ | Cada agente busca autonomamente apenas o contexto relevante para seu domínio |
+A versão anterior tinha um roteador, 7 agentes especializados e busca vetorial no Supabase pgvector. Ela inventava experiência: os agentes não tinham fatos no prompt e nem sempre chamavam a busca. Hoje o build gera `/jarvis/perfil.md` a partir dos mesmos textos do site (currículo, projetos e skills do `pt.json`), e um único agente recebe esse perfil inteiro como **única fonte**. Mudou o currículo no site, o JARVIS já sabe no próximo deploy.
 
 ### Fluxo completo
 
 ```
-Usuário
-  → ChatWidget (React, src/components/ChatWidget)
-  → POST /.netlify/functions/n8n-chat { chatInput, sessionId } (proxy — esconde
-    a URL real do n8n; resposta lida em `output`)
-  → Cloudflare Tunnel (cloudflared, egress-only na VPS)
-  → n8n self-hosted (Oracle Cloud VPS)
-  → Agente Roteador (Gemini 2.5 Flash Lite) classifica intenção
-  → Switch → 7 rotas: PERFIL | SKILLS | EXPERIENCIA | EDUCACAO | PROJETOS | CONTATO | GERAL
-  → Agente Especialista aciona Tool "buscar_conhecimento_bruno"
-  → Supabase pgvector vetoriza query + busca semântica por cosseno
-  → 5 chunks mais relevantes injetados como contexto
-  → Resposta contextualizada + memória de sessão (Window Buffer, 10 trocas)
+Visitante fala
+  → useWhisperRecorder grava no navegador e para após 1,5s de silêncio
+  → POST https://whisper.brunokobi.tech/inference (Whisper na VPS)
+  → texto transcrito vai como pergunta
+  → POST /.netlify/functions/n8n-chat { chatInput, sessionId } (proxy, esconde a URL do n8n)
+  → n8n: Chat Trigger → baixa /jarvis/perfil.md → agente JARVIS (memória de 10 mensagens)
+  → resposta curta, escrita para ser ouvida
+  → GET https://tts.brunokobi.tech/tts.mp3 (Piper na VPS), trecho a trecho
+  → voz do navegador como alternativa se o Piper falhar
 ```
 
-> **Nota de arquitetura — por que um proxy + tunnel:** a Netlify Function
-> roda em AWS (us-east-1); conectar direto da AWS pra VPS na Oracle Cloud
-> batia num bloqueio de rede na camada de nuvem (~10s de connect timeout,
-> reproduzível e não presente de nenhuma outra origem testada). Um
-> Cloudflare Tunnel egress-only na VPS contorna isso — ela quem abre a
-> conexão pra fora, nunca alguém "entrando".
+### Como o JARVIS fala
 
-### Agentes Especializados (7 + Roteador)
-
-| Agente         | Domínio                                              |
-| -------------- | ---------------------------------------------------- |
-| 🧑 Perfil      | História, filosofia, transição de carreira           |
-| ⚙️ Skills      | Stack tecnológico completo                           |
-| 💼 Experiência | Empresas, cargos, períodos, responsabilidades        |
-| 🎓 Educação    | Formação, mestrado em computação aplicada, pesquisas |
-| 🚀 Projetos    | Portfólio, detalhes técnicos, impacto                |
-| 📬 Contato     | Links, e-mail, redes sociais                         |
-| 🔄 Geral       | Fallback para questões transversais                  |
-
-### Base de Conhecimento Vetorial
-
-22 chunks semânticos (identidade, skills, 5 experiências, 6 projetos, 5 formações, certificações, contato) — vetorizados com `gemini-embedding-001` (768 dimensões) e indexados com `ivfflat` para busca eficiente por cosseno.
-
-```sql
-CREATE OR REPLACE FUNCTION match_documents(
-  query_embedding VECTOR(768),
-  match_count     INT DEFAULT 5
-) RETURNS TABLE (id BIGINT, content TEXT, metadata JSONB, similarity FLOAT) AS $$
-  SELECT id, content, metadata,
-         1 - (embedding <=> query_embedding) AS similarity
-  FROM documents
-  ORDER BY embedding <=> query_embedding
-  LIMIT match_count;
-$$ LANGUAGE sql;
-```
+- Persona do J.A.R.V.I.S.: calmo, educado, humor seco e discreto
+- Até ~60 palavras em texto corrido, sem listas nem links, a não ser que o visitante peça
+- Fala do Bruno em terceira pessoa e diz que não sabe quando a informação não está no perfil, sem inventar
+- Entende erros de transcrição pelo contexto ("Venix" é Vennx, "Cobi" é Kobi)
 
 ### Infraestrutura
 
-- **Oracle Cloud VPS (self-hosted, ARM64)** — controle total, sem limites de plano SaaS; migrado de uma instância AWS EC2 anterior
-- **Cloudflare Tunnel (cloudflared)** — expõe o n8n publicamente sem depender de conectividade cloud-to-cloud direta, que se mostrou bloqueada especificamente no trajeto AWS→Oracle
-- **Keep-alive automático** — n8n Schedule a cada 3 dias previne congelamento do Supabase Free Tier
+- **Oracle Cloud VPS (ARM64)**, com Traefik (Coolify) atrás do proxy da Cloudflare
+- **Piper TTS:** FastAPI + `piper-tts`, vozes masculinas em pt, en, es, fr, de, ru e ar, uma síntese por vez, limite de 1 CPU, 30 sínteses por minuto por IP e cache de 30 dias na Cloudflare
+- **Whisper:** whisper.cpp atrás de um gateway FastAPI, com CORS liberado só para o site
 
 ---
 
@@ -288,7 +252,7 @@ Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, 
 - **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
 - **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
 - **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
-- **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
+- **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver a seção acima e [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 
 ---
 
@@ -662,9 +626,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 
 ## 🧪 Feature: Testes Automatizados + CI/CD
 
-> **Complexidade:** ⭐⭐⭐⭐ — 138 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 174 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-### Suítes de teste (138 testes unitários)
+### Suítes de teste (174 testes unitários)
 
 | Suite                  | O que cobre                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -680,6 +644,9 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
 | `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte)      |
 | `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
+| `piperTts`             | Texto limpo para a voz, divisão em trechos, URL, fallback e interrupção da fala            |
+| `infraStats`           | Leitura dos números do dataset vindos da API                                              |
+| `jarvisProfile`        | Perfil do JARVIS gerado do `pt.json`: experiências em ordem, projetos, skills e contato    |
 | `chatAlert`            | Aviso do JARVIS no Telegram: texto, corte, limite por conversa, local, falha do Telegram  |
 | `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
 | `ServiceStatus`        | checking/online/offline, latência e números do dataset (mock de `Image` e `fetch`)      |
@@ -980,7 +947,7 @@ Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado (`src/
 
 | Feature                         | Por que impressiona                                                                   |
 | ------------------------------- | ------------------------------------------------------------------------------------- |
-| 🤖 chatBruno Multi-Agente + RAG | 8 agentes + pgvector + LangChain Tools + n8n self-hosted atrás de Cloudflare Tunnel   |
+| 🤖 JARVIS com voz               | n8n + Piper + Whisper self-hosted; fala e ouve, sem inventar fatos                    |
 | 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
 | ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
 | 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
@@ -988,11 +955,11 @@ Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado (`src/
 | 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
 | 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
 | 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
-| 🧪 138 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
+| 🧪 174 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
 | 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
 | 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
 | ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |
-| ♿ Text-to-Speech               | Zero dependências, Web API nativa, ARIA completo                                      |
+| ♿ Text-to-Speech               | Voz neural Piper self-hosted, voz do navegador como alternativa, ARIA completo        |
 
 ---
 
@@ -1010,6 +977,6 @@ Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las
 
 [![GitHub Sponsors](https://img.shields.io/badge/❤%EF%B8%8F%20Apoiar-github.com%2Fsponsors%2Fbrunokobi-ea4aaa?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/brunokobi)
 
-Este portfólio é código aberto e mantido nas horas vagas — infra própria (Oracle Cloud VPS, self-hosted n8n atrás de Cloudflare Tunnel) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
+Este portfólio é código aberto e mantido nas horas vagas — infra própria (Oracle Cloud VPS, n8n, Piper e Whisper self-hosted) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
 
 ### ⭐ Se este projeto te inspirou, deixe uma estrela — leva 1 segundo e ajuda demais!

@@ -56,6 +56,7 @@
 | wheretheiss (ISS) | [API.md](./API.md) | None | Polling 8s |
 | firestorm-wind-data (grade GFS) | [API.md](./API.md) | GitHub raw | Carrega 1x |
 | Vasturiano (data) | [API.md](./API.md) | Gist, no limit | Static (reboot) |
+| Piper TTS, Whisper, n8n (VPS própria) | [API.md](./API.md#serviços-próprios-na-vps-oracle-cloud-atrás-da-cloudflare) | Piper: 30/min por IP | Áudio 30 dias na Cloudflare |
 
 ---
 
@@ -116,6 +117,8 @@
 - Vento (grade GFS, partículas)
 - Modo Noite e rotação (botões na WeatherBar)
 - Ícones diminuem conforme o zoom (`iconScale.ts`)
+- JARVIS: fala com Piper, ouve com Whisper, responde pelo n8n
+- Status da infra com latência e números do dataset (página Projetos)
 
 ⛔ **Desligado ou removido:**
 - Aviões (OpenSky bloqueia CORS)

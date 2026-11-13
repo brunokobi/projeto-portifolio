@@ -32,6 +32,7 @@ Portfólio técnico com **globo 3D interativo** mostrando dados em tempo real:
 | ✈️ Aviões | OpenSky | ⛔ Desligado | CORS bloqueado |
 | ✨ Aurora | NOAA Kp | ⛔ Removida | Tirada do globo a pedido |
 | 💬 Chat IA (JARVIS) | n8n (via `netlify/functions/n8n-chat.ts`) | ✅ Ativo | Payload `{chatInput, sessionId}`, resposta em `data.output`; idioma da UI não afeta o n8n; UI "JARVIS Core" em canvas com espectro simulado (ver [FEATURES.md](./FEATURES.md#-chat-ia-n8n)) |
+| 🔊 Voz do JARVIS | Piper (`tts.brunokobi.tech`) + Whisper (`whisper.brunokobi.tech`) | ✅ Ativo | Piper fala (pt, en, es, fr, de, ru, ar; senão voz do navegador); Whisper transcreve o microfone |
 
 ---
 

@@ -43,6 +43,9 @@ Todas com dados reais. Detalhes em [FEATURES.md](./FEATURES.md).
 | Vento | Grade GFS (`firestorm-wind-data`) | Ao carregar | ✅ |
 | Aviões | OpenSky | — | ⛔ CORS bloqueado |
 
+### 🤖 JARVIS
+Chat com agente n8n que fala com voz neural (Piper) e ouve pelo microfone (Whisper), os três na VPS própria. Detalhes em [FEATURES.md](./FEATURES.md#-chat-ia-n8n).
+
 ### 📝 Blog Dev
 - `/pages/DevBlog` — Posts técnicos em Markdown
 - Post 1: "Oracle VPS Recovery" (~8000 palavras)

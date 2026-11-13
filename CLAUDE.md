@@ -75,6 +75,9 @@ git commit -m "refactor: Claude sugeriu usar bilinear interpolation"
 |---------|------------------|
 | `src/components/GlobeBackground/index.tsx` | Main component — renderiza globo + overlays |
 | `src/components/GlobeBackground/*.ts` | Loaders das camadas (satellites, iss, hazards, capAlerts, quakes, volcanoes, hurricanes, wind) e `iconScale.ts`; `cities.ts` busca o AQI real no hover da cidade |
+| `src/components/ChatWidget/` | Chat do JARVIS (n8n via `netlify/functions/n8n-chat.ts`) |
+| `src/utils/piperTts.ts`, `src/utils/textToSpeech.ts` | Voz: Piper na VPS, voz do navegador como alternativa |
+| `src/hooks/useWhisperRecorder.ts` | Microfone: grava e transcreve no Whisper da VPS |
 | `src/pages/DevBlog/` | Blog with posts |
 | `src/routes/index.tsx` | Route definitions |
 | `DESIGN_SYSTEM.md` | Visual identity + tokens |

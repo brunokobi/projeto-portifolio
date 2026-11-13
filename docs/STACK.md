@@ -42,6 +42,7 @@
 | Tecnologia | Uso |
 |-----------|-----|
 | Netlify | Deploy + serverless (site estático + functions) |
+| Oracle Cloud VPS (ARM64) | n8n (JARVIS), Piper TTS, Whisper e API do dataset, com Traefik (Coolify) |
 | GitHub Pages | Alternativa (não usada atualmente) |
 
 ### CI/CD
@@ -52,7 +53,7 @@
 ### DNS & CDN
 | Tecnologia | Uso |
 |-----------|-----|
-| Cloudflare | DNS + SSL/TLS |
+| Cloudflare | DNS, proxy e cache dos subdomínios da VPS (inclusive os áudios do Piper) |
 | DuckDNS | DNS dinâmico (infraestrutura pessoal) |
 
 ---

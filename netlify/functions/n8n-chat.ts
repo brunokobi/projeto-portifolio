@@ -3,7 +3,7 @@ import { getTracer, flushOtel, SpanStatusCode } from "./_otel";
 import { buildChatAlert, locationFromNetlifyGeo, registerAlert, sendTelegramText } from "../lib/chatAlert";
 
 /**
- * Proxy para o webhook público do workflow "chatBruno - Multi-Agente RAG" no n8n
+ * Proxy para o webhook público do workflow "chatBruno - JARVIS (perfil único)" no n8n
  * (self-hosted, Oracle VPS). Mantém a URL real do n8n fora do bundle
  * do frontend — o ChatWidget (src/components/ChatWidget) fala só com esta
  * function, que repassa o body recebido e devolve a resposta do agente sem

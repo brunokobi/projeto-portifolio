@@ -176,6 +176,19 @@ Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA 
 
 ---
 
+## Serviços próprios na VPS (Oracle Cloud, atrás da Cloudflare)
+
+| Serviço | Endpoint | Usado por | Observações |
+|---------|----------|-----------|-------------|
+| Chat JARVIS (n8n) | `POST /.netlify/functions/n8n-chat` `{chatInput, sessionId}` → `{output}` | `ChatWidget` | Proxy esconde a URL real (`N8N_WEBHOOK_URL`); timeout 55s |
+| Piper TTS | `GET https://tts.brunokobi.tech/tts.mp3?text&lang&speed` → MP3 | `src/utils/piperTts.ts` | pt, en, es, fr, de, ru, ar; 1.200 caracteres por pedido; 30 sínteses/min por IP; cache de 30 dias na Cloudflare; `GET /health` lista as vozes |
+| Whisper | `POST https://whisper.brunokobi.tech/inference` (multipart: `file`, `language`, `response_format=json`) → `{text}` | `src/hooks/useWhisperRecorder.ts` | whisper.cpp (modelo base); timeout de 30s no cliente |
+| Dataset Grande Vitória | `GET /.netlify/functions/infra-stats` → números do `GET https://empresas.brunokobi.tech/estatisticas` | `ServiceStatus` | A API não libera CORS; a function busca só essa URL e guarda por 5 min |
+
+Os três primeiros liberam CORS apenas para `brunokobi.tech`, `www.brunokobi.tech`, `brunokobi.netlify.app` e `localhost:3000`.
+
+---
+
 ## Resumo de Rate Limits
 
 | API | Limit | Janela | Ação se Exceder |
@@ -186,6 +199,7 @@ Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA 
 | Vasturiano (vulcões) | ~1000 req/min (inferido) | 1 min | Fallback: [] |
 | ArcGIS Living Atlas | Não documentado | - | Fallback: [] (furacões: último cache) |
 | CelesTrak | ~1 consulta por grupo a cada 2h | 2h | Mantém o TLE em cache |
+| Piper TTS (próprio) | 30 sínteses novas por IP | 1 min | 429 → voz do navegador |
 
 ---
 

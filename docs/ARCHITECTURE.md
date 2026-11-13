@@ -55,9 +55,21 @@
 ```
 ChatWidget → POST /.netlify/functions/n8n-chat { chatInput, sessionId }
           → n8n-chat.ts (proxy; URL real em N8N_WEBHOOK_URL, timeout 55s)
-          → webhook n8n (Chat Trigger → agentes + RAG)
+          → webhook n8n (Chat Trigger → baixa /jarvis/perfil.md → agente único JARVIS)
           ← { output } → ChatWidget exibe (e fala, se áudio ativo)
 ```
+
+### Voz do JARVIS (Whisper e Piper, na VPS)
+```
+Microfone → useWhisperRecorder (MediaRecorder + AnalyserNode, para após 1,5s de silêncio)
+          → POST https://whisper.brunokobi.tech/inference (multipart, language=pt)
+          ← { text } → vira a pergunta do chat
+Resposta  → speak() → playPiper(): texto sem markdown, dividido em trechos (1º ≤120, demais ≤400)
+          → GET https://tts.brunokobi.tech/tts.mp3?text&lang&speed, um <audio> por trecho
+          → falha antes de tocar → Web Speech API (voz do navegador)
+```
+- Os dois serviços liberam CORS só para o site; não há proxy na Netlify
+- Leituras do hover (`TextAudio`) usam o mesmo Piper
 - `sessionId` único por visita (gerado no frontend) → Memória de Conversa do n8n
 - Idioma da UI não é enviado; workflow fixo em português
 - Detalhes: [FEATURES.md](./FEATURES.md#-chat-ia-n8n)
