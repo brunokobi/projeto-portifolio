@@ -295,6 +295,8 @@ Agrega **54 feeds RSS** de IA (OpenAI, Anthropic, DeepMind, NVIDIA, pesquisa, im
 
 ## ✍️ Blog, projetos e Home
 
+> **Complexidade:** ⭐⭐⭐ — blog em blocos tipados + ping cross-origin por imagem + números via Netlify Function + animação de digitação com pausa no hover
+
 - **Blog dev** (`src/pages/DevBlog/`): posts versionados no código, em blocos (títulos, texto, listas, código e imagens), sobre os projetos: JARVIS, o dataset da Grande Vitória, o jogo Copa Aspirador, o globo e a VPS da Oracle.
 - **Projetos:** cards com demo, código e tags, nos 9 idiomas. O JARVIS também lê esses textos.
 - **Status ao vivo** (`ServiceStatus`), no topo de `/projects`: confere a cada 60 s se o n8n e o dataset estão no ar, com a latência medida no navegador do visitante. A checagem carrega uma imagem de cada serviço, porque o bloqueio ORB do Chrome dava falso "offline" com `fetch` em `no-cors`. Os números do dataset vêm da function `infra-stats` (a API não libera CORS), com cache de 5 min; se falhar, o bloco some.
@@ -317,11 +319,15 @@ Formulário
 
 ## 🌐 Idiomas
 
+> **Complexidade:** ⭐⭐⭐ — geolocalização por IP + mapeamento país → idioma + troca por Context API sem reload
+
 Na primeira visita, o site aparece no idioma do país do visitante (ipapi.co). A troca é feita por React Context, sem recarregar a página. São 9 idiomas: português, inglês, espanhol, francês, alemão, chinês, russo, árabe e klingon 🖖.
 
 ---
 
 ## 📊 Contador de visitas
+
+> **Complexidade:** ⭐⭐⭐ — RPC atômica no Supabase + visual estilo Matrix em CSS
 
 Contador no PostgreSQL com incremento por **RPC atômica**, sem corrida entre visitantes simultâneos. Visual de placa estilo Matrix, com dígitos verdes, scanlines e flicker em CSS.
 
@@ -336,6 +342,8 @@ $$;
 ---
 
 ## 📲 Alertas no Telegram
+
+> **Complexidade:** ⭐⭐⭐ — Netlify Functions + Telegram Bot API + geolocalização pelo header da Netlify + limite por conversa
 
 A function `track.ts` avisa no Telegram, sem expor o token no navegador, quando alguém visita uma página, abre ou envia o contato, abre o chat, o mapa ou as notícias, clica num link externo ou no item do JARVIS no menu.
 
@@ -359,6 +367,8 @@ As conversas do JARVIS também chegam, enviadas por `n8n-chat.ts` (`netlify/lib/
 
 ## 🔭 Observabilidade
 
+> **Complexidade:** ⭐⭐⭐ — tracing distribuído nas Netlify Functions via OTLP/HTTP
+
 As Netlify Functions geram traces com **OpenTelemetry** (OTLP/HTTP) para qualquer backend compatível, como Grafana Cloud, Honeycomb ou New Relic. Sem `OTEL_EXPORTER_OTLP_ENDPOINT`, o tracing fica desligado.
 
 | Function | Span | Spans filhos |
@@ -372,6 +382,8 @@ Usa `SimpleSpanProcessor` com `forceFlush()` antes de cada resposta: em serverle
 ---
 
 ## 🧪 Testes e CI
+
+> **Complexidade:** ⭐⭐⭐⭐ — 186 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
 **186 testes unitários** (Vitest) em 32 arquivos, cobrindo, entre outros:
 
@@ -394,6 +406,8 @@ Usa `SimpleSpanProcessor` com `forceFlush()` antes de cada resposta: em serverle
 
 ## 🔐 Segurança
 
+> **Complexidade:** ⭐⭐⭐ — RLS no banco + segredos só no servidor + allowlist no proxy + CORS restrito + HTML escapado
+
 | Camada | Mecanismo |
 |---|---|
 | Banco | Row Level Security no Supabase |
@@ -407,6 +421,8 @@ Usa `SimpleSpanProcessor` com `forceFlush()` antes de cada resposta: em serverle
 ---
 
 ## 📱 Acessibilidade e mobile
+
+> **Complexidade:** ⭐⭐⭐ — voz neural Piper self-hosted + ARIA + breakpoints do Chakra UI por componente
 
 - Hover em textos lê o conteúdo em voz alta no idioma escolhido, com a voz do Piper.
 - Atributos ARIA nos elementos interativos (`aria-label`, `aria-pressed`, `aria-live` no carrossel).
