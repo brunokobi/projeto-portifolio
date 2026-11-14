@@ -7,7 +7,6 @@ import { track } from "../../utils/track";
 import { posts } from "./posts";
 import { formatPostDate } from "./formatPostDate";
 import PostRenderer from "./PostRenderer";
-import GameBanner from "./GameBanner";
 
 const GREEN = "#42c920";
 
@@ -84,8 +83,6 @@ const DevBlog = () => {
                     </WrapItem>
                   ))}
                 </Wrap>
-
-                <GameBanner />
 
                 <PostRenderer blocks={selected.blocks} />
               </>
