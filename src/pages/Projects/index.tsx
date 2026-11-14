@@ -25,6 +25,7 @@ import frota from "../../assets/img/frota.webp";
 import grandeVitoria from "../../assets/img/grande-vitoria-dashboard.webp";
 import tabelaAcfdv from "../../assets/img/tabela-acfdv.webp";
 import letrinhasMagicas from "../../assets/img/letrinhas-magicas.webp";
+import copaAspirador from "../../assets/img/copa-aspirador.webp";
 
 const Projects = () => {
   const constraintsRef = useRef(null);
@@ -52,6 +53,15 @@ const Projects = () => {
           "#DUE DILIGENCE",
         ],
         code: "https://github.com/brunokobi/projeto_grande_vitoria_empresas",
+      },
+      {
+        title: intl.formatMessage({ id: "project19t" }),
+        link: "",
+        img: copaAspirador,
+        demo: "https://copaaspirador.brunokobi.tech",
+        description: intl.formatMessage({ id: "project19d" }),
+        tags: ["#PYTHON", "#PYGAME", "#WEBASSEMBLY", "#PYGBAG", "#PIXEL ART", "#GAME"],
+        code: "https://github.com/brunokobi/soccerrobo",
       },
       {
         title: intl.formatMessage({ id: "project17t" }),
