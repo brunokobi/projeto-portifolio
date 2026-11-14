@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ChatWidget } from '../index';
 import { SUGGESTIONS } from '../suggestions';
+import { speak } from '../../../utils/textToSpeech';
 
 vi.mock('../../../utils/generateGreeting', () => ({
   generateGreeting: vi.fn(() => Promise.resolve('Boa tarde! Eu sou o JARVIS.')),
@@ -140,5 +141,57 @@ describe('ChatWidget', () => {
     const body = JSON.parse((fetchMock.mock.calls[1] as unknown as [string, { body: string }])[1].body);
     expect(body.chatInput).toBe('quem é o Bruno');
     delete (navigator as unknown as Record<string, unknown>).mediaDevices;
+  });
+  it('volta a ouvir sozinho depois de responder uma pergunta falada, e para depois de uma digitada', async () => {
+    vi.mocked(speak).mockImplementation(async ({ onEnd }) => {
+      setTimeout(() => onEnd?.(), 0);
+    });
+    const fetchMock = vi.fn((url: string) =>
+      Promise.resolve(
+        url.includes('whisper')
+          ? { ok: true, json: () => Promise.resolve({ text: 'quem é o Bruno' }) }
+          : { ok: true, json: () => Promise.resolve({ output: 'Oi!' }) }
+      )
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    class FakeRecorder {
+      state = 'inactive';
+      mimeType = 'audio/webm';
+      ondataavailable: ((e: { data: Blob }) => void) | null = null;
+      onstop: (() => void) | null = null;
+      start() {
+        this.state = 'recording';
+      }
+      stop() {
+        this.state = 'inactive';
+        this.ondataavailable?.({ data: new Blob(['audio'], { type: 'audio/webm' }) });
+        this.onstop?.();
+      }
+    }
+    vi.stubGlobal('MediaRecorder', FakeRecorder);
+    const getUserMedia = vi.fn(() => Promise.resolve({ getTracks: () => [{ stop: vi.fn() }] }));
+    Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: { getUserMedia } });
+    renderWidget();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Perguntar por voz' }));
+    await waitFor(() => expect(screen.getByText('Ouvindo...')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: 'Parar de ouvir' }));
+    await waitFor(() => expect(screen.getByText('Oi!')).toBeInTheDocument());
+
+    await waitFor(() => expect(getUserMedia).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Parar de ouvir' })).toBeInTheDocument());
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    // Pergunta digitada encerra a conversa por voz: depois da resposta o microfone fica fechado.
+    fireEvent.click(screen.getByRole('button', { name: 'Parar de ouvir' }));
+    await waitFor(() => expect(screen.getAllByText('Oi!')).toHaveLength(2));
+    await waitFor(() => expect(getUserMedia).toHaveBeenCalledTimes(3));
+    fireEvent.change(screen.getByLabelText('Mensagem para o JARVIS'), { target: { value: 'e os projetos?' } });
+    fireEvent.submit(screen.getByLabelText('Mensagem para o JARVIS').closest('form')!);
+    await waitFor(() => expect(screen.getAllByText('Oi!')).toHaveLength(3));
+    await new Promise((r) => setTimeout(r, 30));
+    expect(getUserMedia).toHaveBeenCalledTimes(3);
+    delete (navigator as unknown as Record<string, unknown>).mediaDevices;
+    vi.mocked(speak).mockImplementation(() => Promise.resolve());
   });
 });

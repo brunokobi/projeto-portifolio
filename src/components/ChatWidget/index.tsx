@@ -47,6 +47,9 @@ export function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Conversa por voz: se a pergunta veio do microfone, o JARVIS volta a ouvir quando termina de falar.
+  const voiceConversationRef = useRef(false);
+  const wasSpeakingRef = useRef(false);
 
   const { respondWithAudio, stopAudio } = useChatWithAudio({
     selectedLanguage: LANGUAGE,
@@ -77,6 +80,7 @@ export function ChatWidget() {
 
   const handleVoiceText = useCallback(
     (text: string) => {
+      voiceConversationRef.current = true;
       void sendMessage(text);
     },
     [sendMessage]
@@ -89,6 +93,15 @@ export function ChatWidget() {
     onFinal: handleVoiceText,
   });
   const speech = whisper.supported ? whisper : { ...browserSpeech, isTranscribing: false };
+
+  const { start: startWhisper, isListening: whisperListening, supported: whisperSupported } = whisper;
+  useEffect(() => {
+    const finishedSpeaking = wasSpeakingRef.current && !isSpeaking;
+    wasSpeakingRef.current = isSpeaking;
+    if (!finishedSpeaking || !voiceConversationRef.current || !whisperSupported) return;
+    if (isLoading || whisperListening) return;
+    void startWhisper({ followUp: true });
+  }, [isSpeaking, isLoading, whisperListening, whisperSupported, startWhisper]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView?.({ behavior: 'smooth' });
@@ -105,6 +118,7 @@ export function ChatWidget() {
   }, []);
 
   const handleStopAudio = () => {
+    voiceConversationRef.current = false;
     stopAudio();
     stopSpeech();
     setIsSpeaking(false);
@@ -201,7 +215,10 @@ export function ChatWidget() {
                   fontWeight="normal"
                   borderRadius="full"
                   _hover={{ bg: 'rgba(66, 201, 32, 0.12)' }}
-                  onClick={() => void sendMessage(s)}
+                  onClick={() => {
+                    voiceConversationRef.current = false;
+                    void sendMessage(s);
+                  }}
                 >
                   {s}
                 </Button>
@@ -232,6 +249,7 @@ export function ChatWidget() {
       <HStack as="form" p={3} borderTop="1px solid rgba(66, 201, 32, 0.2)" spacing={2} bg="rgba(66, 201, 32, 0.02)"
         onSubmit={(e: FormEvent) => {
           e.preventDefault();
+          voiceConversationRef.current = false;
           void sendMessage(inputValue);
         }}
       >

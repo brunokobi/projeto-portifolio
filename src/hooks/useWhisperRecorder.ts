@@ -7,6 +7,8 @@ export const WHISPER_URL = 'https://whisper.brunokobi.tech/inference';
 const SILENCE_RMS = 0.015;
 const SILENCE_AFTER_SPEECH_MS = 1500;
 const NO_SPEECH_TIMEOUT_MS = 8000;
+// Escuta automática depois da resposta: fecha mais cedo e em silêncio se ninguém falar.
+const FOLLOW_UP_TIMEOUT_MS = 6000;
 const MAX_RECORDING_MS = 30000;
 const TRANSCRIBE_TIMEOUT_MS = 30000;
 
@@ -52,6 +54,10 @@ export async function transcribe(blob: Blob, language: string): Promise<string> 
   return typeof data.text === 'string' ? cleanTranscript(data.text) : '';
 }
 
+export interface StartOptions {
+  followUp?: boolean;
+}
+
 interface Options {
   language: string;
   onFinal: (text: string) => void;
@@ -81,7 +87,7 @@ export function useWhisperRecorder({ language, onFinal }: Options) {
     if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
   }, []);
 
-  const start = useCallback(async () => {
+  const start = useCallback(async ({ followUp = false }: StartOptions = {}) => {
     if (recorderRef.current) return;
     setError(null);
 
@@ -132,7 +138,7 @@ export function useWhisperRecorder({ language, onFinal }: Options) {
       timers.push(
         setTimeout(() => {
           if (!heardSpeech) stop();
-        }, NO_SPEECH_TIMEOUT_MS)
+        }, followUp ? FOLLOW_UP_TIMEOUT_MS : NO_SPEECH_TIMEOUT_MS)
       );
     }
     timers.push(setTimeout(stop, MAX_RECORDING_MS));
@@ -145,7 +151,7 @@ export function useWhisperRecorder({ language, onFinal }: Options) {
       recorderRef.current = null;
       setIsListening(false);
       if (!heardSpeech || chunks.length === 0) {
-        setError('Não ouvi nada. Toque no microfone e fale de novo.');
+        if (!followUp) setError('Não ouvi nada. Toque no microfone e fale de novo.');
         return;
       }
       setIsTranscribing(true);

@@ -251,6 +251,7 @@ Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, 
 - **Indicador de digitando:** três pontos animados enquanto o agente responde
 - **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
 - **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Um prompt com o vocabulário do site (JARVIS, Kobi, Vennx, React, n8n) ajuda o Whisper a acertar os nomes. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
+- **Conversa por voz:** depois de responder uma pergunta falada, o JARVIS volta a ouvir sozinho; se você não falar em 6s, o microfone fecha. Digitar uma pergunta ou parar a fala encerra o modo
 - **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver a seção acima e [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 
@@ -642,7 +643,7 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente, botões visíveis sem clima, espera do globo na Home |
 | `satellites`           | Posição recalculada com o tempo usando uma única requisição ao CelesTrak                 |
 | `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
-| `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte)      |
+| `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte), conversa por voz |
 | `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
 | `piperTts`             | Texto limpo para a voz, divisão em trechos, URL, fallback e interrupção da fala            |
 | `infraStats`           | Leitura dos números do dataset vindos da API                                              |
