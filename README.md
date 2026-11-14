@@ -251,6 +251,7 @@ Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, 
 - **Indicador de digitando:** três pontos animados enquanto o agente responde
 - **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
 - **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Um prompt com o vocabulário do site (JARVIS, Kobi, Vennx, React, n8n) ajuda o Whisper a acertar os nomes. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
+- **Item JARVIS no menu de baixo:** abre o mesmo chat do botão flutuante, para quem não percebe o ícone
 - **Conversa por voz:** depois de responder uma pergunta falada, o JARVIS volta a ouvir sozinho; se você não falar em 6s, o microfone fecha. Digitar uma pergunta ou parar a fala encerra o modo
 - **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver a seção acima e [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))

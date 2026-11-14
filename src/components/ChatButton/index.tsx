@@ -1,10 +1,21 @@
 import { IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { ChatWidget } from '../ChatWidget';
+import { OPEN_JARVIS_EVENT } from './openJarvisChat';
 
 const GREEN = '#42c920';
 
 export function ChatButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    const handleOpen = (event: Event) => {
+      event.preventDefault();
+      onOpen();
+    };
+    window.addEventListener(OPEN_JARVIS_EVENT, handleOpen);
+    return () => window.removeEventListener(OPEN_JARVIS_EVENT, handleOpen);
+  }, [onOpen]);
 
   return (
     <>

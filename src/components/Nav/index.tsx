@@ -33,11 +33,12 @@ import { track } from "../../utils/track";
 import { FaGlobe, FaReact } from "react-icons/fa";
 import { AiOutlineLinkedin, AiOutlineGithub, AiOutlineMail } from "react-icons/ai";
 import { MdOutlineNewspaper, MdBusiness } from "react-icons/md";
-import { RiAliensFill } from "react-icons/ri";
+import { RiAliensFill, RiRobotLine } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import { BiCube } from "react-icons/bi";
 import { FaBlog } from "react-icons/fa";
 import { FiChevronUp } from "react-icons/fi";
+import { openJarvisChat } from "../ChatButton/openJarvisChat";
 
 import usa from "../../assets/img/usa.png";
 import brazil from "../../assets/img/brazil.png";
@@ -206,10 +207,16 @@ const Nav = () => {
     track({ event: "contact_opened" });
   };
 
+  const openJarvis = () => {
+    track({ event: "jarvis_opened_from_menu" });
+    if (!openJarvisChat()) navigate("/chat");
+  };
+
   const pages = [
     { label: intl.formatMessage({ id: "home" }), url: "/", icon: IoMdRocket },
     { label: intl.formatMessage({ id: "sobre" }), url: "/about", icon: RiAliensFill },
     { label: intl.formatMessage({ id: "projetos" }), url: "/projects", icon: FaReact },
+    { label: "JARVIS", icon: RiRobotLine, onClick: openJarvis },
     { label: "Contato", icon: AiOutlineMail, onClick: openContact },
     { label: "Mapa Esri", url: "/map", icon: FaGlobe },
     { label: "Notícias IA", url: "/news", icon: MdOutlineNewspaper },
