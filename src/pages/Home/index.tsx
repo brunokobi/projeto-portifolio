@@ -19,6 +19,19 @@ import falar from "../../components/TextAudio";
 // sentido mostrar spinner por cima do resto da página só por causa dele).
 const GlobeBackground = lazy(() => import("../../components/GlobeBackground"));
 
+const PHRASE_IDS = [
+  "frase_1",
+  "frase_6",
+  "frase_3",
+  "frase_7",
+  "frase_4",
+  "frase_5",
+  "frase_8",
+  "frase_9",
+  "frase_10",
+  "frase_2",
+];
+
 const cursorBlink = keyframes`
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -27,10 +40,7 @@ const cursorBlink = keyframes`
 const Home = () => {
   const intl = useIntl();
 
-  const phrases = useMemo(
-    () => [intl.formatMessage({ id: "frase_1" }), intl.formatMessage({ id: "frase_2" })],
-    [intl]
-  );
+  const phrases = useMemo(() => PHRASE_IDS.map((id) => intl.formatMessage({ id })), [intl]);
 
   const [phrasesHovered, setPhrasesHovered] = useState(false);
   const { text: typedPhrase, index: phraseIndex } = useTypewriter(phrases, { paused: phrasesHovered });
