@@ -4,7 +4,7 @@ export interface ExperienceDetail {
 }
 
 export const CURRICULO = {
-  headline: "IA & Automação | Full Stack Developer · React · TypeScript · Node.js · n8n | Mestrando em IA",
+  headline: "IA & Automação | Full Stack Developer · React · TypeScript · Node.js · n8n | Agentes de IA",
   resumo:
     "Desenvolvedor Full Stack com 6+ anos de experiência e especialização em IA aplicada e automação de processos. Constrói desde interfaces React/TypeScript até pipelines multi-agente com n8n, LangChain e LLMs (GPT-4o, Gemini, Claude), com foco em resultado de negócio: automações que eliminam trabalho manual, chatbots que atendem em produção e integrações que conectam sistemas de ponta a ponta. Atualmente na Vennx, à frente de projetos de IA & automação para clientes corporativos.",
   destaques: [
@@ -66,7 +66,7 @@ export const CURRICULO = {
   formacao: [
     "2025 – 2026: Aluno Especial — Mestrado em Tecnologia da Informação, Programação de Computadores — UFES (Universidade Federal do Espírito Santo)",
     "2025: Pós-Graduação em Cultura Maker e Educação 4.0 — IFES (Instituto Federal do Espírito Santo)",
-    "2022 – 2024: Mestrado em Computação Aplicada com Ênfase em Inteligência Artificial — IFES",
+    "2022 – 2024: Mestrado em Computação Aplicada com Ênfase em Inteligência Artificial — IFES (não concluído)",
     "2017 – 2020: Bacharelado em Sistemas de Informação — UniSales (Centro Universitário Salesiano)",
     "2003 – 2005: Técnico em Informática — IFES",
   ],

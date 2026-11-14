@@ -302,10 +302,10 @@ export const posts: Post[] = [
           "**Menções na mídia:** Google Notícias e GDELT, com destaque para manchetes com termos como fraude ou operação.",
         ],
       },
-      { type: "heading", level: 3, text: "Dossiê com IA e pesquisa de mestrado" },
+      { type: "heading", level: 3, text: "Dossiê com IA e pesquisa acadêmica" },
       {
         type: "paragraph",
-        text: "Um botão gera um dossiê de due diligence: um score de risco de um modelo XGBoost treinado no próprio dataset, a rede de sócios e endereços em comum num grafo Neo4j e um parecer escrito por um LLM só em cima dos dados já consultados. O grafo vem da minha pesquisa de mestrado, que compara modelos tabulares e redes neurais de grafo para prever risco a partir das conexões entre empresas. O preprint está publicado no Zenodo (DOI 10.5281/zenodo.21961063).",
+        text: "Um botão gera um dossiê de due diligence: um score de risco de um modelo XGBoost treinado no próprio dataset, a rede de sócios e endereços em comum num grafo Neo4j e um parecer escrito por um LLM só em cima dos dados já consultados. O grafo vem da pesquisa que desenvolvo como aluno especial do mestrado na UFES, que compara modelos tabulares e redes neurais de grafo para prever risco a partir das conexões entre empresas. O preprint está publicado no Zenodo (DOI 10.5281/zenodo.21961063).",
       },
       { type: "heading", level: 3, text: "Acesso por API e MCP" },
       {
