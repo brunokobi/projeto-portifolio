@@ -415,18 +415,19 @@ O globo 3D que serve como plano de fundo da Home é muito mais do que uma anima�
 
 Ao carregar a página, a câmera parte de **65 Mm de altitude** (visão galáctica completa do planeta) e faz um zoom dramático até a posição padrão (~20 Mm) com easing `out-expo` em 4 segundos — dando a sensação de "pousar" na Terra vindo do espaço. A rotação automática só inicia após o zoom completar.
 
-### 26 Pins de Cidades Globais
+### 43 Pins de Cidades Globais
 
-26 cidades distribuídas para garantir sempre ao menos 2–3 pins visíveis independente da rotação do globo:
+43 cidades distribuídas para garantir sempre ao menos 2–3 pins visíveis independente da rotação do globo:
 
 | Continente | Cidades |
 |---|---|
-| América do Sul | São Paulo, Vitória-ES, Buenos Aires |
-| América do Norte | Mexico City, Chicago, New York, San Francisco |
-| Europa | Madrid, London, Paris, Berlin, Moscow |
-| Oriente Médio / África | Istanbul, Nairobi, Cairo, Lagos, Dubai |
-| Ásia | Mumbai, Bangkok, Singapore, Beijing, Seoul, Tokyo |
-| Oceania / Pacífico | Sydney, Auckland, Honolulu |
+| América do Sul | Vitória-ES, São Paulo, Buenos Aires, Bogotá |
+| América do Norte | San Francisco, Nova York, Austin, Toronto, Seattle, Boston, Miami, Cidade do México, Vancouver |
+| Europa | Londres, Berlim, Paris, Amsterdã, Estocolmo, Munique, Tallinn, Varsóvia, Zurique |
+| África | Lagos, Nairóbi, Cairo, Cidade do Cabo, Joanesburgo |
+| Oriente Médio | Tel Aviv, Dubai, Riad |
+| Ásia | Tóquio, Seul, Singapura, Shenzhen, Bangalore, Xangai, Pequim, Jacarta, Kuala Lumpur, Ho Chi Minh, Taipei |
+| Oceania | Sydney, Melbourne |
 
 **Visibilidade inteligente** via produto escalar câmera × cidade — pins aparecem apenas no lado visível do globo, sem atravessar a esfera. **Canvas overlay** animado via `requestAnimationFrame`: anel verde Matrix pulsante + glow nos pins. **Cursor pointer** ao passar o mouse sobre qualquer pin (detectado via `pointer-move` do ESRI).
 
@@ -527,7 +528,7 @@ Botões toggle individuais para cada feature na barra de clima (superior):
 
 ### Cidades com Clima & Hora Local
 
-Todas as **42 cidades** do globo (`CITIES` em `geo.ts`, marcadas por anéis verdes pulsantes) exibem no card de hover:
+Todas as **43 cidades** do globo (`CITIES` em `geo.ts`, marcadas por anéis verdes pulsantes) exibem no card de hover:
 - **Hora local** 🕐 — convertida via `Intl.DateTimeFormat` para o timezone da cidade (Open-Meteo, `timezone=auto`)
 - **Temperatura** — arredondada em °C
 - **Condição do tempo** — emoji WMO (☀️, 🌧️, ⛈️, etc.)
