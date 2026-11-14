@@ -94,7 +94,7 @@
 - Novo toggle na WeatherBar? → [COMPONENTS.md](./COMPONENTS.md)
 - Dados de tempo real? → [API.md](./API.md)
 - Novo componente React? → [COMPONENTS.md](./COMPONENTS.md)
-- Novo post no blog? → [FEATURES.md](./FEATURES.md) (seção Blog)
+- Novo post no blog? → [SETUP.md](./SETUP.md) (Adicionar novo post ao blog) e [COMPONENTS.md](./COMPONENTS.md#devblog)
 
 **"Por que..."**
 - Minify está desabilitado? → [AI_QUICKSTART.md](./AI_QUICKSTART.md) Gotchas #1

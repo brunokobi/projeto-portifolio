@@ -140,10 +140,11 @@ projeto-portifolio/
 6. Push e abrir PR
 
 ### Adicionar novo post ao blog
-1. Edit `src/pages/DevBlog/posts.ts`
-2. Adicionar novo Post object ao array `posts`
-3. Usar Block[] type pra estrutura (heading, paragraph, code, etc)
-4. Testar em `http://localhost:3000/blog`
+1. Edite `src/pages/DevBlog/posts.ts`
+2. Adicione o `Post` no array `posts` na posição da data (a lista mostra na ordem do array, mais novo primeiro)
+3. Monte o texto com blocos (`heading`, `paragraph`, `list`, `code`, `image`, `hr`); imagens vão em `public/blog/<slug>/`, em WebP
+4. Nunca coloque IP, chave ou dado pessoal real no texto
+5. Teste em `http://localhost:3000/blog`
 
 ### Atualizar Design System
 1. Edit `DESIGN_SYSTEM.md`

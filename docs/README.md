@@ -47,9 +47,9 @@ Todas com dados reais. Detalhes em [FEATURES.md](./FEATURES.md).
 Chat com agente n8n que fala com voz neural (Piper) e ouve pelo microfone (Whisper), os três na VPS própria. Detalhes em [FEATURES.md](./FEATURES.md#-chat-ia-n8n).
 
 ### 📝 Blog Dev
-- `/pages/DevBlog` — Posts técnicos em Markdown
-- Post 1: "Oracle VPS Recovery" (~8000 palavras)
-- Renderizador custom (sem lib externa)
+- `/pages/DevBlog` — posts técnicos em blocos tipados (`posts.ts`), com imagens em `public/blog/`
+- 5 posts: JARVIS com voz, dataset da Grande Vitória, Copa Aspirador, o globo e a VPS da Oracle
+- Renderizador próprio (sem lib externa); lista em [COMPONENTS.md](./COMPONENTS.md#devblog)
 
 ### 🎨 Design System
 - `DESIGN_SYSTEM.md` — Tokens visuais

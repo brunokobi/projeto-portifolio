@@ -72,23 +72,33 @@ Nenhuma.
 ### Estrutura
 ```typescript
 interface Post {
-  id: string;
+  slug: string;
   title: string;
-  date: string;
+  date: string;      // "AAAA-MM-DD", mostrado por formatPostDate
+  tags: string[];
   excerpt: string;
   blocks: Block[];
 }
 
-type Block = 
-  | { type: "heading"; level: 1|2|3; text: string }
+type Block =
+  | { type: "heading"; level: 2 | 3; text: string }
   | { type: "paragraph"; text: string }
-  | { type: "list"; items: string[] }
-  | { type: "code"; lang: string; text: string }
+  | { type: "list"; ordered?: boolean; items: string[] }
+  | { type: "code"; language?: string; code: string }
+  | { type: "image"; src: string; alt: string; caption?: string }
   | { type: "hr" };
 ```
 
-### Posts Existentes
-- `oracle-vps-free-tier` — VPS recovery story (~8000 words)
+A lista do blog segue a ordem do array `posts`, então post novo entra na posição certa pela data (mais novo primeiro).
+
+### Posts existentes
+| Slug | Data | Assunto |
+|---|---|---|
+| `jarvis-whisper-piper` | 14/11/2026 | Voz do JARVIS com Whisper e Piper na VPS |
+| `grande-vitoria-empresas` | 11/11/2026 | Dataset de empresas da Grande Vitória: crescimento da base, atualizações e dificuldades (imagens em `public/blog/grande-vitoria/`) |
+| `copa-aspirador` | 07/11/2026 | O jogo Copa Aspirador, em Python no navegador (imagens em `public/blog/copa-aspirador/`) |
+| `globo-tempo-real` | 31/10/2026 | Todas as fontes do globo e as APIs que não deram certo |
+| `oracle-vps-free-tier` | 20/09/2026 | VPS da Oracle reclamada por ociosidade |
 
 ---
 
@@ -110,7 +120,7 @@ DevBlog copia esse design:
 **Responsabilidade:** Navegação principal (barra fixa embaixo)
 
 - Só ícones; o nome aparece num tooltip verde ao passar o mouse (e é falado pelo `TextAudio`). O item da página atual vira uma pílula verde com o nome (o nome some no celular)
-- Grupo 1, páginas do site: Home `/`, Sobre `/about`, Projetos `/projects`, Contato (abre o modal do `ContactForm`), Mapa `/map`, Notícias `/news`, Blog `/blog`
+- Grupo 1, páginas do site: Home `/`, Sobre `/about`, Projetos `/projects`, JARVIS (abre o chat pelo evento `jarvis:open`; sem `ChatButton` na página, vai para `/chat`), Contato (abre o modal do `ContactForm`), Mapa `/map`, Notícias `/news`, Blog `/blog`
 - Grupo 2, links externos (tooltip com "↗"): Portfolio 3D, Empresas GV, LinkedIn, GitHub
 - Idioma: `LanguageMenu`, um botão com a bandeira atual que abre para cima a lista dos 9 idiomas. Na primeira visita o idioma vem do país (GeoIP), como antes
 - `Item` (`Nav/Item/index.tsx`) recebe `url` (interno ou `http...`) ou `onClick`. A página ativa vem de `isActivePath` (`Nav/isActivePath.ts`): Home só na raiz, as demais também nas subrotas (`/blog/post` ativa Blog)
@@ -148,6 +158,26 @@ DevBlog copia esse design:
 - Sem props; controla abertura com `useDisclosure`
 - Renderizado em `App.tsx` em todas as páginas, exceto `/news`
 - O `ChatWidget` também é usado standalone na rota `/chat` (`src/pages/Chat.tsx`)
+- Escuta o evento `jarvis:open` em `window` (disparado por `openJarvisChat()`, `ChatButton/openJarvisChat.ts`) e abre a gaveta; é o que o item JARVIS do menu usa
+
+---
+
+## `Home`
+**Arquivo:** `src/pages/Home/index.tsx`  
+**Responsabilidade:** apresentação com o globo ao fundo e as frases digitadas
+
+- As frases vêm de `PHRASE_IDS` (`frase_1` a `frase_10` dos arquivos de idioma), na ordem de exibição; o texto de cada uma está nos 9 idiomas
+- `useTypewriter(strings, { speed, deleteSpeed, pauseMs, gapMs, paused })` (`src/hooks/useTypewriter.ts`) devolve `{ text, index }`: digita a 70 ms por letra, segura a frase inteira 3,8 s, apaga a 40 ms por letra e deixa a linha vazia 0,6 s antes da próxima. Com `paused` (mouse em cima das frases) a frase não é apagada. A animação só reinicia quando o texto das frases muda (troca de idioma)
+- Cursor verde piscando (`keyframes` do Emotion, 1 s)
+- Voz: ao abrir, fala o nome e só a primeira frase; o hover nas frases fala a frase da tela
+
+## `Projects`
+**Arquivo:** `src/pages/Projects/index.tsx`  
+**Responsabilidade:** cards dos projetos (`ProjectCard`) e o `ServiceStatus` no topo
+
+- Cada card tem título e descrição nos arquivos de idioma (`projectNt`/`projectNd`), imagem em `src/assets/img/`, demo, código e tags
+- Ordem atual: Dataset Grande Vitória (`project16`), JARVIS (`project14`), Copa Aspirador (`project19`), Tabela ACFDV, Letrinhas Mágicas, Frota Realtime, Arkon, Mega-Sena IA, BPF Check, Portfólio 3D e os projetos da faculdade
+- O perfil do JARVIS lista todos os `projectNt`/`projectNd`, então card novo ou alterado entra no que ele sabe no próximo deploy
 
 ---
 
@@ -193,7 +223,7 @@ src/
 ├── pages/
 │   ├── Home/index.tsx
 │   ├── About/
-│   ├── DevBlog/ (index.tsx, PostRenderer.tsx, formatPostDate.ts, posts.ts)
+│   ├── DevBlog/ (index.tsx, PostRenderer.tsx, formatPostDate.ts, posts.ts; imagens dos posts em public/blog/)
 │   └── ...
 ├── hooks/useChatWithAudio.ts
 ├── utils/
