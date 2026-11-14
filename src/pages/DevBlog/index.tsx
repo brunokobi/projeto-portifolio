@@ -5,6 +5,7 @@ import { BsChevronDoubleUp, BsArrowLeft } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
 import { track } from "../../utils/track";
 import { posts } from "./posts";
+import { formatPostDate } from "./formatPostDate";
 import PostRenderer from "./PostRenderer";
 
 const GREEN = "#42c920";
@@ -63,11 +64,7 @@ const DevBlog = () => {
                   {selected.title}
                 </Heading>
                 <Text fontSize="xs" color="whiteAlpha.500" mb={4}>
-                  {new Date(selected.date).toLocaleDateString("pt-BR", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {formatPostDate(selected.date)}
                 </Text>
                 <Wrap mb={8}>
                   {selected.tags.map((tag) => (
@@ -119,11 +116,7 @@ const DevBlog = () => {
                       _hover={{ borderColor: GREEN, boxShadow: `0 0 16px rgba(66,201,32,0.25)` }}
                     >
                       <Text fontSize="xs" color="whiteAlpha.500" mb={1}>
-                        {new Date(post.date).toLocaleDateString("pt-BR", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        {formatPostDate(post.date)}
                       </Text>
                       <Heading fontSize={{ base: "md", md: "lg" }} color={GREEN} mb={2}>
                         {post.title}
