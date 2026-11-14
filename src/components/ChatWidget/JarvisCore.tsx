@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
+import { getPiperAnalyser } from '../../utils/piperTts';
 
 export type JarvisState = 'idle' | 'thinking' | 'speaking' | 'listening';
 
 const GREEN = '66, 201, 32';
 const BAR_COUNT = 24;
 
-// O espectro é animado, não vem do áudio real: a Web Speech API não expõe o sinal do TTS.
+// Falando com o Piper, as barras seguem o espectro real do áudio; com a voz do navegador
+// (que não expõe o sinal) o espectro é animado.
 export function JarvisCore({ state, size = 72 }: { state: JarvisState; size?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stateRef = useRef(state);
@@ -26,6 +28,7 @@ export function JarvisCore({ state, size = 72 }: { state: JarvisState; size?: nu
 
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const bars = new Array(BAR_COUNT).fill(0);
+    let spectrum = new Uint8Array(0);
     const c = size / 2;
     const inner = size * 0.24;
     let frame = 0;
@@ -55,9 +58,18 @@ export function JarvisCore({ state, size = 72 }: { state: JarvisState; size?: nu
         }
       }
 
+      const analyser = s === 'speaking' ? getPiperAnalyser() : null;
+      if (analyser) {
+        if (spectrum.length !== analyser.frequencyBinCount) spectrum = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(spectrum);
+      }
+
       for (let i = 0; i < BAR_COUNT; i++) {
-        const target =
-          s === 'speaking'
+        // Espelhado: as graves ficam no topo e no fundo do anel, as agudas nas laterais.
+        const bin = 1 + (i < BAR_COUNT / 2 ? i : BAR_COUNT - 1 - i);
+        const target = analyser
+          ? 0.12 + (spectrum[bin] / 255) * 0.88
+          : s === 'speaking'
             ? 0.35 + Math.random() * 0.65
             : s === 'listening'
               ? 0.2 + 0.3 * Math.abs(Math.sin(t * 4 + i))

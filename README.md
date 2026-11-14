@@ -246,11 +246,11 @@ Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, 
 
 - **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, temperatura e condição ("Em Serra agora faz 27°C, com chuva"); sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
 - **Voz:** voz neural **Piper** servida pela VPS em `tts.brunokobi.tech` (pt, en, es, fr, de, ru e ar), com a voz do navegador (Web Speech API) para o chinês e como alternativa se o Piper falhar (`src/utils/piperTts.ts` e `src/utils/textToSpeech.ts`); a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
-- **JARVIS Core:** núcleo animado em canvas no cabeçalho do chat (`src/components/ChatWidget/JarvisCore.tsx`), com quatro estados mostrados também em texto: Online, Pensando..., Falando... e Ouvindo...; o espectro é animado e não analisa o áudio real
+- **JARVIS Core:** núcleo animado em canvas no cabeçalho do chat (`src/components/ChatWidget/JarvisCore.tsx`), com quatro estados mostrados também em texto: Online, Pensando..., Falando... e Ouvindo...; com a voz do Piper as barras seguem o espectro real da fala (`AnalyserNode`); com a voz do navegador o espectro é animado
 - **Sugestões de perguntas:** botões prontos (Quem é o Bruno?, Projetos, Tecnologias, Experiência, Contato) até o visitante fazer a primeira pergunta
 - **Indicador de digitando:** três pontos animados enquanto o agente responde
 - **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
-- **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
+- **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Um prompt com o vocabulário do site (JARVIS, Kobi, Vennx, React, n8n) ajuda o Whisper a acertar os nomes. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
 - **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
 - **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver a seção acima e [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
 

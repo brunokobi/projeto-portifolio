@@ -10,6 +10,10 @@ const NO_SPEECH_TIMEOUT_MS = 8000;
 const MAX_RECORDING_MS = 30000;
 const TRANSCRIBE_TIMEOUT_MS = 30000;
 
+// Vocabulário que o Whisper deve esperar: sem ele, "Kobi" vira "Cove" e "Vennx" vira "Vênix".
+export const WHISPER_PROMPT =
+  'Conversa com o JARVIS sobre Bruno Kobi, da Vennx: React, TypeScript, Node.js, n8n, Supabase, LangChain, GitHub, LinkedIn.';
+
 // Marcações que o Whisper devolve para trechos sem fala.
 const NON_SPEECH = /\[[^\]]*\]|\((?:música|music|risos|silêncio|inaudível)[^)]*\)/gi;
 
@@ -37,6 +41,7 @@ export async function transcribe(blob: Blob, language: string): Promise<string> 
   form.append('file', blob, fileNameFor(blob.type));
   form.append('language', language);
   form.append('response_format', 'json');
+  form.append('prompt', WHISPER_PROMPT);
   const res = await fetch(WHISPER_URL, {
     method: 'POST',
     body: form,

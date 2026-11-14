@@ -136,7 +136,7 @@ DevBlog copia esse design:
 
 - Props: `state: 'idle' | 'thinking' | 'speaking' | 'listening'`, `size?: number` (padrão 72; o widget usa 56)
 - Desenha com `requestAnimationFrame` direto no canvas; o estado atual é lido de um ref, então trocar de estado não reinicia a animação
-- O espectro é animado, não analisa o áudio real
+- Com a voz do Piper as barras seguem o espectro real (`getPiperAnalyser()` de `piperTts.ts`); com a voz do navegador o espectro é animado
 - Respeita `prefers-reduced-motion`
 
 ## `ChatButton`

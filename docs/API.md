@@ -182,10 +182,10 @@ Os furacões têm cache em memória de 60s em `loadHurricanes()`. O RSS da NOAA 
 |---------|----------|-----------|-------------|
 | Chat JARVIS (n8n) | `POST /.netlify/functions/n8n-chat` `{chatInput, sessionId}` → `{output}` | `ChatWidget` | Proxy esconde a URL real (`N8N_WEBHOOK_URL`); timeout 55s |
 | Piper TTS | `GET https://tts.brunokobi.tech/tts.mp3?text&lang&speed` → MP3 | `src/utils/piperTts.ts` | pt, en, es, fr, de, ru, ar; 1.200 caracteres por pedido; 30 sínteses/min por IP; cache de 30 dias na Cloudflare; `GET /health` lista as vozes |
-| Whisper | `POST https://whisper.brunokobi.tech/inference` (multipart: `file`, `language`, `response_format=json`) → `{text}` | `src/hooks/useWhisperRecorder.ts` | whisper.cpp (modelo base); timeout de 30s no cliente |
+| Whisper | `POST https://whisper.brunokobi.tech/inference` (multipart: `file`, `language`, `response_format=json`) → `{text}` | `src/hooks/useWhisperRecorder.ts` | whisper.cpp (modelo base); aceita `prompt` (vocabulário, até 500 caracteres); timeout de 30s no cliente |
 | Dataset Grande Vitória | `GET /.netlify/functions/infra-stats` → números do `GET https://empresas.brunokobi.tech/estatisticas` | `ServiceStatus` | A API não libera CORS; a function busca só essa URL e guarda por 5 min |
 
-Os três primeiros liberam CORS apenas para `brunokobi.tech`, `www.brunokobi.tech`, `brunokobi.netlify.app` e `localhost:3000`.
+O Piper responde `Access-Control-Allow-Origin: *` (áudio público, uma cópia só no cache da Cloudflare). O chat e o Whisper liberam CORS apenas para `brunokobi.tech`, `www.brunokobi.tech`, `brunokobi.netlify.app` e `localhost:3000`.
 
 ---
 
