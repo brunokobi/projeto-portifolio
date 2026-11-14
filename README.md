@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-174%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-186%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -17,16 +17,13 @@
   <img src="https://img.shields.io/badge/Vite_5-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript_strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" />
-  <img src="https://img.shields.io/badge/Framer_Motion_11-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
-  <img src="https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white" />
   <img src="https://img.shields.io/badge/n8n-FF6D00?style=for-the-badge&logo=n8n&logoColor=white" />
-  <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/Whisper-412991?style=for-the-badge&logoColor=white" />
+  <img src="https://img.shields.io/badge/Piper_TTS-1C3C3C?style=for-the-badge&logoColor=white" />
+  <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
   <img src="https://img.shields.io/badge/Oracle_Cloud_VPS-F80000?style=for-the-badge&logo=oracle&logoColor=white" />
   <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" />
-  <img src="https://img.shields.io/badge/Piper_TTS-1C3C3C?style=for-the-badge&logoColor=white" />
-  <img src="https://img.shields.io/badge/Whisper-412991?style=for-the-badge&logoColor=white" />
-  <img src="https://img.shields.io/badge/ArcGIS-FF2D20?style=for-the-badge&logo=esri&logoColor=white" />
 </p>
 
 <p align="center">
@@ -48,89 +45,86 @@
 
 ## 🌌 O que é este projeto?
 
-A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é diferente.
+A maioria dos portfólios é uma página estática com foto e lista de habilidades. Este é uma **plataforma de software em produção**:
 
-Este portfólio foi construído como uma **plataforma de software completa**, integrando tecnologias de produção reais: banco de dados com Row Level Security, automação event-driven com IA, assistente virtual **JARVIS** com voz (n8n, voz neural Piper e transcrição Whisper, tudo self-hosted numa VPS própria na Oracle Cloud, atrás de Cloudflare), globo 3D interativo com **overlays geoespaciais em tempo real** (satélites, ISS, cidades com clima & hora local, qualidade do ar, incêndios, alertas, terremotos, vulcões, furacões), feed de notícias em tempo real de **52 fontes globais** com scoring inteligente, tradução automática, geolocalização GPS, internacionalização em 9 idiomas, selo de status ao vivo da infra em produção e acessibilidade com síntese de voz.
+- **Globo 3D ao vivo** no fundo da Home, com satélites, ISS, terremotos, vulcões, furacões, incêndios, alertas, vento e 69 polos de tecnologia com clima, hora local e qualidade do ar. Todos os dados são reais.
+- **JARVIS**, um assistente que ouve e responde por voz, com n8n, Whisper e Piper rodando numa VPS própria.
+- **Painel de notícias de IA** com 54 fontes globais, pontuação de relevância e tradução automática.
+- **Blog técnico**, página de projetos com status ao vivo da infraestrutura, currículo, mapa 3D e 9 idiomas com detecção pelo IP.
 
-Cada feature foi pensada para demonstrar **profundidade técnica real** — não apenas que sei usar uma tecnologia, mas que sei arquitetá-la, integrá-la e colocá-la em produção.
+Cada feature foi pensada para mostrar profundidade técnica: não só usar uma tecnologia, mas arquitetá-la, integrá-la e mantê-la no ar.
 
 ---
 
-## 🏗️ Arquitetura Geral
+## 🗺️ Páginas
+
+| Rota | O que tem |
+|---|---|
+| `/` | Apresentação com frases que se digitam sozinhas e o globo 3D ao vivo no fundo |
+| `/about` | Sobre, experiência, formação, skills e certificados |
+| `/projects` | Projetos com demo e código, e o selo de status ao vivo dos serviços próprios |
+| `/curriculo` | Currículo |
+| `/news` | Painel de notícias de IA |
+| `/blog` | Blog dev com posts técnicos sobre os projetos |
+| `/map` | Mapa 3D ArcGIS com fotos próprias nos marcadores |
+| `/chat` | JARVIS em página cheia (ele também abre pelo botão flutuante e pelo menu) |
+
+---
+
+## 🏗️ Arquitetura
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │              Browser (React 18 + Vite 5)                │
-│  i18n · WeatherBar · ArcGIS · TextToSpeech · JARVIS     │
-│  ServiceStatus (ping ao vivo da infra própria)          │
+│  Globo ArcGIS · WeatherBar · i18n · JARVIS · Notícias   │
 └──────────────────┬──────────────────────────────────────┘
                    │ HTTPS
       ┌────────────┼──────────────────┬──────────────────────┐
-      │            │                  │                      │
       ▼            ▼                  ▼                      ▼
-Netlify Fn     Supabase (BaaS)    Netlify Fn: n8n-chat.ts   Áudio direto do navegador
-TypeScript     PostgreSQL + RLS   (proxy, esconde a URL)    (CORS só para o site)
-- Proxy RSS    JWT Auth                 │                      │
-- Contato      Shared Client            │                      │
-  → Resend     - infra-stats            ▼                      ▼
-                          Cloudflare (proxy) → Traefik (Coolify)
-                                         │
+Netlify Functions  Supabase       Netlify Fn n8n-chat     Áudio direto do navegador
+- news (RSS)       PostgreSQL     (proxy, esconde a URL)  (Whisper e Piper)
+- chat (contato)   + RLS                │                      │
+  → Resend                              ▼                      ▼
+- track → Telegram              Cloudflare (proxy) → Traefik (Coolify)
+- infra-stats                            │
                           Oracle Cloud VPS (ARM64, self-hosted)
                           ┌──────────────────────────────────────┐
-                          │ n8n: JARVIS (agente único + perfil)   │
+                          │ n8n: agente JARVIS                    │
                           │ Piper TTS   tts.brunokobi.tech        │
                           │ Whisper     whisper.brunokobi.tech    │
                           │ API do Dataset Grande Vitória         │
                           └──────────────────────────────────────┘
 
-Open-Meteo API (clima)
-ipapi.co (geolocalização)
-Google Translate API (tradução automática)
-Resend API (email transacional)
+APIs públicas no navegador: Open-Meteo, CelesTrak, wheretheiss.at, USGS,
+ArcGIS Living Atlas, Nominatim, ipapi.co, Google Translate
 ```
-
-**Princípios adotados:** Clean Architecture · Event-Driven · Serverless First · BaaS · Modularização por domínio
 
 ---
 
-## 🛠️ Stack Completa
+## 🛠️ Stack
 
-| Camada          | Tecnologia                   | Uso                                                |
-| --------------- | ---------------------------- | -------------------------------------------------- |
-| Frontend        | React 18 + Hooks             | SPA com Context API                                |
-| Build           | Vite 5                       | Dev server HMR instantâneo, bundle otimizado       |
-| UI              | Chakra UI v2                 | Design system responsivo                           |
-| Animação        | Framer Motion v11            | Transições e stagger animations                    |
-| i18n            | React-Intl                   | 9 idiomas + auto-detect por IP                     |
-| Voz             | Piper (VPS) + Web Speech API | Voz neural; voz do navegador como alternativa      |
-| Qualidade       | TypeScript strict + ESLint 9 | Zero erros, regras de pureza React, Prettier       |
-| Testes          | Vitest + Playwright          | 174 testes unitários + E2E Chromium                |
-| Backend         | Supabase                     | PostgreSQL + Auth + RLS + Edge Functions           |
-| Automação       | n8n (self-hosted, Oracle Cloud VPS) | Workflows event-driven + agente JARVIS             |
-| IA — Chat       | Nemotron 3 Ultra (OpenRouter, via n8n) | JARVIS, com o perfil gerado no build como única fonte |
-| IA — Contato    | Google Gemini 2.5 Flash Lite | Análise das mensagens do formulário de contato     |
-| Voz (fala)      | Piper TTS (VPS)              | Voz neural em 7 idiomas, cache na Cloudflare       |
-| Voz (ouvido)    | Whisper (VPS)                | Transcrição das perguntas faladas ao JARVIS        |
-| Email           | Resend                       | Transacional                                       |
-| Infra           | Oracle Cloud VPS + Cloudflare + Traefik | n8n, Piper, Whisper e API do dataset self-hosted |
-| Deploy          | Netlify                      | CI/CD + Serverless Functions                       |
-| GIS             | ESRI ArcGIS                  | Mapas 3D interativos                               |
-| Clima           | Open-Meteo                   | API gratuita, sem chave                            |
-| Geoloc.         | ipapi.co                     | IP → país/cidade/coords                            |
+| Camada | Tecnologia | Uso |
+|---|---|---|
+| Frontend | React 18 + TypeScript strict | SPA com Context API e rotas com lazy loading |
+| Build | Vite 5 | Dev server e bundle de produção |
+| UI | Chakra UI v2 + Framer Motion | Design system responsivo e animações |
+| i18n | React-Intl | 9 idiomas, detecção automática pelo IP |
+| GIS | ESRI ArcGIS Maps SDK | Globo 3D e mapa 3D |
+| Banco | Supabase (PostgreSQL + RLS) | Contatos e contador de visitas |
+| Serverless | Netlify Functions | Proxy RSS, contato, alertas, números da infra, proxy do chat |
+| Automação e IA | n8n self-hosted + NVIDIA Nemotron via OpenRouter | Agente do JARVIS |
+| Voz | Piper TTS e Whisper (VPS) + Web Speech API | Fala, transcrição e alternativa do navegador |
+| E-mail | Resend | Aviso de novo contato |
+| Infra | Oracle Cloud VPS + Cloudflare + Traefik | n8n, Piper, Whisper e API do dataset |
+| Qualidade | ESLint 9, Prettier, Vitest, Playwright | 186 testes unitários e 5 E2E |
+| Observabilidade | OpenTelemetry | Traces das Netlify Functions |
+| Deploy | Netlify + GitHub Actions | Deploy a cada push na `main` |
 
 ---
 
 ## 🚀 Rodando localmente
 
-### Pré-requisitos
-
-- Node.js 18+
-- npm 9+
-- Conta no [Supabase](https://supabase.com)
-- Conta no [Netlify](https://netlify.com) (para as functions)
-- Chave de API do [ESRI ArcGIS](https://developers.arcgis.com)
-
-### Instalação
+**Pré-requisitos:** Node.js 18+, npm 9+, uma conta no [Supabase](https://supabase.com) e uma chave do [ESRI ArcGIS](https://developers.arcgis.com). As Netlify Functions rodam com o [Netlify CLI](https://docs.netlify.com/cli/get-started/).
 
 ```bash
 git clone https://github.com/brunokobi/projeto-portifolio.git
@@ -138,286 +132,71 @@ cd projeto-portifolio
 npm install
 ```
 
-### Variáveis de ambiente
-
-Crie um arquivo `.env.local` na raiz (veja `.env.example` para referência completa):
+Crie um `.env.local` na raiz (o `.env.example` tem a lista completa):
 
 ```env
 VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
 VITE_ESRI_API_KEY=AAPTxy8BH...
-RESEND_API_KEY=re_xxxx          # Netlify env var — envio de email do formulário de contato
-CONTACT_TO_EMAIL=seu@email.com  # Netlify env var — destino das notificações (opcional)
-TELEGRAM_BOT_TOKEN=123456:ABC   # Netlify env var — bot de alertas em tempo real
-TELEGRAM_CHAT_ID=-100xxxx       # Netlify env var — chat/grupo que recebe os alertas
-
-# OpenTelemetry (opcional — se não configurado, tracing é desativado silenciosamente)
-OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-0.grafana.net/otlp
-OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic xxxx  # token do Grafana Cloud / Honeycomb
 ```
 
-### Comandos
+As variáveis das Netlify Functions ficam no painel do Netlify:
+
+| Variável | Uso |
+|---|---|
+| `N8N_WEBHOOK_URL` | Webhook do JARVIS no n8n (obrigatória para o chat) |
+| `RESEND_API_KEY`, `CONTACT_TO_EMAIL` | E-mail do formulário de contato |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Alertas no Telegram |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_HEADERS` | Tracing (opcional) |
 
 ```bash
-npm start          # Desenvolvimento (Vite dev server, porta 3000)
-npm run build      # Build de produção (saída em /dist)
-npm run preview    # Pré-visualizar build de produção localmente
-npm test           # Testes em modo watch
-npm run test:run   # Testes CI (execução única)
-npm run coverage   # Cobertura de testes (relatório HTML)
-npx playwright test  # Testes E2E (requer Playwright instalado)
+npm start            # Dev server na porta 3000
+npm run build        # Build de produção em /dist
+npm run preview      # Serve o build localmente
+npm test             # Testes em modo watch
+npm run test:run     # Testes uma vez (CI)
+npm run coverage     # Cobertura
+npx playwright test  # Testes E2E
+netlify dev          # App + Netlify Functions
 ```
-
-> Para testar as Netlify Functions localmente, use `netlify dev` no lugar de `npm start`.
 
 ---
 
-## 🌍 Feature: Globo 3D Interativo com Modo Dia/Noite
+## 🌍 Globo 3D ao vivo (Home)
 
-> **Complexidade:** ⭐⭐⭐⭐ — ArcGIS SceneView 3D + NASA GIBS WMTS + BaseTileLayer customizado + geolocalização + arcos de voo animados
+> **Complexidade:** ⭐⭐⭐⭐⭐ — ArcGIS SceneView + canvas sobreposto + 10 fontes de dados públicas + SGP4 no navegador
 
-Globo 3D em tempo real renderizado com **ArcGIS SceneView** com iluminação virtual uniforme (cobre o globo inteiro), sistema de dia/noite alternável e visualização de luzes da Terra à noite via **NASA Black Marble**.
+O fundo da Home é um globo 3D (`src/components/GlobeBackground/`) feito com o **ArcGIS Maps SDK**. Nenhuma camada usa dado simulado: quando uma fonte real não funcionou, a camada saiu do globo.
 
-### Modo Dia
-- Basemap de satélite de alta resolução (`World_Imagery` — ESRI)
-- Iluminação virtual uniforme: o globo inteiro exibe o mapa de dia
-- Rotação automática com pausa ao interagir
+### Base do globo
 
-### Modo Noite (`☾ NOITE` na barra de clima)
-- Troca para **NASA Black Marble 2016** (`VIIRS_Black_Marble` via NASA GIBS WMTS)
-- Tiles coloridos em tempo real via `BaseTileLayer` com processamento canvas pixel a pixel:
-  - Preto → preto (oceano sem luz)
-  - Baixo brilho → âmbar (subúrbios)
-  - Alto brilho → dourado (centros urbanos)
-  - Núcleo → branco-dourado (metrópoles)
-- Escurecimento do globo para realismo noturno (`brightness(0.6)`)
-- Preferência salva em `localStorage`
+- **Dia:** imagem de satélite `World_Imagery` da Esri, com iluminação uniforme no globo inteiro.
+- **Noite** (botão `☾ NOITE`): luzes da Terra do **NASA Black Marble** (VIIRS, via NASA GIBS). Um `BaseTileLayer` próprio recolore cada tile pixel a pixel: oceano em preto puro e cidades de âmbar a dourado.
+- **Relevo:** `WorldElevation3D` com montanhas exageradas 40× e fundo do mar 60×.
+- **Nuvens:** esfera com textura de nuvens da NASA (imagem fixa, não ao vivo).
+- **Entrada:** a câmera parte de 65.000 km e desce até ~20.000 km em 4 s; a rotação automática começa depois.
 
-### Outros recursos do globo
-- **Pin de geolocalização** amarelo pulsante com nome da cidade do visitante (browser Geolocation API + Nominatim reverse geocoding)
-- **26 pins** de cidades globais com animação de pulso verde
-- **Arcos de voo** animados ao clicar num pin: trajetória esférica (`SLERP`) até Vitória-ES
-- **Clique no mapa**: exibe coordenadas lat/lon em popup
+### Camadas em tempo real
 
----
+Cada camada tem um botão ON/OFF na barra do topo (`WeatherBar`). A escolha fica salva no navegador.
 
-## 🤖 Feature: JARVIS — Assistente Virtual com Voz
+| Camada | Fonte | Atualização | Hover |
+|---|---|---|---|
+| 🛰️ Satélites | CelesTrak (GPS, Galileo, meteorológicos) + SGP4 (`satellite.js`) | Posição a cada 10 s, TLE em cache de 2 h | Nome e altitude |
+| 🛰 ISS | wheretheiss.at | 8 s | Altitude e velocidade |
+| 🏙️ Cidades | `CITIES` + Open-Meteo + OpenAQ (Living Atlas) | Clima em cache de 2 h | Hora local, clima, temperatura e qualidade do ar |
+| 🔥 Incêndios | NASA VIIRS (Living Atlas): últimas 6 h, confiança alta, FRP ≥ 10 | Ao carregar | Satélite, potência e confiança |
+| ⚠️ Alertas | CAP Alerts Feed (Living Atlas) | Ao carregar | Evento, severidade, área e órgão |
+| 🌍 Terremotos | USGS, M4.5+ das últimas 24 h | Ao carregar | Magnitude, local e há quanto tempo |
+| 🌋 Vulcões | Smithsonian GVP (425 vulcões) | Ao carregar | Nome, país, tipo e altitude |
+| 🌀 Furacões | Active Hurricanes (Living Atlas, NHC + JTWC) | Ao carregar | Nome, categoria, vento e pressão |
+| 💨 Vento | Grade GFS de 1° (`firestorm-wind-data`) | Ao carregar | 700 partículas coloridas pela velocidade |
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — agente n8n com perfil gerado no build + voz neural Piper + transcrição Whisper, tudo self-hosted em VPS própria
+Ficaram de fora: aviões (o OpenSky bloqueia CORS), Starlink (o CelesTrak responde 403), nuvens ao vivo (exigem autenticação), correntes marítimas (limite de requisições) e aurora boreal.
 
-Assistente que responde sobre o Bruno por texto e por voz: o visitante fala, o **Whisper** transcreve, o agente do **n8n** responde e o **Piper** lê a resposta em voz alta. Os três rodam na VPS da Oracle Cloud, atrás da Cloudflare.
+### 69 polos de tecnologia
 
-### Por que um agente só, com o perfil no prompt?
-
-A versão anterior tinha um roteador, 7 agentes especializados e busca vetorial no Supabase pgvector. Ela inventava experiência: os agentes não tinham fatos no prompt e nem sempre chamavam a busca. Hoje o build gera `/jarvis/perfil.md` a partir dos mesmos textos do site (currículo, projetos e skills do `pt.json`), e um único agente recebe esse perfil inteiro como **única fonte**. Mudou o currículo no site, o JARVIS já sabe no próximo deploy.
-
-### Fluxo completo
-
-```
-Visitante fala
-  → useWhisperRecorder grava no navegador e para após 1,5s de silêncio
-  → POST https://whisper.brunokobi.tech/inference (Whisper na VPS)
-  → texto transcrito vai como pergunta
-  → POST /.netlify/functions/n8n-chat { chatInput, sessionId } (proxy, esconde a URL do n8n)
-  → n8n: Chat Trigger → baixa /jarvis/perfil.md → agente JARVIS (memória de 10 mensagens)
-  → resposta curta, escrita para ser ouvida
-  → GET https://tts.brunokobi.tech/tts.mp3 (Piper na VPS), trecho a trecho
-  → voz do navegador como alternativa se o Piper falhar
-```
-
-### Como o JARVIS fala
-
-- Persona do J.A.R.V.I.S.: calmo, educado, humor seco e discreto
-- Até ~60 palavras em texto corrido, sem listas nem links, a não ser que o visitante peça
-- Fala do Bruno em terceira pessoa e diz que não sabe quando a informação não está no perfil, sem inventar
-- Entende erros de transcrição pelo contexto ("Venix" é Vennx, "Cobi" é Kobi)
-
-### Infraestrutura
-
-- **Oracle Cloud VPS (ARM64)**, com Traefik (Coolify) atrás do proxy da Cloudflare
-- **Piper TTS:** FastAPI + `piper-tts`, vozes masculinas em pt, en, es, fr, de, ru e ar, uma síntese por vez, limite de 1 CPU, 30 sínteses por minuto por IP e cache de 30 dias na Cloudflare
-- **Whisper:** whisper.cpp atrás de um gateway FastAPI, com CORS liberado só para o site
-
----
-
-## 💬 Feature: Chat IA — JARVIS
-
-Widget de chat (`ChatWidget`) em que o assistente se apresenta como **JARVIS**, com resposta via agente n8n (chatBruno), voz (TTS) e uma interface visual em canvas.
-
-- **Saudação dinâmica:** ao abrir o widget, `src/utils/generateGreeting.ts` usa a geolocalização do navegador, o clima (Open-Meteo) e a cidade (Nominatim) para saudar com "Bom dia/Boa tarde/Boa noite", cidade, temperatura e condição ("Em Serra agora faz 27°C, com chuva"); sem geolocalização, usa uma apresentação fixa. É falada se o áudio estiver ativo e o navegador permitir
-- **Voz:** voz neural **Piper** servida pela VPS em `tts.brunokobi.tech` (pt, en, es, fr, de, ru e ar), com a voz do navegador (Web Speech API) para o chinês e como alternativa se o Piper falhar (`src/utils/piperTts.ts` e `src/utils/textToSpeech.ts`); a fala do chat usa velocidade 1.4 (`src/hooks/useChatWithAudio.ts`)
-- **JARVIS Core:** núcleo animado em canvas no cabeçalho do chat (`src/components/ChatWidget/JarvisCore.tsx`), com quatro estados mostrados também em texto: Online, Pensando..., Falando... e Ouvindo...; com a voz do Piper as barras seguem o espectro real da fala (`AnalyserNode`); com a voz do navegador o espectro é animado
-- **Sugestões de perguntas:** botões prontos (Quem é o Bruno?, Projetos, Tecnologias, Experiência, Contato) até o visitante fazer a primeira pergunta
-- **Indicador de digitando:** três pontos animados enquanto o agente responde
-- **Respostas formatadas:** negrito, listas e links clicáveis, sem os asteriscos do markdown (`formatMessage.tsx`, sem injetar HTML)
-- **Perguntar por voz:** o botão de microfone grava no navegador e transcreve no Whisper self-hosted (`whisper.brunokobi.tech`, `src/hooks/useWhisperRecorder.ts`); para sozinho depois de 1,5s de silêncio e envia a pergunta. Um prompt com o vocabulário do site (JARVIS, Kobi, Vennx, React, n8n) ajuda o Whisper a acertar os nomes. Navegador que não grava áudio usa o reconhecimento de voz do próprio navegador (`src/hooks/useSpeechRecognition.ts`)
-- **Item JARVIS no menu de baixo:** abre o mesmo chat do botão flutuante, para quem não percebe o ícone
-- **Conversa por voz:** depois de responder uma pergunta falada, o JARVIS volta a ouvir sozinho; se você não falar em 6s, o microfone fecha. Digitar uma pergunta ou parar a fala encerra o modo
-- **Layout:** o chat ocupa a altura do painel lateral, sem rolagem da página; só a lista de mensagens rola
-- **Backend:** workflow n8n via `netlify/functions/n8n-chat.ts` (ver a seção acima e [docs/FEATURES.md](docs/FEATURES.md#-chat-ia-n8n))
-
----
-
-## 📰 Feature: Painel de Notícias de IA em Tempo Real
-
-> **Complexidade:** ⭐⭐⭐⭐⭐ — CORS proxy serverless + RSS multi-formato + scoring tiered + hero carousel + tradução automática com prioridade + anti-spam
-
-Um painel completo que agrega **52 feeds RSS** de fontes globais de IA (incluindo OpenAI, Anthropic, DeepMind, NVIDIA), com sistema de pontuação por relevância, filtro de artigos anteriores a 2025, tradução automática para português e carrossel principal com seleção das melhores notícias do momento.
-
-### Fluxo completo
-
-```
-Browser
-  → /.netlify/functions/news?url=<encoded_feed_url>
-  → Netlify Function busca XML com User-Agent e timeout 8s
-  → Retorna XML com headers CORS + Cache-Control 5min
-Browser
-  → parseRSS() — extrai título, link, data, imagem (RSS 2.0 / Atom / Media RSS)
-  → cleanDesc() — remove boilerplate legal com regex patterns
-  → Pré-score heroScore() — identifica candidatos ao carrossel antes da tradução
-  → translateArticles(raw, heroLinkSet)
-      · Candidatos do hero entram no 1º lote (título + desc traduzidos)
-      · Demais artigos não-BR: até 80 por ciclo (batches de 5)
-      · sl=auto — detecta inglês, chinês, japonês etc.
-  → scoreArticle() — pontua todos os artigos
-  → isTooOld() — rejeita artigos anteriores a 2025-01-01
-  → isSpam() — filtra promoções e eletrônicos de consumo
-  → isRelevant() — fontes mistas exigem keyword de IA/dev
-  → heroSlides: artigos < 7 dias, ordenados por heroScore()
-  → sorted: todos filtrados, por importância ou data (escolha do usuário)
-  → Cache in-memory por 5 minutos
-```
-
-### Sistema de scoring do carrossel (heroScore)
-
-O hero carousel usa um scoring independente, focado em **recência + impacto**, com bônus tiered por fonte e keywords com cap para evitar inflação artificial:
-
-```typescript
-// Bônus por fonte — labs primários lideram
-const HERO_SOURCE_BONUS = {
-  Anthropic: 32, OpenAI: 32,       // primários
-  DeepMind: 28,  "Google Res.": 24, "NVIDIA Blog": 22,  // grandes players
-  "MIT Tech Rev": 18, HuggingFace: 16, TechCrunch: 13,  // jornalismo especializado
-};
-
-function heroScore(article) {
-  let s = HERO_SOURCE_BONUS[source] ?? SOURCE_PRESTIGE[source] ?? 3;
-
-  // Keywords de lançamento (cap 2 = máx +44)
-  // "launch", "release", "gpt-5", "claude 4", "gemini 2"...
-  s += launchKeywords (até 2 matches × +22);
-
-  // Spotlight empresa/modelo (cap 2 = máx +28)
-  // "openai", "anthropic", "deepseek", "grok", "nvidia"...
-  s += spotlightKeywords (até 2 matches × +14);
-
-  // Recência dominante — breaking news sempre vence
-  const h = horasDesdePublicação;
-  s += h < 2 ? 55 : h < 6 ? 44 : h < 12 ? 33 : h < 24 ? 20 : h < 48 ? 8 : 0;
-
-  if (article.desc?.length > 40) s += 4; // qualidade visual no slide
-  return s;
-}
-
-// Exemplo: OpenAI anuncia GPT-5, publicado há 1h
-// 32 (base) + 22 (launch) + 22 (gpt-5) + 14 (openai) + 14 (gpt) + 55 (< 2h) + 4 = 163 pts
-```
-
-### Filtro de relevância por fonte
-
-Fontes mistas (Tecnoblog, NeoFeed, SCMP, ETH Zurich etc.) só exibem artigos que contenham ao menos uma keyword de IA/dev: `inteligência artificial`, `machine learning`, `llm`, `openai`, `kubernetes`, `cibersegurança`...
-
-### Netlify Function (proxy RSS)
-
-```typescript
-export const handler: Handler = async (event) => {
-  const feedUrl = event.queryStringParameters?.url;
-  const res = await fetch(feedUrl, {
-    headers: { "User-Agent": "Mozilla/5.0", Accept: "application/rss+xml, */*" },
-    signal: AbortSignal.timeout(8000),
-  });
-  return {
-    statusCode: 200,
-    headers: {
-      "Content-Type": "application/xml",
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, max-age=300",
-    },
-    body: await res.text(),
-  };
-};
-```
-
-### Fontes ativas (52)
-
-**Brasil 🇧🇷** — SWEN.AI · AINEWS · Exame IA · NeoFeed · Tecnoblog · Olhar Digital · TabNews · Manual Usuário · MIT Tech BR · Brazil Journal
-
-**Labs primários 🌎** — OpenAI · Anthropic · DeepMind · Google Research · NVIDIA Blog
-
-**Pesquisa 🔬** — MIT News · MIT Tech Rev · BAIR · The Gradient · IEEE Spectrum · IEEE TV AI · arXiv cs.AI · Apple ML · Stanford AI · ScienceDaily · ETH Zurich · TUM
-
-**Indústria 🌎** — The Verge · TechCrunch · Wired AI · AI News · AI Insider · AI Weekly · MarkTechPost · AWS ML · Reuters Inst. Oxford
-
-**Modelos & Tools** — HuggingFace · KDnuggets · fast.ai · TensorFlow · Towards AI · LangChain
-
-**Ásia & China 🌏** — AI Singapore · RIKEN AIP · Synced · ChinAI Newsletter · SCMP Tech
-
-**Engenharia 💻** — Pragmatic Eng. · Martin Fowler · Netflix Tech · n8n Blog · Supabase
-
----
-
-## ⚡ Feature: Formulário de Contato com Email Transacional
-
-> **Complexidade:** ⭐⭐⭐⭐ — Two-step submit: Supabase INSERT (audit) + Netlify Function → Resend API
-
-Quando um visitante envia o formulário, o fluxo ocorre em dois passos independentes: primeiro persiste no banco (audit trail garantido), depois a Netlify Function chama a **Resend API** diretamente para enviar a notificação.
-
-```
-Formulário (React)
-  → Passo 1: Supabase INSERT (tabela contatos, RLS ativo) — audit trail
-  → Passo 2: POST /.netlify/functions/chat
-      → Netlify Function (TypeScript)
-          → Resend API — envia notificação HTML para o dono do portfólio
-  → Feedback ao usuário:
-      · Banco OK + email OK  → toast "SINAL RECEBIDO" (verde)
-      · Banco OK + email fail → toast "SINAL PARCIAL" (aviso)
-      · Banco fail            → toast "FALHA NA TRANSMISSÃO" (erro)
-```
-
-### Por que two-step e não tudo na function?
-
-| Abordagem              | Vantagem                                                    |
-| ---------------------- | ----------------------------------------------------------- |
-| Só Netlify Function    | Mensagem perdida se function falhar                         |
-| **Two-step** ✅         | Dado sempre persistido; email é melhor esforço com feedback |
-
----
-
-## 🌐 Feature: Globo 3D Interativo — Background da Home
-
-> **Complexidade:** ⭐⭐⭐⭐⭐ — ESRI SceneView 3D + Canvas overlay + slerp + geolocalização + câmera dinâmica
-
-O globo 3D que serve como plano de fundo da Home é muito mais do que uma animação decorativa — é um sistema geoespacial interativo completo construído sobre a **ESRI ArcGIS Maps SDK**.
-
-### Configuração visual
-
-- Satélite imagery (`World_Imagery`) como basemap diurno
-- **NASA Black Marble** via MapTiler (`earth-at-night`) como basemap noturno — luzes das cidades reais à noite em cores reais
-- Elevação exagerada: montanhas ×40, batimetria ×60 — relevo visível do espaço
-- Camada de nuvens com textura NASA real (`clouds-nasa.png`)
-- Esfera oceânica metálica azul como fundo dos oceanos
-- Atmosfera realista `quality: "high"` — glow azul nas bordas do planeta
-- Estrelas (`starsEnabled: true`) — fundo espacial ao redor do globo
-- Iluminação solar baseada na data/hora atual — posição real do sol no céu
-- Zoom de 4 Mm a 25 Mm de altitude (scroll do mouse)
-
-### Animação de Entrada
-
-Ao carregar a página, a câmera parte de **65 Mm de altitude** (visão galáctica completa do planeta) e faz um zoom dramático até a posição padrão (~20 Mm) com easing `out-expo` em 4 segundos — dando a sensação de "pousar" na Terra vindo do espaço. A rotação automática só inicia após o zoom completar.
-
-### 69 Pins de Cidades Globais
-
-69 polos de tecnologia, escolhidos entre as maiores manchas de luz noturna do planeta. Quando dois nomes se encostariam na tela, só o da cidade que vem antes na lista `CITIES` aparece; o anel das duas continua visível.
+Anéis verdes pulsantes nos maiores polos de tecnologia, escolhidos entre as maiores manchas de luz noturna. O card de hover mostra a descrição, a hora local, o clima e a qualidade do ar da estação mais próxima (até 50 km; sem estação, o card fica sem esse dado).
 
 | Continente | Cidades |
 |---|---|
@@ -429,288 +208,122 @@ Ao carregar a página, a câmera parte de **65 Mm de altitude** (visão galácti
 | Ásia | Tóquio, Osaka, Seul, Pequim, Xangai, Shenzhen, Hong Kong, Taipei, Singapura, Kuala Lumpur, Jacarta, Ho Chi Minh, Bangkok, Manila, Bangalore, Hyderabad, Mumbai, Délhi |
 | Oceania | Sydney, Melbourne, Auckland |
 
-**Visibilidade inteligente** via produto escalar câmera × cidade — pins aparecem apenas no lado visível do globo, sem atravessar a esfera. **Canvas overlay** animado via `requestAnimationFrame`: anel verde Matrix pulsante + glow nos pins. **Cursor pointer** ao passar o mouse sobre qualquer pin (detectado via `pointer-move` do ESRI).
+Quando dois nomes se encostariam na tela, só aparece o da cidade que vem antes em `CITIES`; o anel das duas continua visível.
 
-### Pin do Visitante (Geolocalização)
+### Interação
 
-Ao aceitar a permissão de localização, um **pin amarelo pulsante** aparece na posição real do visitante. O nome da cidade é obtido via **Nominatim (OpenStreetMap)** — gratuito, sem API key.
+- **Seu pin:** com a localização liberada, um pin amarelo marca onde você está, com o nome da cidade pelo Nominatim.
+- **Arcos de voo:** clicar num pin desenha um arco laranja animado até Vitória-ES pelo grande círculo (interpolação esférica em 81 pontos, pico de 1.200 km). A câmera segue a ponta do arco e a rotação volta quando ele some.
+- **Arrastar** pausa a rotação por 3 s. **Clicar** no globo mostra a latitude e a longitude do ponto.
+- **Zoom** de 4.000 a 25.000 km. Os ícones diminuem com a câmera longe e as linhas de vento engrossam de perto (`iconScale.ts`).
 
-### Arcos de Voo Animados
+### Como funciona por dentro
 
-Clique em qualquer pin verde → arco **laranja animado** traçando a rota até Vitória-ES pelo grande círculo terrestre:
+- Um canvas 2D fica por cima do globo e é redesenhado a cada quadro com `requestAnimationFrame`.
+- Cada ponto só é desenhado se estiver no lado da Terra virado para a câmera (`isFacing`, produto escalar) e é projetado na tela com `view.toScreen`.
+- Cada fonte tem seu próprio arquivo, timeout e devolve lista vazia se falhar: uma API fora do ar apaga só a sua camada.
+- O build não renomeia identificadores (`minifyIdentifiers: false`), porque a renomeação quebrava os handlers de hover em produção.
 
-```
-Clique no pin
-  → slerp(fromCity, Vitória-ES, t) — interpolação esférica em 81 pontos
-  → altitude parabólica (pico de 1.200 km acima da superfície)
-  → canvas desenha o arco frame a frame (2,8 s de traçado)
-  → ponto laranja na ponta simula o "avião"
-  → label "✈ Tokyo → Vitória-ES" no meio do arco
-  → arco some após ~5,5 s (desenho + hold + fade)
-```
-
-### Câmera Dinâmica
-
-| Fase | Comportamento |
-|---|---|
-| Rotação normal | Auto-rotação contínua (−0,15°/frame) |
-| Arco `drawing` | Câmera segue a ponta do arco com lerp suave |
-| Arco `holding` | Câmera estabiliza sobre Vitória-ES |
-| Arco `fading` | Auto-rotação retoma automaticamente |
-| Drag do usuário | Pausa a rotação por 3 s, depois retoma |
-
-### Controles
-
-- **Clique no globo** → popup com coordenadas lat/lon do ponto clicado
-- **Botão ☾ NOITE / ☀ DIA** (no WeatherBar) — alterna para NASA Black Marble (MapTiler) + rotaciona o sol 12 h para o terminador real
+Detalhes de cada camada: [docs/FEATURES.md](docs/FEATURES.md). História completa no post do blog *"O globo do meu portfólio"*.
 
 ---
 
-## 🌍 Feature: Globo 3D com Overlays Geoespaciais em Tempo Real
+## 🤖 JARVIS — assistente com voz
 
-> **Complexidade:** ⭐⭐⭐⭐⭐ — Canvas overlay + coordinate transformation (lat/lon → screen) + 2h weather cache + real-time API polling + toggle UI + localStorage persistence
+> **Complexidade:** ⭐⭐⭐⭐⭐ — agente n8n com perfil gerado no build + Whisper + Piper, tudo self-hosted
 
-Sistema completo de visualização de dados geoespaciais em tempo real sobre o globo 3D interativo. As features abaixo aparecem sobre o mapa com hover interativo, informações dinâmicas e controles ON/OFF individuais.
+O visitante pergunta por texto ou por voz: o **Whisper** transcreve, o agente do **n8n** responde e o **Piper** lê a resposta em voz alta. Os três rodam na VPS da Oracle Cloud, atrás da Cloudflare.
 
-### Features suportadas
+### Por que um agente só, com o perfil no prompt
 
-| Feature | Ícone | Fonte | Atualização | Hover Info |
-|---|---|---|---|---|
-| **Satélites** | 🛰️ | CelesTrak (TLE de GPS, Galileo e meteorológicos) + SGP4 (`satellite.js`) | Posição recalculada a cada 10s (TLE em cache por 2h) | Nome e altitude |
-| **ISS** | 🛰️ | wheretheiss.at | 8s | Altitude e velocidade |
-| **Cidades** | 🏙️ | `CITIES` (`geo.ts`) + Open-Meteo | Clima com cache de 2h | Hora local, temperatura, clima, AQI, país |
-| **Qualidade do Ar** | 💨 | OpenAQ PM2.5 via ArcGIS Living Atlas (estação a até 50 km da cidade) | Ao carregar a página | Só no card de hover da cidade |
-| **Incêndios** | 🔥 | NASA VIIRS via ArcGIS Living Atlas (últimas 6h, confiança alta) | Ao carregar a página | Local e confiança da detecção |
-| **Alertas** | ⚠️ | CAP Alerts Feed via ArcGIS Living Atlas (avisos oficiais) | Ao carregar a página | Evento, severidade, área e órgão emissor |
-| **Terremotos** | 🌍 | USGS (M4.5+ das últimas 24h) | Ao carregar a página | Magnitude, local e há quanto tempo |
-| **Vulcões** | 🌋 | Smithsonian GVP | Ao carregar a página | Nome, país, tipo e elevação |
-| **Furacões** | 🌀 | Active Hurricanes via ArcGIS Living Atlas (NHC + JTWC) | Ao carregar a página | Nome, categoria, velocidade do vento e pressão |
-| **Vento** | 💨 | Grade de vento de superfície (modelo GFS, 1°) do repositório público `firestorm-wind-data` | Ao carregar a página (o repositório é atualizado periodicamente) | — |
+A versão anterior tinha um roteador, 7 agentes especializados e busca vetorial, e inventava experiência porque os agentes nem sempre buscavam os fatos. Hoje o build gera `/jarvis/perfil.md` a partir dos mesmos textos do site (currículo, projetos e skills), e um único agente recebe esse perfil inteiro como **única fonte**. Mudou o site, o JARVIS já sabe no próximo deploy.
 
-Aviões (OpenSky) estão desligados porque a API bloqueia chamadas do navegador (CORS).
+### Fluxo
 
-### Implementação técnica
-
-**Renderização:**
-- Canvas overlay 2D sobre o globo 3D
-- Coordenadas lat/lon convertidas para screen coordinates via `view.toScreen()`
-- Visibilidade inteligente: `isFacing()` filtra pontos no lado visível do globo (sem atravessar a esfera)
-- Z coordinate para depth rendering correto em 3D
-
-**Interação:**
-- Hover detection com `mousemove` — detecta proximidade de pontos em pixels (10–15px de raio)
-- Pontos de cidade (`CITIES`) são anéis verdes pulsantes; o AQI não é desenhado como ponto no mapa, só no card de hover da cidade, buscado na hora do primeiro hover (estação real a até 50 km; sem estação, o card fica sem AQI)
-- Clique em pins abre tooltip customizado com dados contextuais
-
-**Tamanho pelo zoom:**
-- `iconScale.ts` calcula um fator pela altitude da câmera: tamanho cheio até 8.000 km e metade a partir de 22.000 km. Raios, offsets e fontes de todas as camadas são multiplicados por ele (fonte mínima de 7px). As linhas de vento fazem o contrário e engrossam com a câmera perto (3,5px a 4.000 km, 1,1px a partir de 22.000 km).
-- Com o globo afastado, as legendas curtas dos satélites ("Nav", "Weather") somem; o nome continua no hover.
-
-**Performance:**
-- Satélites: polling de 10s só recalcula a posição pelo SGP4; o TLE é baixado do CelesTrak no máximo a cada 2h
-- Weather cache com 2h TTL — previne overload da Open-Meteo API ao fazer hover repetido
-- Lazy loading dos dados — arrays de screen positions resetados apenas quando feature toggled ou dados mudaram
-- RequestAnimationFrame — todos os cálculos sincronizados com frame do navegador
-
-### WeatherBar — Controles ON/OFF
-
-Botões toggle individuais para cada feature na barra de clima (superior):
 ```
-🌙 NOITE  💨 VENTO  🛰️ ISS  🌀 FUR  🌍 TERREMOTOS  🌋 VULCÕES  🛰️ SAT  🔥 FOGO  ⚠️ ALERTAS
+Visitante fala
+  → useWhisperRecorder grava e para após 1,5 s de silêncio
+  → POST whisper.brunokobi.tech/inference (com um prompt de vocabulário: JARVIS, Kobi, Vennx...)
+  → POST /.netlify/functions/n8n-chat { chatInput, sessionId }
+  → n8n: Chat Trigger → baixa /jarvis/perfil.md → agente (memória de 10 mensagens)
+  → resposta curta, escrita para ser ouvida
+  → GET tts.brunokobi.tech/tts.mp3, trecho a trecho
+  → voz do navegador se o Piper falhar
 ```
 
-- Na Home, a barra aparece quando o globo termina de carregar (`src/utils/globeReady.ts`); nas outras páginas aparece na hora
-- Os botões não dependem do clima: temperatura e cidade entram quando o Open-Meteo responde e ficam ocultas se falhar
-- Geolocalização do navegador com timeout de 8s; sem resposta ou negada, cai para `ipapi.co`
-- Cada toggle emite CustomEvent capturado pelo GlobeBackground
-- Estado salvo em localStorage — preferências persistem entre sessões
-- Visual feedback: botão ativo (verde) vs. inativo (cinza)
+### O que o widget faz
 
-### Cidades com Clima & Hora Local
+- **Saudação** com bom dia/boa tarde/boa noite, cidade, temperatura e clima (Open-Meteo e Nominatim); sem localização, uma apresentação fixa.
+- **Núcleo animado** (`JarvisCore.tsx`) com os estados Online, Pensando, Falando e Ouvindo. Com a voz do Piper, as barras seguem o espectro real da fala (`AnalyserNode`).
+- **Conversa por voz:** depois de responder uma pergunta falada, o JARVIS volta a ouvir sozinho; 6 s sem fala fecham o microfone.
+- **Pronúncia:** um dicionário faz o Piper dizer "Cóbi", "Vénix" e "Járvis", e links e e-mails são lidos sem soletrar.
+- Sugestões de perguntas, indicador de digitando e respostas com negrito, listas e links (sem injetar HTML).
+- Abre pelo botão flutuante, pelo item **JARVIS** do menu de baixo e pela rota `/chat`.
+- Cada pergunta e resposta chega no Telegram do Bruno (ver [Alertas](#-alertas-no-telegram)).
 
-Todas as **69 cidades** do globo (`CITIES` em `geo.ts`, marcadas por anéis verdes pulsantes) exibem no card de hover:
-- **Hora local** 🕐 — convertida via `Intl.DateTimeFormat` para o timezone da cidade (Open-Meteo, `timezone=auto`)
-- **Temperatura** — arredondada em °C
-- **Condição do tempo** — emoji WMO (☀️, 🌧️, ⛈️, etc.)
-- **AQI** — tag com valor e classificação qualitativa: Bom (≤50), Moderado (≤100), Insalubre (Sensíveis) (≤150), Insalubre (≤200), Muito Insalubre (≤300), Perigoso (>300)
+### Infraestrutura de voz
 
-Exemplo de card ao passar o mouse em Londres:
-```
-Londres 🇬🇧
-Principal ecossistema de fintech...
-
-🕐 14:30
-☀️ 24°C
-
-Fintech  IA  DeFi  💨 AQI: 45 (Bom)
-```
-
-### APIs utilizadas
-
-| Fonte | Endpoint | Limite Free | Uso |
-|---|---|---|---|
-| Open-Meteo | `api.open-meteo.com/v1/forecast` | Ilimitado | Clima + timezone (2h cache) |
-| CelesTrak | `celestrak.org/NORAD/elements/gp.php` | ~1 consulta por grupo a cada 2h | TLEs de GPS, Galileo e meteorológicos (satélites) |
-| wheretheiss.at | `api.wheretheiss.at/v1/satellites/25544` | Sem chave | Posição da ISS (8s) |
-| ArcGIS Living Atlas | `services9.arcgis.com/.../FeatureServer` | Sem chave | Furacões (NHC + JTWC), incêndios (NASA VIIRS), alertas CAP, AQI (OpenAQ PM2.5) |
-| USGS | `earthquake.usgs.gov/.../4.5_day.geojson` | Sem chave | Terremotos M4.5+ das últimas 24h |
-| Smithsonian GVP | gist público `world_volcanoes.json` | — | 425 vulcões |
-| firestorm-wind-data | GitHub raw `current-wind-surface.json` | — | Grade de vento GFS |
-
-Aviões (OpenSky) estão desligados: a API bloqueia chamadas do navegador (CORS).
-
----
-
-## 🌍 Feature: Mapa 3D Geoespacial (ESRI ArcGIS)
-
-> **Complexidade:** ⭐⭐⭐⭐ — ArcGIS API + lazy loading + WebGL 3D + fotos próprias nos marcadores
-
-Módulo de mapa dedicado (`/map`) com a **ESRI ArcGIS Maps SDK** em WebGL:
-
-- Terreno 3D interativo com globo animado e nuvens (NASA textures)
-- Marcadores customizados com **fotos próprias** nos pontos turísticos
-- Geolocalização dinâmica do usuário
-- Lazy loading via `React.lazy` — zero impacto no bundle inicial
-
----
-
-## 🌀 Feature: Furacões e Tempestades em Tempo Real
-
-> **Complexidade:** ⭐⭐⭐⭐ — feed global do ArcGIS Living Atlas + de-dup por tempestade + rendering canvas + toggle ON/OFF + localStorage persistence
-
-Sistema de rastreamento de ciclones tropicais (furacões, tufões e ciclones) integrado ao globo 3D, sem chave de API.
-
-### Funcionamento
-
-- **Dados reais via ArcGIS Living Atlas** — serviço "Active Hurricanes, Cyclones and Typhoons" (`Active_Hurricanes_v1`), que junta o NHC (Atlântico e Pacífico) e o JTWC (Índico, Hemisfério Sul e Pacífico Oeste). Cobre o globo inteiro e libera CORS, sem proxy.
-- **Uma posição por tempestade** — a consulta ordena por `STORMID, DTG DESC` e o código fica só com a observação mais recente de cada uma.
-- **Carregamento único** — dados carregam quando o globo monta (sem polling contínuo); cache em memória de 60 s
-- **Renderização visual** — espirais coloridas no mapa 3D, raio pela velocidade do vento e cor pela categoria Saffir-Simpson
-- **Hover interativo** — tooltip mostra nome, categoria, velocidade do vento (km/h) e pressão (mb)
-- **Toggle ON/OFF** — botão `🌀` na WeatherBar, com persistência em localStorage
-
-Até 08/10/2026 os dados vinham de 5 feeds RSS da NOAA por um proxy (`/api/noaa/*` em `public/_redirects` e `netlify/functions/noaa.ts`). Esse proxy foi removido do repositório em 02/11/2026.
-
-### Categorias de cor (Saffir-Simpson)
-
-| Categoria | Cor | Velocidade |
+| Serviço | Como roda | Limites |
 |---|---|---|
-| Tropical Storm | Amarelo | < 119 km/h |
-| Cat 1 | Ciano | 119–153 km/h |
-| Cat 2 | Amarelo-ouro | 154–177 km/h |
-| Cat 3 | Laranja | 178–208 km/h |
-| Cat 4 | Vermelho | 209–251 km/h |
-| Cat 5 | Vermelho escuro | ≥ 253 km/h |
+| Piper TTS | FastAPI + `piper-tts`, vozes masculinas em pt, en, es, fr, de, ru e ar | 1.200 caracteres por pedido, 30 sínteses/min por IP, cache de 30 dias na Cloudflare |
+| Whisper | whisper.cpp (modelo base) atrás de um gateway FastAPI | CORS só para o site, timeout de 30 s no cliente |
 
-### Integração com o globo
-
-Os eventos aparecem como marcadores animados sobrepostos ao mapa 3D:
-- Latitude/longitude posicionadas em tempo real
-- Símbolos de espiral com label do nome
-- Diminuem conforme a câmera se afasta, como os outros ícones do globo
-- Desaparecem quando o toggle é desligado
-
-Não há variável de ambiente nem chave de API para essa feature (a antiga `VITE_OPENWEATHER_KEY` e os dados mock Milton/Helene não existem mais no código).
+A mesma voz do Piper lê os textos do site no hover (acessibilidade), com a voz do navegador para o chinês.
 
 ---
 
-## 🌤️ Feature: Clima em Tempo Real com Fallback GPS → IP
+## 📰 Painel de notícias de IA
 
-> **Complexidade:** ⭐⭐⭐⭐ — Dual-source geolocation + Open-Meteo API + 22 códigos WMO
+> **Complexidade:** ⭐⭐⭐⭐⭐ — proxy RSS serverless + scoring + carrossel + tradução automática + anti-spam
+
+Agrega **54 feeds RSS** de IA (OpenAI, Anthropic, DeepMind, NVIDIA, pesquisa, imprensa e Brasil), pontua por relevância, descarta artigos antigos e spam, traduz para português e destaca as melhores notícias num carrossel.
 
 ```
-1ª tentativa: navigator.geolocation (GPS do browser) → precisão de metros
-Fallback:      ipapi.co (IP geolocation) → precisão de 1–10 km, sem permissão
+/.netlify/functions/news?url=<feed>   (só hosts da lista de feeds, timeout 8 s, cache 5 min)
+  → parseRSS (RSS 2.0, Atom, Media RSS) → cleanDesc
+  → heroScore: candidatos ao carrossel são traduzidos primeiro
+  → tradução em lotes (até 80 artigos por ciclo, idioma detectado sozinho)
+  → scoreArticle · isTooOld (antes de 2025) · isSpam · isRelevant
+  → carrossel: últimos 7 dias por heroScore · lista: por importância ou data
 ```
 
-Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 condições WMO mapeadas para ícones e descrições em português.
+**heroScore** soma um bônus por fonte (labs primários primeiro), palavras de lançamento e de empresas com teto, e um peso forte de recência (+55 com menos de 2 h). Fontes mistas, como Tecnoblog e SCMP, só entram com palavra-chave de IA ou dev.
+
+**Fontes:** SWEN.AI · AINEWS · Exame IA · TabNews · Manual Usuário · MIT Tech BR · Tecnoblog · Brazil Journal · NeoFeed · Olhar Digital · OpenAI · Anthropic · DeepMind · Google Research · NVIDIA Blog · Apple ML · AWS ML · MIT News · MIT Tech Rev · BAIR · Stanford AI · ETH Zurich · TUM · arXiv AI · The Gradient · IEEE Spectrum · IEEE TV AI · ScienceDaily · Reuters Inst. · The Verge · VentureBeat · Forbes AI · TechCrunch · Wired AI · AI News · AI Insider · AI Weekly · MarkTechPost · HuggingFace · KDnuggets · fast.ai · TensorFlow · Towards AI · LangChain · Synced · AI Singapore · RIKEN AIP · ChinAI · SCMP Tech · Pragmatic Eng. · Martin Fowler · Netflix Tech · n8n Blog · Supabase
 
 ---
 
-## 🧪 Feature: Testes Automatizados + CI/CD
+## ✍️ Blog, projetos e Home
 
-> **Complexidade:** ⭐⭐⭐⭐ — 174 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+- **Blog dev** (`src/pages/DevBlog/`): posts versionados no código, em blocos (títulos, texto, listas, código e imagens), sobre os projetos: JARVIS, o dataset da Grande Vitória, o jogo Copa Aspirador, o globo e a VPS da Oracle.
+- **Projetos:** cards com demo, código e tags, nos 9 idiomas. O JARVIS também lê esses textos.
+- **Status ao vivo** (`ServiceStatus`), no topo de `/projects`: confere a cada 60 s se o n8n e o dataset estão no ar, com a latência medida no navegador do visitante. A checagem carrega uma imagem de cada serviço, porque o bloqueio ORB do Chrome dava falso "offline" com `fetch` em `no-cors`. Os números do dataset vêm da function `infra-stats` (a API não libera CORS), com cache de 5 min; se falhar, o bloco some.
+- **Home:** 10 frases se alternam como numa máquina de escrever: cada uma fica 3,8 s inteira, há um intervalo de 0,6 s entre elas, o cursor pisca e a frase não é apagada com o mouse em cima.
 
-### Suítes de teste (174 testes unitários)
+---
 
-| Suite                  | O que cobre                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
-| `ErrorBoundary`        | Render normal, captura de erro, botão de retry, reset de estado                          |
-| `LanguageContext`      | Locale padrão, leitura do localStorage, `setLanguage`, persistência, erro fora do Provider |
-| `useTypewriter`        | Digitação, pausa com a frase inteira, intervalo entre frases, pausa no hover, array vazio |
-| `useInView`            | IntersectionObserver mock, threshold padrão/customizado, disconnect após intersecção     |
-| `newsFunctions`        | `isSpam`, `isRelevant`, `scoreArticle`, `isTooOld`, `importanceLevel`                    |
-| `utils/rss`            | `timeAgo`, `cleanDesc`, `parseRSS` (RSS 2.0, Atom, inválido), `translationCache`        |
-| `utils/geoip`          | Fetch com cache, erro retorna `{}`, reutilização de promise                              |
-| `WeatherBar`           | Fetch pendente, temperatura, cidade, erro, WMO 63 (chuva), `temperature_2m` ausente, botões visíveis sem clima, espera do globo na Home |
-| `satellites`           | Posição recalculada com o tempo usando uma única requisição ao CelesTrak                 |
-| `iconScale`            | Fator de tamanho pela altitude da câmera e fonte mínima                                   |
-| `ChatWidget`           | Sugestões, indicador de digitando, resposta formatada, microfone (com e sem suporte), conversa por voz |
-| `formatMessage`        | Negrito, listas, links, HTML da resposta não é interpretado                               |
-| `piperTts`             | Texto limpo para a voz, divisão em trechos, URL, fallback e interrupção da fala            |
-| `infraStats`           | Leitura dos números do dataset vindos da API                                              |
-| `jarvisProfile`        | Perfil do JARVIS gerado do `pt.json`: experiências em ordem, projetos, skills e contato    |
-| `chatAlert`            | Aviso do JARVIS no Telegram: texto, corte, limite por conversa, local, falha do Telegram  |
-| `ContactForm`          | 3 campos, submit, toast de erro, prop `onClose`, heading UPLINK                         |
-| `ServiceStatus`        | checking/online/offline, latência e números do dataset (mock de `Image` e `fetch`)      |
-| `GlobeBackground`      | Smoke test — monta/desmonta sem quebrar (esri-loader mockado)                           |
-| `Map`                  | Smoke test — campos de lat/lon, monta/desmonta sem quebrar                              |
-| `NewsPage`             | Fluxo real fetch→parse→score sai do loading sem lançar erro (fetch/translate mockados)   |
+## ⚡ Formulário de contato
 
-### E2E com Playwright
+> **Complexidade:** ⭐⭐⭐⭐ — gravação no Supabase + Netlify Function → Resend
 
-```bash
-npx playwright test   # 5 testes Chromium
+```
+Formulário
+  → 1. INSERT no Supabase (tabela contatos, RLS): a mensagem nunca se perde
+  → 2. POST /.netlify/functions/chat → Resend envia o aviso por e-mail (campos escapados no HTML)
+  → toast: "SINAL RECEBIDO" (tudo certo) · "SINAL PARCIAL" (gravou, e-mail falhou) · "FALHA NA TRANSMISSÃO"
 ```
 
-| Teste                         | Verifica                                           |
-| ----------------------------- | -------------------------------------------------- |
-| Carrega sem erros críticos    | Zero JS errors no `pageerror`                      |
-| Nav de navegação visível      | `<nav>` principal presente e visível               |
-| `/about` renderiza conteúdo   | body.textContent > 50 chars após Suspense resolver |
-| `/projects` renderiza conteúdo| body.textContent > 50 chars                        |
-| Rota inexistente não quebra   | App ainda renderiza a nav (React Router SPA)       |
+---
 
-### CI/CD — GitHub Actions
+## 🌐 Idiomas
 
-A cada push ou Pull Request para `main`:
-
-1. `npx tsc --noEmit` — TypeScript sem erros
-2. `npm run lint` — ESLint 9 zero erros
-3. `vitest run` — todos os testes unitários
-4. `vite build` — bundle de produção sem quebrar
-5. `playwright test` — 5 testes E2E Chromium
-6. Lighthouse CI — audita performance, a11y e SEO em produção
+Na primeira visita, o site aparece no idioma do país do visitante (ipapi.co). A troca é feita por React Context, sem recarregar a página. São 9 idiomas: português, inglês, espanhol, francês, alemão, chinês, russo, árabe e klingon 🖖.
 
 ---
 
-## 🌐 Feature: Internacionalização com Detecção Automática por IP
+## 📊 Contador de visitas
 
-> **Complexidade:** ⭐⭐⭐ — Geolocalização por IP + mapeamento país→idioma + Context API sem reload
-
-Na primeira visita, o site já aparece **no idioma correto** para o país de origem do visitante. A troca de idioma ocorre via **React Context** — sem `window.location.reload()`, apenas um re-render imediato.
-
-### Idiomas suportados (9)
-
-| Idioma    | Código | Cobertura                                    |
-| --------- | ------ | -------------------------------------------- |
-| Português | `pt`   | Brasil, Portugal                             |
-| Inglês    | `en`   | EUA, UK, Austrália, Canadá + outros          |
-| Espanhol  | `es`   | 17 países                                    |
-| Francês   | `fr`   | França, Bélgica, Suíça + outros              |
-| Alemão    | `de`   | Alemanha, Áustria                            |
-| Chinês    | `zh`   | China, Taiwan, HK, Macau, Singapura          |
-| Russo     | `ru`   | Rússia, Bielorrússia, Cazaquistão            |
-| Árabe     | `ar`   | 14 países do Oriente Médio e Norte da África |
-| Klingon   | `kl`   | 🖖                                           |
-
----
-
-## 📊 Feature: Contador de Visitas Atômico
-
-> **Complexidade:** ⭐⭐⭐ — Supabase RPC atômica + visual estilo Matrix + Text-to-Speech
-
-Contador persistido em PostgreSQL com incremento via **RPC atômica** — sem race conditions entre visitantes simultâneos. Visual de placa industrial estilo Matrix: fundo preto, rebites metálicos verdes, dígitos `#00ff41` com glow pulsante, scanlines animadas em CSS puro e efeito flicker ocasional.
+Contador no PostgreSQL com incremento por **RPC atômica**, sem corrida entre visitantes simultâneos. Visual de placa estilo Matrix, com dígitos verdes, scanlines e flicker em CSS.
 
 ```sql
 create or replace function increment_views()
@@ -722,49 +335,11 @@ $$;
 
 ---
 
-## 🟢 Feature: Selo de Status ao Vivo dos Serviços em Produção
+## 📲 Alertas no Telegram
 
-> **Complexidade:** ⭐⭐⭐ — Ping cross-origin client-side + números do dataset via Netlify Function
+A function `track.ts` avisa no Telegram, sem expor o token no navegador, quando alguém visita uma página, abre ou envia o contato, abre o chat, o mapa ou as notícias, clica num link externo ou no item do JARVIS no menu.
 
-Widget no topo da página `/projects` (`src/components/ServiceStatus`), acima dos cards, que confere, na hora, se o chatBruno (n8n) e o Dataset Grande Vitória estão no ar — prova visual de que a infra própria descrita nesse README roda de verdade, não é só documentação.
-
-Status e latência são medidos no navegador de cada visitante, sem serviço de status centralizado. A checagem repete a cada 60s, tem botão "Verificar de novo" e mostra o horário da última.
-
-```
-Cada serviço → carrega uma imagem estática conhecida (favicon.ico, og-image.png)
-             → onload → 🟢 online + latência em ms (performance.now)
-             → onerror / timeout 6s → 🔴 offline
-```
-
-Abaixo do status aparecem os números atuais do dataset (empresas, municípios, empresas com pendência, processos judiciais e sócios), lidos do `GET /estatisticas` da API. Como a API não libera CORS, quem lê é a function `netlify/functions/infra-stats.ts`: busca só essa URL fixa (não é proxy aberto), guarda por 5 min e devolve JSON. Se a API falhar, o bloco de números some; nada é inventado no lugar.
-
-### Por que `<img>` e não `fetch`
-
-A primeira versão usava `fetch(url, { mode: "no-cors" })` — mas o **ORB (Opaque Response Blocking)** do Chrome bloqueia respostas HTML/JSON cross-origin buscadas via `no-cors`, mesmo sem nenhum header CORS/CORP explícito do servidor. Resultado: falso "offline" com o serviço perfeitamente no ar (achado testando ao vivo no navegador, não só nos testes unitários). Imagens não sofrem esse bloqueio — é a técnica clássica de "ping" cross-origin.
-
----
-
-## 📲 Feature: Alertas em Tempo Real via Telegram Bot
-
-> **Complexidade:** ⭐⭐⭐ — Netlify Function + Telegram Bot API + rastreamento de eventos
-
-Cada ação relevante do visitante dispara uma notificação instantânea no Telegram via **Netlify Function serverless** (`/netlify/functions/track.ts`), sem expor o token do bot no frontend.
-
-### Eventos rastreados
-
-| Evento | Emoji | Descrição |
-| ---------------------- | ----- | ----------------------------------------- |
-| `pageview` | 👁 | Visita a qualquer página |
-| `contact_opened` | 📬 | Abertura do formulário de contato |
-| `contact_sent` | ✅ | Envio bem-sucedido do formulário |
-| `chat_opened` | 🤖 | Início de sessão com o chatBruno |
-| `map_opened` | 🗺️ | Acesso ao mapa 3D ESRI |
-| `news_opened` | 📰 | Abertura do painel de notícias |
-| `link_click` | 🔗 | Clique em link externo (LinkedIn, GitHub…) |
-
-### Conversas do JARVIS
-
-Cada pergunta feita ao JARVIS chega no Telegram junto com a resposta, enviada pelo servidor em `netlify/functions/n8n-chat.ts` (lógica em `netlify/lib/chatAlert.ts`) com o mesmo bot e as mesmas variáveis (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`):
+As conversas do JARVIS também chegam, enviadas por `n8n-chat.ts` (`netlify/lib/chatAlert.ts`):
 
 ```
 🤖 JARVIS: nova conversa
@@ -776,201 +351,78 @@ Cada pergunta feita ao JARVIS chega no Telegram junto com a resposta, enviada pe
 💬 JARVIS: O Bruno é desenvolvedor full stack...
 ```
 
-- A primeira mensagem de cada visita vem marcada como "nova conversa"; o `🆔` agrupa as mensagens da mesma visita
-- Local pelo header de geolocalização da Netlify (`x-nf-geo`), sem pedir permissão ao visitante
-- Texto puro (sem Markdown), para caracteres como `*` e `_` digitados pelo visitante não fazerem o Telegram rejeitar a mensagem
-- Limite de 30 avisos por conversa por hora; textos acima de 1500 caracteres são cortados
-- Se o n8n falhar, chega um aviso "⚠️ JARVIS falhou" com a pergunta
-- Tempo limite de 3s para o Telegram; se ele falhar, o chat continua funcionando normalmente
-
-### Fluxo
-
-```
-Frontend → POST /api/track { event, page, city, country_code }
-              ↓
-        Netlify Function
-              ↓
-     Telegram Bot API (sendMessage)
-              ↓
-  Notificação no chat com hora em America/Sao_Paulo
-```
-
-### Exemplo de alerta recebido
-
-```
-📰 NEWS OPENED
-📄 `/noticias`
-🌍 São Paulo — BR
-⏰ 01/07/2026, 14:32:08
-```
-
-### Variáveis de ambiente necessárias
-
-| Variável | Descrição |
-| ----------------------- | --------------------------------------- |
-| `TELEGRAM_BOT_TOKEN` | Token gerado pelo @BotFather |
-| `TELEGRAM_CHAT_ID` | ID do chat/grupo que recebe os alertas |
+- Local pelo header de geolocalização da Netlify, sem pedir permissão ao visitante.
+- Texto puro, limite de 30 avisos por conversa por hora, corte em 1.500 caracteres e timeout de 3 s.
+- Se o n8n falhar, chega "⚠️ JARVIS falhou"; se o Telegram falhar, o chat segue normal.
 
 ---
 
-## 🔭 Feature: Observabilidade com OpenTelemetry
+## 🔭 Observabilidade
 
-> **Complexidade:** ⭐⭐⭐ — Distributed tracing nas Netlify Functions via OTLP/HTTP
+As Netlify Functions geram traces com **OpenTelemetry** (OTLP/HTTP) para qualquer backend compatível, como Grafana Cloud, Honeycomb ou New Relic. Sem `OTEL_EXPORTER_OTLP_ENDPOINT`, o tracing fica desligado.
 
-Todas as Netlify Functions são instrumentadas com **OpenTelemetry** (SDK v2 para Node.js). Cada invocação gera traces exportados via **OTLP/HTTP** para qualquer backend compatível (Grafana Cloud, Honeycomb, Jaeger, etc.). Se `OTEL_EXPORTER_OTLP_ENDPOINT` não estiver configurado, o tracing é desativado silenciosamente — sem impacto em produção.
+| Function | Span | Spans filhos |
+|---|---|---|
+| `track.ts` | `track.handle` | `telegram.sendMessage` |
+| `chat.ts` | `chat.contact` | `resend.sendEmail` |
+| `news.ts` | `news.proxy` | — |
 
-### Spans por função
-
-| Function | Span raiz | Spans filhos | Atributos capturados |
-| --------- | -------------- | ------------------ | --------------------------------------------------- |
-| `track.ts` | `track.handle` | `telegram.sendMessage` | `track.event`, `track.page`, `track.country_code`, `track.city` |
-| `chat.ts` | `chat.contact` | `resend.sendEmail` | `contact.message_length`, `email.subject`, `http.response_status_code` |
-| `news.ts` | `news.proxy` | — | `rss.feed_url`, `http.response_status_code`, `rss.response_bytes` |
-
-### Arquitetura
-
-```
-Netlify Function invocada
-        ↓
-_otel.ts — singleton NodeTracerProvider (inicializado uma vez por warm instance)
-        ↓
-SimpleSpanProcessor → OTLPTraceExporter (HTTP/protobuf)
-        ↓
-provider.forceFlush() antes de cada return — garante envio em ambiente serverless
-        ↓
-Backend OTLP (Grafana Cloud / Honeycomb / Jaeger)
-```
-
-### Por que `SimpleSpanProcessor` e não `BatchSpanProcessor`?
-
-Em ambientes serverless o processo pode encerrar a qualquer momento após o `return`. O `BatchSpanProcessor` acumula spans em buffer e os envia assincronamente — o que significa que spans podem ser perdidos antes do flush. O `SimpleSpanProcessor` envia cada span imediatamente, garantindo que `forceFlush()` seja efetivo.
-
-### Variáveis de ambiente
-
-| Variável | Descrição |
-| -------------------------------- | --------------------------------------------------- |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | URL do collector (ex: `https://otlp-gateway-prod-eu-west-0.grafana.net/otlp`) |
-| `OTEL_EXPORTER_OTLP_HEADERS` | Headers de autenticação no formato `key=value,key2=value2` |
-
-### Como obter as credenciais
-
-Escolha um dos backends abaixo — todos têm plano gratuito e suportam OTLP nativamente.
+Usa `SimpleSpanProcessor` com `forceFlush()` antes de cada resposta: em serverless o processo pode encerrar logo depois do `return`, e o processador em lote perderia spans.
 
 ---
 
-#### Opção 1 — Grafana Cloud (recomendado, free tier generoso)
+## 🧪 Testes e CI
 
-1. Crie conta em **grafana.com** → New Stack → escolha uma região
-2. No painel: **Connections → Add new connection → OpenTelemetry**
-3. Selecione **"Send OpenTelemetry data"** e copie os valores gerados:
+**186 testes unitários** (Vitest) em 32 arquivos, cobrindo, entre outros:
 
-```env
-OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-0.grafana.net/otlp
-OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <base64(instanceID:apiToken)>
-```
+- **Globo:** satélites, ISS, terremotos, vulcões, furacões, vento, tamanho dos ícones e nomes de cidades que não se sobrepõem.
+- **JARVIS:** widget (microfone e conversa por voz), Piper, Whisper, perfil gerado no build, formatação das respostas e alerta no Telegram.
+- **Notícias:** parser RSS, scoring, spam e relevância.
+- **Interface:** WeatherBar, ServiceStatus, contato, menu, frases da Home, datas do blog, ErrorBoundary e idiomas.
 
-> O `base64(instanceID:apiToken)` é gerado automaticamente pela UI do Grafana — basta copiar. A região no endpoint (`prod-eu-west-0`, `prod-us-east-0`, etc.) depende da que você escolheu.
+**5 testes E2E** (Playwright, Chromium): a Home carrega sem erros, o menu aparece, `/about` e `/projects` renderizam e uma rota inexistente não quebra o app.
 
----
+**GitHub Actions** a cada push ou PR na `main`:
 
-#### Opção 2 — Honeycomb (mais simples de configurar)
-
-1. Crie conta em **honeycomb.io** → Settings → API Keys → Create API Key
-2. Copie o valor da chave (ex: `abc123def456`)
-
-```env
-OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io
-OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=abc123def456
-```
-
-> Datasets são criados automaticamente com o nome do `service.name` (`portifolio-brunokobi`). Não precisa configurar nada além da API key.
-
----
-
-#### Opção 3 — New Relic (free tier até 100 GB/mês)
-
-1. Crie conta em **newrelic.com** → API Keys → Create key → tipo **License**
-2. Copie a chave (formato `NRAK-...`)
-
-```env
-OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp.nr-data.net
-OTEL_EXPORTER_OTLP_HEADERS=api-key=NRAK-xxxxxxxxxxxx
-```
-
----
-
-#### Adicionando no Netlify
-
-As variáveis devem ser configuradas no painel do Netlify (não no `.env.local`, que não é lido pelas Functions em produção):
-
-1. **Netlify Dashboard → Site → Environment variables**
-2. Adicione `OTEL_EXPORTER_OTLP_ENDPOINT` e `OTEL_EXPORTER_OTLP_HEADERS`
-3. Deploy → as Functions já exportam traces automaticamente
-
----
-
-## ♿ Feature: Acessibilidade com Síntese de Voz
-
-> **Complexidade:** ⭐⭐⭐ — Piper self-hosted + Web Speech API como alternativa
-
-Hover em qualquer texto lê o conteúdo em voz alta no idioma selecionado (`src/components/TextAudio`), com voz neural **Piper** servida pela VPS em `tts.brunokobi.tech` (pt, en, es, fr, de, ru e ar), com a voz do navegador (Web Speech API) para o chinês e como alternativa se o Piper falhar. As frases repetidas ficam em cache na Cloudflare (`Cache-Control` de 30 dias). Atributos ARIA em todos os elementos interativos (`aria-label`, `aria-pressed`, `aria-live` no carrossel).
-
----
-
-## 📱 Responsividade Mobile
-
-> **Complexidade:** ⭐⭐ — Breakpoints Chakra UI + layouts adaptativos por componente
-
-| Componente                | Ajuste                                               |
-| ------------------------- | ---------------------------------------------------- |
-| Carrossel hero (News)     | Imagem como fundo com overlay — sem overflow         |
-| Categorias de notícias    | Layout compacto com scroll horizontal drag-to-scroll |
-| Carrossel de certificados | CSS nativo com dots e botões anterior/próximo        |
-| ProjectCard               | Largura fluida `95vw`, tags com `wrap` automático    |
-| Modal de Contato          | `size="full"` + `scrollBehavior="inside"`            |
-| Menu de navegação         | Scroll horizontal sem scrollbar visível              |
+| Workflow | Passos |
+|---|---|
+| `ci.yml` | `tsc --noEmit`, lint, testes e build |
+| `e2e.yml` | Build e Playwright |
+| `lighthouse.yml` | Lighthouse CI (performance, acessibilidade e SEO) |
 
 ---
 
 ## 🔐 Segurança
 
-| Camada         | Mecanismo                                                 |
-| -------------- | --------------------------------------------------------- |
-| Banco de dados | Row Level Security (RLS) no Supabase                      |
-| Autenticação   | JWT via Supabase Auth                                     |
-| Segredos       | Variáveis `VITE_*` — nunca expostas no bundle de produção |
-| Proxy RSS      | Allowlist dos hosts dos 52 feeds — não é um proxy HTTP aberto |
-| Formulário de contato | Nome/e-mail/mensagem escapados antes de virar HTML do e-mail |
-| CORS           | Controlado pelas Netlify Functions                        |
-| Error handling | ErrorBoundary global com tela de recuperação em PT        |
+| Camada | Mecanismo |
+|---|---|
+| Banco | Row Level Security no Supabase |
+| Segredos | Tokens só nas Netlify Functions; o navegador recebe só chaves públicas (`VITE_*`) |
+| Proxy RSS | Aceita só HTTPS dos hosts da lista de feeds; não é um proxy aberto |
+| Chat | O proxy esconde a URL do n8n |
+| Whisper | CORS liberado só para o site |
+| Contato | Nome, e-mail e mensagem escapados antes de virar HTML |
+| Erros | ErrorBoundary global com tela de recuperação |
 
 ---
 
-## 🧬 Diferenciais que fazem diferença
+## 📱 Acessibilidade e mobile
 
-| Feature                         | Por que impressiona                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------------------- |
-| 🤖 JARVIS com voz               | n8n + Piper + Whisper self-hosted; fala e ouve, sem inventar fatos                    |
-| 📰 52 RSS Feeds + heroScore     | Proxy serverless com allowlist de hosts + scoring tiered + keywords com cap           |
-| ⚡ Two-step Contact Form         | Supabase audit + Netlify Function → Resend API, HTML escapado, feedback diferenciado  |
-| 🌐 9 idiomas + auto-detect      | Cobre 50+ países, troca sem reload via Context API                                    |
-| 🌐 Globo 3D + overlays          | cidades com clima & hora local + features geoespaciais (satélites, ISS, AQI, incêndios, alertas, terremotos, vulcões, furacões) + toggle UI + 2h cache weather |
-| 🗺️ Mapa 3D WebGL               | ArcGIS em produção com lazy loading e marcadores customizados                         |
-| 🌤️ Clima GPS → IP fallback     | Máxima precisão sem degradar UX                                                       |
-| 🟢 Status ao vivo da infra      | Ping cross-origin real (chatBruno + Dataset), sem backend novo                        |
-| 🧪 174 testes + E2E             | Vitest + Playwright + CI/CD GitHub Actions + Lighthouse CI                            |
-| 🔷 TypeScript strict            | `strict: true` — zero erros, zero warnings de lint, tipos precisos end-to-end         |
-| 🔒 RLS + JWT                    | Segurança no nível do banco, não só da aplicação                                      |
-| ⚛️ RPC atômica                  | Contador sem race conditions entre visitantes simultâneos                             |
-| ♿ Text-to-Speech               | Voz neural Piper self-hosted, voz do navegador como alternativa, ARIA completo        |
+- Hover em textos lê o conteúdo em voz alta no idioma escolhido, com a voz do Piper.
+- Atributos ARIA nos elementos interativos (`aria-label`, `aria-pressed`, `aria-live` no carrossel).
+- Layouts adaptados no celular: carrossel de notícias, categorias com rolagem horizontal, cards de projetos, modal de contato em tela cheia e menu com rolagem horizontal.
+
+---
+
+## 📚 Documentação técnica
+
+A pasta [`docs/`](docs/INDEX.md) detalha arquitetura, componentes, cada feature, APIs, stack e setup. Comece por [docs/AI_QUICKSTART.md](docs/AI_QUICKSTART.md).
 
 ---
 
 ## 🛸 Sobre Bruno Kobi
 
 Full Stack Developer & AI Systems Engineer especializado em transformar complexidade técnica em produtos que funcionam em produção.
-
-Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las e o que acontece quando algo falha**.
 
 🔗 [brunokobi.tech](https://brunokobi.tech) · [LinkedIn](https://www.linkedin.com/in/brunokobi/) · [GitHub](https://github.com/brunokobi)
 
@@ -980,6 +432,6 @@ Não apenas sei usar as ferramentas — sei **quando usá-las, como integrá-las
 
 [![GitHub Sponsors](https://img.shields.io/badge/❤%EF%B8%8F%20Apoiar-github.com%2Fsponsors%2Fbrunokobi-ea4aaa?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/brunokobi)
 
-Este portfólio é código aberto e mantido nas horas vagas — infra própria (Oracle Cloud VPS, n8n, Piper e Whisper self-hosted) incluída. Se o projeto te inspirou ou ajudou de alguma forma, considere apoiar: ajuda a manter a infraestrutura no ar e a construir mais projetos assim.
+Este portfólio é código aberto e mantido nas horas vagas, com infraestrutura própria (VPS na Oracle Cloud com n8n, Piper e Whisper). Se ele te inspirou ou ajudou, considere apoiar: ajuda a manter tudo no ar.
 
-### ⭐ Se este projeto te inspirou, deixe uma estrela — leva 1 segundo e ajuda demais!
+### ⭐ Se este projeto te inspirou, deixe uma estrela. Leva 1 segundo e ajuda demais!
