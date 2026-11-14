@@ -20,7 +20,7 @@ import portifolio3d from "../../assets/img/3dgame.webp";
 import bpfcheck from "../../assets/img/bpfcheck.webp";
 import arkon from "../../assets/img/arkon.webp";
 import loteria from "../../assets/img/loteria.webp";
-import chatbruno from "../../assets/img/chatbruno.webp";
+import jarvisChat from "../../assets/img/jarvis-chat.webp";
 import frota from "../../assets/img/frota.webp";
 import grandeVitoria from "../../assets/img/grande-vitoria-dashboard.webp";
 import tabelaAcfdv from "../../assets/img/tabela-acfdv.webp";
@@ -55,6 +55,23 @@ const Projects = () => {
         code: "https://github.com/brunokobi/projeto_grande_vitoria_empresas",
       },
       {
+        title: intl.formatMessage({ id: "project14t" }),
+        link: "",
+        img: jarvisChat,
+        demo: "https://brunokobi.tech/chat",
+        description: intl.formatMessage({ id: "project14d" }),
+        tags: [
+          "#N8N",
+          "#OPENROUTER",
+          "#WHISPER",
+          "#PIPER TTS",
+          "#WEB AUDIO API",
+          "#PROMPT ENGINEERING",
+          "#SELF-HOSTED",
+        ],
+        code: "https://github.com/brunokobi/projeto-portifolio/tree/main/src/components/ChatWidget",
+      },
+      {
         title: intl.formatMessage({ id: "project19t" }),
         link: "",
         img: copaAspirador,
@@ -80,23 +97,6 @@ const Projects = () => {
         description: intl.formatMessage({ id: "project18d" }),
         tags: ["#VANILLA TYPESCRIPT", "#VITE", "#WEB SPEECH API", "#NETLIFY", "#UI/UX INFANTIL"],
         code: "https://github.com/brunokobi/benjamimteclado",
-      },
-      {
-        title: intl.formatMessage({ id: "project14t" }),
-        link: "",
-        img: chatbruno,
-        demo: "https://brunokobi.tech/chat",
-        description: intl.formatMessage({ id: "project14d" }),
-        tags: [
-          "#N8N",
-          "#OPENROUTER",
-          "#NVIDIA NEMOTRON",
-          "#PROMPT ENGINEERING",
-          "#WEB SPEECH API",
-          "#TELEGRAM",
-          "#SELF-HOSTED",
-        ],
-        code: "https://github.com/brunokobi/chatn8n",
       },
       {
         title: intl.formatMessage({ id: "project15t" }),
@@ -139,7 +139,7 @@ const Projects = () => {
         img: bpfcheck,
         demo: "https://bpfcheck.netlify.app/",
         description: intl.formatMessage({ id: "project12d" }),
-        tags: ["#REACT", "#SUPABASE", "#AUDITORIA", "#BPF", "#NETLIFY"],
+        tags: ["#REACT", "#TYPESCRIPT", "#PWA", "#OFFLINE-FIRST", "#INDEXEDDB", "#FASTAPI", "#POSTGRESQL", "#N8N"],
         code: "https://github.com/brunokobi/bpfcheck",
       },
       {
@@ -149,7 +149,7 @@ const Projects = () => {
         demo: "https://brunokobi3d.netlify.app",
         description: intl.formatMessage({ id: "project10d" }),
         tags: ["#REACT", "#THREE.JS", "#REACT THREE FIBER", "#3D", "#GAME"],
-        code: "https://github.com/brunokobi",
+        code: "https://github.com/brunokobi/brunokobigame",
       },
       {
         title: intl.formatMessage({ id: "project1t" }),
@@ -251,7 +251,7 @@ const Projects = () => {
         link: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6961453558051291136?compact=1",
         demo: "",
         description: intl.formatMessage({ id: "project7d" }),
-        tags: ["#JAVA", "#MACHINE LEARNING", "#ARTIFICIAL INTELLIGENCE"],
+        tags: ["#PYTHON", "#MACHINE LEARNING", "#ARTIFICIAL INTELLIGENCE"],
         code: "https://github.com/brunokobi",
       },
     ],

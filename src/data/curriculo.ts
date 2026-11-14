@@ -74,11 +74,11 @@ export const CURRICULO = {
   projetosDestaque: [
     "Presence Now — TCC da graduação: aferição de assiduidade por reconhecimento facial em tempo real (React/TypeScript, REST API, face-api.js/TensorFlow.js com CNNs)",
     "Guia Alimentar BR — app em React Native (Expo) com 51 telas, publicado na Google Play Store, para o TCC de Nutrição de Rafaela Soares Souza Kobi; premiado no XXVII Congresso Brasileiro de Nutrição",
-    "Fullstack Invasion (Portfólio 3D: Alien Experience) — portfólio 3D gamificado com UFO controlável e física real (TypeScript, React, Three.js, Vite, Supabase) · github.com/brunokobi/brunobokigame",
+    "Fullstack Invasion (Portfólio 3D: Alien Experience) — portfólio 3D gamificado com UFO controlável e física real (TypeScript, React, Three.js, Vite, Supabase) · github.com/brunokobi/brunokobigame",
     "Frota Realtime RJ — monitoramento GPS via WebGL, +4.000 pontos simultâneos (Node.js, MapLibre, Netlify Edge) · github.com/brunokobi/frotarealtime",
     "Arkon: A Fenda do Aglomerado — browser game multiplayer 2D estilo Tibia (React, Vite, Phaser 4, Supabase) · github.com/brunokobi/arkon-game",
-    "BPF Check — PWA offline-first para auditoria de vistorias sanitárias (RDC 216) (React, TypeScript, Tailwind, Supabase) · github.com/brunokobi/bpfcheck",
-    "JARVIS (chatBruno) — o assistente deste site: n8n self-hosted, NVIDIA Nemotron 3 Ultra via OpenRouter, responde só com este perfil",
+    "BPF Check — PWA offline-first para auditoria de vistorias sanitárias (RDC 216), publicado na Google Play (React, TypeScript, Tailwind, IndexedDB, FastAPI, PostgreSQL) · github.com/brunokobi/bpfcheck",
+    "JARVIS — o assistente deste site, com voz: Whisper (whisper.cpp) para ouvir e Piper TTS para falar, os dois na VPS; n8n self-hosted, NVIDIA Nemotron 3 Ultra via OpenRouter, responde só com este perfil",
   ],
   certificacoes: [
     "Fev/2025 — Análise Avançada de Imagens e Texto com IA na AWS (Nexa / DIO, 10h)",
