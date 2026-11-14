@@ -184,6 +184,223 @@ export const posts: Post[] = [
     ],
   },
   {
+    slug: "globo-tempo-real",
+    title: "O globo do meu portfólio: todas as fontes de dados em tempo real (e as que não deram certo)",
+    date: "2026-10-31",
+    tags: ["ArcGIS", "Dados Abertos", "NASA", "APIs", "React", "3D"],
+    excerpt: "Satélites, ISS, terremotos, incêndios, furacões, vento e alertas: cada camada do globo 3D da home, de onde vem o dado, o que dá para ver, e as APIs que ficaram pelo caminho (aviões, Starlink, nuvens, correntes marítimas, aurora).",
+    blocks: [
+      {
+        type: "paragraph",
+        text: "O fundo da home do meu portfólio é um globo 3D que mostra o planeta agora: satélites, a Estação Espacial, terremotos, incêndios, furacões, vento, alertas de emergência e mais. Nada ali é simulado: cada ponto vem de uma fonte pública consultada pelo navegador. Este post detalha cada camada, de onde vem o dado, o que dá para ver, e também as APIs e ideias que não deram certo no caminho, que foram muitas.",
+      },
+      { type: "heading", level: 2, text: "TL;DR" },
+      {
+        type: "list",
+        items: [
+          "O globo é um **SceneView do ArcGIS Maps SDK for JavaScript**, com imagem de satélite de dia e luzes noturnas da NASA à noite.",
+          "Por cima dele, um **canvas 2D** desenha os pontos a cada quadro, projetando latitude e longitude na tela com `view.toScreen`.",
+          "Fontes ativas: **CelesTrak**, **wheretheiss.at**, **USGS**, **Smithsonian (vulcões)**, **ArcGIS Living Atlas** (incêndios VIIRS, alertas CAP, furacões, qualidade do ar), **Open-Meteo** e uma **grade de vento GFS**.",
+          "Ficaram pelo caminho: aviões (OpenSky bloqueia CORS), Starlink (403), nuvens ao vivo (pedem autenticação), correntes marítimas (limite de requisições), aurora boreal e uma base histórica de ciclones sem dados reais.",
+          "Regra do projeto: **nenhum dado falso**. Quando uma fonte real não funcionou, a camada saiu do globo em vez de ganhar dado inventado.",
+        ],
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "1. A base: o globo em si" },
+      {
+        type: "paragraph",
+        text: "O globo usa o **ArcGIS Maps SDK for JavaScript** (`SceneView`). Ele já resolve câmera, zoom, rotação e relevo, e me deixa focar nas camadas de dados. A base tem quatro peças:",
+      },
+      {
+        type: "list",
+        items: [
+          "**De dia:** `World_Imagery` da Esri, imagem de satélite do planeta inteiro.",
+          "**Relevo:** `WorldElevation3D/TopoBathy3D`, com montanhas e o fundo do oceano.",
+          "**À noite:** **NASA Black Marble** (VIIRS), servido pelo NASA GIBS. As cidades acesas são as manchas de luz que você vê no modo noturno.",
+          "**Nuvens:** uma esfera um pouco maior que a Terra com uma textura de nuvens da NASA. É uma imagem fixa, não nuvem ao vivo (mais sobre isso na seção do que não deu certo).",
+        ],
+      },
+      { type: "heading", level: 3, text: "Colorindo as luzes da noite" },
+      {
+        type: "paragraph",
+        text: "Os tiles do Black Marble vêm em tons de cinza azulado, e o oceano ficava marrom-escuro com o brilho residual. Criei uma camada própria (`BaseTileLayer`) que baixa cada tile, passa pixel por pixel num canvas e aplica uma paleta: abaixo de um limiar vira preto puro; acima, uma curva leva o brilho para amarelo e laranja, como lâmpadas de sódio.",
+      },
+      {
+        type: "code",
+        language: "ts",
+        code: "const b = d[i] / 255;\nif (b < 0.11) {\n  d[i] = d[i + 1] = d[i + 2] = 0; // oceano preto\n} else {\n  const e = Math.pow((b - 0.11) / 0.89, 0.5);\n  d[i] = e * 255;                    // vermelho\n  d[i + 1] = Math.pow(e, 1.8) * 210; // verde\n  d[i + 2] = Math.pow(e, 5.5) * 80;  // azul\n}",
+      },
+      {
+        type: "paragraph",
+        text: "Antes de chegar nisso, testei duas alternativas no mesmo dia e voltei atrás: uma textura 8K estática das luzes da Terra e a camada oficial *Earth at Night* do ArcGIS. Nas duas voltei atrás e fiquei com o Black Marble e a paleta ajustada.",
+      },
+      { type: "heading", level: 3, text: "Pontos que acompanham o globo" },
+      {
+        type: "paragraph",
+        text: "Os ícones não são gráficos do ArcGIS: um `<canvas>` transparente fica por cima do globo e é redesenhado a cada quadro. Para cada ponto, o código confere se ele está no lado da Terra virado para a câmera (produto escalar entre a posição da câmera e a do ponto) e projeta a coordenada na tela com `view.toScreen`. Os ícones diminuem quando a câmera se afasta, e as linhas de vento fazem o contrário, engrossando de perto.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "2. As camadas ativas" },
+      { type: "heading", level: 3, text: "🛰️ Satélites: CelesTrak + SGP4" },
+      {
+        type: "paragraph",
+        text: "O **CelesTrak** publica os elementos orbitais (TLE) de grupos de satélites. Uso três: GPS, Galileo e meteorológicos, cerca de 137 satélites. O navegador calcula a posição de cada um com o modelo **SGP4** (biblioteca `satellite.js`) e recalcula a cada 10 segundos, então você vê os satélites andando.",
+      },
+      {
+        type: "paragraph",
+        text: "O CelesTrak pede para não ser consultado mais de uma vez a cada duas horas por grupo, então o TLE fica em cache por 2h. Às vezes ele responde 200 com uma mensagem de texto no lugar do TLE; nesse caso o globo mantém o cache anterior. No hover aparecem o nome e a altitude.",
+      },
+      { type: "heading", level: 3, text: "🛰 Estação Espacial Internacional: wheretheiss.at" },
+      {
+        type: "paragraph",
+        text: "A ISS tem um anel azul próprio, atualizado a cada 8 segundos pela API pública **wheretheiss.at**. O hover mostra altitude (cerca de 400 km) e velocidade (cerca de 27.600 km/h).",
+      },
+      { type: "heading", level: 3, text: "🌍 Terremotos: USGS" },
+      {
+        type: "paragraph",
+        text: "O feed GeoJSON do **USGS** traz os terremotos de magnitude 4.5 ou mais das últimas 24 horas. Cada um vira um anel pulsante com tamanho e cor pela magnitude (amarelo, laranja, vermelho), com a magnitude escrita ao lado. O hover mostra o local e há quanto tempo aconteceu.",
+      },
+      { type: "heading", level: 3, text: "🌋 Vulcões: Smithsonian" },
+      {
+        type: "paragraph",
+        text: "São 425 vulcões do catálogo do **Smithsonian Global Volcanism Program**, num JSON público. Triângulos coloridos pelo tipo (escudo, estratovulcão, caldeira...) e com tamanho pela altitude. Esse dado não é ao vivo: é o catálogo de vulcões, não as erupções do dia.",
+      },
+      { type: "heading", level: 3, text: "🔥 Incêndios: NASA VIIRS" },
+      {
+        type: "paragraph",
+        text: "Os focos de calor vêm dos satélites **VIIRS da NASA**, pelo **ArcGIS Living Atlas**. Sem filtro são mais de 100 mil focos por dia no mundo, impossível de desenhar. Filtro as últimas 6 horas, confiança alta e potência do fogo (FRP) de pelo menos 10 MW, até 500 focos.",
+      },
+      {
+        type: "code",
+        language: "sql",
+        code: "hours_old <= 6 AND confidence = 'high' AND frp >= 10",
+      },
+      { type: "heading", level: 3, text: "⚠️ Alertas de emergência: CAP" },
+      {
+        type: "paragraph",
+        text: "O **CAP Alerts Feed** do Living Atlas junta avisos oficiais de agências de vários países no formato CAP (Common Alerting Protocol): tempestades, enchentes, calor extremo. A área de cada alerta é um polígono; peço ao serviço o centroide (`returnCentroid`) e desenho um ⚠️ ali. O hover mostra evento, severidade, área e órgão emissor.",
+      },
+      { type: "heading", level: 3, text: "🌀 Furacões, ciclones e tufões" },
+      {
+        type: "paragraph",
+        text: "A camada **Active Hurricanes** do Living Atlas junta o **NHC** (Atlântico e Pacífico Leste) e o **JTWC** (demais bacias), então cobre o planeta inteiro. Cada tempestade vira uma espiral colorida pela categoria Saffir-Simpson, com vento em km/h e pressão em mb no hover. Foi a terceira fonte que testei para isso (veja mais abaixo).",
+      },
+      { type: "heading", level: 3, text: "💨 Vento: modelo GFS" },
+      {
+        type: "paragraph",
+        text: "O vento vem de uma grade do modelo **GFS** (NOAA) com resolução de 1°: duas matrizes de 360×181 com os componentes leste-oeste e norte-sul do vento na superfície, no mesmo formato usado pelo *earth.nullschool*. O arquivo fica num repositório público do GitHub atualizado periodicamente.",
+      },
+      {
+        type: "paragraph",
+        text: "Em cima dessa grade, 700 partículas andam pelo campo de vento, com a velocidade interpolada entre os pontos da grade, e deixam um rastro que desbota, colorido pela velocidade. É o efeito de \"rios de vento\" que aparece quando você liga a camada 💨.",
+      },
+      { type: "heading", level: 3, text: "🏙️ Cidades, clima e qualidade do ar" },
+      {
+        type: "paragraph",
+        text: "Os anéis verdes são polos de tecnologia pelo mundo, de San Francisco a Joanesburgo. Ao passar o mouse, o card busca na hora:",
+      },
+      {
+        type: "list",
+        items: [
+          "**Hora local, temperatura e clima** pelo **Open-Meteo** (com `timezone=auto`), em cache de 2 horas.",
+          "**Qualidade do ar (AQI)** pela estação **OpenAQ** de PM2.5 mais próxima, até 50 km, também pelo Living Atlas. Sem estação perto, o card fica sem AQI em vez de mostrar um número inventado.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Clicar num pin desenha um arco laranja animado até Vitória-ES, onde moro, seguindo o grande círculo da Terra (interpolação esférica).",
+      },
+      { type: "heading", level: 3, text: "📍 Você no mapa" },
+      {
+        type: "paragraph",
+        text: "Se você permitir a localização, aparece um pin amarelo onde você está, com o nome da cidade vindo do **Nominatim** (OpenStreetMap). Se negar, a barra de cima usa a localização aproximada pelo IP (`ipapi.co`) só para mostrar a temperatura.",
+      },
+      { type: "heading", level: 3, text: "A barra de camadas" },
+      {
+        type: "paragraph",
+        text: "Cada camada tem um botão ON/OFF na barra do topo. O botão dispara um `CustomEvent` que o globo escuta, e a escolha fica salva no navegador. Cada fonte tem seu próprio arquivo, usa `AbortSignal.timeout` e devolve lista vazia se falhar: uma API fora do ar apaga só a sua camada, nunca o globo inteiro.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "3. O que não deu certo" },
+      {
+        type: "paragraph",
+        text: "Essa é a parte que mais ensina. Cada item abaixo chegou a ter código, e alguns ficaram dias no ar antes de sair.",
+      },
+      { type: "heading", level: 3, text: "✈️ Aviões em tempo real (OpenSky)" },
+      {
+        type: "paragraph",
+        text: "A ideia era mostrar os aviões no ar pela **OpenSky Network**. A API funciona, mas não libera CORS para o navegador. Contornar exigiria um proxy no servidor só para isso, e a camada saiu.",
+      },
+      { type: "heading", level: 3, text: "🛰️ Starlink" },
+      {
+        type: "paragraph",
+        text: "O grupo `starlink` do CelesTrak tem milhares de satélites e seria lindo no globo, mas passou a responder **403**. Ficaram só GPS, Galileo e meteorológicos.",
+      },
+      { type: "heading", level: 3, text: "☁️ Nuvens ao vivo (NOAA GOES)" },
+      {
+        type: "paragraph",
+        text: "Tentei trocar a textura fixa de nuvens por imagens recentes dos satélites **GOES** da NOAA. O serviço que eu encontrei pedia autenticação, e o primeiro ID de camada que usei nem existia. Voltei para a textura estática, que continua lá como enfeite, não como dado.",
+      },
+      { type: "heading", level: 3, text: "🌊 Correntes marítimas (Open-Meteo Marine)" },
+      {
+        type: "paragraph",
+        text: "Cheguei a ter correntes oceânicas reais, tracejadas para diferenciar do vento, vindas do **Open-Meteo Marine**. Para cobrir o planeta eram muitas consultas, e o limite gratuito de requisições estourava. Aumentar o cache para 24 horas não resolveu, e a camada saiu.",
+      },
+      { type: "heading", level: 3, text: "🌀 Furacões: três tentativas" },
+      {
+        type: "list",
+        items: [
+          "**OpenWeatherMap:** a primeira versão, que não ficou.",
+          "**RSS da NOAA:** funcionava, mas só cobre Atlântico e Pacífico, não libera CORS (precisou de uma função de proxy na Netlify) e alguns feeds retornavam 404.",
+          "**IBTrACS:** tentei servir essa base histórica de ciclones pela minha VPS, mas sem um feed atual de verdade o que chegava ao globo eram dados de exemplo. Removi por completo.",
+          "**ArcGIS Living Atlas (Active Hurricanes):** a versão atual, global e com CORS liberado.",
+        ],
+      },
+      { type: "heading", level: 3, text: "🌌 Aurora boreal" },
+      {
+        type: "paragraph",
+        text: "Fiz a aurora com o **índice Kp** real da NOAA (atividade geomagnética). O problema é que, na maior parte do tempo, o Kp é baixo e não há nada para mostrar. Para demonstrar, cheguei a forçar um Kp alto, mas isso é dado falso e reverti no mesmo dia. Depois decidi tirar a camada do globo.",
+      },
+      { type: "heading", level: 3, text: "🧪 Dados de exemplo que viraram dados reais" },
+      {
+        type: "paragraph",
+        text: "Nas primeiras versões, qualidade do ar, incêndios, satélites e até raios eram amostras fixas no código. Uma a uma foram trocadas por fonte real (OpenAQ, VIIRS, CelesTrak + SGP4) e os raios simulados saíram do globo. Hoje vale a regra: se não existe dado real, a camada não existe.",
+      },
+      { type: "heading", level: 3, text: "🐛 O bug que desligou terremotos e vulcões" },
+      {
+        type: "paragraph",
+        text: "Esse foi o mais chato. Em produção, o hover dos terremotos e dos vulcões quebrava com `Cannot access X before initialization`, e em desenvolvimento funcionava. Passei um dia desligando partes, renomeando propriedades e comentando código, e cheguei a remover as duas camadas.",
+      },
+      {
+        type: "paragraph",
+        text: "A causa estava no build: o minificador renomeava variáveis, e nomes curtos colidiam dentro dos event handlers que liam objetos guardados em `useRef`. A solução foi manter a minificação, mas sem renomear identificadores:",
+      },
+      {
+        type: "code",
+        language: "ts",
+        code: "// vite.config.ts\nbuild: { minify: \"esbuild\" },\nesbuild: { minifyIdentifiers: false },",
+      },
+      {
+        type: "paragraph",
+        text: "O bundle fica um pouco maior, e terremotos e vulcões voltaram. Detalhe importante para testar: o Chromium headless (usado em testes automatizados) renderiza sem GPU e o ArcGIS não desenha o globo nele, então esse tipo de bug só aparece num navegador de verdade.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "Principais lições" },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "**CORS decide o que dá para fazer no navegador.** Muitas APIs públicas não liberam, e um proxy traz custo e regras de uso. O Living Atlas da Esri, com CORS liberado, virou a fonte de quatro camadas.",
+          "**Respeite os limites das fontes gratuitas.** Cache de 2 horas no CelesTrak e no clima, filtros fortes nos incêndios.",
+          "**Calcular no cliente economiza API:** com SGP4, uma consulta a cada 2 horas move os satélites o tempo todo.",
+          "**Cada camada falha sozinha.** Timeout e lista vazia em cada loader mantêm o globo de pé quando uma fonte cai.",
+          "**Prefira tirar uma camada a mostrar dado falso.** O globo ficou com menos camadas do que planejei, mas tudo o que aparece é real.",
+          "**Teste o build de produção num navegador com GPU.** Minificação pode quebrar o que funciona em desenvolvimento.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "oracle-vps-free-tier",
     title: "Como a Oracle \"comeu\" minha VPS de graça",
     date: "2026-09-20",
