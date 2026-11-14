@@ -34,6 +34,7 @@ import { loadCapAlerts, type CapAlert } from "./capAlerts";
 
 import { markGlobeReady, resetGlobeReady } from "../../utils/globeReady";
 import { iconScaleForAltitude, scaledFontPx, SHORT_LABEL_MIN_SCALE, windLineWidthForAltitude } from "./iconScale";
+import { overlapsAny, type LabelBox } from "./labelLayout";
 
 setDefaultOptions({ css: true });
 
@@ -1007,6 +1008,7 @@ const GlobeBackground = () => {
                     windCtx.restore();
                   }
 
+                  const cityLabelBoxes: LabelBox[] = [];
                   cityPoints.forEach((pt, i) => {
                     cityScreenPosRef.current[i] = null;
                     try {
@@ -1040,10 +1042,20 @@ const GlobeBackground = () => {
                       ctx.fill();
                       ctx.shadowBlur = 0;
 
-                      // Label
                       ctx.font = `${fpx(11)}px monospace`;
-                      ctx.fillStyle = "rgba(0,255,65,0.85)";
-                      ctx.fillText(CITIES[i].name, sp.x + 9 * k, sp.y + 4 * k);
+                      const labelX = sp.x + 9 * k;
+                      const labelY = sp.y + 4 * k;
+                      const labelBox: LabelBox = {
+                        x: labelX,
+                        y: labelY - fpx(11),
+                        w: ctx.measureText(CITIES[i].name).width,
+                        h: fpx(11) * 1.3,
+                      };
+                      if (!overlapsAny(labelBox, cityLabelBoxes)) {
+                        cityLabelBoxes.push(labelBox);
+                        ctx.fillStyle = "rgba(0,255,65,0.85)";
+                        ctx.fillText(CITIES[i].name, labelX, labelY);
+                      }
                     } catch {
                       // ponto fora do campo de visão
                     }

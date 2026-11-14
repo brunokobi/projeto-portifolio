@@ -56,7 +56,8 @@ Desligadas: aviões (o OpenSky bloqueia CORS) e aurora boreal (removida do globo
 **Clima/hora local:** Open-Meteo (`timezone=auto`), cache de 2h  
 **AQI:** OpenAQ PM2.5 via ArcGIS Living Atlas (`Air_Quality_PM25_Latest_Results`), estação a até 50 km da cidade, convertido para AQI (EPA)
 
-- Cada cidade é um anel verde pulsante com o nome ao lado.
+- São 69 polos de tecnologia, escolhidos entre as maiores manchas de luz noturna. Cada cidade é um anel verde pulsante com o nome ao lado.
+- Quando dois nomes se encostariam na tela (por exemplo São Paulo e Campinas com a câmera longe), só o da cidade que vem antes em `CITIES` é desenhado (`overlapsAny`, `labelLayout.ts`); o anel das duas continua visível. Por isso as cidades mais importantes ficam no começo da lista.
 - O card de hover mostra hora local, temperatura, clima e AQI classificado (`getAQILabel`): Bom, Moderado, Insalubre (Sensíveis), Insalubre, Muito Insalubre, Perigoso.
 - O card tem botão de fechar (×) e some quando o mouse sai do globo. Se o clima chega depois que o mouse já saiu da cidade, o card não abre (antes ficava preso na tela).
 - O AQI não tem pontos próprios no mapa; aparece só no card da cidade. É buscado (`fetchCityAqi`) no primeiro hover de cada cidade; sem estação próxima, o card fica sem AQI. Até 02/11/2026 o card mostrava valores fixos no código, já removidos.
