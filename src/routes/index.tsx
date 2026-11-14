@@ -1,10 +1,11 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Box, Spinner } from "@chakra-ui/react";
-import React, { useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Button, Icon } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import Nav from "../components/Nav";
+import { ROUTE_META, applyRouteMeta } from "../seo/routeMeta";
 
 // Home é a rota de entrada de ~100% dos visitantes — lazy-load nela só
 // adiciona uma volta de rede extra (baixar+parsear o chunk) antes do
@@ -33,6 +34,11 @@ const Router = () => {
   const isNews = pathname.startsWith("/news");
   const audio = localStorage.getItem("Audio");
   const [isAudioOn, setIsAudioOn] = useState(audio === "on");
+
+  useEffect(() => {
+    const meta = ROUTE_META[pathname];
+    if (meta) applyRouteMeta(pathname, meta);
+  }, [pathname]);
 
   const toggleAudio = () => {
     const next = !isAudioOn;
@@ -74,6 +80,7 @@ const Router = () => {
             <Route path="/curriculo" element={<Curriculo />} />
             <Route path="/news" element={<News />} />
             <Route path="/blog" element={<DevBlog />} />
+            <Route path="/blog/:slug" element={<DevBlog />} />
             <Route path="/chat" element={<Chat />} />
           </Routes>
         </Suspense>

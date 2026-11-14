@@ -82,6 +82,24 @@ ServiceStatus → <img> de ping em n8n.brunokobi.tech e empresas.brunokobi.tech 
               ← { empresas, municipios, processosJudiciais, socios, empresasComPendencia, fetchedAt }
 ```
 
+### SEO: HTML por rota gerado no build
+```
+npm run build
+  → plugin seoPages (vite.config.ts, depois do bundle)
+      → buildSeoPages (src/seo/seoPages.ts): uma página por rota estática e por post do blog
+      → dist/index.html recebe a Home; as outras viram dist/seo/<rota>.html
+        (título, descrição, canonical, Open Graph, Twitter Card, JSON-LD e o texto da página dentro de #root)
+      → dist/sitemap.xml com todas as páginas
+      → dist/_redirects começa com o 301 do brunokobi.netlify.app e as regras "/<rota> /seo/<rota>.html 200"
+Navegação no app → applyRouteMeta (src/seo/routeMeta.ts) troca título, descrição e canonical
+Deploy de produção → netlify/functions/deploy-succeeded.ts → IndexNow com as URLs do sitemap
+```
+- Títulos e descrições das rotas ficam em `ROUTE_META` (`src/seo/routeMeta.ts`), usados no build e no navegador
+- Post novo entra sozinho no sitemap e ganha HTML próprio; a imagem de prévia é `public/og/<slug>.jpg` (1200×630) se existir, senão `public/og/default.jpg`
+- Rota nova precisa de uma entrada em `ROUTE_META` e outra em `buildSeoPages`
+- A chave do IndexNow é pública por definição: fica em `public/<chave>.txt` e em `netlify/lib/indexNow.ts`
+- O `robots.txt` aponta para `https://brunokobi.tech/sitemap.xml` e bloqueia `/seo/` (os arquivos só são servidos pelas rotas)
+
 ### Tempo Real (Polling)
 ```
 Satélites: loadSatellites() a cada 10s → recalcula posição (TLE em cache 2h)

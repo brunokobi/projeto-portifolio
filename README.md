@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Status-Live%20em%20Produção-brightgreen?style=for-the-badge&logo=netlify&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
-  <img src="https://img.shields.io/badge/Testes-186%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testes-195%20passando-brightgreen?style=for-the-badge&logo=vitest&logoColor=white" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 </p>
 
@@ -65,7 +65,7 @@ Cada feature foi pensada para mostrar profundidade técnica: não só usar uma t
 | `/projects` | Projetos com demo e código, e o selo de status ao vivo dos serviços próprios |
 | `/curriculo` | Currículo |
 | `/news` | Painel de notícias de IA |
-| `/blog` | Blog dev com posts técnicos sobre os projetos |
+| `/blog` e `/blog/<slug>` | Blog dev com posts técnicos sobre os projetos, cada um com endereço próprio |
 | `/map` | Mapa 3D ArcGIS com fotos próprias nos marcadores |
 | `/chat` | JARVIS em página cheia (ele também abre pelo botão flutuante e pelo menu) |
 
@@ -116,7 +116,7 @@ ArcGIS Living Atlas, Nominatim, ipapi.co, Google Translate
 | Voz | Piper TTS e Whisper (VPS) + Web Speech API | Fala, transcrição e alternativa do navegador |
 | E-mail | Resend | Aviso de novo contato |
 | Infra | Oracle Cloud VPS + Cloudflare + Traefik | n8n, Piper, Whisper e API do dataset |
-| Qualidade | ESLint 9, Prettier, Vitest, Playwright | 186 testes unitários e 5 E2E |
+| Qualidade | ESLint 9, Prettier, Vitest, Playwright | 195 testes unitários e 5 E2E |
 | Observabilidade | OpenTelemetry | Traces das Netlify Functions |
 | Deploy | Netlify + GitHub Actions | Deploy a cada push na `main` |
 
@@ -304,6 +304,23 @@ Agrega **54 feeds RSS** de IA (OpenAI, Anthropic, DeepMind, NVIDIA, pesquisa, im
 
 ---
 
+## 🔎 SEO e prévias de link
+
+> **Complexidade:** ⭐⭐⭐⭐ — HTML por rota gerado no build + dados estruturados + sitemap automático + IndexNow no deploy
+
+O site é uma SPA, mas cada rota e cada post do blog tem um HTML próprio gerado no build (`seoPages` em `vite.config.ts`, lógica em `src/seo/seoPages.ts`), servido pelo `_redirects`:
+
+- **Título, descrição e endereço oficial** (`canonical`) por página, sempre em `brunokobi.tech`. O `brunokobi.netlify.app` redireciona com 301.
+- **Prévia de link** (Open Graph e Twitter Card) com imagem de 1200×630 por post (`public/og/`), para LinkedIn, WhatsApp e X.
+- **Dados estruturados** (schema.org): `Person` e `WebSite` na Home, `Blog` na lista e `BlogPosting` em cada post.
+- **O texto da página já no HTML**, para buscadores que não rodam JavaScript; o React substitui esse conteúdo ao carregar.
+- **Sitemap gerado no build** com todas as rotas e posts (`/sitemap.xml`), e o título da aba muda a cada navegação (`src/seo/routeMeta.ts`).
+- **IndexNow:** depois de cada deploy de produção, a function `deploy-succeeded` avisa Bing, Yandex e outros buscadores de todas as URLs do sitemap.
+
+Cada post tem endereço próprio (`/blog/<slug>`), compartilhável e indexável.
+
+---
+
 ## ⚡ Formulário de contato
 
 > **Complexidade:** ⭐⭐⭐⭐ — gravação no Supabase + Netlify Function → Resend
@@ -383,14 +400,15 @@ Usa `SimpleSpanProcessor` com `forceFlush()` antes de cada resposta: em serverle
 
 ## 🧪 Testes e CI
 
-> **Complexidade:** ⭐⭐⭐⭐ — 186 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
+> **Complexidade:** ⭐⭐⭐⭐ — 195 testes Vitest + Playwright E2E + GitHub Actions + Lighthouse CI
 
-**186 testes unitários** (Vitest) em 32 arquivos, cobrindo, entre outros:
+**195 testes unitários** (Vitest) em 34 arquivos, cobrindo, entre outros:
 
 - **Globo:** satélites, ISS, terremotos, vulcões, furacões, vento, tamanho dos ícones e nomes de cidades que não se sobrepõem.
 - **JARVIS:** widget (microfone e conversa por voz), Piper, Whisper, perfil gerado no build, formatação das respostas e alerta no Telegram.
 - **Notícias:** parser RSS, scoring, spam e relevância.
 - **Interface:** WeatherBar, ServiceStatus, contato, menu, frases da Home, datas do blog, ErrorBoundary e idiomas.
+- **SEO:** HTML por rota, prévias, sitemap, redirecionamentos e IndexNow.
 
 **5 testes E2E** (Playwright, Chromium): a Home carrega sem erros, o menu aparece, `/about` e `/projects` renderizam e uma rota inexistente não quebra o app.
 

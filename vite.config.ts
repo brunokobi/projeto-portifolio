@@ -2,11 +2,14 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import type { PluginConfig } from "svgo";
-import { readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type { Plugin } from "vite";
 import messages from "./src/i18n/messages/pt.json";
 import { CURRICULO } from "./src/data/curriculo";
 import { JARVIS_PROFILE_PATH, buildJarvisProfile, extractSkillLabels } from "./src/utils/jarvisProfile";
+import { posts } from "./src/pages/DevBlog/posts";
+import { applySeo, buildRedirects, buildSeoPages, buildSitemap, seoFileFor } from "./src/seo/seoPages";
 
 // O @types do svgo 4.x tem um bug conhecido: o branch "preset-default" da
 // union de PluginConfig (mapped type indexado por [keyof ...]) não é
@@ -40,8 +43,43 @@ function jarvisProfile(): Plugin {
   };
 }
 
+// HTML de cada rota e de cada post com título, descrição, prévia e o texto da página,
+// para buscadores e prévias de link lerem sem rodar JavaScript; mais o sitemap e os
+// redirecionamentos (_redirects) que servem esses arquivos.
+function seoPages(): Plugin {
+  let outDir = "dist";
+  return {
+    name: "seo-pages",
+    apply: "build",
+    enforce: "post",
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
+    closeBundle() {
+      const indexPath = join(outDir, "index.html");
+      const template = readFileSync(indexPath, "utf8");
+      const pages = buildSeoPages({
+        messages,
+        curriculo: CURRICULO,
+        posts,
+        ogImageFor: (slug) => (existsSync(`public/og/${slug}.jpg`) ? `/og/${slug}.jpg` : undefined),
+      });
+      for (const page of pages) {
+        const file = seoFileFor(page.path);
+        const target = file ? join(outDir, file) : indexPath;
+        mkdirSync(dirname(target), { recursive: true });
+        writeFileSync(target, applySeo(template, page));
+      }
+      writeFileSync(join(outDir, "sitemap.xml"), buildSitemap(pages));
+      const redirectsPath = join(outDir, "_redirects");
+      const existing = existsSync(redirectsPath) ? readFileSync(redirectsPath, "utf8") : "";
+      writeFileSync(redirectsPath, buildRedirects(pages) + existing);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), jarvisProfile(), ViteImageOptimizer({
+  plugins: [react(), jarvisProfile(), seoPages(), ViteImageOptimizer({
     png: { quality: 75 },
     jpg: { quality: 75 },
     jpeg: { quality: 75 },

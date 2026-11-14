@@ -78,7 +78,8 @@ git commit -m "refactor: Claude sugeriu usar bilinear interpolation"
 | `src/components/ChatWidget/` | Chat do JARVIS (n8n via `netlify/functions/n8n-chat.ts`) |
 | `src/utils/piperTts.ts`, `src/utils/textToSpeech.ts` | Voz: Piper na VPS, voz do navegador como alternativa |
 | `src/hooks/useWhisperRecorder.ts` | Microfone: grava e transcreve no Whisper da VPS |
-| `src/pages/DevBlog/` | Blog with posts |
+| `src/pages/DevBlog/` | Blog; cada post em `/blog/<slug>` |
+| `src/seo/` | SEO: HTML por rota gerado no build, sitemap, `ROUTE_META` (ver `docs/ARCHITECTURE.md`) |
 | `src/routes/index.tsx` | Route definitions |
 | `DESIGN_SYSTEM.md` | Visual identity + tokens |
 | `docs/` | Documentação técnica (para IAs) |

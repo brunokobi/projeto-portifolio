@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /.netlify/
+Disallow: /seo/
 
-Sitemap: https://brunokobi.netlify.app/sitemap.xml
-
+Sitemap: https://brunokobi.tech/sitemap.xml

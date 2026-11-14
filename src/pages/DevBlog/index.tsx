@@ -1,21 +1,26 @@
 import { Box, Flex, Heading, Text, Stack, Wrap, WrapItem, Badge } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { BsChevronDoubleUp, BsArrowLeft } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
 import { track } from "../../utils/track";
 import { posts } from "./posts";
 import { formatPostDate } from "./formatPostDate";
 import PostRenderer from "./PostRenderer";
+import { applyRouteMeta, postTitle } from "../../seo/routeMeta";
 
 const GREEN = "#42c920";
 
 const DevBlog = () => {
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const selected = posts.find((p) => p.slug === selectedSlug) ?? null;
+  const { slug } = useParams<{ slug?: string }>();
+  const selected = posts.find((p) => p.slug === slug) ?? null;
 
   useEffect(() => {
     track({ event: "pageview", page: selected ? `/blog/${selected.slug}` : "/blog" });
+    if (selected) {
+      applyRouteMeta(`/blog/${selected.slug}`, { title: postTitle(selected.title), description: selected.excerpt });
+    }
   }, [selected]);
 
   return (
@@ -42,8 +47,8 @@ const DevBlog = () => {
             {selected ? (
               <>
                 <Box
-                  as="button"
-                  onClick={() => setSelectedSlug(null)}
+                  as={RouterLink}
+                  to="/blog"
                   display="flex"
                   alignItems="center"
                   gap={2}
@@ -105,8 +110,9 @@ const DevBlog = () => {
                   {posts.map((post) => (
                     <Box
                       key={post.slug}
-                      as="button"
-                      onClick={() => setSelectedSlug(post.slug)}
+                      as={RouterLink}
+                      to={`/blog/${post.slug}`}
+                      display="block"
                       textAlign="left"
                       bg="rgba(0,20,5,0.4)"
                       border="1px solid rgba(66,201,32,0.25)"

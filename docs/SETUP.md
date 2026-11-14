@@ -144,7 +144,8 @@ projeto-portifolio/
 2. Adicione o `Post` no array `posts` na posição da data (a lista mostra na ordem do array, mais novo primeiro)
 3. Monte o texto com blocos (`heading`, `paragraph`, `list`, `code`, `image`, `hr`); imagens vão em `public/blog/<slug>/`, em WebP
 4. Nunca coloque IP, chave ou dado pessoal real no texto
-5. Teste em `http://localhost:3000/blog`
+5. (Opcional) Coloque a imagem de prévia em `public/og/<slug>.jpg`, 1200×630
+6. Teste em `http://localhost:3000/blog/<slug>`; o build gera o HTML do post e o inclui no sitemap sozinho
 
 ### Atualizar Design System
 1. Edit `DESIGN_SYSTEM.md`

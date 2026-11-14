@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -13,65 +13,46 @@
         padding: 0;
         background: #000;
       }
-    </style>
-    <meta name="description" content="Personal website of Bruno Kobi Valadares de Amorim" />
-    <meta name="author" content="Bruno Kobi Valadares de Amorim" />
-    <meta
-      name="keywords"
-      content="Bruno Kobi Valadares de Amorim,
-    Bruno Kobi, Bruno Valadares, Bruno Amorim, Bruno Kobi Valadares,
-   desenvolvedor, desenvolvedor web, desenvolvedor front-end, desenvolvedor back-end,
-    desenvolvedor fullstack, desenvolvedor web fullstack, desenvolvedor web fullstack júnior,
-    mestrando em computação aplicada em inteligência artificial, mestrando em computação aplicada,
-    mestrando em inteligência artificial, mestrando em computação, mestrando em computação aplicada em IA,
-    Ifes, Ifes campus serra, Ifes serra, Ifes campus serra, Ifes campus serra, Ifes campus serra,
-    mapa esri com react js, mapa esri com react, mapa esri com reactjs, mapa esri com react,
-    mapa esri com reactjs, mapa esri com react, mapa esri com reactjs, mapa esri com react,
-    guia alimentar aplicativo, guia alimentar app, guia alimentar, guia alimentar app,
-    presense now, presense now app, presense now aplicativo, presense now app
-    "
-    />
-    <meta name="rating" content="general" />
-    <meta name="distribution" content="global" />
-    <meta name="language" content="pt-br" />
-    <meta name="coverage" content="Worldwide" />
-    <meta name="page-topic" content="Personal website of Bruno Kobi Valadares de Amorim" />
-    <meta name="audience" content="all" />
-    <meta name="revisit-after" content="7 days" />
-    <meta name="classification" content="Personal website of Bruno Kobi Valadares de Amorim" />
-    <meta name="publisher" content="Bruno Kobi Valadares de Amorim" />
-    <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="google" content="notranslate" />
-    <!-- Tags de verificação (Google Search Console / Bing / Yandex) removidas —
-         eram placeholders nunca preenchidos com token real, não verificavam nada.
-         Se for configurar de verdade, o token de cada ferramenta entra aqui. -->
-
-    <meta property="og:title" content="Bruno Kobi Valadares de Amorim" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://brunokobi.netlify.app/" />
-    <meta property="og:description" content="Personal website of Bruno Kobi Valadares de Amorim" />
-
-    <meta itemprop="name" content="Bruno Kobi Valadares de Amorim" />
-    <meta itemprop="description" content="Personal website of Bruno Kobi Valadares de Amorim" />
-    <meta itemprop="image" content="https://brunokobi.netlify.app/images/bruno.jpg" />
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Bruno Kobi Valadares de Amorim",
-        "jobTitle": "Desenvolvedor Full Stack",
-        "url": "https://brunokobi.netlify.app",
-        "image": "https://brunokobi.netlify.app/images/bruno.jpg",
-        "description": "Desenvolvedor Full Stack e mestrando em Computação Aplicada com foco em Inteligência Artificial no Ifes",
-        "alumniOf": {
-          "@type": "EducationalOrganization",
-          "name": "Ifes Campus Serra"
-        },
-        "sameAs": ["https://www.linkedin.com/in/brunokobi/", "https://github.com/brunokobi"]
+      #root > main,
+      #root > nav {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 24px 16px;
+        color: #c4c4c4;
+        font-family: Poppins, sans-serif;
+        line-height: 1.6;
       }
-    </script>
+      #root > main h1,
+      #root > main h2,
+      #root > main h3 {
+        color: #42c920;
+      }
+      #root > main a,
+      #root > nav a {
+        color: #42c920;
+      }
+      #root > main img {
+        max-width: 100%;
+        height: auto;
+      }
+      #root > nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        list-style: none;
+        padding: 0;
+      }
+    </style>
+    <meta name="author" content="Bruno Kobi Valadares de Amorim" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="google" content="notranslate" />
+    <!-- Verificação do Google Search Console / Bing Webmaster: o token de cada ferramenta entra aqui. -->
+
+    <!--seo:start-->
+    <title>Bruno Kobi — Desenvolvedor Full Stack, Agentes de IA e Automação</title>
+    <meta name="description" content="Portfólio de Bruno Kobi, desenvolvedor full stack em Serra (ES): agentes de IA, automação com n8n, React, TypeScript e Node.js." />
+    <link rel="canonical" href="https://brunokobi.tech/" />
+    <!--seo:end-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -82,10 +63,9 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <title>Bruno Kobi Valadares de Amorim</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>Ative o JavaScript para ver o site completo.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
   </body>
