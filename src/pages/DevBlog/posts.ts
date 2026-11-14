@@ -21,6 +21,169 @@ export interface Post {
 
 export const posts: Post[] = [
   {
+    slug: "jarvis-whisper-piper",
+    title: "Dando voz ao JARVIS: Whisper e Piper rodando na minha VPS",
+    date: "2026-11-14",
+    tags: ["IA", "Voz", "Whisper", "Piper", "n8n", "React"],
+    excerpt:
+      "O assistente do portfólio agora ouve e fala com modelos de voz self-hosted: Whisper transcreve o microfone, Piper gera a fala e o n8n responde. Como montei, o que deu errado e os ajustes de pronúncia, cache e CORS.",
+    blocks: [
+      {
+        type: "paragraph",
+        text:
+          "O JARVIS é o assistente do meu portfólio: você pergunta sobre a minha carreira, projetos ou como falar comigo, e ele responde. Até pouco tempo ele usava a voz e o reconhecimento de fala do navegador, que mudam muito de um aparelho para outro (no Firefox o microfone nem existia). Decidi trazer as duas pontas para a minha VPS: o **Whisper** para transformar fala em texto e o **Piper** para transformar texto em fala. Este post conta como ficou e o que aprendi no caminho.",
+      },
+      { type: "heading", level: 2, text: "TL;DR" },
+      {
+        type: "list",
+        items: [
+          "Microfone → **Whisper** (whisper.cpp, modelo base) → texto → agente no **n8n** → resposta → **Piper** (voz `pt_BR-faber-medium`) → áudio.",
+          "Tudo roda numa VPS ARM gratuita da Oracle, atrás da Cloudflare e do Traefik, cada serviço num container.",
+          "Um **prompt de vocabulário** no Whisper fez \"Bruno Cove trabalha na Vênix\" virar \"Bruno Kobi trabalha na Vennx\".",
+          "Um **dicionário de pronúncia** no front faz o Piper falar \"Cóbi\" e \"Vénix\" do jeito certo.",
+          "O áudio do Piper fica em **cache na Cloudflare por 30 dias**, então uma frase já falada antes sai na hora.",
+          "Se algo falhar, o site volta para a voz e o reconhecimento do navegador sem o visitante perceber.",
+        ],
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "1. A arquitetura" },
+      {
+        type: "code",
+        language: "text",
+        code:
+          "Microfone (MediaRecorder)\n   → POST whisper.brunokobi.tech/inference   (whisper.cpp + gateway FastAPI)\n   ← { text }\n   → n8n (agente JARVIS, memória por sessão)\n   ← resposta em texto\n   → GET tts.brunokobi.tech/tts.mp3?text=...&lang=pt   (Piper + FastAPI)\n   ← MP3 (cacheado na Cloudflare)\n   → <audio> + AnalyserNode (animação do núcleo do JARVIS)",
+      },
+      {
+        type: "paragraph",
+        text:
+          "O front é React com TypeScript, hospedado na Netlify. A Netlify não faz proxy de áudio: o navegador fala direto com os dois serviços da VPS, cada um num subdomínio próprio, com HTTPS na Cloudflare e roteamento pelo Traefik.",
+      },
+      { type: "heading", level: 2, text: "2. Ouvindo: Whisper self-hosted" },
+      {
+        type: "paragraph",
+        text:
+          "Usei o **whisper.cpp**, que roda bem em CPU ARM sem GPU. Com o modelo base, uma pergunta curta leva de 2 a 5 segundos para ser transcrita. Na frente dele coloquei um gateway pequeno em FastAPI, que libera CORS só para o meu site e repassa os campos para o servidor do whisper.cpp.",
+      },
+      { type: "heading", level: 3, text: "Gravar e saber quando parar" },
+      {
+        type: "paragraph",
+        text:
+          "No navegador, o hook `useWhisperRecorder` grava com `MediaRecorder` e mede o volume com um `AnalyserNode` da Web Audio API. Assim ele sabe quando a pessoa parou de falar, sem precisar de botão de parar:",
+      },
+      {
+        type: "list",
+        items: [
+          "Para depois de **1,5s de silêncio** quando já houve fala.",
+          "Desiste depois de **8s sem fala nenhuma**.",
+          "Corta em **30s** no máximo.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text:
+          "O áudio vai como `multipart/form-data` com `language=pt`. Na volta, removo marcas que o Whisper inventa em trechos sem fala, como `[BLANK_AUDIO]` e `(música)`.",
+      },
+      { type: "heading", level: 3, text: "O truque do prompt de vocabulário" },
+      {
+        type: "paragraph",
+        text:
+          "O primeiro teste foi engraçado: eu dizia \"Bruno Kobi trabalha na Vennx\" e o Whisper escrevia \"Bruno Cove trabalha na Vênix\". Nomes próprios e marcas não estão no vocabulário comum do modelo. O whisper.cpp aceita um campo `prompt`, que funciona como um texto anterior à fala e puxa o modelo para essas palavras:",
+      },
+      {
+        type: "code",
+        language: "ts",
+        code:
+          "export const WHISPER_PROMPT =\n  'Conversa com o JARVIS sobre Bruno Kobi, da Vennx: React, TypeScript, Node.js, n8n, Supabase, LangChain, GitHub, LinkedIn.';\n\nform.append('language', 'pt');\nform.append('prompt', WHISPER_PROMPT);",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Com isso, a mesma frase passou a sair certa. Foi a melhoria com melhor custo-benefício do projeto inteiro: uma linha de código.",
+      },
+      { type: "heading", level: 2, text: "3. Falando: Piper TTS" },
+      {
+        type: "paragraph",
+        text:
+          "O **Piper** é um sintetizador de voz neural leve, feito para rodar em CPU. Em português uso a voz `pt_BR-faber-medium`, e há vozes para inglês, espanhol, francês, alemão, russo e árabe, acompanhando os idiomas do site.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Embrulhei o Piper numa API FastAPI com um único endpoint, `GET /tts.mp3?text=...&lang=...&speed=...`, que devolve MP3. Ser **GET** foi uma escolha de propósito: a mesma frase gera sempre a mesma URL, e a Cloudflare guarda a resposta por 30 dias. O serviço também limita 1.200 caracteres por pedido e 30 sínteses por minuto por IP.",
+      },
+      { type: "heading", level: 3, text: "Começar a falar rápido" },
+      {
+        type: "paragraph",
+        text:
+          "Respostas longas demoram para sintetizar inteiras. Por isso o front tira o markdown, quebra o texto em trechos (o primeiro com até 120 caracteres, os outros com até 400) e toca um `<audio>` por trecho. Enquanto um trecho toca, o próximo já está sendo baixado. Assim o JARVIS começa a falar logo depois do primeiro trecho, sem esperar a resposta inteira.",
+      },
+      { type: "heading", level: 3, text: "Ensinando a pronunciar" },
+      {
+        type: "paragraph",
+        text:
+          "O Piper lê o que recebe ao pé da letra. \"Kobi\" saía errado, \"JARVIS\" virava sigla, e um link como `github.com/brunokobi` era soletrado inteiro. A solução foi um dicionário de pronúncia aplicado só no texto que vai para a voz (o texto na tela continua igual):",
+      },
+      {
+        type: "code",
+        language: "ts",
+        code:
+          "const PRONUNCIATION = {\n  pt: [\n    [/\\bJARVIS\\b/gi, 'Járvis'],\n    [/\\bGithub\\b/gi, 'Git Hub'],\n    [/\\bKobi\\b/gi, 'Cóbi'],\n    [/\\bVennx\\b/gi, 'Vénix'],\n  ],\n};",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Links com caminho são lidos só pelo último pedaço (\"bruno cóbi\"), e-mails viram \"usuário arroba domínio ponto com\". Além disso, ajustei o prompt do agente no n8n para, ao falar de contato, indicar os caminhos (LinkedIn, formulário do site, GitHub) em vez de ditar endereços.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Para conferir a pronúncia sem ficar ouvindo dezenas de áudios, usei os dois serviços juntos: gerava o áudio no Piper e mandava para o Whisper transcrever. Se o Whisper entendia a palavra certa, uma pessoa também entenderia.",
+      },
+      { type: "heading", level: 2, text: "4. O núcleo que pulsa com a voz" },
+      {
+        type: "paragraph",
+        text:
+          "O JARVIS tem um núcleo animado com barras. Antes elas se mexiam de forma aleatória; agora mostram o espectro real da voz. O `<audio>` do Piper é ligado a um `AnalyserNode` com `createMediaElementSource`, e a cada quadro o componente lê `getByteFrequencyData` e espelha as frequências nas barras.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Aqui apareceram duas pegadinhas. A primeira: para ler o espectro de um áudio de outro domínio, o `<audio>` precisa de `crossOrigin=\"anonymous\"` e o servidor precisa mandar o cabeçalho de CORS. A segunda é de cache: se o servidor devolve CORS só para a origem que pediu, com `Vary: Origin`, a Cloudflare pode servir para o navegador uma cópia guardada sem o cabeçalho, e o áudio toca **mudo**. Como o áudio é público, a solução foi o Piper responder sempre `Access-Control-Allow-Origin: *`, sem `Vary`, e acrescentar um parâmetro de versão na URL (`v=2`) para descartar as cópias antigas do cache.",
+      },
+      {
+        type: "paragraph",
+        text:
+          "Também só ligo o analisador quando o `AudioContext` está em estado `running`. Se o navegador ainda não liberou áudio (antes de o visitante clicar em algo), o elemento ligado ao contexto suspenso também ficaria mudo.",
+      },
+      { type: "heading", level: 2, text: "5. Conversa por voz" },
+      {
+        type: "paragraph",
+        text:
+          "Com as duas pontas funcionando, ficou natural fechar o ciclo: quando a pergunta veio pelo microfone, o JARVIS volta a ouvir sozinho assim que termina de responder. Se ninguém falar em 6 segundos, o microfone fecha em silêncio. Digitar uma pergunta, clicar numa sugestão ou parar a fala encerra o modo de conversa.",
+      },
+      { type: "heading", level: 2, text: "6. Plano B sempre ligado" },
+      {
+        type: "paragraph",
+        text:
+          "Serviço self-hosted numa VPS gratuita pode cair, então nada depende só dele. Se o Piper falhar antes de tocar (erro, limite por IP, rede), o texto é lido pela voz do navegador (Web Speech API). Se o navegador não grava áudio, o microfone usa o reconhecimento de fala do próprio navegador. O visitante continua conversando, só com outra voz.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "Principais lições" },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "**Modelos pequenos dão conta**: whisper.cpp no modelo base e Piper em CPU ARM respondem rápido o bastante para uma conversa.",
+          "**O prompt do Whisper resolve nomes próprios** com uma linha, sem treinar nada.",
+          "**TTS por GET + CDN** transforma frases repetidas em arquivos estáticos.",
+          "**CORS e cache precisam combinar**: cabeçalho que varia por origem, atrás de CDN, pode deixar o áudio mudo.",
+          "**Teste a voz com o próprio Whisper**: Piper → Whisper é um verificador automático de pronúncia.",
+          "**Tenha sempre um plano B** quando a infraestrutura é sua e gratuita.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "oracle-vps-free-tier",
     title: "Como a Oracle \"comeu\" minha VPS de graça",
     date: "2026-09-20",

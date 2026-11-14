@@ -68,7 +68,7 @@ Resposta  → speak() → playPiper(): texto sem markdown, dividido em trechos (
           → GET https://tts.brunokobi.tech/tts.mp3?text&lang&speed, um <audio> por trecho
           → falha antes de tocar → Web Speech API (voz do navegador)
 ```
-- Os dois serviços liberam CORS só para o site; não há proxy na Netlify
+- O Whisper libera CORS só para o site; o Piper responde `Access-Control-Allow-Origin: *` (áudio público, uma cópia só no cache da Cloudflare). Não há proxy na Netlify
 - Leituras do hover (`TextAudio`) usam o mesmo Piper
 - `sessionId` único por visita (gerado no frontend) → Memória de Conversa do n8n
 - Idioma da UI não é enviado; workflow fixo em português
