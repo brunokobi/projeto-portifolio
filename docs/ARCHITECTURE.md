@@ -94,6 +94,8 @@ npm run build
 Navegação no app → applyRouteMeta (src/seo/routeMeta.ts) troca título, descrição e canonical
 Deploy de produção → netlify/functions/deploy-succeeded.ts → IndexNow com as URLs do sitemap
 ```
+- Números do dataset da Grande Vitória (empresas, sócios, processos): o build lê `GET empresas.brunokobi.tech/estatisticas` (`fetchDatasetCounts` em `vite.config.ts`) e preenche os marcadores `{empresas}`, `{empresasCurto}`, `{socios}` e `{processos}` dos textos (`src/data/datasetNumbers.ts`), no idioma de cada página; se a API falhar, usa `FALLBACK_COUNTS`. Atualizam a cada deploy
+- O site não troca o idioma pelo IP quando quem visita é robô de busca ou de prévia de link (`isCrawler`); assim o Google indexa em português
 - Títulos e descrições das rotas ficam em `ROUTE_META` (`src/seo/routeMeta.ts`), usados no build e no navegador
 - Post novo entra sozinho no sitemap e ganha HTML próprio; a imagem de prévia é `public/og/<slug>.jpg` (1200×630) se existir, senão `public/og/default.jpg`
 - Rota nova precisa de uma entrada em `ROUTE_META` e outra em `buildSeoPages`

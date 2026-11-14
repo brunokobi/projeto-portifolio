@@ -4,12 +4,14 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import type { PluginConfig } from "svgo";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import type { Plugin } from "vite";
+import type { Plugin, UserConfig } from "vite";
 import messages from "./src/i18n/messages/pt.json";
 import { CURRICULO } from "./src/data/curriculo";
 import { JARVIS_PROFILE_PATH, buildJarvisProfile, extractSkillLabels } from "./src/utils/jarvisProfile";
 import { posts } from "./src/pages/DevBlog/posts";
 import { applySeo, buildRedirects, buildSeoPages, buildSitemap, seoFileFor } from "./src/seo/seoPages";
+import { FALLBACK_COUNTS, datasetValues, fillDatasetNumbers, type DatasetCounts } from "./src/data/datasetNumbers";
+import { EMPRESAS_STATS_URL, parseDatasetStats } from "./netlify/lib/infraStats";
 
 // O @types do svgo 4.x tem um bug conhecido: o branch "preset-default" da
 // union de PluginConfig (mapped type indexado por [keyof ...]) não é
@@ -20,8 +22,28 @@ const svgoPlugins = [
   { name: "preset-default", params: { overrides: { removeViewBox: false } } },
 ] as PluginConfig[];
 
+// Números do dataset da Grande Vitória lidos da API no build, para os textos do site
+// (Home, projetos, perfil do JARVIS e páginas de SEO) saírem sempre atualizados.
+async function fetchDatasetCounts(): Promise<DatasetCounts> {
+  try {
+    const res = await fetch(EMPRESAS_STATS_URL, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`estatisticas respondeu ${res.status}`);
+    const stats = parseDatasetStats(await res.json());
+    if (!stats) throw new Error("estatisticas em formato inesperado");
+    return { empresas: stats.empresas, socios: stats.socios, processos: stats.processosJudiciais };
+  } catch (err) {
+    console.warn(`[dataset] usando os números guardados no código: ${String(err)}`);
+    return FALLBACK_COUNTS;
+  }
+}
+
+function withDatasetNumbers(source: Record<string, string>, counts: DatasetCounts): Record<string, string> {
+  const values = datasetValues("pt", counts);
+  return Object.fromEntries(Object.entries(source).map(([key, text]) => [key, fillDatasetNumbers(text, values)]));
+}
+
 // Perfil que o workflow do JARVIS no n8n busca em /jarvis/perfil.md para responder.
-function jarvisProfile(): Plugin {
+function jarvisProfile(messages: Record<string, string>): Plugin {
   const render = () =>
     buildJarvisProfile({
       messages,
@@ -46,7 +68,7 @@ function jarvisProfile(): Plugin {
 // HTML de cada rota e de cada post com título, descrição, prévia e o texto da página,
 // para buscadores e prévias de link lerem sem rodar JavaScript; mais o sitemap e os
 // redirecionamentos (_redirects) que servem esses arquivos.
-function seoPages(): Plugin {
+function seoPages(messages: Record<string, string>): Plugin {
   let outDir = "dist";
   return {
     name: "seo-pages",
@@ -78,8 +100,11 @@ function seoPages(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), jarvisProfile(), seoPages(), ViteImageOptimizer({
+export default defineConfig(async (): Promise<UserConfig> => {
+  const counts = await fetchDatasetCounts();
+  const filledMessages = withDatasetNumbers(messages, counts);
+  return {
+  plugins: [react(), jarvisProfile(filledMessages), seoPages(filledMessages), ViteImageOptimizer({
     png: { quality: 75 },
     jpg: { quality: 75 },
     jpeg: { quality: 75 },
@@ -109,5 +134,6 @@ export default defineConfig({
   },
   esbuild: { loader: "tsx", include: /src\/.*\.tsx?$/, exclude: [], minifyIdentifiers: false },
   optimizeDeps: { esbuildOptions: { loader: { ".tsx": "tsx" } } },
-  define: { global: "window" },
+  define: { global: "window", __DATASET_COUNTS__: JSON.stringify(counts) },
+  };
 });

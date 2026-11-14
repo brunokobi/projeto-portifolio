@@ -28,6 +28,7 @@ import falar from "../TextAudio";
 import ContactForm from "../ContatoForm/ContactForm";
 import { getGeoIP } from "../../utils/geoip";
 import { track } from "../../utils/track";
+import { isCrawler } from "../../utils/isCrawler";
 
 // Ícones
 import { FaGlobe, FaReact } from "react-icons/fa";
@@ -191,6 +192,8 @@ const Nav = () => {
   useEffect(() => {
     const ls = localStorage.getItem("i18nConfig");
     if (ls) return; // já tem preferência salva, não sobrescreve
+    // Buscadores leem o site de servidores fora do Brasil; sem isso o Google indexava a versão em inglês.
+    if (isCrawler()) return;
     getGeoIP()
       .then((data) => {
         const lang = COUNTRY_TO_LANG[data.country_code ?? ""];

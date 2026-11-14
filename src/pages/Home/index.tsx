@@ -12,6 +12,7 @@ import BigBangLoader from "../../components/BigBangLoader";
 import IconsBackground from "../../components/IconsBackground";
 import { useIntl } from "react-intl";
 import falar from "../../components/TextAudio";
+import { datasetValues } from "../../data/datasetNumbers";
 
 // GlobeBackground (ArcGIS SceneView, WebGL 3D) é decorativo e o mais pesado
 // de longe do que roda na Home — lazy-load pra não bloquear FCP/LCP do
@@ -40,7 +41,10 @@ const cursorBlink = keyframes`
 const Home = () => {
   const intl = useIntl();
 
-  const phrases = useMemo(() => PHRASE_IDS.map((id) => intl.formatMessage({ id })), [intl]);
+  const phrases = useMemo(() => {
+    const values = datasetValues(intl.locale);
+    return PHRASE_IDS.map((id) => intl.formatMessage({ id }, values));
+  }, [intl]);
 
   const [phrasesHovered, setPhrasesHovered] = useState(false);
   const { text: typedPhrase, index: phraseIndex } = useTypewriter(phrases, { paused: phrasesHovered });

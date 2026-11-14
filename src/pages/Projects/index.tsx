@@ -7,6 +7,7 @@ import { BsChevronDoubleUp } from "react-icons/bs";
 import AnimatedStars from "../../components/AnimatedStars";
 import { useEffect, useRef, useMemo } from "react";
 import { track } from "../../utils/track";
+import { datasetValues } from "../../data/datasetNumbers";
 import { motion, AnimatePresence } from "framer-motion";
 
 import placas from "../../assets/img/placas.webp";
@@ -37,11 +38,11 @@ const Projects = () => {
   const projects = useMemo(
     () => [
       {
-        title: intl.formatMessage({ id: "project16t" }),
+        title: intl.formatMessage({ id: "project16t" }, datasetValues(intl.locale)),
         link: "",
         img: grandeVitoria,
         demo: "https://empresas.brunokobi.tech",
-        description: intl.formatMessage({ id: "project16d" }),
+        description: intl.formatMessage({ id: "project16d" }, datasetValues(intl.locale)),
         tags: [
           "#FASTAPI",
           "#SQLITE",

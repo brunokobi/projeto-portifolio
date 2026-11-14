@@ -19,7 +19,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   "/projects": {
     title: "Projetos de Bruno Kobi — IA, dados abertos, jogos e web",
     description:
-      "Projetos em produção: dataset de 367 mil empresas da Grande Vitória, o assistente JARVIS com voz, o jogo Copa Aspirador em Python, apps React, PWA offline e mais.",
+      "Projetos em produção: dataset aberto das empresas da Grande Vitória (ES), o assistente JARVIS com voz, o jogo Copa Aspirador em Python, apps React, PWA offline e mais.",
   },
   "/curriculo": {
     title: "Currículo — Bruno Kobi Valadares de Amorim",
