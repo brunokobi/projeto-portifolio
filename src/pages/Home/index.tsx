@@ -1,7 +1,8 @@
-import { Flex, Heading, SlideFade, Stack } from "@chakra-ui/react";
+import { Box, Flex, Heading, SlideFade, Stack } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useCallback, lazy, Suspense } from "react";
+import { useEffect, useMemo, useCallback, useState, lazy, Suspense } from "react";
 import useTypewriter from "../../hooks/useTypewriter";
 import profile from "../../assets/img/home-animation-removed.gif";
 import { track } from "../../utils/track";
@@ -18,6 +19,11 @@ import falar from "../../components/TextAudio";
 // sentido mostrar spinner por cima do resto da página só por causa dele).
 const GlobeBackground = lazy(() => import("../../components/GlobeBackground"));
 
+const cursorBlink = keyframes`
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+`;
+
 const Home = () => {
   const intl = useIntl();
 
@@ -26,12 +32,13 @@ const Home = () => {
     [intl]
   );
 
-  const typedPhrase = useTypewriter(phrases);
+  const [phrasesHovered, setPhrasesHovered] = useState(false);
+  const { text: typedPhrase, index: phraseIndex } = useTypewriter(phrases, { paused: phrasesHovered });
 
   const falarBoasVindas = useCallback(() => falar(intl.formatMessage({ id: "ola_mundo" })), [intl]);
   const falarEuSou = useCallback(() => falar(intl.formatMessage({ id: "eu_sou" })), [intl]);
   const falarNome = useCallback(() => falar(intl.formatMessage({ id: "meunome" })), [intl]);
-  const falarFrases = useCallback(() => falar(phrases.join(" ")), [phrases]);
+  const falarFraseAtual = useCallback(() => falar(phrases[phraseIndex]), [phrases, phraseIndex]);
 
   useEffect(() => {
     track({ event: "pageview", page: "/" });
@@ -43,7 +50,8 @@ const Home = () => {
         intl.formatMessage({ id: "ola_mundo" }) +
           intl.formatMessage({ id: "eu_sou" }) +
           intl.formatMessage({ id: "meunome" }) +
-          phrases.join(" ")
+          ". " +
+          phrases[0]
       );
     }, 1000);
     return () => clearTimeout(timer);
@@ -133,11 +141,26 @@ const Home = () => {
             <Heading
               fontSize={{ base: "sm", md: "xl" }}
               fontWeight={300}
-              onMouseOver={falarFrases}
+              onMouseEnter={() => {
+                setPhrasesHovered(true);
+                falarFraseAtual();
+              }}
+              onMouseLeave={() => setPhrasesHovered(false)}
               pointerEvents="auto"
               textShadow="0px 0px 10px rgb(0,0,0)"
             >
-              <span style={{ borderRight: "2px solid #42c920" }}>{typedPhrase}</span>
+              {typedPhrase}
+              <Box
+                as="span"
+                display="inline-block"
+                w="2px"
+                h="1em"
+                ml="2px"
+                verticalAlign="text-bottom"
+                bg="#42c920"
+                animation={`${cursorBlink} 1s step-end infinite`}
+                aria-hidden="true"
+              />
             </Heading>
           </Stack>
         </Stack>

@@ -637,7 +637,7 @@ Coordenadas enviadas à **Open-Meteo API** — gratuita, sem chave de API. 22 co
 | ---------------------- | ---------------------------------------------------------------------------------------- |
 | `ErrorBoundary`        | Render normal, captura de erro, botão de retry, reset de estado                          |
 | `LanguageContext`      | Locale padrão, leitura do localStorage, `setLanguage`, persistência, erro fora do Provider |
-| `useTypewriter`        | Digitação com fake timers, múltiplas strings, array vazio                                |
+| `useTypewriter`        | Digitação, pausa com a frase inteira, intervalo entre frases, pausa no hover, array vazio |
 | `useInView`            | IntersectionObserver mock, threshold padrão/customizado, disconnect após intersecção     |
 | `newsFunctions`        | `isSpam`, `isRelevant`, `scoreArticle`, `isTooOld`, `importanceLevel`                    |
 | `utils/rss`            | `timeAgo`, `cleanDesc`, `parseRSS` (RSS 2.0, Atom, inválido), `translationCache`        |
