@@ -8,7 +8,7 @@ const MAX_CHUNK_CHARS = 400;
 const FIRST_CHUNK_CHARS = 120;
 
 const PRONUNCIATION: Record<string, [RegExp, string][]> = {
-  pt: [[/\bJARVIS\b/gi, "Járvis"], [/\bGithub\b/gi, "Git Hub"]],
+  pt: [[/\bJARVIS\b/gi, "Járvis"], [/\bGithub\b/gi, "Git Hub"], [/\bKobi\b/gi, "Cóbi"], [/\bVennx\b/gi, "Vénix"]],
   en: [[/\bGithub\b/gi, "Git Hub"]],
 };
 

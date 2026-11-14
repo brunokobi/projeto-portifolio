@@ -54,6 +54,12 @@ describe("prepareText", () => {
       "Sou o Járvis. Veja o Git Hub em Git Hub"
     );
   });
+
+  it("pronuncia Kobi como Cóbi e Vennx como Vénix em português", () => {
+    expect(prepareText("Bruno Kobi e brunokobi", "pt")).toBe("Bruno Cóbi e brunokobi");
+    expect(prepareText("Trabalha na Vennx.", "pt")).toBe("Trabalha na Vénix.");
+    expect(prepareText("Bruno Kobi", "en")).toBe("Bruno Kobi");
+  });
 });
 
 describe("splitIntoChunks", () => {
