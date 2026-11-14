@@ -66,6 +66,9 @@ Nenhuma.
   - **bold:** `**text**` → `<span style="color: #42c920">`
   - **code:** `` `text` `` → `<code>` monospace
   - **italic:** `*text*` → `<em>`
+  - Blocos: `heading`, `paragraph`, `list`, `code`, `hr` e `image` (`src`, `alt`, `caption` opcional; imagens em `public/blog/<post>/`, em WebP)
+- `GameBanner` — banner do jogo Copa Aspirador (link para `copaaspirador.brunokobi.tech`, evento `game_banner_click`) no topo de todos os posts, entre as tags e o texto
+- `formatPostDate` — data do post sem voltar um dia pelo fuso
 
 ### Estrutura
 ```typescript
@@ -191,7 +194,7 @@ src/
 ├── pages/
 │   ├── Home/index.tsx
 │   ├── About/
-│   ├── DevBlog/ (index.tsx, PostRenderer.tsx, posts.ts)
+│   ├── DevBlog/ (index.tsx, PostRenderer.tsx, GameBanner.tsx, formatPostDate.ts, posts.ts)
 │   └── ...
 ├── hooks/useChatWithAudio.ts
 ├── utils/

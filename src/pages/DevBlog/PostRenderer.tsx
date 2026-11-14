@@ -1,4 +1,4 @@
-import { Box, Heading, Text, UnorderedList, OrderedList, ListItem } from "@chakra-ui/react";
+import { Box, Heading, Image, Text, UnorderedList, OrderedList, ListItem } from "@chakra-ui/react";
 import { Fragment, type ReactNode } from "react";
 import type { Block } from "./posts";
 
@@ -103,6 +103,24 @@ const PostRenderer = ({ blocks }: { blocks: Block[] }) => (
               boxShadow="inset 0 0 20px rgba(66,201,32,0.05)"
             >
               <code>{block.code}</code>
+            </Box>
+          );
+        case "image":
+          return (
+            <Box key={i} as="figure" mb={6}>
+              <Image
+                src={block.src}
+                alt={block.alt}
+                loading="lazy"
+                w="100%"
+                borderRadius="8px"
+                border="1px solid rgba(66,201,32,0.25)"
+              />
+              {block.caption && (
+                <Text as="figcaption" fontSize="xs" color="whiteAlpha.600" mt={2} textAlign="center">
+                  {renderInline(block.caption)}
+                </Text>
+              )}
             </Box>
           );
         case "hr":

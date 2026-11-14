@@ -8,6 +8,7 @@ export type Block =
   | { type: "paragraph"; text: string }
   | { type: "list"; ordered?: boolean; items: string[] }
   | { type: "code"; language?: string; code: string }
+  | { type: "image"; src: string; alt: string; caption?: string }
   | { type: "hr" };
 
 export interface Post {
@@ -20,6 +21,230 @@ export interface Post {
 }
 
 export const posts: Post[] = [
+  {
+    slug: "copa-aspirador",
+    title: "Copa Aspirador: um jogo de futebol de robôs aspiradores feito em Python que roda no navegador",
+    date: "2026-11-14",
+    tags: ["Python", "pygame", "WebAssembly", "Game Dev", "Pixel Art"],
+    excerpt: "Futebol arcade de robôs aspiradores com campanha, carreira, torcida e narrador, 100% em Python e rodando no navegador com pygbag. O que o jogo faz hoje e os desafios de desempenho, áudio, deploy, balanceamento e saves.",
+    blocks: [
+      {
+        type: "paragraph",
+        text: "**Copa Aspirador** é um jogo que eu fiz: futebol arcade 5 contra 5 em que os jogadores são robôs aspiradores. Ele é escrito **100% em Python** com pygame e roda direto no navegador, sem instalar nada, em **copaaspirador.brunokobi.tech**. Começou como um futebol simples e virou um RPG de robôs com campanha, carreira de clubes, torcida que canta e narrador. Este post mostra o que o jogo faz hoje e os desafios para chegar até aqui.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/menu.webp",
+        alt: "Menu principal do Copa Aspirador com os seis modos de jogo",
+        caption: "O menu: amistosos, carreira, Modo Robôs e a campanha. O slogan resume o jogo.",
+      },
+      { type: "heading", level: 2, text: "TL;DR" },
+      {
+        type: "list",
+        items: [
+          "Python + pygame compilado para **WebAssembly** com o **pygbag**: o mesmo código roda no desktop e no navegador.",
+          "Seis modos: amistoso contra a CPU ou a dois no mesmo teclado, carreira de clubes, Modo Robôs e uma campanha com história em três atos.",
+          "**Nenhuma imagem externa**: robôs, torcida, 128 escudos, personagens e cenários em pixel art são desenhados por código.",
+          "Cerca de **32 mil linhas de jogo e 22 mil de testes**, em pouco mais de um mês.",
+          "Os maiores desafios: desempenho no navegador, áudio, cache do deploy, balanceamento e saves que não podem se perder.",
+        ],
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "1. O jogo hoje" },
+      { type: "heading", level: 3, text: "Partidas de robôs" },
+      {
+        type: "paragraph",
+        text: "Cada robô tem um de 6 chassis (Disco, Tanque, Velocista, Goleiro, Orbital e Titã) e 8 atributos: velocidade, aceleração, chute, controle (sucção), defesa, visão, bateria e QI. Eles mudam de verdade o comportamento em campo: a bateria gasta ao correr e chutar e recarrega parado, e robô com bateria baixa solta faísca e fumaça. Há 5 formações, de RETRANCA a PRESSÃO, que mudam onde cada robô fica e para onde volta.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/partida-estadio-gol.webp",
+        alt: "Partida na câmera de estádio, com a torcida comemorando o gol e o narrador na faixa de TV",
+        caption: "Câmera de estádio: torcida nas cores dos times, faixas na grade, \"GOOOOL!\" e o narrador Tonho na faixa de TV.",
+      },
+      {
+        type: "paragraph",
+        text: "Em volta do campo fica uma **torcida** de até cerca de 520 pessoas, cada uma com pele, cabelo, chapéu, camisa e cachecol sorteados. Ela reage a gol, chance, defesa e trave, faz ola e mosaico e puxa cânticos nas pausas. O piso muda a cada partida: arena neon ou um piso de casa, como cozinha em xadrez ou taco de madeira, afinal são aspiradores jogando dentro de casa. O narrador **Tonho** e a comentarista **Cleide** comentam lance a lance com o nome dos robôs.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/partida-perto.webp",
+        alt: "Robôs personalizados em campo na câmera aproximada",
+        caption: "Câmera PERTO: robôs com peças visíveis, anel de LED, barra de bateria e cosméticos.",
+      },
+      { type: "heading", level: 3, text: "A campanha: A Garagem do Vô" },
+      {
+        type: "paragraph",
+        text: "O modo história segue o **Téo**, que acha na garagem do avô o **Zé Poeira**: um Aspiradex Turbo 74 remendado com fita crepe, com uma rodinha que cai sozinha e um chinelo preso (\"o chinelo é estrutural\"). Com ele, Téo tenta salvar o clube de robótica da escola e acaba enfrentando a corporação **Limpex** e seu dono alérgico a pó, da Copa Interclasses ao Mundial de Aspiradores em Neo-Tóquio.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/campanha-dialogo.webp",
+        alt: "Diálogo da campanha com personagens em pixel art",
+        caption: "Diálogos com personagens em pixel art que piscam, mexem a boca e mudam de expressão.",
+      },
+      {
+        type: "paragraph",
+        text: "São 3 atos e 13 capítulos, com torneios de copa, liga e série de duelos, 14 missões secundárias, escolhas que mudam aliados e adversários e **3 finais**, um deles secreto. Depois do final abrem a **Turnê Lendária** (novo jogo+) e a **Torre do Pó**, com 40 andares e modificadores de arena como goleiro gigante e bola pesada.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/campanha-mapa.webp",
+        alt: "Mapa da campanha com os capítulos da escola ao Mundial",
+        caption: "O mapa do Ato 1, da escola ao Mundial, com o escudo do chefe de cada capítulo.",
+      },
+      { type: "heading", level: 3, text: "Garagem, peças e habilidades" },
+      {
+        type: "paragraph",
+        text: "No Modo Robôs e na campanha você monta e evolui a equipe: 8 slots de peças por robô, sets, relíquias, peças Míticas, 16 habilidades numa árvore de Ataque, Controle e Defesa, itens de partida e cosméticos como antena, adesivo e rastro. Cada peça mostra o antes e o depois nos atributos.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/garagem-bancada.webp",
+        alt: "Garagem com a bancada de oito slots de peças",
+        caption: "A garagem: 8 slots, sets e relíquias, com o efeito de cada peça.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/habilidades.webp",
+        alt: "Árvore de habilidades dos robôs",
+        caption: "A árvore de habilidades e a tática do time.",
+      },
+      { type: "heading", level: 3, text: "Carreira de clubes" },
+      {
+        type: "paragraph",
+        text: "Na carreira, no estilo Elifoot, você é o técnico: 24 clubes em 3 divisões, mercado de transferências, finanças, promoção e rebaixamento. Os jogadores são robôs com nome de robô (\"Zumbido\", \"Faísca\", \"Turbo Mk2\"...), tirados de um catálogo de cerca de 4,7 mil nomes. No lugar da idade, eles têm **horas de uso**: amaciando, auge, desgaste e fim de vida, quando vão para a reciclagem. Dá para mandar um robô para a revisão e ganhar mais uma temporada dele.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/carreira-elenco.webp",
+        alt: "Elenco da carreira com robôs, horas de uso e revisão",
+        caption: "O elenco: horas de uso coloridas pela fase e o botão de REVISÃO.",
+      },
+      { type: "heading", level: 3, text: "128 escudos sem nenhuma imagem" },
+      {
+        type: "paragraph",
+        text: "Todos os 128 times têm escudo em pixel art, gerado por código a partir do nome: formato, padrão nas cores do time, um símbolo de 15×15 pixels (tubarão, dragão, coroa, aspirador-robô, pão, vassoura...) e as iniciais. O mesmo nome gera sempre o mesmo escudo, e os chefes da campanha ganham coroa, estrelas e louros.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/escudos.webp",
+        alt: "Grade com os 128 escudos dos times",
+        caption: "Os 128 escudos, todos desenhados por código.",
+      },
+      {
+        type: "image",
+        src: "/blog/copa-aspirador/melhor-do-jogo.webp",
+        alt: "Cartão de melhor do jogo com as estatísticas da partida",
+        caption: "Fim de partida: estatísticas, nota de cada robô e o MELHOR DO JOGO.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "2. Os desafios da implementação" },
+      { type: "heading", level: 3, text: "Python no navegador" },
+      {
+        type: "paragraph",
+        text: "O **pygbag** empacota o código e os recursos num arquivo `game.apk` e roda o Python compilado para WebAssembly dentro da página. Funciona muito bem, mas tem regras próprias:",
+      },
+      {
+        type: "list",
+        items: [
+          "O loop principal precisa ser **assíncrono**, devolvendo o controle ao navegador a cada quadro.",
+          "O pygbag só descobre as dependências lendo o `main.py`, então o `import pygame` precisa estar explícito ali.",
+          "O navegador só libera áudio depois de um clique. A tela de carregamento, feita com um template próprio, pede esse clique antes de iniciar o jogo.",
+          "Não existe disco: os saves vão para o `localStorage` no navegador e para um arquivo na pasta do usuário no desktop, pelo mesmo módulo `store.py`.",
+          "A tela ficava espremida em algumas janelas; o template passou a guardar a proporção de 1100×700.",
+        ],
+      },
+      { type: "heading", level: 3, text: "Desempenho: zero Surface por quadro" },
+      {
+        type: "paragraph",
+        text: "No WebAssembly o pygame é bem mais lento que no desktop, e uma torcida de centenas de pessoas animadas a cada quadro derrubaria o jogo. A regra do projeto virou lei e tem teste: **nenhuma `pygame.Surface` nova é criada durante o desenho de um quadro**. Tudo é pré-renderizado: torcedores num atlas, escudos e robôs em cache, e o desenho só copia pedaços prontos. A torcida tem 3 níveis de detalhe automáticos e some na velocidade MAX.",
+      },
+      {
+        type: "paragraph",
+        text: "O orçamento é de até 1,5 ms de desenho por quadro no desktop (cerca de 3 ms estimados no navegador). Uma ferramenta de medição roda o desenho em modo sem tela e compara com a medida anterior a cada mudança grande.",
+      },
+      { type: "heading", level: 3, text: "Áudio: síntese, gravações e um bug de taxa" },
+      {
+        type: "paragraph",
+        text: "O som começou **100% sintetizado por código**: efeitos e músicas chiptune gerados com `math` e `array`. Depois entraram gravações reais de torcida, apito, \"acabou!\" e até uma caixa registradora, e a síntese virou o plano B se algum arquivo faltar. Para não travar o menu, a geração é feita aos poucos: no navegador leva cerca de 1,2 s de CPU, espalhados em quase 2 s, com o menu respondendo.",
+      },
+      {
+        type: "list",
+        items: [
+          "Cada reação da torcida tem de 3 a 9 variações, sorteadas em **saco embaralhado**: toca todas antes de repetir. Parte das variações é derivada em tempo de execução (outro tom, outro trecho) para o pacote não crescer.",
+          "Os áudios passam por um script com ffmpeg que corta silêncio e nivela o volume em LUFS. As fontes caíram de 14,4 MB para 7,5 MB, e o `game.apk` de 10,3 MB para 7,2 MB.",
+          "Um bug curioso: com o mixer a 22.050 Hz, o pygame no desktop carregava algumas gravações de 44,1 kHz **vazias**, sem erro. A solução foi abrir o mixer a 44,1 kHz, a mesma taxa do navegador.",
+          "A torcida de fundo é um loop de 24 s feito com as 3 gravações misturadas e uma emenda sem corte audível.",
+        ],
+      },
+      { type: "heading", level: 3, text: "Deploy sem cache velho" },
+      {
+        type: "paragraph",
+        text: "Depois de publicar uma versão nova, alguns navegadores continuavam abrindo o pacote antigo. Um script agora acrescenta ao `index.html` do build um parâmetro com o hash do pacote:",
+      },
+      {
+        type: "code",
+        language: "text",
+        code: "game.apk?v=<sha256 curto do game.apk>",
+      },
+      {
+        type: "paragraph",
+        text: "Cada deploy muda a URL do pacote, e nenhum cache serve a versão anterior. Outro detalhe: o pygbag converte os áudios e só refaz a conversão quando a cópia não existe, então trocar um `.ogg` exige apagar a cópia antiga, senão o som velho vai para o pacote.",
+      },
+      { type: "heading", level: 3, text: "Balanceamento medido, não chutado" },
+      {
+        type: "paragraph",
+        text: "Partidas que você assiste rodam no motor real; as que você manda **SIMULAR** usam um modelo estatístico, muito mais rápido. Os dois precisam dar resultados parecidos, senão simular vira trapaça. Para isso há scripts que jogam centenas de partidas no motor real e ajustam o simulador. A campanha inteira é jogada por simulação centenas de vezes para conferir a chance de vencer cada treino, jogo, semifinal e chefe.",
+      },
+      {
+        type: "paragraph",
+        text: "E para mudanças no motor não alterarem partidas sem querer, existem os **goldens**: 80 placares gravados que precisam sair idênticos depois de qualquer mudança. Todo recurso novo do motor fica atrás de uma opção desligada por padrão, para os 80 placares continuarem iguais.",
+      },
+      { type: "heading", level: 3, text: "Saves que nunca se perdem" },
+      {
+        type: "paragraph",
+        text: "O jogo cresceu muito depois de publicado, então os saves mudaram de formato várias vezes: da campanha de um ato para três, de jogadores com nome de pessoa e idade para robôs com horas de uso. Cada save tem versão e uma migração que só acrescenta. Um save inválido nunca é sobrescrito sem confirmação, e um build antigo que encontra um save novo o trata como desconhecido em vez de apagar. Os testes usam 4 saves reais do capítulo 5 para garantir a migração.",
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "3. Em números" },
+      {
+        type: "list",
+        items: [
+          "6 modos de jogo, 6 chassis, 8 atributos, 5 formações e 16 habilidades.",
+          "3 atos, 13 capítulos, 14 missões secundárias, 3 finais e uma torre de 40 andares.",
+          "128 times com escudo e cerca de 4,7 mil nomes de robôs.",
+          "Cerca de 32 mil linhas de jogo e 22 mil de testes, com mais de 30 arquivos de teste.",
+          "Pouco mais de 100 commits entre o começo de outubro e o começo de novembro de 2026.",
+        ],
+      },
+      { type: "heading", level: 2, text: "4. O que vem por aí" },
+      {
+        type: "list",
+        items: [
+          "**Editor de firmware**: programar a IA dos robôs com regras em blocos.",
+          "**Publicação no CrazyGames**: em estudo, com tradução para inglês, o SDK do portal e a revisão dos direitos dos áudios.",
+        ],
+      },
+      { type: "hr" },
+      { type: "heading", level: 2, text: "Principais lições" },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "**Python roda no navegador de verdade.** O pygbag torna isso viável, desde que o loop seja assíncrono e você respeite o navegador.",
+          "**Uma regra de desempenho com teste vale mais que otimizar no fim.** \"Zero Surface por quadro\" segurou o desempenho enquanto torcida, efeitos e telas novas entravam.",
+          "**Gerar arte por código escala.** 128 escudos e dezenas de personagens sem desenhar uma imagem sequer.",
+          "**Balanceamento é medição.** Simulação em massa e placares de referência evitam que o jogo fique fácil ou impossível sem você perceber.",
+          "**Respeite o save do jogador.** Versão, migração e nunca apagar.",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Quer ver tudo isso funcionando? Jogue em **copaaspirador.brunokobi.tech**. O código está no GitHub em **github.com/brunokobi/soccerrobo**.",
+      },
+    ],
+  },
   {
     slug: "jarvis-whisper-piper",
     title: "Dando voz ao JARVIS: Whisper e Piper rodando na minha VPS",
