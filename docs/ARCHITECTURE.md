@@ -100,6 +100,7 @@ Deploy de produção → netlify/functions/deploy-succeeded.ts → IndexNow com 
 - Post novo entra sozinho no sitemap e ganha HTML próprio; a imagem de prévia é `public/og/<slug>.jpg` (1200×630) se existir, senão `public/og/default.jpg`
 - Rota nova precisa de uma entrada em `ROUTE_META` e outra em `buildSeoPages`
 - A chave do IndexNow é pública por definição: fica em `public/<chave>.txt` e em `netlify/lib/indexNow.ts`
+- Google AdSense: o portfólio é o domínio principal (`brunokobi.tech`) cadastrado no AdSense, mas **não exibe anúncios**. Tem só a verificação: `public/ads.txt` (vendedor autorizado `pub-1803671473296579`) e a meta `google-adsense-account` no `<head>` do `index.html`, fora do bloco de SEO, para valer em todas as rotas. Os anúncios aparecem no subdomínio `empresas.brunokobi.tech` (repo `projeto_grande_vitoria_empresas`), só para quem não é assinante
 - O `robots.txt` aponta para `https://brunokobi.tech/sitemap.xml` e bloqueia `/seo/` (os arquivos só são servidos pelas rotas)
 
 ### Tempo Real (Polling)
