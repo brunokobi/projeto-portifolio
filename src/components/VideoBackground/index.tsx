@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import fundo from "../../assets/img/fundo.mp4";
+import fundoPoster from "../../assets/img/fundo-poster.webp";
 
 const VideoBackground = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,6 +39,7 @@ const VideoBackground = () => {
         muted
         playsInline
         preload="none"
+        poster={fundoPoster}
         style={{
           position: "absolute",
           top: 0,

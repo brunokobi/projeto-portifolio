@@ -1,6 +1,7 @@
 import React from "react";
 import { Spinner } from "@chakra-ui/react";
 import globo from "./globo.mp4";
+import globoPoster from "./globo-poster.webp";
 
 const LoadingGlobo = () => {
   return (
@@ -21,6 +22,7 @@ const LoadingGlobo = () => {
       >
         <video
           src={globo}
+          poster={globoPoster}
           autoPlay
           loop
           muted
