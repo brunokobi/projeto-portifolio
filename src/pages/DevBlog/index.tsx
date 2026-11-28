@@ -27,7 +27,7 @@ const DevBlog = () => {
     <AnimatePresence>
       <Box as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <Flex
-          h="100vh"
+          h="100dvh"
           w="100%"
           overflowY="auto"
           overflowX="hidden"
@@ -157,9 +157,10 @@ const DevBlog = () => {
           <Box
             as="a"
             href="#top"
+            aria-label="Voltar ao topo"
             position="fixed"
-            bottom="70px"
-            right="20px"
+            bottom={{ base: "124px", md: "152px" }}
+            right={{ base: "20px", md: "30px" }}
             zIndex={10}
             bg="black"
             border={`1px solid ${GREEN}`}

@@ -270,7 +270,7 @@ const Projects = () => {
       >
         {/* Substituído Box por Flex para que direction e align funcionem */}
         <Flex
-          h="100vh"
+          h="100dvh"
           overflowY="auto"
           w="100%"
           overflowX="hidden"

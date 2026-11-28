@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Text, Skeleton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { useIntl } from "react-intl";
+import { useLocation } from "react-router-dom";
 import falar from "../TextAudio";
 import { supabase } from "../../lib/supabase";
 
@@ -56,6 +57,7 @@ const VisitCounter = () => {
   const [visits, setVisits] = useState<number | null>(null);
   const [displayValue, setDisplayValue] = useState(0);
   const intl = useIntl();
+  const { pathname } = useLocation();
   const label = intl.formatMessage({ id: "visitas" });
 
   useEffect(() => {
@@ -88,6 +90,7 @@ const VisitCounter = () => {
   return (
     <Box
       position="fixed"
+      display={{ base: pathname === "/" ? "block" : "none", md: "block" }}
       top={{ base: "12px", md: "20px" }}
       left={{ base: "12px", md: "20px" }}
       zIndex="100"

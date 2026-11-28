@@ -1,5 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
-import { Box, HStack, Text, Divider } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Text,
+  Divider,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  SimpleGrid,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { getGeoIP } from "../../utils/geoip";
 import { useGlobeReady } from "../../utils/globeReady";
 import falar from "../TextAudio";
@@ -73,6 +84,9 @@ type WeatherData = { temp: number; code: number; city: string | null };
 
 const WeatherBar = ({ waitForGlobe }: { waitForGlobe: boolean }) => {
   const globeReady = useGlobeReady();
+  const isMobile = useBreakpointValue({ base: true, md: false }, { ssr: false }) ?? false;
+  // No celular a lista de camadas só aparece na Home, a única página com o globo.
+  const showLayers = waitForGlobe || !isMobile;
   const [nightMode, setNightMode] = useState(() => localStorage.getItem("globeNight") === "1");
   const [windEnabled, setWindEnabled] = useState(() => localStorage.getItem("globeWind") !== "0");
 
@@ -192,6 +206,67 @@ const WeatherBar = ({ waitForGlobe }: { waitForGlobe: boolean }) => {
   if (waitForGlobe && !globeReady) return null;
 
   const wmo = data ? WMO[data.code] ?? { icon: "🌡️", label: "" } : null;
+  if (!showLayers && !(data && wmo)) return null;
+
+  const flip = (
+    value: boolean,
+    setValue: (next: boolean) => void,
+    storageKey: string,
+    eventName: string,
+    detailKey: string
+  ) => {
+    const next = !value;
+    setValue(next);
+    localStorage.setItem(storageKey, next ? "1" : "0");
+    window.dispatchEvent(new CustomEvent(eventName, { detail: { [detailKey]: next } }));
+  };
+
+  const layers: GlobeLayer[] = [
+    { id: "wind", icon: "💨", label: "Vento", on: windEnabled, toggle: toggleWind },
+    { id: "iss", icon: "🧑‍🚀", label: "ISS", on: issEnabled, toggle: toggleIss },
+    { id: "hurricanes", icon: "🌀", label: "Furacões", on: hurricanesEnabled, toggle: toggleHurricanes },
+    { id: "quakes", icon: "📍", label: "Terremotos", on: quakesEnabled, toggle: toggleQuakes },
+    { id: "volcanoes", icon: "🌋", label: "Vulcões", on: volcanoesEnabled, toggle: toggleVolcanoes },
+    {
+      id: "satellites",
+      icon: "🛰️",
+      label: "Satélites",
+      on: satellitesEnabled,
+      toggle: () => flip(satellitesEnabled, setSatellitesEnabled, "globeSatellites", "globeSatellitesToggle", "satellitesEnabled"),
+    },
+    {
+      id: "wildfires",
+      icon: "🔥",
+      label: "Incêndios",
+      on: wildfiresEnabled,
+      toggle: () => flip(wildfiresEnabled, setWildfiresEnabled, "globeWildfires", "globeWildfiresToggle", "wildfiresEnabled"),
+    },
+    {
+      id: "capAlerts",
+      icon: "⚠️",
+      label: "Alertas",
+      on: capAlertsEnabled,
+      toggle: () => flip(capAlertsEnabled, setCapAlertsEnabled, "globeCapAlerts", "globeCapAlertsToggle", "capAlertsEnabled"),
+    },
+    { id: "rotation", icon: "🌐", label: "Rotação", on: rotationEnabled, toggle: toggleRotation },
+  ];
+
+  const nightButton = (
+    <Text
+      as="button"
+      fontSize="xs"
+      fontFamily="monospace"
+      color={GREEN}
+      letterSpacing="0.06em"
+      cursor="pointer"
+      onClick={toggleNight}
+      title={nightMode ? "Modo dia" : "Modo noite"}
+      style={{ background: "none", border: "none", padding: 0 }}
+      _hover={{ opacity: 0.7 }}
+    >
+      {nightMode ? "🌞 DIA" : "🌙 NOITE"}
+    </Text>
+  );
 
   return (
     <Box
@@ -209,7 +284,7 @@ const WeatherBar = ({ waitForGlobe }: { waitForGlobe: boolean }) => {
       borderBottom={`1px solid ${GREEN_DIM}`}
       borderLeft={`1px solid ${GREEN_DIM}`}
       borderBottomLeftRadius="12px"
-      px={4}
+      px={{ base: 3, md: 4 }}
       py="6px"
       boxShadow={`0 2px 16px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(66,201,32,0.06)`}
       style={{ animation: "weatherFadeIn 0.5s ease" }}
@@ -236,186 +311,148 @@ const WeatherBar = ({ waitForGlobe }: { waitForGlobe: boolean }) => {
 
             {data.city && (
               <>
-                <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-                <Text fontSize="xs" color="whiteAlpha.600" fontFamily="heading" letterSpacing="0.03em">
+                <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} display={{ base: "none", md: "block" }} />
+                <Text
+                  fontSize="xs"
+                  color="whiteAlpha.600"
+                  fontFamily="heading"
+                  letterSpacing="0.03em"
+                  display={{ base: "none", md: "block" }}
+                >
                   {data.city}
                 </Text>
               </>
             )}
-
-            <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
           </>
         )}
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleNight}
-          title={nightMode ? "Modo dia" : "Modo noite"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {nightMode ? "🌞 DIA" : "🌙 NOITE"}
-        </Text>
 
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleWind}
-          title={windEnabled ? "Desativar vento" : "Ativar vento"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {windEnabled ? "💨 ON" : "💨 OFF"}
-        </Text>
+        {showLayers && isMobile && (
+          <>
+            {data && wmo && <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />}
+            <MobileLayersMenu layers={layers} nightMode={nightMode} onToggleNight={toggleNight} />
+          </>
+        )}
 
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleIss}
-          title={issEnabled ? "Desativar ISS" : "Ativar ISS"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {issEnabled ? "🧑‍🚀 ON" : "🧑‍🚀 OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleHurricanes}
-          title={hurricanesEnabled ? "Desativar furacões" : "Ativar furacões"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {hurricanesEnabled ? "🌀 ON" : "🌀 OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleQuakes}
-          title={quakesEnabled ? "Desativar terremotos" : "Ativar terremotos"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {quakesEnabled ? "📍 ON" : "📍 OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleVolcanoes}
-          title={volcanoesEnabled ? "Desativar vulcões" : "Ativar vulcões"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {volcanoesEnabled ? "🌋 ON" : "🌋 OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-
-        {/* Novos toggles - 8 features */}
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setSatellitesEnabled(!satellitesEnabled);
-            localStorage.setItem("globeSatellites", !satellitesEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeSatellitesToggle", { detail: { satellitesEnabled: !satellitesEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-          title={satellitesEnabled ? "Desativar satélites" : "Ativar satélites"}
-        >
-          🛰️ {satellitesEnabled ? "ON" : "OFF"}
-        </Text>
-
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setWildfiresEnabled(!wildfiresEnabled);
-            localStorage.setItem("globeWildfires", !wildfiresEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeWildfiresToggle", { detail: { wildfiresEnabled: !wildfiresEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-          title={wildfiresEnabled ? "Desativar incêndios" : "Ativar incêndios"}
-        >
-          {wildfiresEnabled ? "🔥 ON" : "🔥 OFF"}
-        </Text>
-
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          cursor="pointer"
-          onClick={() => {
-            setCapAlertsEnabled(!capAlertsEnabled);
-            localStorage.setItem("globeCapAlerts", !capAlertsEnabled ? "1" : "0");
-            window.dispatchEvent(new CustomEvent("globeCapAlertsToggle", { detail: { capAlertsEnabled: !capAlertsEnabled } }));
-          }}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-          title={capAlertsEnabled ? "Desativar alertas de emergência" : "Ativar alertas de emergência"}
-        >
-          {capAlertsEnabled ? "⚠️ ON" : "⚠️ OFF"}
-        </Text>
-
-        <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
-
-        <Text
-          as="button"
-          fontSize="xs"
-          fontFamily="monospace"
-          color={GREEN}
-          letterSpacing="0.06em"
-          cursor="pointer"
-          onClick={toggleRotation}
-          title={rotationEnabled ? "Parar rotação do globo" : "Retomar rotação do globo"}
-          style={{ background: "none", border: "none", padding: 0 }}
-          _hover={{ opacity: 0.7 }}
-        >
-          {rotationEnabled ? "🌐 ON" : "🌐 OFF"}
-        </Text>
+        {showLayers && !isMobile && (
+          <>
+            {data && wmo && <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />}
+            {nightButton}
+            {layers.map((layer) => (
+              <HStack key={layer.id} spacing={3}>
+                <Divider orientation="vertical" h="14px" borderColor={GREEN_DIM} />
+                <Text
+                  as="button"
+                  fontSize="xs"
+                  fontFamily="monospace"
+                  color={GREEN}
+                  letterSpacing="0.06em"
+                  cursor="pointer"
+                  onClick={layer.toggle}
+                  title={`${layer.on ? "Desativar" : "Ativar"} ${layer.label.toLowerCase()}`}
+                  style={{ background: "none", border: "none", padding: 0 }}
+                  _hover={{ opacity: 0.7 }}
+                >
+                  {layer.icon} {layer.on ? "ON" : "OFF"}
+                </Text>
+              </HStack>
+            ))}
+          </>
+        )}
       </HStack>
     </Box>
+  );
+};
+
+interface GlobeLayer {
+  id: string;
+  icon: string;
+  label: string;
+  on: boolean;
+  toggle: () => void;
+}
+
+interface MobileLayersMenuProps {
+  layers: GlobeLayer[];
+  nightMode: boolean;
+  onToggleNight: () => void;
+}
+
+const MobileLayersMenu = ({ layers, nightMode, onToggleNight }: MobileLayersMenuProps) => {
+  const activeCount = layers.filter((layer) => layer.on).length;
+
+  return (
+    <Popover placement="bottom-end" isLazy>
+      <PopoverTrigger>
+        <Box
+          as="button"
+          type="button"
+          aria-label="Camadas do globo"
+          display="flex"
+          alignItems="center"
+          gap={1}
+          minH="32px"
+          px={2}
+          fontSize="xs"
+          fontFamily="monospace"
+          color={GREEN}
+          border={`1px solid ${GREEN_DIM}`}
+          borderRadius="full"
+        >
+          🗺️ Camadas {activeCount}/{layers.length}
+        </Box>
+      </PopoverTrigger>
+      <PopoverContent
+        w="min(92vw, 300px)"
+        bg="rgba(0,0,0,0.95)"
+        borderColor={GREEN_DIM}
+        color="whiteAlpha.900"
+        _focusVisible={{ outline: "none" }}
+      >
+        <PopoverBody p={3}>
+          <Box
+            as="button"
+            type="button"
+            onClick={onToggleNight}
+            w="100%"
+            minH="44px"
+            mb={2}
+            borderRadius="md"
+            border={`1px solid ${GREEN_DIM}`}
+            color={GREEN}
+            fontSize="sm"
+            fontFamily="heading"
+          >
+            {nightMode ? "🌞 Mudar para modo dia" : "🌙 Mudar para modo noite"}
+          </Box>
+          <SimpleGrid columns={2} spacing={2}>
+            {layers.map((layer) => (
+              <Box
+                key={layer.id}
+                as="button"
+                type="button"
+                onClick={layer.toggle}
+                aria-pressed={layer.on}
+                minH="44px"
+                px={2}
+                display="flex"
+                alignItems="center"
+                gap={2}
+                borderRadius="md"
+                border="1px solid"
+                borderColor={layer.on ? "rgba(66,201,32,0.5)" : "whiteAlpha.200"}
+                bg={layer.on ? "rgba(66,201,32,0.12)" : "transparent"}
+                color={layer.on ? GREEN : "whiteAlpha.500"}
+                fontSize="sm"
+                textAlign="left"
+              >
+                <span aria-hidden>{layer.icon}</span>
+                {layer.label}
+              </Box>
+            ))}
+          </SimpleGrid>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
   );
 };
 

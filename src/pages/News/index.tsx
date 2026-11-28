@@ -115,7 +115,7 @@ const NewsPage = () => {
   const catSources = CATEGORIES.flatMap((c) => c.sources);
 
   return (
-    <Box minH="100vh" w="100vw" bg="#050505" color="white">
+    <Box minH="100vh" w="100%" bg="#050505" color="white">
       {/* Inject Matrix CSS once */}
       <style>{MATRIX_CSS}</style>
 

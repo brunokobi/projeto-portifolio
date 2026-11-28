@@ -156,8 +156,8 @@ function Mapa() {
 
   return (
     <Flex
-      w="100vw"
-      h="100vh"
+      w="100%"
+      h="100dvh"
       align="center"
       justify="center"
       position="relative"
@@ -208,11 +208,13 @@ function Mapa() {
           {/* SIDEBAR LEFT */}
           <Box
             w={{ base: "100%", md: "380px" }}
-            h="100%"
+            h={{ base: "auto", md: "100%" }}
+            maxH={{ base: "40%", md: "none" }}
+            flexShrink={0}
             borderRight={{ base: "none", md: "1px solid" }}
             borderColor="whiteAlpha.200"
             bg="#0F172A"
-            p={5}
+            p={{ base: 3, md: 5 }}
             overflowY="auto"
             css={{
               "&::-webkit-scrollbar": { width: "6px" },
@@ -340,7 +342,7 @@ function Mapa() {
           </Box>
 
           {/* RIGHT AREA: MAP */}
-          <Box flex="1" position="relative" bg="#000">
+          <Box flex="1" minH={{ base: "240px", md: 0 }} position="relative" bg="#000">
             {latitude !== "" && longitude !== "" ? (
               <PointAdd
                 key={`${latitude}-${longitude}`}

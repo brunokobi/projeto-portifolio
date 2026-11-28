@@ -1,5 +1,6 @@
 import { IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ChatWidget } from '../ChatWidget';
 import { OPEN_JARVIS_EVENT } from './openJarvisChat';
 
@@ -7,6 +8,8 @@ const GREEN = '#42c920';
 
 export function ChatButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { pathname } = useLocation();
+  const onChatPage = pathname === '/chat';
 
   useEffect(() => {
     const handleOpen = (event: Event) => {
@@ -22,18 +25,19 @@ export function ChatButton() {
       {/* Botão Flutuante */}
       <IconButton
         aria-label="Abrir chat"
-        icon={<img src="https://brunokobi.netlify.app/int-icon.png" style={{ width: '24px', height: '24px' }} />}
+        icon={<img src="/int-icon.png" alt="" style={{ width: '24px', height: '24px' }} />}
         onClick={onOpen}
+        display={onChatPage ? 'none' : 'inline-flex'}
         position="fixed"
-        bottom="80px"
-        right="20px"
+        bottom={{ base: 'calc(60px + env(safe-area-inset-bottom))', md: '80px' }}
+        right={{ base: '12px', md: '20px' }}
         zIndex={100}
         bg={`rgba(66, 201, 32, 0.1)`}
         borderColor={GREEN}
         border="2px solid"
         borderRadius="50%"
-        w="60px"
-        h="60px"
+        w={{ base: '48px', md: '60px' }}
+        h={{ base: '48px', md: '60px' }}
         _hover={{
           bg: `rgba(66, 201, 32, 0.2)`,
           boxShadow: `0 0 20px rgba(66, 201, 32, 0.5)`,

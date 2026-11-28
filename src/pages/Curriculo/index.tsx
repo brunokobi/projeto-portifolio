@@ -44,7 +44,7 @@ const Curriculo = () => {
     <Box as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <Flex
         gap={5}
-        h="90vh"
+        h="90dvh"
         w="100%"
         align="center"
         overflowY="auto"
@@ -83,7 +83,8 @@ const Curriculo = () => {
 
           <Image
             src={curriculo1}
-            w={{ base: 400, md: 200, lg: 450, sm: 100, xl: 450 }}
+            w={{ base: "100%", md: 200, lg: 450, xl: 450 }}
+            maxW="450px"
             onClick={() => handleImageClick(curriculo1)}
             cursor="pointer"
             zIndex={1}
@@ -92,7 +93,8 @@ const Curriculo = () => {
           />
           <Image
             src={curriculo2}
-            w={{ base: 400, md: 200, lg: 450, sm: 100, xl: 450 }}
+            w={{ base: "100%", md: 200, lg: 450, xl: 450 }}
+            maxW="450px"
             onClick={() => handleImageClick(curriculo2)}
             cursor="pointer"
             zIndex={1}
@@ -104,8 +106,10 @@ const Curriculo = () => {
             as="a"
             href={pdf}
             download="brunokobi.pdf"
-            mt={4}
-            mb={20}
+            order={{ base: -1, md: 0 }}
+            mt={{ base: 0, md: 4 }}
+            mb={{ base: 0, md: 20 }}
+            minH="44px"
             color={"#fff"}
             background={"#42c920"}
             _hover={{ background: "#256a10" }}
@@ -130,7 +134,7 @@ const Curriculo = () => {
             alignItems={"center"}
             display={"flex"}
           >
-            <Image src={selectedImage ?? undefined} w={"80%"} />
+            <Image src={selectedImage ?? undefined} w={{ base: "100%", md: "80%" }} />
           </ModalBody>
         </ModalContent>
       </Modal>

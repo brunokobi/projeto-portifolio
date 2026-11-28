@@ -38,7 +38,7 @@ import { RiAliensFill, RiRobotLine } from "react-icons/ri";
 import { IoMdRocket } from "react-icons/io";
 import { BiCube } from "react-icons/bi";
 import { FaBlog } from "react-icons/fa";
-import { FiChevronUp } from "react-icons/fi";
+import { FiChevronUp, FiMoreHorizontal } from "react-icons/fi";
 import { openJarvisChat } from "../ChatButton/openJarvisChat";
 
 import usa from "../../assets/img/usa.png";
@@ -180,6 +180,49 @@ const LanguageMenu = ({ currentLang, onLanguageChange, intl }: LanguageMenuProps
   );
 };
 
+interface ExternalLink {
+  label: string;
+  url: string;
+  icon: React.ElementType;
+}
+
+// No celular os links externos ficam num menu "Mais" para os itens do site caberem na barra.
+const ExternalLinksMenu = ({ links }: { links: ExternalLink[] }) => (
+  <Menu placement="top-end" isLazy>
+    <MenuButton
+      aria-label="Mais links"
+      display="inline-flex"
+      alignItems="center"
+      justifyContent="center"
+      minW="36px"
+      h="38px"
+      rounded="full"
+      color="whiteAlpha.700"
+      _expanded={{ color: GREEN }}
+    >
+      <Box as={FiMoreHorizontal} fontSize={22} mx="auto" />
+    </MenuButton>
+    <MenuList bg="black" borderColor="whiteAlpha.400" minW="200px" zIndex={1000000}>
+      {links.map((link) => (
+        <MenuItem
+          key={link.label}
+          as="a"
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          bg="black"
+          color="whiteAlpha.800"
+          minH="44px"
+          _hover={{ bg: "whiteAlpha.100", color: GREEN }}
+          icon={<Box as={link.icon} fontSize={20} />}
+        >
+          {link.label} ↗
+        </MenuItem>
+      ))}
+    </MenuList>
+  </Menu>
+);
+
 const Nav = () => {
   const intl = useIntl();
   const navigate = useNavigate();
@@ -253,7 +296,8 @@ const Nav = () => {
         color="whiteAlpha.700"
         justify="center"
         align="center"
-        py={1}
+        pt={1}
+        pb="calc(4px + env(safe-area-inset-bottom))"
         px={{ base: 1, md: 2 }}
         boxShadow="0 -4px 20px rgba(0,0,0,0.5)"
       >
@@ -267,10 +311,15 @@ const Nav = () => {
             <Item key={page.label} {...page} />
           ))}
           <Divider orientation="vertical" h="24px" borderColor="whiteAlpha.400" mx={{ base: 0.5, md: 2 }} />
-          {externals.map((link) => (
-            <Item key={link.label} {...link} />
-          ))}
-          <Divider orientation="vertical" h="24px" borderColor="whiteAlpha.400" mx={{ base: 0.5, md: 2 }} />
+          <Box display={{ base: "none", md: "contents" }}>
+            {externals.map((link) => (
+              <Item key={link.label} {...link} />
+            ))}
+            <Divider orientation="vertical" h="24px" borderColor="whiteAlpha.400" mx={2} />
+          </Box>
+          <Box display={{ base: "block", md: "none" }} flexShrink={0}>
+            <ExternalLinksMenu links={externals} />
+          </Box>
           <Box flexShrink={0}>
             <LanguageMenu currentLang={currentLang} onLanguageChange={handleLanguageChange} intl={intl} />
           </Box>

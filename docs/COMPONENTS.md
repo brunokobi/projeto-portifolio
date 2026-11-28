@@ -53,7 +53,8 @@ Nenhuma.
 - Cada botão grava a escolha no `localStorage` e dispara o `CustomEvent`; o globo atualiza o `EnabledRef` e o loop de desenho respeita.
 - O clima não bloqueia a barra: temperatura e cidade aparecem quando o Open-Meteo responde e ficam ocultas se falhar.
 - Localização: geolocalização do navegador (timeout 8s) com fallback para `ipapi.co`.
-- Testes: `__tests__/WeatherBar.test.tsx` (inclui "botões aparecem mesmo com o clima falhando" e "na Home espera o globo").
+- Celular (abaixo do breakpoint `md`): a cidade some, as camadas ficam num botão "🗺️ Camadas N/9" que abre um popover com o modo noite e uma grade 2×N de botões de 44px (`aria-pressed`). As camadas só aparecem na Home (`waitForGlobe`); nas outras páginas fica só o clima, e sem clima a barra não é renderizada. No desktop a barra continua igual.
+- Testes: `__tests__/WeatherBar.test.tsx` (inclui "botões aparecem mesmo com o clima falhando", "na Home espera o globo" e o bloco "no celular"). O `matchMedia` do jsdom é simulado em `src/test/setup.ts`.
 
 ---
 
@@ -121,7 +122,8 @@ DevBlog copia esse design:
 
 - Só ícones; o nome aparece num tooltip verde ao passar o mouse (e é falado pelo `TextAudio`). O item da página atual vira uma pílula verde com o nome (o nome some no celular)
 - Grupo 1, páginas do site: Home `/`, Sobre `/about`, Projetos `/projects`, JARVIS (abre o chat pelo evento `jarvis:open`; sem `ChatButton` na página, vai para `/chat`), Contato (abre o modal do `ContactForm`), Mapa `/map`, Notícias `/news`, Blog `/blog`
-- Grupo 2, links externos (tooltip com "↗"): Portfolio 3D, Empresas GV, LinkedIn, GitHub
+- Grupo 2, links externos (tooltip com "↗"): Portfolio 3D, Empresas GV, LinkedIn, GitHub. No celular ficam no menu "Mais" (`ExternalLinksMenu`, ícone ⋯), para os itens do site caberem na barra com alvos de toque de 38px
+- Respeita a área segura do iPhone (`env(safe-area-inset-bottom)`)
 - Idioma: `LanguageMenu`, um botão com a bandeira atual que abre para cima a lista dos 9 idiomas. Na primeira visita o idioma vem do país (GeoIP), como antes
 - `Item` (`Nav/Item/index.tsx`) recebe `url` (interno ou `http...`) ou `onClick`. A página ativa vem de `isActivePath` (`Nav/isActivePath.ts`): Home só na raiz, as demais também nas subrotas (`/blog/post` ativa Blog)
 - Cabe sem rolagem a partir de 375px de largura
@@ -156,7 +158,8 @@ DevBlog copia esse design:
 **Responsabilidade:** botão flutuante (canto inferior direito) que abre o `ChatWidget` num Drawer do Chakra
 
 - Sem props; controla abertura com `useDisclosure`
-- Renderizado em `App.tsx` em todas as páginas, exceto `/news`
+- Renderizado em `App.tsx` em todas as páginas, exceto `/news`; fica oculto em `/chat`, onde o chat já está aberto na página
+- No celular tem 48px e fica a 12px da borda, logo acima do menu; o ícone vem de `/int-icon.png` do próprio site
 - O `ChatWidget` também é usado standalone na rota `/chat` (`src/pages/Chat.tsx`)
 - Escuta o evento `jarvis:open` em `window` (disparado por `openJarvisChat()`, `ChatButton/openJarvisChat.ts`) e abre a gaveta; é o que o item JARVIS do menu usa
 

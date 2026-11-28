@@ -54,7 +54,7 @@ const About = () => {
       <Box as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <Flex
           gap={5}
-          h="100vh"
+          h="100dvh"
           w="100%"
           align="center"
           overflowY="auto"

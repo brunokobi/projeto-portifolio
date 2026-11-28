@@ -102,4 +102,53 @@ describe("WeatherBar", () => {
     expect(screen.getByTitle("Desativar satélites")).toBeInTheDocument();
     expect(screen.queryByText(/°C/)).toBeNull();
   });
+
+  describe("no celular", () => {
+    const original = window.matchMedia;
+    const mobileMatchMedia = (query: string) => ({
+      ...original(query),
+      matches: /min-width:\s*0/.test(query),
+    });
+
+    afterEach(() => {
+      window.matchMedia = original;
+    });
+
+    it("fora da Home mostra só o clima, sem as camadas do globo", async () => {
+      window.matchMedia = mobileMatchMedia;
+      vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ json: () => Promise.resolve(METEO_OK) }));
+      renderBar();
+      await waitFor(() => expect(screen.getByText(/22°C/)).toBeInTheDocument());
+      expect(screen.queryByLabelText("Camadas do globo")).toBeNull();
+      expect(screen.queryByTitle("Desativar satélites")).toBeNull();
+    });
+
+    it("fora da Home não deixa caixa vazia quando o clima falha", async () => {
+      window.matchMedia = mobileMatchMedia;
+      const fetchMock = vi.fn().mockRejectedValue(new Error("offline"));
+      vi.stubGlobal("fetch", fetchMock);
+      const { container } = renderBar();
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+      await act(async () => {});
+      expect(container.querySelector('[style*="weatherFadeIn"]')).toBeNull();
+      expect(screen.queryByText(/°C/)).toBeNull();
+    });
+
+    it("na Home junta as camadas num botão que abre a lista", async () => {
+      window.matchMedia = mobileMatchMedia;
+      vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {})));
+      renderBar(true);
+      act(() => markGlobeReady());
+
+      const button = screen.getByLabelText("Camadas do globo");
+      expect(screen.queryByTitle("Desativar satélites")).toBeNull();
+
+      act(() => button.click());
+
+      const satellites = await screen.findByRole("button", { name: /Satélites/ });
+      expect(satellites).toHaveAttribute("aria-pressed", "true");
+      act(() => satellites.click());
+      expect(satellites).toHaveAttribute("aria-pressed", "false");
+    });
+  });
 });
